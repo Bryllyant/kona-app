@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+    PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+    "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry location="/opt/mysql/dba/lib/mariadb-java-client.jar" />
+
+    <context id="tables" defaultModelType="flat" 
+            targetRuntime="MyBatis3">
+
+        <property name="beginningDelimiter" value="`" />
+        <property name="endingDelimiter" value="`" />
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+        <plugin type="com.bryllyant.kona.data.mybatis.KLimitPlugin" />
+
+            <!--
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+        <plugin type="org.mybatis.generator.plugins.CachePlugin" />
+            -->
+
+
+        <jdbcConnection driverClass="org.mariadb.jdbc.Driver"
+            connectionURL="jdbc:mysql://localhost:3306/kona"
+            userId="kona"
+            password="kona">
+        </jdbcConnection>
+
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.bryllyant.kona.app.entity" 
+            targetProject="../../src/main/java">
+            <property name="enableSubPackages" value="false" />
+            <property name="trimStrings" value="true" />
+            <property name="rootClass" 
+                value="com.bryllyant.kona.data.entity.KDomainObject" />
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="com.bryllyant.kona.app.dao"
+            targetProject="../../src/main/java">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" 
+            targetPackage="com.bryllyant.kona.app.dao" 
+            targetProject="../../src/main/java">
+            <property name="enableSubPackages" value="false" />
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisDao" />
+        </javaClientGenerator>
+
+        <!-- Core Tables -->
+        <table schema="kona" 
+                tableName="kona__account" 
+                domainObjectName="Account" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAccount"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="active" javaType="boolean" />
+            <columnOverride column="verified" javaType="boolean" />
+        </table>
+
+       <table schema="kona" 
+                tableName="kona__api_version" 
+                domainObjectName="ApiVersion"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseApiVersion"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__app" 
+                domainObjectName="App"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseApp"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__app_creds" 
+                domainObjectName="AppCreds"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppCreds"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__app_config" 
+                domainObjectName="AppConfig"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppConfig"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__app_legal" 
+                domainObjectName="AppLegal"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppLegal"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="active" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__app_user" 
+                domainObjectName="AppUser"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppUser"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__app_webhook" 
+                domainObjectName="AppWebhook"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppWebhook"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__api_log" 
+                domainObjectName="ApiLog"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseApiLog"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__auth_code" 
+                domainObjectName="AuthCode"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthCode"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="valid" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+                tableName="kona__registration" 
+                domainObjectName="Registration" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseRegistration"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="email_verified" javaType="boolean" />
+            <columnOverride column="email_pending" javaType="boolean" />
+            <columnOverride column="mobile_verified" javaType="boolean" />
+            <columnOverride column="mobile_pending" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__token" 
+                domainObjectName="Token" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseToken"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="active" javaType="boolean" />
+            <columnOverride column="approved" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__user" 
+                domainObjectName="User" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseUser"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="active" javaType="boolean" />
+
+            <columnOverride column="roles" javaType="java.lang.Long" 
+                   typeHandler="com.bryllyant.kona.app.util.KUserRoleHandler" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+
+        <table schema="kona" 
+                tableName="kona__user_auth" 
+                domainObjectName="UserAuth" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseUserAuth"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__media" 
+                domainObjectName="Media"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseMedia"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="sprite" javaType="boolean" />
+            <columnOverride column="resizeable" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+
+        <table schema="kona" 
+                tableName="kona__entity_name_rule" 
+                domainObjectName="EntityNameRule"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEntityNameRule"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="reserved" javaType="boolean" />
+            <columnOverride column="black_listed" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+                tableName="kona__setting" 
+                domainObjectName="Setting" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSetting"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="overwrite_global" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__position" 
+                domainObjectName="Position" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePosition"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="background" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+		<table schema="kona" 
+                tableName="kona__place" 
+                domainObjectName="Place" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePlace"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+		<table schema="kona" 
+                tableName="kona__device" 
+                domainObjectName="Device" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseDevice"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="limit_ad_tracking_enabled" javaType="boolean" />
+        </table>
+
+        <!--
+             NOTE: UserDevice needs to extend custom BaseUserDevice that extends Device 
+             and implements KUserDevice interface.
+        -->
+		<table schema="kona" 
+                tableName="kona__user_device" 
+                domainObjectName="UserDevice" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.BaseUserDevice"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__short_url" 
+                domainObjectName="ShortUrl" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseShortUrl"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="script" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__redirect" 
+                domainObjectName="Redirect"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseRedirect"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+       <table schema="kona" 
+                tableName="kona__file" 
+                domainObjectName="File" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseFile"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="hidden" javaType="boolean" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="active" javaType="boolean" />
+            <columnOverride column="temp_file" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__remote_service" 
+                domainObjectName="RemoteService"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseRemoteService"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__remote_service_app_creds" 
+                domainObjectName="RemoteServiceAppCreds"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseRemoteServiceAppCreds"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__remote_service_user_creds" 
+                domainObjectName="RemoteServiceUserCreds"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseRemoteServiceUserCreds"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+        <table schema="kona" 
+                tableName="kona__notification" 
+                domainObjectName="Notification" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseNotification"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__notification_delivery" 
+                domainObjectName="NotificationDelivery" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseNotificationDelivery"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+       <table schema="kona" 
+                tableName="kona__support_message" 
+                domainObjectName="SupportMessage" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSupportMessage"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+
+       <table schema="kona" 
+                tableName="kona__push_notification" 
+                domainObjectName="PushNotification"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotification"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="sandbox" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__push_notification_device" 
+                domainObjectName="PushNotificationDevice"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationDevice"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="sandbox" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__push_notification_message" 
+                domainObjectName="PushNotificationMessage"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationMessage"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="sandbox" javaType="boolean" />
+        </table>
+
+		<table schema="kona" 
+                tableName="kona__sms" 
+                domainObjectName="Sms" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSms"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="failed" javaType="boolean" />
+            <columnOverride column="delivered" javaType="boolean" />
+            <columnOverride column="opted_out" javaType="boolean" />
+        </table>
+
+       <table schema="kona" 
+                tableName="kona__email" 
+                domainObjectName="Email" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmail"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="failed" javaType="boolean" />
+            <columnOverride column="delivered" javaType="boolean" />
+            <columnOverride column="bounced" javaType="boolean" />
+            <columnOverride column="complained" javaType="boolean" />
+            <columnOverride column="opted_out" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__email_event" 
+                domainObjectName="EmailEvent" 
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailEvent"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__email_group" 
+                domainObjectName="EmailGroup"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailGroup"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__email_address" 
+                domainObjectName="EmailAddress"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailAddress"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="scrubbed" javaType="boolean" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="confirmed" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__email_content" 
+                domainObjectName="EmailContent"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailContent"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__email_attachment" 
+                domainObjectName="EmailAttachment"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailAttachment"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__email_group_address" 
+                domainObjectName="EmailGroupAddress"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailGroupAddress"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+        <table schema="kona" 
+                tableName="kona__friendship" 
+                domainObjectName="Friendship"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseFriendship"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="friendship_requested" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__friendship_event" 
+                domainObjectName="FriendshipEvent"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseFriendshipEvent"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__friendship_circle" 
+                domainObjectName="FriendshipCircle"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseFriendshipCircle"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="default_circle" javaType="boolean" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__address_book" 
+                domainObjectName="AddressBook"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAddressBook"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="email_verified" javaType="boolean" />
+            <columnOverride column="mobile_verified" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+        <table schema="kona" 
+                tableName="kona__invitation" 
+                domainObjectName="Invitation"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseInvitation"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__sales_lead" 
+				domainObjectName="SalesLead" 
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSalesLead"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__campaign_event" 
+				domainObjectName="CampaignEvent"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignEvent"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__campaign" 
+				domainObjectName="Campaign"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaign"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__campaign_channel" 
+				domainObjectName="CampaignChannel"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignChannel"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__partner" 
+				domainObjectName="Partner"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePartner"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__promo" 
+				domainObjectName="Promo"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePromo"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="visible" javaType="boolean" />
+            <columnOverride column="signup_default" javaType="boolean" />
+        </table>
+
+
+        <!--
+        <table schema="kona" 
+				tableName="kona__promo_page" 
+				domainObjectName="PromoPage"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePromoPage"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="root" javaType="boolean" />
+        </table>
+        -->
+
+
+        <table schema="kona" 
+				tableName="kona__product" 
+				domainObjectName="Product"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseProduct"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="subscription" javaType="boolean" />
+            <columnOverride column="active" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__payment" 
+				domainObjectName="Payment"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePayment"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="paid" javaType="boolean" />
+            <columnOverride column="refunded" javaType="boolean" />
+            <columnOverride column="disputed" javaType="boolean" />
+            <columnOverride column="failed" javaType="boolean" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__pre_order" 
+				domainObjectName="PreOrder"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePreOrder"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="proxy_payment" javaType="boolean" />
+            <columnOverride column="reconciled" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__cart_item" 
+				domainObjectName="CartItem"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCartItem"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="coords" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__cart" 
+				domainObjectName="Cart"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCart"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="checked_out" javaType="boolean" />
+            <columnOverride column="invoiced" javaType="boolean" />
+            <columnOverride column="expired" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__invoice_item" 
+				domainObjectName="InvoiceItem"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseInvoiceItem"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__invoice" 
+				domainObjectName="Invoice"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseInvoice"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="paid" javaType="boolean" />
+            <columnOverride column="closed" javaType="boolean" />
+            <columnOverride column="payment_attempted" javaType="boolean" />
+        </table>
+
+
+        <table schema="kona" 
+				tableName="kona__purchase" 
+				domainObjectName="Purchase"
+				delimitAllColumns="true" 
+				delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePurchase"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="auto_renew" javaType="boolean" />
+        </table>
+
+		<table schema="kona" 
+                tableName="kona__payment_account" 
+                domainObjectName="PaymentAccount"
+                delimitAllColumns="true" 
+                delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePaymentAccount"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="default_account" javaType="boolean" />
+        </table>
+        <!-- Sales Tables -->
+    </context>
+</generatorConfiguration>

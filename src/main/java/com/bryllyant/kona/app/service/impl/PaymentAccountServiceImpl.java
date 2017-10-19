@@ -1,0 +1,78 @@
+/*
+ * Copyright (C) 2017 Bryllyant, Inc.  All Rights Reserved.
+ */
+package com.bryllyant.kona.app.service.impl;
+
+import com.bryllyant.kona.app.dao.PaymentAccountMapper;
+import com.bryllyant.kona.app.entity.PaymentAccount;
+import com.bryllyant.kona.app.entity.PaymentAccountExample;
+import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.service.KAbstractPaymentAccountService;
+import com.bryllyant.kona.app.service.PaymentAccountService;
+import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service(PaymentAccountService.SERVICE_PATH)
+public class PaymentAccountServiceImpl 
+		extends KAbstractPaymentAccountService<PaymentAccount,PaymentAccountExample,User> 
+		implements PaymentAccountService {
+	
+	private static Logger logger = LoggerFactory.getLogger(PaymentAccountServiceImpl.class);
+    
+    @Autowired
+    private PaymentAccountMapper paymentAccountDao;
+    
+    @Autowired
+    private UserService userService;
+
+    // ----------------------------------------------------------------------------
+    
+    @Override
+    protected PaymentAccount getNewObject() {
+        return new PaymentAccount();
+    }
+
+    // ----------------------------------------------------------------------------
+
+    @Override @SuppressWarnings("unchecked")
+    protected PaymentAccountMapper getDao() {
+        return paymentAccountDao;
+    }
+    
+    // ----------------------------------------------------------------------------
+
+    @Override @SuppressWarnings("unchecked")
+    protected UserService getUserService() {
+        return userService;
+    }
+
+    
+    // ----------------------------------------------------------------------------
+
+    @Override
+    protected PaymentAccountExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+            Map<String, Object> filter, boolean distinct) {
+    	PaymentAccountExample example = new PaymentAccountExample();
+
+        if (sortOrder != null) {
+            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
+        }
+
+        if (startRow == null) startRow = 0;
+        if (resultSize == null) resultSize = 99999999;
+
+        example.setOffset(startRow);
+        example.setLimit(resultSize);
+        example.setDistinct(distinct);
+
+        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
+        return example;
+    }
+
+}

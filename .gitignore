@@ -1,0 +1,10 @@
+/lib/
+/target/
+*.iml
+.idea
+.classpath
+.settings
+.project
+.springBeans
+.gwt
+.DS_Store 

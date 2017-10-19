@@ -1,0 +1,61 @@
+/*
+ * Copyright (C) 2017 Bryllyant, Inc.  All Rights Reserved.
+ */
+package com.bryllyant.kona.app.service.impl;
+
+import com.bryllyant.kona.app.dao.NotificationDeliveryMapper;
+import com.bryllyant.kona.app.entity.NotificationDelivery;
+import com.bryllyant.kona.app.entity.NotificationDeliveryExample;
+import com.bryllyant.kona.app.service.KAbstractNotificationDeliveryService;
+import com.bryllyant.kona.app.service.NotificationDeliveryService;
+import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service(NotificationDeliveryService.SERVICE_PATH)
+public class NotificationDeliveryServiceImpl 
+		extends KAbstractNotificationDeliveryService<NotificationDelivery,NotificationDeliveryExample> 
+		implements NotificationDeliveryService {
+	
+	private static Logger logger = LoggerFactory.getLogger(NotificationDeliveryServiceImpl.class);
+
+	@Autowired
+	private NotificationDeliveryMapper notificationDeliveryDao;
+    
+
+	// ----------------------------------------------------------------------------
+    
+	@Override @SuppressWarnings("unchecked")
+	protected NotificationDeliveryMapper getDao() {
+		return notificationDeliveryDao;
+	}
+	
+	// ----------------------------------------------------------------------------
+
+	@Override
+	protected NotificationDeliveryExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+			Map<String, Object> filter, boolean distinct) {
+		NotificationDeliveryExample example = new NotificationDeliveryExample();
+
+		if (sortOrder != null) {
+			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
+		}
+
+		if (startRow == null) startRow = 0;
+		if (resultSize == null) resultSize = 99999999;
+
+        example.setOffset(startRow);
+        example.setLimit(resultSize);
+		example.setDistinct(distinct);
+
+		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
+		return example;
+	}
+	
+	// ----------------------------------------------------------------------------
+
+}

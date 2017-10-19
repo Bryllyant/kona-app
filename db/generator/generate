@@ -1,0 +1,162 @@
+#!/bin/bash
+
+LIB_DIR="../../lib"
+
+MYSQL_DBA=/opt/mysql/dba
+MYBATIS_HOME=/opt/mybatis
+KONA_HOME=/opt/kona
+GENERATOR_HOME=/opt/mybatis/generator
+GENERATOR_JAR="$GENERATOR_HOME/lib/mybatis-generator-core-1.3.5.jar"
+#PLUGINS_JAR="${MYSQL_DBA}/lib/mariadb-java-client.jar:${KONA_HOME}/lib/kona-commons-2.2.0.jar:${KONA_HOME}/lib/kona-framework-4.2.0.jar"
+PLUGINS_JAR="${MYSQL_DBA}/lib/mariadb-java-client.jar:${KONA_HOME}/lib/kona-framework-4.2.0.jar"
+CLASSPATH="${GENERATOR_JAR}:${PLUGINS_JAR}"
+MAIN="org.mybatis.generator.api.ShellRunner"
+
+CONFIG_APP=config-app.xml
+
+
+
+
+#
+# NOTE: Mac OSX sed requires -E for modern expresses and -i requires an argument
+#
+SED="sed -i"
+if [[ `uname` == 'Darwin' ]]; then
+    # brew install gnu-sed
+    #SED="/usr/local/bin/gsed -E -i .bak"
+    SED="/usr/local/bin/gsed -i"
+fi
+
+
+
+#
+# Define Functions
+#
+
+#  ----------------------------------------------------------------------------
+
+function updateSelectProximate {
+    CLASS=$1
+    FILE=$2
+
+    x=$(cat <<EOF
+
+    int updateCoords(Long objectId);
+
+    List<${CLASS}> selectProximate(
+        @Param("latitude") Double latitude,
+        @Param("longitude") Double longitude, 
+        @Param("radius") Double radius,
+        @Param("startDate") Date startDate,
+        @Param("endDate") Date endDate
+    );
+}           
+EOF
+)
+
+echo "updateSelectProximate: Updating $FILE ..."
+$SED 's/}//g' $DAO_DIR/$FILE
+echo "$x" >> $DAO_DIR/$FILE
+
+$SED '2i import java.util.Date;' $DAO_DIR/$FILE
+echo
+echo
+}
+
+#  ----------------------------------------------------------------------------
+
+function updatePresence {
+    CLASS=$1
+    FILE=$2
+
+    x=$(cat <<EOF
+
+    int updatePresence(@Param("inactiveSeconds") Integer inactiveSeconds);
+}           
+EOF
+)
+
+echo "updatePresence: Updating $FILE ..."
+$SED 's/}//g' $DAO_DIR/$FILE
+echo "$x" >> $DAO_DIR/$FILE
+echo
+echo
+}
+
+#  ----------------------------------------------------------------------------
+
+function fetchByUserIds {
+    CLASS=$1
+    FILE=$2
+
+    x=$(cat <<EOF
+
+    List<${CLASS}> fetchByUserIds(
+            @Param("userIds") List<Long> userIdList,
+            @Param("sandbox") boolean sandbox
+    );
+}           
+EOF
+)
+
+echo "fetchByUserIds: Updating $FILE ..."
+$SED 's/}//g' $DAO_DIR/$FILE
+echo "$x" >> $DAO_DIR/$FILE
+echo
+echo
+}
+
+#  ----------------------------------------------------------------------------
+
+
+function fetchRandom {
+    CLASS=$1
+    FILE=$2
+
+    x=$(cat <<EOF
+
+    List<${CLASS}> fetchRandom(
+        @Param("count") Long count, 
+        @Param("sourceList") List<String> sourceList,
+        @Param("excludeGroupIds") List<Long> groupIds
+    );
+}           
+EOF
+)
+
+echo "updateSelectByUserId: Updating $FILE ..."
+$SED 's/}//g' $DAO_DIR/$FILE
+echo "$x" >> $DAO_DIR/$FILE
+echo
+echo
+}
+
+#  ----------------------------------------------------------------------------
+
+
+#
+# Excecute Updates
+#
+echo
+echo
+
+
+
+DAO_DIR="../../src/main/java/com/bryllyant/kona/app/dao"
+java -cp $CLASSPATH $MAIN -configfile $CONFIG_APP -overwrite
+updateSelectProximate ApiLog ApiLogMapper.java
+updateSelectProximate AddressBook AddressBookMapper.java
+updateSelectProximate CampaignEvent CampaignEventMapper.java
+updateSelectProximate Cart CartMapper.java
+updateSelectProximate Partner PartnerMapper.java
+updateSelectProximate Payment PaymentMapper.java
+updateSelectProximate Place PlaceMapper.java
+updateSelectProximate Position PositionMapper.java
+updateSelectProximate Media MediaMapper.java
+updateSelectProximate Token TokenMapper.java
+updateSelectProximate Registration RegistrationMapper.java
+
+updatePresence User UserMapper.java
+fetchByUserIds PushNotificationDevice PushNotificationDeviceMapper.java
+fetchRandom EmailAddress EmailAddressMapper.java
+

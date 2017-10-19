@@ -1,0 +1,32 @@
+#!/bin/bash
+
+export JAVA_HOME=${JAVA_HOME:-"/opt/java"}
+
+MYBATIS_HOME=/opt/mybatis
+MIGRATIONS_HOME=$MYBATIS_HOME/migrations
+
+$MIGRATIONS_HOME/bin/migrate "$@"
+
+#
+# Init repo
+#   mkdir migrations; cd migrations
+#   migrate  init
+#
+
+#
+# Run bootstrap sql file
+#   cat /tmp/mydb.dmp > ./scripts/bootstrap.sql
+#   migrate bootstrap
+#
+
+#
+# Create new script file
+#   migrate new "create user table"
+#
+#
+
+
+#
+# Check status of migrations
+#   migrate status
+#
