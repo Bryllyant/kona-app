@@ -37,7 +37,7 @@ public class RegistrationServiceImpl
 		return registrationDao;
 	}
 
-   // ----------------------------------------------------------------------------
+
     
     @Override 
     protected void updateCoords(Long registrationId) {

@@ -80,7 +80,7 @@ public class PaymentServiceImpl
         return example;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override 
     protected void updateCoords(Long paymentId) {

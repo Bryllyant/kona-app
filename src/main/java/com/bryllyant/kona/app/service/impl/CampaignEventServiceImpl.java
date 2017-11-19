@@ -58,9 +58,7 @@ public class CampaignEventServiceImpl
         return example;
     }
     
-    // ----------------------------------------------------------------------------
-
-    @Override 
+    @Override
     protected void updateCoords(Long campaignEventId) {
         getDao().updateCoords(campaignEventId);
     }

@@ -121,7 +121,7 @@ public class MediaServiceImpl
 		return example;
 	}
 	
-    // ----------------------------------------------------------------------------
+
 
     @Override 
     protected void updateCoords(Long mediaId) {

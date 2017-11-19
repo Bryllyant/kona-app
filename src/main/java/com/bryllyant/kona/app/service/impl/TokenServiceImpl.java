@@ -65,8 +65,8 @@ public class TokenServiceImpl
 		return example;
 	}
 
-	// ----------------------------------------------------------------------------
-	
+
+
     @Override 
     protected void updateCoords(Long tokenId) {
         getDao().updateCoords(tokenId);

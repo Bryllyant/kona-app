@@ -25,20 +25,17 @@ public class ApiLogServiceImpl
 	
 	private static Logger logger = LoggerFactory.getLogger(ApiLogServiceImpl.class);
 
-	// ----------------------------------------------------------------------------
 
 	@Autowired
 	private ApiLogMapper apiVersionDao;
 	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected ApiLogMapper getDao() {
 		return apiVersionDao;
 	}
 
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected ApiLogExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
 			Map<String, Object> filter, boolean distinct) {
@@ -59,15 +56,12 @@ public class ApiLogServiceImpl
 		
 		return example;
 	}
-	
-	// ----------------------------------------------------------------------------
 
-    @Override 
+
+    @Override
     protected void updateCoords(Long apiLogId) {
         getDao().updateCoords(apiLogId);
     }
-
-	// ----------------------------------------------------------------------------
 
     @Override 
     public List<ApiLog> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {

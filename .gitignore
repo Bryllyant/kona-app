@@ -1,5 +1,7 @@
 /lib/
 /target/
+*.bak
+*.old
 *.iml
 .idea
 .classpath

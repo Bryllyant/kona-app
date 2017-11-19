@@ -58,7 +58,7 @@ public class PartnerServiceImpl
         return example;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override 
     protected void updateCoords(Long partnerId) {

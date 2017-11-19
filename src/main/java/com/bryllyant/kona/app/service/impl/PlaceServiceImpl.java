@@ -68,7 +68,6 @@ public class PlaceServiceImpl
 		return example;
 	}
 	
-	// ----------------------------------------------------------------------------
 
 
     @Override 

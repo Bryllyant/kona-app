@@ -89,7 +89,7 @@ public class PositionServiceImpl
         return example;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override 
     protected void updateCoords(Long positionId) {
