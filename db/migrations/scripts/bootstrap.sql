@@ -2841,7 +2841,7 @@ CREATE TABLE `kona__payment` (
   `card_last4` varchar(4) DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `amount_refunded` decimal(10,2) DEFAULT NULL,
-  `processor_ref` varchar(512) DEFAULT NULL, -- unique key determines max size here
+  `processor_ref` varchar(255) DEFAULT NULL, -- unique key determines max size here
   `processor_receipt` text,
   `processor_error` varchar(2000) DEFAULT NULL,
   `processor_fee` decimal(10,2) DEFAULT NULL,
