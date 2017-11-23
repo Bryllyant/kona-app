@@ -89,28 +89,24 @@ public class AppServiceImpl
         return apiVersion.getId();
     }
 
-    // ----------------------------------------------------------------------------
 
     @Override
     protected Integer getDefaultAccessTokenTimeout(Long appId) {
         return config.getInteger("app.accessToken.timeout");
     }
 
-    // ----------------------------------------------------------------------------
 
     @Override
     protected Integer getDefaultRefreshTokenTimeout(Long appId) {
         return config.getInteger("app.refreshToken.timeout");
     }
 
-    // ----------------------------------------------------------------------------
 
     @Override
     protected List<String> getDefaultScopeList(Long appId) {
         return config.getList("app.scope.default");
     }
 
-    // ----------------------------------------------------------------------------
 
     @Override
     protected AppExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,

@@ -45,7 +45,7 @@ public class KConfig {
             value = defaultValue;
         }
 
-        return value;
+        return value.trim();
     }
 
     // ----------------------------------------------------------------------
