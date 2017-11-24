@@ -277,12 +277,30 @@ CREATE TABLE `kona__app_type` (
 
 -- --------------------------------------------------------------------------
 
+-- external app users that may or may not be direct users of our app/service
+
 CREATE TABLE `kona__app_user` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) unsigned NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `token_id` bigint(20) unsigned DEFAULT NULL,
-  `app_user_id` varchar(255) DEFAULT NULL,
+  `ref_user_id` varchar(255) DEFAULT NULL,
+  `photo_url` varchar(255) DEFAULT NULL,
+  `thumbnail_url` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `mobile_number` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `display_name` varchar(255) DEFAULT NULL,
+  `gender` varchar(255) DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
+  `locale` varchar(255) DEFAULT NULL,
+  `time_zone` varchar(255) DEFAULT NULL,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `coords` geometry NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `revoked_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -291,11 +309,17 @@ CREATE TABLE `kona__app_user` (
 
   UNIQUE KEY `id` (`id`),
 
+  UNIQUE KEY `ux_kona__app_user_uid` (`uid`),
+
   UNIQUE KEY `ux_kona__app_user_app_user` (`app_id`,`user_id`),
+
+  UNIQUE KEY `ux_kona__app_user_app_ref_user_id` (`app_id`,`ref_user_id`),
 
   KEY `ix_kona__user_app_user` (`user_id`),
 
   KEY `ix_kona__user_app_token` (`token_id`),
+
+  SPATIAL `ix_kona__user_app_coords` (coords),
 
   CONSTRAINT `fk_kona__app_user_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

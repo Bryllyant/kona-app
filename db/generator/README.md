@@ -31,7 +31,7 @@ For example:
       #{methodName,jdbcType=VARCHAR}, #{hostname,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{updatedDate,jdbcType=TIMESTAMP}
-      ,PointFromText(concat('POINT(',ifnull(longitude, 0),' ',ifnull(latitude, 0),')')))
+      , ST_PointFromText(concat('POINT(',ifnull(longitude, 0),' ',ifnull(latitude, 0),')'))
       )
   </insert>
 ```
@@ -39,11 +39,12 @@ For example:
 
 
 
-Necessary since as of MySQL 5.7 Geometry columns must be NOT NULL.
+Necessary since as of MySQL 5.6 Geometry columns must be NOT NULL.
 
 
 - AddressBookMapper.xml
 - ApiLogMapper.xml
+- AppUserMapper.xml
 - CampaignEventMapper.xml
 - CartMapper.xml
 - MediaMapper.xml
