@@ -135,7 +135,11 @@ echo
 
 function updateCoordsMapper {
     FIELD_NAME=$1
-    FILE=$DAO_DIR/$2
+    FILE=$2
+
+    echo "updateCoordsMapper: Updating $FILE ..."
+
+    FILE="${DAO_DIR}/${FILE}"
 
     cmd=':a;N;$!ba;s/)\s*\n\s*values/,'${FIELD_NAME}')\nvalues/g'
 
