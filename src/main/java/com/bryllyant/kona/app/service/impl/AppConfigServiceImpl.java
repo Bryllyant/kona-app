@@ -17,45 +17,44 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(AppConfigService.SERVICE_PATH)
-public class AppConfigServiceImpl 
-		extends KAbstractAppConfigService<AppConfig,AppConfigExample> 
-		implements AppConfigService {
-	
-	private static Logger logger = LoggerFactory.getLogger(AppConfigServiceImpl.class);
+public class AppConfigServiceImpl
+        extends KAbstractAppConfigService<AppConfig, AppConfigExample>
+        implements AppConfigService {
 
-	@Autowired
-	private AppConfigMapper appConfigDao;
-    
-	// ----------------------------------------------------------------------------
+    private static Logger logger = LoggerFactory.getLogger(AppConfigServiceImpl.class);
 
-	@Override @SuppressWarnings("unchecked")
-	protected AppConfigMapper getDao() {
-		return appConfigDao;
-	}
-    
-	// ----------------------------------------------------------------------------
-	
-	@Override
-	protected AppConfigExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		AppConfigExample example = new AppConfigExample();
+    @Autowired
+    private AppConfigMapper appConfigDao;
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+    @Override
+    protected AppConfig getNewObject() {
+        return new AppConfig();
+    }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
+    @Override
+    @SuppressWarnings("unchecked")
+    protected AppConfigMapper getDao() {
+        return appConfigDao;
+    }
+
+    @Override
+    protected AppConfigExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+                                                        Map<String, Object> filter, boolean distinct) {
+        AppConfigExample example = new AppConfigExample();
+
+        if (sortOrder != null) {
+            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
+        }
+
+        if (startRow == null) startRow = 0;
+        if (resultSize == null) resultSize = 99999999;
 
         example.setOffset(startRow);
         example.setLimit(resultSize);
-		example.setDistinct(distinct);
+        example.setDistinct(distinct);
 
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
+        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
 
-	// ----------------------------------------------------------------------------
-
+        return example;
+    }
 }
