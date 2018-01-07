@@ -61,6 +61,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,6 +209,23 @@ public class AuthController extends BaseController {
         logger.debug("register: registrationRequest: " + KJsonUtil.toJson(registrationRequest, 1000));
 
         return created(session, "/api/me");
+    }
+
+    // ----------------------------------------------------------------------
+
+    // Confirmation Request
+    @RequestMapping(value="/confirmation", method=RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> confirmationRequest(
+            HttpServletRequest req,
+            @RequestParam(value="resend", required=false) final boolean resend) {
+
+        logApiRequest(req, "POST /auth/confirmation");
+
+        User user = getUser();
+
+        requestAuthCodes(user, getAppId(req), resend);
+
+        return created(getResultObject("request_sent", true));
     }
 
     // ----------------------------------------------------------------------
@@ -577,7 +595,24 @@ public class AuthController extends BaseController {
 
         return ok(result);
     }
-    // ----------------------------------------------------------------------
+
+    private void requestAuthCodes(User user, Long appId, boolean resend) {
+        Registration registration = registrationService.fetchByUserId(user.getId());
+
+        List<Long> typeIdList = new ArrayList<>();
+
+        if (user.getMobileNumber() != null && !registration.isMobileVerified()) {
+            typeIdList.add(KAuthCodeType.MOBILE_CONFIRMATION.getId());
+        }
+
+        if (user.getEmail() != null && !registration.isEmailVerified()) {
+            typeIdList.add(KAuthCodeType.EMAIL_CONFIRMATION.getId());
+        }
+
+        Long[] typeIds = typeIdList.toArray(new Long[0]);
+
+        authCodeService.requestAuthCodes(typeIds, appId, user.getId(), resend);
+    }
 
     private List<Token> fetchTokenList(String clientId, User user) {
         Map<String, Object> filter = new HashMap<String, Object>();
@@ -867,7 +902,7 @@ public class AuthController extends BaseController {
                 client.setDeviceId(device.getId());
             }
 
-            user = userService.registerUser(user, password, client);
+            user = userService.registerUser(user, password, client, false);
 
             if (device != null) {
                 String type = KDeviceType.getInstance(device.getTypeId()).getName().toLowerCase();

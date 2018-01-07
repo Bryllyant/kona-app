@@ -215,19 +215,7 @@ public class MeController extends BaseController {
 	    return created(result);
 	}
 
-	// ----------------------------------------------------------------------
 
-	@RequestMapping(value="/confirmation-request", method=RequestMethod.POST)
-	public ResponseEntity<Map<String,Object>> confirmationRequest(HttpServletRequest req,
-			@RequestParam(value="resend", required=false) final boolean resend) {
-		logApiRequest(req, "PUT /me/confirmation-request");
-
-		User user = getUser();
-
-		requestAuthCodes(user, getAppId(req), resend);
-
-		return created(getResultObject("request_sent", true));
-	}
 
 	// ----------------------------------------------------------------------
 
@@ -335,25 +323,7 @@ public class MeController extends BaseController {
         return ok(mediaModelService.toModel(media));
     }
 
-	// ----------------------------------------------------------------------
 
-	private void requestAuthCodes(User user, Long appId, boolean resend) {
-		Registration registration = registrationService.fetchByUserId(user.getId());
-		
-		List<Long> typeIdList = new ArrayList<Long>();
-
-		if (user.getMobileNumber() != null && !registration.isMobileVerified()) {
-			typeIdList.add(KAuthCodeType.MOBILE_CONFIRMATION.getId());
-		}
-
-		if (user.getEmail() != null && !registration.isEmailVerified()) {
-			typeIdList.add(KAuthCodeType.EMAIL_CONFIRMATION.getId());
-		}
-		
-		Long[] typeIds = typeIdList.toArray(new Long[0]);
-
-		authCodeService.requestAuthCodes(typeIds, appId, user.getId(), resend);
-	}
 
 	
 

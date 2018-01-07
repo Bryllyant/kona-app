@@ -96,7 +96,7 @@ public class FileUtil {
             Token token = apiAuthService.getToken();
             tokenId = token.getId();
         } catch (AuthenticationException e) {
-            // if we have a valid user and token is invalid, then 
+            // if we have a valid user and token is invalid, then
             // throw exception. otherwise this is an anonymous user.
             if (user != null) {
                 throw new AuthenticationException(e);

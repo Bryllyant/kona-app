@@ -23,6 +23,7 @@ import com.bryllyant.kona.app.service.AppUserService;
 import com.bryllyant.kona.app.service.EntityNameRuleService;
 import com.bryllyant.kona.app.service.InvitationService;
 import com.bryllyant.kona.app.service.KAbstractUserService;
+import com.bryllyant.kona.app.service.KAuthException;
 import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
@@ -33,6 +34,7 @@ import com.bryllyant.kona.app.service.UserAuthService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.app.util.KUtil;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.locale.KValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,14 +109,33 @@ public class UserServiceImpl
 	@Override
 	public boolean isUsernameAvailable(String name) {
 	    // usernames cannot be null or be empty string
-        if (name == null || name.length() == 0) return false;
+        if (name == null || name.length() == 0) {
+            throw new KAuthException(
+                    "Username is null or empty: " + name,
+                    KAuthException.Type.INVALID_USERNAME
+            );
+        }
 
-        // usernames can only contain [a-zA-Z_0-9]
-        if (!name.matches("^\\w+$")) return false;
+        // An email can be a valid username
+        if (KValidator.isEmail(name)) {
+            return true;
+        }
+
+        // if not email, usernames can only contain [a-zA-Z_0-9]
+        if (!name.matches("^\\w+$")) {
+            throw new KAuthException(
+                    "Non-email usernames can only contain [a-zA-Z_0-9]: " + name,
+                    KAuthException.Type.INVALID_USERNAME
+            );
+        }
 
         // check if username violates any known rules
-        if (!entityNameRuleService.isAcceptable(name)) return false;
-
+        if (!entityNameRuleService.isAcceptable(name)) {
+            throw new KAuthException(
+                    "Username contains blacklisted words or phrases : " + name,
+                    KAuthException.Type.INVALID_USERNAME
+            );
+        }
 
         // finally check if username already exists
         boolean isUnique = false;
@@ -226,7 +247,7 @@ public class UserServiceImpl
 
 		String templateName = "email.templates.account.welcomeEmail";
 
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		params.put("user", user);
 		params.put("app", app);
 		

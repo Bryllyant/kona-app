@@ -1,3 +1,6 @@
+drop database if exists kona;
+create database kona;
+use kona;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -374,6 +377,7 @@ CREATE TABLE `kona__auth_code` (
   `use_count` int(11) unsigned NOT NULL DEFAULT '0',
   `max_use_count` int(11) unsigned default NULL, -- null means no max 
   `expiration_date` datetime(6) DEFAULT NULL,
+  `confirmed_date` datetime(6) DEFAULT NULL,
   `last_accessed_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),

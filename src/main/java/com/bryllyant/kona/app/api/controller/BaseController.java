@@ -17,6 +17,7 @@ import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.ApiLogService;
 import com.bryllyant.kona.app.service.AppCredsService;
+import com.bryllyant.kona.app.service.KAuthException;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
@@ -24,6 +25,7 @@ import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.media.model.KImage;
 import com.bryllyant.kona.media.util.KImageUtil;
 import com.bryllyant.kona.remote.service.KServiceClient;
+import com.bryllyant.kona.rest.exception.ApiException;
 import com.bryllyant.kona.rest.exception.AuthenticationException;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ForbiddenException;
@@ -724,7 +726,7 @@ public abstract class BaseController {
 
     // https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html
     @ExceptionHandler(HttpMessageNotReadableException.class) 
-    public ResponseEntity< Map<String,Object>> errorHandler(Exception ex) throws Exception {
+    public ResponseEntity< Map<String,Object>> requestErrorHandler(Exception ex) throws Exception {
         
         String message = ex.getMessage();
 
@@ -750,7 +752,51 @@ public abstract class BaseController {
         result.put("client_message", clientMessage);
         result.put("developer_message", developerMessage);
 
-        return new ResponseEntity< Map<String,Object>>(result, HttpStatus.CONFLICT);
+        return new ResponseEntity< Map<String,Object>>(result, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(KAuthException.class)
+    public ResponseEntity< Map<String,Object>> authErrorHandler(Exception ex) throws Exception {
+        String message = ex.getMessage();
+
+        String clientMessage = "Auth error.";
+        String developerMessage = clientMessage + " " + message;
+
+        Map<String,Object> result = new HashMap<>();
+        result.put("status", HttpStatus.UNAUTHORIZED.value());
+        result.put("code", HttpStatus.UNAUTHORIZED.value());
+        result.put("client_message", clientMessage);
+        result.put("developer_message", developerMessage);
+
+        return new ResponseEntity< Map<String,Object>>(result, HttpStatus.UNAUTHORIZED);
+    }
+
+    // https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity< Map<String,Object>> systemErrorHandler(Exception ex) throws Exception {
+        if (ex instanceof ApiException) {
+            throw ex;
+        }
+
+        String message = ex.getMessage();
+
+        String clientMessage = "System error.";
+
+        String developerMessage = clientMessage;
+
+        if (message != null) {
+            developerMessage += " " + message;
+        }
+
+        Map<String,Object> result = new HashMap<>();
+        result.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        result.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        result.put("client_message", clientMessage);
+        result.put("developer_message", developerMessage);
+
+        logger.error(ex.getMessage(), ex);
+
+        return new ResponseEntity< Map<String,Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
     // ----------------------------------------------------------------------

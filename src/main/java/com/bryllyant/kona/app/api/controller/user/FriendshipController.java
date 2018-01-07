@@ -63,11 +63,13 @@ public class FriendshipController extends BaseController {
     // ----------------------------------------------------------------------
 
     @RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<FriendshipModel>> search(HttpServletRequest req,
-                                                        //@RequestParam(value="friend", required=false) String friendUid,
-                                                        @RequestParam(value="followers", required=false) Boolean includeFollowers,
-                                                        @RequestParam(value="followings", required=false) Boolean includeFollowings,
-                                                        @RequestParam(value="friends", required=false) Boolean includeFriends) {
+	public ResponseEntity<List<FriendshipModel>> search(
+			HttpServletRequest req,
+            //@RequestParam(value="friend", required=false) String friendUid,
+            @RequestParam(value="followers", required=false) Boolean includeFollowers,
+            @RequestParam(value="followings", required=false) Boolean includeFollowings,
+            @RequestParam(value="friends", required=false) Boolean includeFriends) {
+
 		logApiRequest(req, "GET /friendships");
 		
 		if (includeFollowers == null) {

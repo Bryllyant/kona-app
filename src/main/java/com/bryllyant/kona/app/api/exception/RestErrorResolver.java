@@ -8,6 +8,7 @@ import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.rest.DefaultRestErrorResolver;
 import com.bryllyant.kona.rest.RestError;
+import com.bryllyant.kona.util.KJsonUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -65,6 +66,12 @@ public class RestErrorResolver extends DefaultRestErrorResolver {
 
 
         setExceptionMappingDefinitions(map);
+
+        //add in user-specified mappings (will override defaults as necessary):
+        //logger.debug("RestErrorResolver: exceptionMappingDefinitions: "
+        //        + KJsonUtil.toJson(getExceptionMappingDefinitions(), 1000)
+        //);
+
     }
 
     // ----------------------------------------------------------------------

@@ -321,7 +321,7 @@ public class UserModelService extends BaseModelService {
 
             if (!(u == null || (user.getId() != null && u.getId().equals(user.getId())))) {
                 logger.error("User already exists with mobile number:\n--- user ---\n"
-                        + KClassUtil.toString(u) + "\n--- me ---\n" + KClassUtil.toString(user));
+                        + KClassUtil.toString(u) + "\n--- user ---\n" + KClassUtil.toString(user));
 
                 throw new ConflictException("User already exists with mobile number: " + mobileNumber);
             }
