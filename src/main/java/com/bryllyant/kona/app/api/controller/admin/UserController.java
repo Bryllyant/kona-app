@@ -137,7 +137,7 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value="/{username}", method=RequestMethod.GET)
 	public ResponseEntity<UserModel> get(HttpServletRequest req,
-			@PathVariable final String username) {
+			@PathVariable String username) {
 		logApiRequest(req, "GET /admin/users/" + username);
 
 		return ok(userModelService.toModel(userModelService.getUser(username)));
@@ -148,8 +148,8 @@ public class UserController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/{username}/positions", method=RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> addPositions(HttpServletRequest req,
-	        @PathVariable final String username,
-	        @RequestBody final PositionRequest positionRequest) {
+	        @PathVariable String username,
+	        @RequestBody PositionRequest positionRequest) {
 	    logApiRequest(req, "POST /admin/users/ " + username + "/positions");
 	    
 	    User user = userModelService.getUser(username);

@@ -41,7 +41,7 @@ public class ProductsController extends SalesController {
 
 	   
     @RequestMapping(method=RequestMethod.GET)
-    public final ResponseEntity<List<Map<String,Object>>> fetchProducts(HttpServletRequest req,
+    public ResponseEntity<List<Map<String,Object>>> fetchProducts(HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {

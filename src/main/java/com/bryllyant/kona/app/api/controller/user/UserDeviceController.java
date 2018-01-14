@@ -93,7 +93,7 @@ public class UserDeviceController extends BaseController {
 
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
     public ResponseEntity<UserDeviceModel> get(HttpServletRequest req,
-            @PathVariable final String uid) {
+            @PathVariable String uid) {
         logApiRequest(req, "GET /devices/" + uid);
 
         UserDevice device = deviceModelService.getUserDevice(getUser(), uid);
@@ -105,7 +105,7 @@ public class UserDeviceController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<UserDeviceModel> create(HttpServletRequest req,
-            @RequestBody final UserDeviceModel model) {
+            @RequestBody UserDeviceModel model) {
         logApiRequest(req, "POST /devices");
 
         UserDevice device = new UserDevice();
@@ -119,8 +119,8 @@ public class UserDeviceController extends BaseController {
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
     public ResponseEntity<UserDeviceModel> update(HttpServletRequest req,
-            @PathVariable final String uid,
-            @RequestBody final UserDeviceModel model) {
+            @PathVariable String uid,
+            @RequestBody UserDeviceModel model) {
         logApiRequest(req, "PUT /devices/" + uid);
 
         UserDevice device = deviceModelService.getUserDevice(getUser(), uid);
@@ -138,7 +138,7 @@ public class UserDeviceController extends BaseController {
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
     public ResponseEntity<UserDeviceModel> remove(HttpServletRequest req,
-            @PathVariable final String uid) {
+            @PathVariable String uid) {
         logApiRequest(req, "DELETE /devices/" + uid);
 
         UserDevice userDevice = deviceModelService.getUserDevice(getUser(), uid);

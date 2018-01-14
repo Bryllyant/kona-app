@@ -9,7 +9,7 @@ import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.SystemException;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 import com.bryllyant.kona.util.KClassUtil;
 import com.bryllyant.kona.util.KDateUtil;
 import com.bryllyant.kona.util.KInflector;
@@ -349,7 +349,7 @@ public class ApiUtil {
      * @param model  Source model object
      * @param target Target object
      */
-    public <MODEL extends KBaseModel> void copyModelToObject(MODEL model, Object target) {
+    public <MODEL extends KJsonModel> void copyModelToObject(MODEL model, Object target) {
 
         // TODO: target object not likely to have all the keys of the model.  For example the 'user' property
         // in the model may refer to a userId field in the object.

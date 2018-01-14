@@ -42,7 +42,7 @@ public class SupportController extends BaseController {
     @RequestMapping(value = "/messages", method=RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
     public ResponseEntity<Map<String,Object>>  message(HttpServletRequest req,
-            @RequestBody final Map<String,Object> map) {
+            @RequestBody Map<String,Object> map) {
         logApiRequest(req, "POST /system/support/messages");
 
         String message = (String) map.get("message");
@@ -76,7 +76,7 @@ public class SupportController extends BaseController {
     }
 
     // ----------------------------------------------------------------------
-    protected final Map<String,Object> toMap(SupportMessage supportMessage) {
+    protected Map<String,Object> toMap(SupportMessage supportMessage) {
         if (supportMessage == null) return null;
 
 

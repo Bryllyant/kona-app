@@ -3,11 +3,11 @@ package com.bryllyant.kona.app.api.model.auth;
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
 
-public class RegistrationRequest extends KBaseModel {
+public class RegistrationRequest extends KJsonModel {
 
     private static final long serialVersionUID = 1L;
 

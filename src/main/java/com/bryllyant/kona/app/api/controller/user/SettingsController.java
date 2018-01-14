@@ -53,7 +53,7 @@ public class SettingsController extends BaseController {
 
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<Map<String,Object>> update(HttpServletRequest req,
-			@RequestBody final Map<String,Object> map) {
+			@RequestBody Map<String,Object> map) {
 		logApiRequest(req, "PUT /settings");
 
 		// NOTE convention:

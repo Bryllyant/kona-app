@@ -2,11 +2,11 @@ package com.bryllyant.kona.app.api.model.friendship;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
 
-public class FriendshipRequest extends KBaseModel {
+public class FriendshipRequest extends KJsonModel {
 
 	private static final long serialVersionUID = 1L;
 

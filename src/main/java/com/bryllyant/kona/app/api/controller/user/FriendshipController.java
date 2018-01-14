@@ -126,7 +126,7 @@ public class FriendshipController extends BaseController {
 
 	@RequestMapping(value="/friends/{friendUid}", method=RequestMethod.GET)
 	public ResponseEntity<FriendshipModel> getFriendship(HttpServletRequest req,
-			@PathVariable final String friendUid) {
+			@PathVariable String friendUid) {
 		logApiRequest(req, "GET /friendships/friends/" + friendUid);
 		
 		User friend = userModelService.getUser(friendUid);
@@ -146,7 +146,7 @@ public class FriendshipController extends BaseController {
 	
 	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public ResponseEntity<FriendshipModel> get(HttpServletRequest req,
-			@PathVariable final String uid) {
+			@PathVariable String uid) {
 		logApiRequest(req, "GET /friendships/" + uid);
 
 		return ok(friendshipModelService.toModel(getFriendship(uid)));
@@ -156,7 +156,7 @@ public class FriendshipController extends BaseController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<FriendshipModel> follow(HttpServletRequest req,
-			@RequestBody final FriendshipRequest requestModel) {
+			@RequestBody FriendshipRequest requestModel) {
 		logApiRequest(req, "POST /friendships");
 
 		Friendship friendship = new Friendship();
@@ -176,8 +176,8 @@ public class FriendshipController extends BaseController {
 
 	@RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
 	public ResponseEntity<FriendshipModel> block(HttpServletRequest req,
-			@PathVariable final String uid,
-			@RequestBody final Map<String,Object> map) {
+			@PathVariable String uid,
+			@RequestBody Map<String,Object> map) {
 		logApiRequest(req, "PUT /friendships/" + uid);
 
 		Friendship friendship = getFriendship(uid);
@@ -211,7 +211,7 @@ public class FriendshipController extends BaseController {
 	
 	@RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
 	public ResponseEntity<FriendshipModel> unfollow(HttpServletRequest req,
-			@PathVariable final String uid) {
+			@PathVariable String uid) {
 		logApiRequest(req, "DELETE /friendships/" + uid);
 
 		Friendship friendship = getFriendship(uid);

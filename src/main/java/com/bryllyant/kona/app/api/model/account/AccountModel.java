@@ -2,13 +2,13 @@ package com.bryllyant.kona.app.api.model.account;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.rest.model.KBaseModel;
-import com.bryllyant.kona.rest.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.data.model.KEntityModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class AccountModel extends KBaseModel implements KEntityModel {
+public class AccountModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     @NotNull

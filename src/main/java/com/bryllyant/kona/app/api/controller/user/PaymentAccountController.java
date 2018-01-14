@@ -36,8 +36,8 @@ public class PaymentAccountController extends BaseController {
 	// ----------------------------------------------------------------------
 
     @RequestMapping(value="/stripe/token", method=RequestMethod.POST)
-    public final ResponseEntity<Map<String,Object>> addStripeToken(HttpServletRequest req,
-            @RequestBody final Map<String,Object> map) {
+    public ResponseEntity<Map<String,Object>> addStripeToken(HttpServletRequest req,
+            @RequestBody Map<String,Object> map) {
         logApiRequest(req, "POST /payment-accounts/stripe/token");
         
         @SuppressWarnings("unchecked")

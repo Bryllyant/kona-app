@@ -1,12 +1,12 @@
 package com.bryllyant.kona.app.api.model.auth;
 
 import com.bryllyant.kona.app.api.security.Credentials;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.NotNull;
 
-public class LoginRequest extends KBaseModel implements Credentials {
+public class LoginRequest extends KJsonModel implements Credentials {
 
     private static final long serialVersionUID = 1L;
 

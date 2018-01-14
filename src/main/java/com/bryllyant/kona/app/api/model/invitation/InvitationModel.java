@@ -3,12 +3,12 @@ package com.bryllyant.kona.app.api.model.invitation;
 import com.bryllyant.kona.app.entity.KInvitationChannel;
 import com.bryllyant.kona.app.entity.KInvitationStatus;
 import com.bryllyant.kona.app.entity.KInvitationType;
-import com.bryllyant.kona.rest.model.KBaseModel;
-import com.bryllyant.kona.rest.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.data.model.KEntityModel;
 
 import java.util.Date;
 
-public class InvitationModel extends KBaseModel implements KEntityModel {
+public class InvitationModel extends KJsonModel implements KEntityModel {
 
 	private static final long serialVersionUID = 1L;
 

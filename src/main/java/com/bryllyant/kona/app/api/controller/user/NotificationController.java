@@ -62,7 +62,7 @@ public class NotificationController extends BaseController {
 	
 	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public ResponseEntity<NotificationModel> get(HttpServletRequest req,
-			@PathVariable final String uid) {
+			@PathVariable String uid) {
 		logApiRequest(req, "GET /notifications/" + uid);
 		
         Notification notification = notificationModelService.getNotification(uid);
@@ -81,8 +81,8 @@ public class NotificationController extends BaseController {
 	
 	@RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
 	public ResponseEntity<NotificationModel> update(HttpServletRequest req,
-			@PathVariable final String uid,
-			@RequestBody final Map<String,Object> map) {
+			@PathVariable String uid,
+			@RequestBody Map<String,Object> map) {
 		logApiRequest(req, "PUT /notifications/" + uid);
 		
         Notification notification = notificationModelService.getNotification(uid);

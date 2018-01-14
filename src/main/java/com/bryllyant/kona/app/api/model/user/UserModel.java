@@ -7,13 +7,13 @@ import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.position.PositionModel;
 import com.bryllyant.kona.app.entity.KUserPresence;
-import com.bryllyant.kona.rest.model.KBaseModel;
-import com.bryllyant.kona.rest.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.data.model.KEntityModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class UserModel extends KBaseModel implements KEntityModel {
+public class UserModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
     
     // ----------------------------------------------------------------------

@@ -104,7 +104,7 @@ public class SystemController extends BaseController {
 
 	   
 	// ----------------------------------------------------------------------
-    protected final Map<String,Object> toMap(AppLegal appLegal) {
+    protected Map<String,Object> toMap(AppLegal appLegal) {
         if (appLegal == null) return null;
 
         Map<String,Object> result = new HashMap<String,Object>();

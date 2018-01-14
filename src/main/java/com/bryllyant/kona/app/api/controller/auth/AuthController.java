@@ -134,11 +134,11 @@ public class AuthController extends BaseController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
 
     //public ResponseEntity<AuthSessionModel> login(HttpServletRequest req,
-    //		@RequestBody final Map<String,Object> map) {
+    //		@RequestBody Map<String,Object> map) {
 
     //public ResponseEntity<AuthSessionModel> login(HttpServletRequest req,
     public ResponseEntity<AuthSessionModel> login(HttpServletRequest req,
-                                                  @RequestBody final LoginRequest loginRequest) {
+                                                  @RequestBody LoginRequest loginRequest) {
         logApiRequest(req, "POST /auth/login");
 
         logger.debug("login called with credentials: " + loginRequest);
@@ -162,7 +162,7 @@ public class AuthController extends BaseController {
     @PreAuthorize("hasRole('APP_INTERNAL')")
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public ResponseEntity<TokenModel> logout(HttpServletRequest req,
-                                             @RequestBody final Map<String, Object> map) {
+                                             @RequestBody Map<String, Object> map) {
         logApiRequest(req, "POST /auth/logout");
 
         // Determine user making request
@@ -192,7 +192,7 @@ public class AuthController extends BaseController {
             @RequestParam(value = "login", required = false) boolean login,
             @RequestParam(value = "scope", required = false) String scope,
             @RequestParam(value = "webhook_url", required = false) String webhookUrl,
-                                                     @RequestBody final RegistrationRequest registrationRequest) {
+                                                     @RequestBody RegistrationRequest registrationRequest) {
         logApiRequest(req, "POST /auth/users");
 
         AuthSessionModel session = createUser(
@@ -217,7 +217,7 @@ public class AuthController extends BaseController {
     @RequestMapping(value="/confirmation", method=RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> confirmationRequest(
             HttpServletRequest req,
-            @RequestParam(value="resend", required=false) final boolean resend) {
+            @RequestParam(value="resend", required=false) boolean resend) {
 
         logApiRequest(req, "POST /auth/confirmation");
 
@@ -257,7 +257,7 @@ public class AuthController extends BaseController {
     @RequestMapping(value = "/password/reset", method = RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
     public ResponseEntity<Map<String, Object>> resetPassword(HttpServletRequest req,
-                                                             @RequestBody final Map<String, Object> map) {
+                                                             @RequestBody Map<String, Object> map) {
         logApiRequest(req, "POST /auth/password/reset");
 
         String username = (String) map.get("username");
@@ -280,7 +280,7 @@ public class AuthController extends BaseController {
     @RequestMapping(value = "/password", method = RequestMethod.PUT)
     @PreAuthorize("hasRole('APP_INTERNAL')")
     public ResponseEntity<Map<String, Object>> changePassword(HttpServletRequest req,
-                                                              @RequestBody final Map<String, Object> map) {
+                                                              @RequestBody Map<String, Object> map) {
         logApiRequest(req, "PUT /auth/password");
 
         String username = null;
@@ -347,7 +347,7 @@ public class AuthController extends BaseController {
     @PreAuthorize("hasRole('APP_INTERNAL')")
     public ResponseEntity<Map<String, Object>> mobileVerificationCode(
             HttpServletRequest req,
-            @RequestBody final Map<String, Object> map,
+            @RequestBody Map<String, Object> map,
             @RequestParam(value = "_test", required = false) Boolean sendTestCode) {
         logApiRequest(req, "POST /auth/mobile-verification");
 
@@ -400,7 +400,7 @@ public class AuthController extends BaseController {
     public ResponseEntity<TokenModel> createAccessToken(
             HttpServletRequest req,
             @RequestParam(value = "expire", required = false) boolean expire,
-            @RequestBody final Map<String, Object> map) {
+            @RequestBody Map<String, Object> map) {
         logApiRequest(req, "POST /auth/tokens");
 
         String clientId = null;
@@ -556,7 +556,7 @@ public class AuthController extends BaseController {
     @PreAuthorize("hasRole('APP_INTERNAL')")
     @RequestMapping(value = "/confirmations/{code}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> confirmCode(HttpServletRequest req,
-                                                           @PathVariable final String code) {
+                                                           @PathVariable String code) {
         logApiRequest(req, "GET /auth/confirmations/" + code);
 
         // Determine user making request
@@ -830,7 +830,7 @@ public class AuthController extends BaseController {
             boolean login,
             String scope,
             String webhookUrl,
-            final RegistrationRequest registrationRequest) {
+            RegistrationRequest registrationRequest) {
 
         if (verify == null) verify = true;
         if (emailVerified == null) emailVerified = false;

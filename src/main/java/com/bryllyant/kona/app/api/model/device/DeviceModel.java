@@ -2,12 +2,12 @@ package com.bryllyant.kona.app.api.model.device;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.entity.KDeviceType;
-import com.bryllyant.kona.rest.model.KBaseModel;
-import com.bryllyant.kona.rest.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.data.model.KEntityModel;
 
 import java.util.Date;
 
-public class DeviceModel extends KBaseModel implements KEntityModel {
+public class DeviceModel extends KJsonModel implements KEntityModel {
 
     private static final long serialVersionUID = 1L;
 

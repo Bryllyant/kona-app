@@ -1,12 +1,12 @@
 package com.bryllyant.kona.app.api.model.auth;
 
 import com.bryllyant.kona.app.entity.KTokenType;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
 
 
-public class TokenModel extends KBaseModel {
+public class TokenModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
     
     // ----------------------------------------------------------------------

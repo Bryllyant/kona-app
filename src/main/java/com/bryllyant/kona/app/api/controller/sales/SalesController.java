@@ -56,7 +56,7 @@ public class SalesController extends BaseController {
 
     // ----------------------------------------------------------------------
     
-    protected final Map<String,Object> toMap(Product product) {
+    protected Map<String,Object> toMap(Product product) {
         if (product == null) return null;
         
         Map<String,Object> result = new HashMap<String,Object>();
@@ -75,7 +75,7 @@ public class SalesController extends BaseController {
 
     // ----------------------------------------------------------------------
     
-    protected final List<Map<String,Object>> toProductMapList(List<Product> products) {
+    protected List<Map<String,Object>> toProductMapList(List<Product> products) {
         List<Map<String,Object>> mapList = new ArrayList<>();
         
         for (Product product : products) {
@@ -87,7 +87,7 @@ public class SalesController extends BaseController {
 
   // ----------------------------------------------------------------------
     
-    protected final Map<String,Object> toMap(Payment payment) {
+    protected Map<String,Object> toMap(Payment payment) {
         if (payment == null) return null;
         
         KPaymentStatus status = KPaymentStatus.getInstance(payment.getStatusId());
@@ -113,7 +113,7 @@ public class SalesController extends BaseController {
 
     // ----------------------------------------------------------------------
     
-    protected final List<Map<String,Object>> toPaymentMapList(List<Payment> payments) {
+    protected List<Map<String,Object>> toPaymentMapList(List<Payment> payments) {
         List<Map<String,Object>> mapList = new ArrayList<>();
         
         for (Payment payment : payments) {

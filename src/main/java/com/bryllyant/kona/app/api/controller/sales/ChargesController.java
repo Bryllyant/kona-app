@@ -78,7 +78,7 @@ public class ChargesController extends SalesController {
 	   
     @RequestMapping(method=RequestMethod.GET)
     @PreAuthorize("hasRole('APP_INTERNAL')")
-    public final ResponseEntity<List<Map<String,Object>>> fetchCharges(HttpServletRequest req,
+    public ResponseEntity<List<Map<String,Object>>> fetchCharges(HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {

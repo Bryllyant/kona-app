@@ -108,7 +108,7 @@ public class MeController extends BaseController {
 
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<MeModel> updateMe(HttpServletRequest req,
-			@RequestBody final UserModel model) {
+			@RequestBody UserModel model) {
 		logApiRequest(req, "PUT /me");
 
 		User user = getUser();
@@ -147,7 +147,7 @@ public class MeController extends BaseController {
 	@SuppressWarnings("unchecked")
     @RequestMapping(value="/positions", method=RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> addPositions(HttpServletRequest req,
-	        @RequestBody final PositionRequest positionRequest) {
+	        @RequestBody PositionRequest positionRequest) {
 	    logApiRequest(req, "POST /me/positions");
 
 	    User user = getUser();
@@ -221,10 +221,10 @@ public class MeController extends BaseController {
 
 	@RequestMapping(value = "/media", method = RequestMethod.POST, consumes="multipart/form-data")
 	public ResponseEntity<MediaModel> addMedia(MultipartHttpServletRequest req,
-                                               @RequestParam(value="upload_date", required=false) final Long uploadDate,
-                                               @RequestParam(value="latitude", required=false) final Double latitude,
-                                               @RequestParam(value="longitude", required=false) final Double longitude,
-                                               @RequestParam(value="description", required=false) final String description) {
+                                               @RequestParam(value="upload_date", required=false) Long uploadDate,
+                                               @RequestParam(value="latitude", required=false) Double latitude,
+                                               @RequestParam(value="longitude", required=false) Double longitude,
+                                               @RequestParam(value="description", required=false) String description) {
 		logApiRequest(req, "POST /me/media");
 		
 		
@@ -252,7 +252,7 @@ public class MeController extends BaseController {
 
 	@RequestMapping(value="/media/{uid}", method=RequestMethod.DELETE)
 	public ResponseEntity<MediaModel> removeMedia(HttpServletRequest req, 
-			@PathVariable final String uid) {
+			@PathVariable String uid) {
 		logApiRequest(req, "DELETE /me/media/" + uid);
 
 		Media media = mediaModelService.getMedia(uid);
@@ -272,10 +272,10 @@ public class MeController extends BaseController {
     @Transactional
     @RequestMapping(value = "/photo", method = RequestMethod.POST, consumes="multipart/form-data")
     public ResponseEntity<MediaModel> updatePhoto(MultipartHttpServletRequest req,
-            @RequestParam(value="upload_date", required=false) final Long uploadDate,
-            @RequestParam(value="latitude", required=false) final Double latitude,
-            @RequestParam(value="longitude", required=false) final Double longitude,
-            @RequestParam(value="description", required=false) final String description) {
+            @RequestParam(value="upload_date", required=false) Long uploadDate,
+            @RequestParam(value="latitude", required=false) Double latitude,
+            @RequestParam(value="longitude", required=false) Double longitude,
+            @RequestParam(value="description", required=false) String description) {
         logApiRequest(req, "POST /me/photo");
 
         logger.debug("MeController: updatePhoto: uploadDate: " + uploadDate);

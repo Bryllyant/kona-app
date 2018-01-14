@@ -80,7 +80,7 @@ public class ValidationController extends BaseController {
 	@PreAuthorize("hasRole('APP')")
 	public ResponseEntity<Map<String,Object>> isTokenValid(
 			HttpServletRequest req,
-			@PathVariable final String accessToken,
+			@PathVariable String accessToken,
 			@RequestParam(value="login", required=false) Boolean login,
 			@RequestParam(value="appVersion", required=false) String appVersion,
 			@RequestParam(value="appBuild", required=false) String appBuild) {
@@ -201,7 +201,7 @@ public class ValidationController extends BaseController {
 	@PreAuthorize("hasRole('APP')")
 	public ResponseEntity<Map<String,Object>> isEmailAvailable(
 			HttpServletRequest req,
-			@PathVariable final String email,
+			@PathVariable String email,
 			@RequestParam(value="uid", required=false) String uid) {
 		logApiRequest(req, "GET /system/validations/emails/" + email);
 
@@ -332,9 +332,9 @@ public class ValidationController extends BaseController {
 	@PreAuthorize("hasRole('APP')")
 	public ResponseEntity<Map<String,Object>> isPromoCodeValid(
 			HttpServletRequest req,
-			@PathVariable final String promoCode,
-			@RequestParam(required=false) final Long accountId,
-			@RequestParam(required=false) final Long productId) {
+			@PathVariable String promoCode,
+			@RequestParam(required=false) Long accountId,
+			@RequestParam(required=false) Long productId) {
 		logApiRequest(req, "GET /system/validations/promo-codes/" + promoCode);
 
 		if (promoCode == null) {

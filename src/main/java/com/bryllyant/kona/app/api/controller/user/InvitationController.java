@@ -69,7 +69,7 @@ public class InvitationController extends BaseController {
 
 	@RequestMapping(value="/{code}", method=RequestMethod.GET)
 	public ResponseEntity<InvitationModel> getByCode(HttpServletRequest req,
-			@PathVariable final String invitationCode) {
+			@PathVariable String invitationCode) {
 		logApiRequest(req, "GET /social/invitations/" + invitationCode);
 
 		return ok(invitationModelService.toModel(getInvitation(invitationCode)));
@@ -79,7 +79,7 @@ public class InvitationController extends BaseController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<InvitationModel> create(HttpServletRequest req,
-			@RequestBody final Map<String,Object> map) {
+			@RequestBody Map<String,Object> map) {
 		logApiRequest(req, "POST /social/invitations");
 
 		Invitation invitation = new Invitation();

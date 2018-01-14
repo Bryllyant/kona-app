@@ -46,7 +46,7 @@ public class PushNotificationController extends BaseController {
 	
     @RequestMapping(value="/devices", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> create(HttpServletRequest req,
-            @RequestBody final Map<String,Object> map) {
+            @RequestBody Map<String,Object> map) {
     	logApiRequest(req, "POST /push-notifications/devices");
     	
     	User user = getUser();

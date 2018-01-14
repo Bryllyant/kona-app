@@ -5,13 +5,13 @@ import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.rest.model.KBaseModel;
-import com.bryllyant.kona.rest.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.data.model.KEntityModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class PositionModel extends KBaseModel implements KEntityModel {
+public class PositionModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     @NotNull

@@ -2,11 +2,11 @@ package com.bryllyant.kona.app.api.model.auth;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.MeModel;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
 
-public class AuthSessionModel extends KBaseModel {
+public class AuthSessionModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------

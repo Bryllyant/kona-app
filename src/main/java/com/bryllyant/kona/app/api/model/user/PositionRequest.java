@@ -4,12 +4,12 @@ import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.position.PositionModel;
-import com.bryllyant.kona.rest.model.KBaseModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class PositionRequest extends KBaseModel {
+public class PositionRequest extends KJsonModel {
 
 	private static final long serialVersionUID = 1L;
 
