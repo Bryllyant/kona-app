@@ -4,6 +4,7 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.RegistrationMapper;
+import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.RegistrationExample;
 import com.bryllyant.kona.app.entity.User;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service(RegistrationService.SERVICE_PATH)
@@ -25,8 +28,7 @@ public class RegistrationServiceImpl
 	@Autowired
 	private RegistrationMapper registrationDao;
 	
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected Registration getNewObject() {
 		return new Registration();
@@ -44,8 +46,7 @@ public class RegistrationServiceImpl
         getDao().updateCoords(registrationId);
     }
 
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected RegistrationExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
 			Map<String, Object> filter, boolean distinct) {
@@ -66,6 +67,15 @@ public class RegistrationServiceImpl
 		return example;
 	}
 	
-	// ----------------------------------------------------------------------------
-
+	@Override
+	public List<Registration> fetchProximate(
+			Double latitude,
+			Double longitude,
+			Double radius,
+			Date startDate,
+			Date endDate,
+			List<Long> objectIdList
+	) {
+		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+	}
 }

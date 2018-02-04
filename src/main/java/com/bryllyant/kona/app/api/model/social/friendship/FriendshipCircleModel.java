@@ -1,14 +1,12 @@
-package com.bryllyant.kona.app.api.model.friendship;
+package com.bryllyant.kona.app.api.model.social.friendship;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.entity.KFriendshipStatus;
 import com.bryllyant.kona.data.model.KJsonModel;
-import com.bryllyant.kona.data.model.KEntityModel;
 
 import java.util.Date;
 
-public class FriendshipModel extends KJsonModel implements KEntityModel {
+public class FriendshipCircleModel extends KJsonModel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -17,46 +15,52 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
 	private String uid;
 
 	@RestdocsNotExpanded
-	private UserModel friend;
+	private UserModel user;
 
-	private KFriendshipStatus status;
-
+	private String name;
+	private Boolean defaultCircle;
 	private Date createdDate;
 
     // ----------------------------------------------------------------------
     
-    public static FriendshipModel create(String uid) {
-        FriendshipModel model = new FriendshipModel();
+    public static FriendshipCircleModel create(String uid) {
+        FriendshipCircleModel model = new FriendshipCircleModel();
         model.setUid(uid);
         return model;
     }
 
     // ----------------------------------------------------------------------
 
-    @Override
     public String getUid() {
         return uid;
     }
 
-    @Override
     public void setUid(String uid) {
         this.set("uid", uid);
     }
 
-    public UserModel getFriend() {
-        return friend;
+    public UserModel getUser() {
+        return user;
     }
 
-    public void setFriend(UserModel friend) {
-        this.set("friend", friend);
+    public void setUser(UserModel user) {
+        this.set("user", user);
     }
 
-    public KFriendshipStatus getStatus() {
-        return status;
+    public String getName() {
+        return name;
     }
 
-    public void setStatus(KFriendshipStatus status) {
-        this.set("status", status);
+    public void setName(String name) {
+        this.set("name", name);
+    }
+
+    public Boolean getDefaultCircle() {
+        return defaultCircle;
+    }
+
+    public void setDefaultCircle(Boolean defaultCircle) {
+        this.set("defaultCircle", defaultCircle);
     }
 
     public Date getCreatedDate() {

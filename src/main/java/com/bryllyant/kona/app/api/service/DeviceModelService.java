@@ -12,6 +12,7 @@ import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.UserDeviceService;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
+import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,58 @@ public class DeviceModelService extends BaseModelService {
 
         return getDevice(uid);
     }
-    
+
+    public Device getOrCreateDevice(DeviceModel model) {
+        if (model == null) return null;
+
+        // first see if this device already exists
+        Device device = null;
+
+        try {
+            device = getDevice(model);
+        } catch (NotFoundException e) {
+            // ignore
+        }
+
+
+        if (device == null) {
+            device = toEntity(model);
+            device.setEnabled(true);
+        } else {
+            Device _device = toEntity(model);
+
+            // preserve saved object's enabled status
+            boolean _enabled = device.isEnabled();
+
+            // this will overwrite all non null values including booleans
+            device = (Device) util.copyBean(_device, device, true);
+
+            device.setEnabled(_enabled);
+        }
+
+        if (device.getTypeId() == null) {
+            device.setTypeId(KDeviceType.OTHER.getId());
+        }
+
+        if (device.getAdvertiserId() != null && device.getAdvertiserIdType() == null && device.getOsName() != null) {
+            String os = device.getOsName().toLowerCase();
+            switch (os) {
+                case "ios":
+                    device.setAdvertiserIdType(DeviceModel.AdvertiserIdType.IDFA.name());
+                    break;
+                case "android":
+                    device.setAdvertiserIdType(DeviceModel.AdvertiserIdType.AAID.name());
+                    break;
+            }
+        }
+
+        device = deviceService.save(device);
+
+        logger.debug("getOrCreateDevice: device:\n" + device);
+
+        return device;
+    }
+
     // ----------------------------------------------------------------------
 
     public Device getDevice(Long deviceId) {
@@ -172,19 +224,20 @@ public class DeviceModelService extends BaseModelService {
     // ----------------------------------------------------------------------
 
     public DeviceModel toModel(Device device, String... includeKeys) {
-        KDeviceType type = KDeviceType.getInstance(device.getTypeId());
-
         DeviceModel model = new DeviceModel();
         
         model.fromBean(device);
-        
+
+        KDeviceType type = KDeviceType.getInstance(device.getTypeId());
+
         model.setType(type);
+
+        model.setAdvertiserIdType(DeviceModel.AdvertiserIdType.from(device.getAdvertiserIdType()));
 
         if (device.getParentId() != null) {
             Device parent = getDevice(device.getParentId()); 
             model.setParent(DeviceModel.create(parent.getUid()));
         }
-
 
         logger.debug("toModel: device: includeKeys: " + includeKeys);
 
@@ -223,14 +276,53 @@ public class DeviceModelService extends BaseModelService {
 
     public Device mergeEntity(Device device, DeviceModel model) {
         logger.debug("toEntity called for model: " + model);
-        
+
+        // validate
+
         util.copyModelToObject(model, device);
+
+        logger.debug("mergeEntity: copyModeltoObject: device: " + device);
         
         for (String key : model.initializedKeys()) {
             
             logger.debug("mergeEntity: processing initialized key: " + key);
 
             switch (key) {
+                case "advertiserIdType":
+                    String typeName = null;
+
+                    DeviceModel.AdvertiserIdType advertiserIdType = model.getAdvertiserIdType();
+
+                    if (advertiserIdType != null) {
+                        typeName = advertiserIdType.name();
+                    }
+
+                    device.setAdvertiserIdType(typeName);
+
+                    if (device.getOsName() == null && advertiserIdType != null) {
+                        if (advertiserIdType == DeviceModel.AdvertiserIdType.IDFA) {
+                            device.setOsName("ios");
+                        } else if (advertiserIdType == DeviceModel.AdvertiserIdType.AAID) {
+                            device.setOsName("android");
+                        }
+                    }
+
+                    // sanity check
+                    if (device.getOsName() != null && advertiserIdType != null) {
+                        if ((advertiserIdType == DeviceModel.AdvertiserIdType.IDFA
+                                && !device.getOsName().equalsIgnoreCase("ios"))
+                                || (advertiserIdType == DeviceModel.AdvertiserIdType.AAID
+                                && !device.getOsName().equalsIgnoreCase("android"))) {
+                            throw new ValidationException(
+                                    "Device OS and Advertiser ID type mismatch"
+                                    + "\ndevice os: " + device.getOsName()
+                                    + "\nadvertiserIdType: " + advertiserIdType
+                            );
+                        }
+                    }
+
+                    break;
+
                 case "type":
                     KDeviceType type = model.getType();
 

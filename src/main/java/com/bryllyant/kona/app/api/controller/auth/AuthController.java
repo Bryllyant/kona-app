@@ -6,9 +6,11 @@ package com.bryllyant.kona.app.api.controller.auth;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.auth.AuthSessionModel;
 import com.bryllyant.kona.app.api.model.auth.LoginRequest;
+import com.bryllyant.kona.app.api.model.auth.RegistrationMeta;
 import com.bryllyant.kona.app.api.model.auth.RegistrationRequest;
 import com.bryllyant.kona.app.api.model.auth.TokenModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
@@ -24,6 +26,7 @@ import com.bryllyant.kona.app.entity.KUserPresence;
 import com.bryllyant.kona.app.entity.KUserRole;
 import com.bryllyant.kona.app.entity.KUserStatus;
 import com.bryllyant.kona.app.entity.KUserType;
+import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
@@ -127,7 +130,7 @@ public class AuthController extends BaseController {
      * Login a user.
      *
      * @param req HttpServletRequest
-     * @param map
+     * @param loginRequest
      * @return
      */
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -172,10 +175,11 @@ public class AuthController extends BaseController {
 
         if (accessToken != null) {
             authService.logout(accessToken);
-            token = apiAuthService.fetchTokenByAccessToken(accessToken);
+            token = apiAuthService.fetchTokenByAccessToken(accessToken, false);
         }
 
         logger.debug("AuthController: logout: accessToken: " + accessToken);
+        logger.debug("AuthController: logout: token: " + KJsonUtil.toJson(token));
 
         return ok(authModelService.toModel(token));
     }
@@ -185,26 +189,24 @@ public class AuthController extends BaseController {
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
     public ResponseEntity<AuthSessionModel> register(HttpServletRequest req,
-            @RequestParam(value = "_verify", required = false) Boolean verify, // undocumented parameter
-            @RequestParam(value = "_email_verified", required = false) Boolean emailVerified, // undocumented parameter
-            @RequestParam(value = "_mobile_verified", required = false) Boolean mobileVerified, // undocumented parameter
-            @RequestParam(value = "_update", required = false) Boolean updateUser, // undocumented parameter
-            @RequestParam(value = "login", required = false) boolean login,
-            @RequestParam(value = "scope", required = false) String scope,
-            @RequestParam(value = "webhook_url", required = false) String webhookUrl,
-                                                     @RequestBody RegistrationRequest registrationRequest) {
+//            @RequestParam(value = "_verify", required = false) Boolean verify, // undocumented parameter
+//            @RequestParam(value = "_email_verified", required = false) Boolean emailVerified, // undocumented parameter
+//            @RequestParam(value = "_mobile_verified", required = false) Boolean mobileVerified, // undocumented parameter
+//            @RequestParam(value = "_update", required = false) Boolean updateUser, // undocumented parameter
+//            @RequestParam(value = "login", required = false) boolean login,
+//            @RequestParam(value = "scope", required = false) String scope,
+//            @RequestParam(value = "webhook_url", required = false) String webhookUrl,
+            @RequestBody RegistrationRequest registrationRequest) {
         logApiRequest(req, "POST /auth/users");
 
-        AuthSessionModel session = createUser(
-                req,
-                verify,
-                emailVerified,
-                mobileVerified,
-                updateUser,
-                login,
-                scope,
-                webhookUrl,
-                registrationRequest);
+//        verify,
+//                emailVerified,
+//                mobileVerified,
+//                updateUser,
+//                login,
+//                scope,
+//                webhookUrl,
+        AuthSessionModel session = createUser(req, registrationRequest);
 
         logger.debug("register: registrationRequest: " + KJsonUtil.toJson(registrationRequest, 1000));
 
@@ -551,7 +553,6 @@ public class AuthController extends BaseController {
         return ok(authModelService.toModel(token));
     }
 
-    // ----------------------------------------------------------------------
 
     @PreAuthorize("hasRole('APP_INTERNAL')")
     @RequestMapping(value = "/confirmations/{code}", method = RequestMethod.GET)
@@ -747,7 +748,7 @@ public class AuthController extends BaseController {
 
         // if mobileNumber is not null, then we're a valid user with a valid number
         // check to see if the client requested a loginCode. if so, make sure we have
-        // see if we have one and it's valid
+        // one and it's valid
         if (mobileNumber != null) {
             List<String> codes = apiAuthService.getVerificationCodes(mobileNumber);
 
@@ -779,67 +780,90 @@ public class AuthController extends BaseController {
 
     // ----------------------------------------------------------------------
 
-    private Device getOrCreateDevice(DeviceModel model) {
-        if (model == null) return null;
-
-        // first see if this device already exists
-        Device device = null;
-
-        try {
-            device = deviceModelService.getDevice(model);
-        } catch (NotFoundException e) {
-            // ignore
-        }
-
-
-        if (device == null) {
-            device = deviceModelService.toEntity(model);
-            device.setEnabled(true);
-        } else {
-            Device _device = deviceModelService.toEntity(model);
-
-            // preserve saved object's enabled status
-            boolean _enabled = device.isEnabled();
-
-            // this will overwrite all non null values including booleans
-            device = (Device) util.copyBean(_device, device, true);
-
-            device.setEnabled(_enabled);
-        }
-
-        if (device.getTypeId() == null) {
-            device.setTypeId(KDeviceType.OTHER.getId());
-        }
-
-        device = deviceService.save(device);
-
-        logger.debug("getOrCreateDevice: device:\n" + device);
-
-        return device;
-    }
+//    private Device getOrCreateDevice(DeviceModel model) {
+//        if (model == null) return null;
+//
+//        // first see if this device already exists
+//        Device device = null;
+//
+//        try {
+//            device = deviceModelService.getDevice(model);
+//        } catch (NotFoundException e) {
+//            // ignore
+//        }
+//
+//
+//        if (device == null) {
+//            device = deviceModelService.toEntity(model);
+//            device.setEnabled(true);
+//        } else {
+//            Device _device = deviceModelService.toEntity(model);
+//
+//            // preserve saved object's enabled status
+//            boolean _enabled = device.isEnabled();
+//
+//            // this will overwrite all non null values including booleans
+//            device = (Device) util.copyBean(_device, device, true);
+//
+//            device.setEnabled(_enabled);
+//        }
+//
+//        if (device.getTypeId() == null) {
+//            device.setTypeId(KDeviceType.OTHER.getId());
+//        }
+//
+//        if (device.getAdvertiserId() != null && device.getAdvertiserIdType() == null && device.getOsName() != null) {
+//            String os = device.getOsName().toLowerCase();
+//            switch (os) {
+//                case "ios":
+//                    device.setAdvertiserIdType(DeviceModel.AdvertiserIdType.IDFA.name());
+//                    break;
+//                case "android":
+//                    device.setAdvertiserIdType(DeviceModel.AdvertiserIdType.AAID.name());
+//                    break;
+//            }
+//        }
+//
+//        device = deviceService.save(device);
+//
+//        logger.debug("getOrCreateDevice: device:\n" + device);
+//
+//        return device;
+//    }
 
     // ----------------------------------------------------------------------
+//    Boolean verify,
+//    Boolean emailVerified,
+//    Boolean mobileVerified,
+//    Boolean updateUser,
+//    boolean login,
+//    String scope,
+//    String webhookUrl,
 
     @Transactional
     public AuthSessionModel createUser(
             HttpServletRequest req,
-            Boolean verify,
-            Boolean emailVerified,
-            Boolean mobileVerified,
-            Boolean updateUser,
-            boolean login,
-            String scope,
-            String webhookUrl,
-            RegistrationRequest registrationRequest) {
+            RegistrationRequest registrationRequest
+    ) {
 
+        RegistrationMeta.Options options = registrationRequest.getMeta().getOptions();
+        Boolean verify = options.getVerify();
+        Boolean emailVerified = options.getEmailVerified();
+        Boolean mobileVerified = options.getMobileVerified();
+        Boolean updateCurrentUser = options.getUpdateCurrentUser();
+        Boolean login = options.getLogin();
+        String scope = options.getScope();
+        String webhookUrl = options.getWebhookUrl();
+
+        if (login == null) login = false;
         if (verify == null) verify = true;
         if (emailVerified == null) emailVerified = false;
         if (mobileVerified == null) mobileVerified = false;
-        if (updateUser == null) updateUser = false;
+        if (updateCurrentUser == null) updateCurrentUser = false;
 
         User user = null;
 
-        if (updateUser) {
+        if (updateCurrentUser) {
             String _mobileNumber = registrationRequest.getMobileNumber();
             String _username = registrationRequest.getUsername();
             String _email = registrationRequest.getEmail();
@@ -860,7 +884,7 @@ public class AuthController extends BaseController {
                 throw new BadRequestException("User not found. _update flag set.");
             }
 
-            logger.debug("updateUser: " + user);
+            logger.debug("updateCurrentUser: user: " + user);
         } else {
             user = new User();
 
@@ -870,13 +894,13 @@ public class AuthController extends BaseController {
             user.setRoles(KUserRole.USER.getId());
         }
 
-        DeviceModel deviceModel = registrationRequest.getDevice();
+        DeviceModel deviceModel = registrationRequest.getMeta().getDevice();
 
         String password = registrationRequest.getPassword();
 
         //user = saveObject(req, user, map);
         UserModel model = registrationRequest.toUserModel();
-        user = userModelService.mergeEntity(user, model, false, updateUser);
+        user = userModelService.mergeEntity(user, model, false, updateCurrentUser);
 
         if (password == null) {
             password = KPassGen.generatePassword(8);
@@ -888,7 +912,7 @@ public class AuthController extends BaseController {
 
         KServiceClient client = getServiceClient(req);
 
-        if (updateUser) {
+        if (updateCurrentUser) {
             // No need to update object here since it will be updated in mergeEntity
             //user = userService.update(user);
 
@@ -896,7 +920,8 @@ public class AuthController extends BaseController {
 
         } else {
             // create device object
-            Device device = getOrCreateDevice(deviceModel);
+            //Device device = getOrCreateDevice(deviceModel);
+            Device device = deviceModelService.getOrCreateDevice(deviceModel);
 
             if (device != null) {
                 client.setDeviceId(device.getId());
@@ -919,29 +944,53 @@ public class AuthController extends BaseController {
 
         Long appId = getAppId(req);
 
-        if (emailVerified || mobileVerified) {
-            Registration registration = registrationService.fetchByUserId(user.getId());
-            registration.setEmailVerified(emailVerified);
-            registration.setMobileVerified(mobileVerified);
-            registration.setSignupTime(registrationRequest.getMeta().getSignupTime());
+        //if (emailVerified || mobileVerified) {
+        RegistrationMeta meta = registrationRequest.getMeta();
 
-            if (registrationRequest.getMeta().getReferredByUid() != null) {
-                User referredBy = userModelService.getUser(registrationRequest.getMeta().getReferredByUid());
-                registration.setReferredById(referredBy.getId());
-            }
+        Registration registration = registrationService.fetchByUserId(user.getId());
 
-            // TODO: get promo, partner, campaign, etc. 
+        registration.setEmailVerified(emailVerified);
+        registration.setMobileVerified(mobileVerified);
+        registration.setSignupTime(meta.getSignupTime());
 
-            registrationService.update(registration);
+        if (deviceModel != null) {
+            registration.setOsName(deviceModel.getOsName());
+            registration.setOsVersion(deviceModel.getOsVersion());
         }
+
+        if (meta.getAppVersion() != null) {
+            registration.setAppVersion(meta.getAppVersion().getVersion());
+            registration.setAppBuild(meta.getAppVersion().getBuild());
+        }
+
+        if (meta.getReferredBy() != null) {
+            User referredBy = userModelService.getUser(meta.getReferredBy());
+            registration.setReferredById(referredBy.getId());
+        }
+
+        if (meta.getPosition() != null && meta.getPosition().getCoordinates() != null) {
+            PositionModel.Coordinates coords = meta.getPosition().getCoordinates();
+            registration.setLatitude(coords.getLatitude());
+            registration.setLongitude(coords.getLongitude());
+        }
+
+        // TODO: get promo, partner, campaign, etc.
+//        if (meta.getPromo() != null) {
+//            Promo promo = promoModelService.getPromo(meta.getPromo());
+//            registration.setPromoId(promo.getId());
+//        }
+
+
+        registrationService.update(registration);
+        //}
 
         // if updateUser, mergeEntity will auto send email and mobile verifications
 
-        if (!updateUser && verify && !mobileVerified && user.getMobileNumber() != null) {
+        if (!updateCurrentUser && verify && !mobileVerified && user.getMobileNumber() != null) {
             userModelService.sendMobileVerification(appId, user.getId());
         }
 
-        if (!updateUser && verify && !emailVerified && user.getEmail() != null) {
+        if (!updateCurrentUser && verify && !emailVerified && user.getEmail() != null) {
             userModelService.sendEmailVerification(appId, user.getId());
         }
 

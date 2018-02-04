@@ -9,6 +9,8 @@ import com.bryllyant.kona.app.api.security.token.HttpHeaderTokenReader;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppCreds;
+import com.bryllyant.kona.app.entity.Device;
+import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserAuth;
@@ -86,9 +88,15 @@ public class ApiAuthService {
 	@Autowired
 	private TokenService tokenService;
 
+    @Autowired
+    private DeviceModelService deviceModelService;
+
 	@Autowired
 	private UserModelService userModelService;
-    
+
+    @Autowired
+    private PositionModelService positionModelService;
+
 
 	// ----------------------------------------------------------------------
 
@@ -310,8 +318,24 @@ public class ApiAuthService {
 
 			token.setHostname(client.getHostname());
 			token.setUserAgent(client.getUserAgent());
-			token.setAppVersion(credentials.getAppVersion());
-			token.setAppBuild(credentials.getAppBuild());
+
+			if (credentials.getAppVersion() != null) {
+			    token.setAppVersion(credentials.getAppVersion().getVersion());
+			    token.setAppBuild(credentials.getAppVersion().getBuild());
+            }
+
+            if (credentials.getDevice() != null) {
+			    Device device = deviceModelService.getDevice(credentials.getDevice());
+			    token.setDeviceId(device.getId());
+            }
+
+            if (credentials.getPosition() != null) {
+			    Position position = positionModelService.getPosition(credentials.getPosition());
+			    token.setLatitude(position.getLatitude());
+                token.setLongitude(position.getLongitude());
+            }
+
+
 			token = tokenService.update(token);
 
 			logger.debug("AccessToken for username [" + credentials.getUsername() +"]: "

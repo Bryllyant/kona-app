@@ -4,12 +4,12 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.PushNotificationDeviceMapper;
-import com.bryllyant.kona.app.entity.PushNotification;
+import com.bryllyant.kona.app.entity.PushNotificationProvider;
 import com.bryllyant.kona.app.entity.PushNotificationDevice;
 import com.bryllyant.kona.app.entity.PushNotificationDeviceExample;
 import com.bryllyant.kona.app.service.KAbstractPushNotificationDeviceService;
 import com.bryllyant.kona.app.service.PushNotificationDeviceService;
-import com.bryllyant.kona.app.service.PushNotificationService;
+import com.bryllyant.kona.app.service.PushNotificationProviderService;
 import com.bryllyant.kona.app.service.PushProviderService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Service(PushNotificationDeviceService.SERVICE_PATH)
 public class PushNotificationDeviceServiceImpl 
-		extends KAbstractPushNotificationDeviceService<PushNotificationDevice,PushNotificationDeviceExample,PushNotification> 
+		extends KAbstractPushNotificationDeviceService<PushNotificationDevice,PushNotificationDeviceExample,PushNotificationProvider>
 		implements PushNotificationDeviceService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PushNotificationDeviceServiceImpl.class);
@@ -31,7 +31,7 @@ public class PushNotificationDeviceServiceImpl
 	private PushNotificationDeviceMapper mapper;
 	
 	@Autowired
-	private PushNotificationService pushNotificationService;
+	private PushNotificationProviderService pushNotificationService;
 	
 	@Autowired
 	private PushProviderService pushProviderService;
@@ -46,7 +46,7 @@ public class PushNotificationDeviceServiceImpl
 	// ----------------------------------------------------------------------------
 	
 	@Override @SuppressWarnings("unchecked")
-	protected PushNotificationService getPushNotificationService() {
+	protected PushNotificationProviderService getPushNotificationService() {
 		return pushNotificationService;
 	}
 	

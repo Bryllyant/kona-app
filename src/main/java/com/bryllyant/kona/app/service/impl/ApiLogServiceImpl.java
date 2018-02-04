@@ -64,8 +64,15 @@ public class ApiLogServiceImpl
     }
 
     @Override 
-    public List<ApiLog> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+    public List<ApiLog> fetchProximate(
+    		Double latitude,
+            Double longitude,
+            Double radius,
+            Date startDate,
+            Date endDate,
+            List<Long> objectIdList
+    ) {
+        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
 
 }

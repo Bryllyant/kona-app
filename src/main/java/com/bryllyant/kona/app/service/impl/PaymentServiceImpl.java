@@ -87,12 +87,17 @@ public class PaymentServiceImpl
         getDao().updateCoords(paymentId);
     }
 
-    // ----------------------------------------------------------------------------
 
-    @Override 
-    public List<Payment> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+    @Override
+    public List<Payment> fetchProximate(
+            Double latitude,
+            Double longitude,
+            Double radius,
+            Date startDate,
+            Date endDate,
+            List<Long> objectIdList
+    ) {
+        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
-
 
 }

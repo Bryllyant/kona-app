@@ -151,7 +151,7 @@ public class OAuth2TokenServices extends DefaultTokenServices {
         
         token.setApproved(false);
         token.setActive(false);
-        token.setRetiredDate(new Date());
+        token.setDeletedDate(new Date());
         tokenService.update(token);
         return true;
 	}

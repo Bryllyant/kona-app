@@ -96,12 +96,17 @@ public class PositionServiceImpl
         getDao().updateCoords(positionId);
     }
 
-    // ----------------------------------------------------------------------------
 
-    @Override 
-    public List<Position> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+
+    @Override
+    public List<Position> fetchProximate(
+            Double latitude,
+            Double longitude,
+            Double radius,
+            Date startDate,
+            Date endDate,
+            List<Long> objectIdList
+    ) {
+        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
-
-
 }

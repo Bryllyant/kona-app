@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.InvitationMapper;
-import com.bryllyant.kona.app.entity.AddressBook;
+import com.bryllyant.kona.app.entity.Contact;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.Invitation;
@@ -10,7 +10,7 @@ import com.bryllyant.kona.app.entity.InvitationExample;
 import com.bryllyant.kona.app.entity.KInvitationChannel;
 import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.entity.User;
-import com.bryllyant.kona.app.service.AddressBookService;
+import com.bryllyant.kona.app.service.ContactService;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.FriendshipService;
 import com.bryllyant.kona.app.service.InvitationService;
@@ -33,7 +33,7 @@ import java.util.Map;
 
 @Service(InvitationService.SERVICE_PATH)
 public class InvitationServiceImpl 
-		extends KAbstractInvitationService<Invitation,InvitationExample,AddressBook,Friendship,User> 
+		extends KAbstractInvitationService<Invitation,InvitationExample,Contact,Friendship,User>
 		implements InvitationService {
 	
 	private static Logger logger = LoggerFactory.getLogger(InvitationServiceImpl.class);
@@ -45,7 +45,7 @@ public class InvitationServiceImpl
 	private KConfig config;
 	
 	@Autowired
-	AddressBookService addressBookService;
+	ContactService contactService;
 	
 	@Autowired
 	FriendshipService friendshipService;
@@ -80,8 +80,8 @@ public class InvitationServiceImpl
 	// ----------------------------------------------------------------------------
 	
 	@Override @SuppressWarnings("unchecked")
-	protected AddressBookService getAddressBookService() {
-		return addressBookService;
+	protected ContactService getContactService() {
+		return contactService;
 	}
 	
 	// ----------------------------------------------------------------------------
@@ -133,18 +133,18 @@ public class InvitationServiceImpl
 	
 	// ----------------------------------------------------------------------------
 	
-	protected Invitation sendInvitation(Invitation invitation, AddressBook addressBook, String invitationUrl) {
+	protected Invitation sendInvitation(Invitation invitation, Contact contact, String invitationUrl) {
 		KInvitationChannel channel = KInvitationChannel.getInstance(invitation.getChannelId());
 		
 		switch (channel){
 		case EMAIL:
-			return sendEmail(invitation, addressBook, invitationUrl);
+			return sendEmail(invitation, contact, invitationUrl);
 		case SMS:
-			return sendSms(invitation, addressBook, invitationUrl);
+			return sendSms(invitation, contact, invitationUrl);
 		case TWITTER:
-			return sendTwitter(invitation, addressBook, invitationUrl);
+			return sendTwitter(invitation, contact, invitationUrl);
 		case FACEBOOK:
-			return sendFacebook(invitation, addressBook, invitationUrl);
+			return sendFacebook(invitation, contact, invitationUrl);
 		default:
 			throw new IllegalArgumentException("Invalid invitation channel: " + channel);
 		}	
@@ -152,29 +152,29 @@ public class InvitationServiceImpl
 	
 	// ----------------------------------------------------------------------------
 	
-	protected Invitation sendEmail(Invitation invitation, AddressBook addressBook, String invitationUrl) {
+	protected Invitation sendEmail(Invitation invitation, Contact contact, String invitationUrl) {
 		return invitation;
 		
 	}
 	
 	// ----------------------------------------------------------------------------
 	
-	protected Invitation sendFacebook(Invitation invitation, AddressBook addressBook, String invitationUrl) {
+	protected Invitation sendFacebook(Invitation invitation, Contact contact, String invitationUrl) {
 		return invitation;
 	}
 	
 	// ----------------------------------------------------------------------------
 	
-	protected Invitation sendTwitter(Invitation invitation, AddressBook addressBook, String invitationUrl) {
+	protected Invitation sendTwitter(Invitation invitation, Contact contact, String invitationUrl) {
 		return invitation;
 	}
 	
 	// ----------------------------------------------------------------------------
 
-	protected Invitation sendSms(Invitation invitation, AddressBook addressBook, String invitationUrl) {
+	protected Invitation sendSms(Invitation invitation, Contact contact, String invitationUrl) {
 		KInvitationType type = KInvitationType.getInstance(invitation.getTypeId());
-		User user = userService.fetchById(invitation.getUserId());
-		String to = addressBook.getMobileNumber();
+		User user = userService.fetchById(invitation.getOwnerId());
+		String to = contact.getMobileNumber();
 		App app = appService.getSystemApp();
 
 		String message = null;
@@ -183,12 +183,12 @@ public class InvitationServiceImpl
 		switch (type) {
 		case JOIN:
 			templatePath= config.getString("sms.templates.invitation.join");
-			message = getSmsTextString(templatePath, user, addressBook, invitationUrl);
+			message = getSmsTextString(templatePath, user, contact, invitationUrl);
 			break;
 
 		case FRIEND:
 			templatePath= config.getString("sms.templates.invitation.friend");
-			message = getSmsTextString(templatePath, user, addressBook, invitationUrl);
+			message = getSmsTextString(templatePath, user, contact, invitationUrl);
 			break;
 
 		default:
@@ -212,11 +212,11 @@ public class InvitationServiceImpl
 
 	// ----------------------------------------------------------------------------
 
-	private String getSmsTextString(String templatePath, User user, AddressBook addressBook, String invitationUrl) {
+	private String getSmsTextString(String templatePath, User user, Contact contact, String invitationUrl) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("Util", KUtil.getInstance());
 		params.put("user", user);
-		params.put("firstName", addressBook.getFirstName());
+		params.put("firstName", contact.getFirstName());
 		params.put("invitationUrl", invitationUrl);
 
 		String body = null;

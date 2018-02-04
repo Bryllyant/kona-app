@@ -6,7 +6,7 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.dao.PushNotificationMessageMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppUser;
-import com.bryllyant.kona.app.entity.PushNotification;
+import com.bryllyant.kona.app.entity.PushNotificationProvider;
 import com.bryllyant.kona.app.entity.PushNotificationDevice;
 import com.bryllyant.kona.app.entity.PushNotificationMessage;
 import com.bryllyant.kona.app.entity.PushNotificationMessageExample;
@@ -33,7 +33,7 @@ public class PushNotificationMessageServiceImpl
 													   App,
 													   User,
 													   AppUser,
-													   PushNotification,
+        PushNotificationProvider,
 													   PushNotificationDevice> 
 		implements PushNotificationMessageService {
 

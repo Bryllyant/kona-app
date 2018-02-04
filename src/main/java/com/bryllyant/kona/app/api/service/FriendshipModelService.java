@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.friendship.FriendshipCircleModel;
-import com.bryllyant.kona.app.api.model.friendship.FriendshipModel;
+import com.bryllyant.kona.app.api.model.social.friendship.FriendshipCircleModel;
+import com.bryllyant.kona.app.api.model.social.friendship.FriendshipModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Friendship;

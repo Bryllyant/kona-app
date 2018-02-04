@@ -6,8 +6,10 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.dao.PartnerMapper;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.PartnerExample;
+import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.service.KAbstractPartnerService;
 import com.bryllyant.kona.app.service.PartnerService;
+import com.bryllyant.kona.app.service.PlaceService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,7 @@ import java.util.Map;
 
 @Service(PartnerService.SERVICE_PATH)
 public class PartnerServiceImpl 
-		extends KAbstractPartnerService<Partner,PartnerExample> 
+		extends KAbstractPartnerService<Partner,PartnerExample,Place>
 		implements PartnerService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PartnerServiceImpl.class);
@@ -28,15 +30,19 @@ public class PartnerServiceImpl
     @Autowired
     private PartnerMapper partnerDao;
 
+    @Autowired
+    private PlaceService placeService;
 
-    // ----------------------------------------------------------------------------
 
     @Override @SuppressWarnings("unchecked")
     protected PartnerMapper getDao() {
         return partnerDao;
     }
-    
-    // ----------------------------------------------------------------------------
+
+    @Override @SuppressWarnings("unchecked")
+    protected PlaceService getPlaceService() {
+        return placeService;
+    }
 
     @Override
     protected PartnerExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
@@ -59,17 +65,15 @@ public class PartnerServiceImpl
     }
     
 
-
-    @Override 
-    protected void updateCoords(Long partnerId) {
-        getDao().updateCoords(partnerId);
-    }
-
-    // ----------------------------------------------------------------------------
-
-    @Override 
-    public List<Partner> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
-    }
+//    @Override
+//    protected void updateCoords(Long partnerId) {
+//        getDao().updateCoords(partnerId);
+//    }
+//
+//
+//    @Override
+//    public List<Partner> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
+//        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+//    }
 
 }

@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.model.friendship;
+package com.bryllyant.kona.app.api.model.social.friendship;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;

@@ -31,7 +31,7 @@ import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
-import com.bryllyant.kona.app.api.model.position.PositionModel;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.PositionRequest;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.service.AppModelService;

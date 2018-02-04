@@ -3,13 +3,13 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.dao.PushNotificationMapper;
+import com.bryllyant.kona.app.dao.PushNotificationProviderMapper;
 import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.PushNotification;
-import com.bryllyant.kona.app.entity.PushNotificationExample;
+import com.bryllyant.kona.app.entity.PushNotificationProvider;
+import com.bryllyant.kona.app.entity.PushNotificationProviderExample;
 import com.bryllyant.kona.app.service.AppService;
-import com.bryllyant.kona.app.service.KAbstractPushNotificationService;
-import com.bryllyant.kona.app.service.PushNotificationService;
+import com.bryllyant.kona.app.service.KAbstractPushNotificationProviderService;
+import com.bryllyant.kona.app.service.PushNotificationProviderService;
 import com.bryllyant.kona.app.service.PushProviderService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
@@ -19,15 +19,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Service(PushNotificationService.SERVICE_PATH)
-public class PushNotificationServiceImpl 
-		extends KAbstractPushNotificationService<PushNotification,PushNotificationExample,App> 
-		implements PushNotificationService {
+@Service(PushNotificationProviderService.SERVICE_PATH)
+public class PushNotificationProviderServiceImpl
+		extends KAbstractPushNotificationProviderService<PushNotificationProvider,PushNotificationProviderExample,App>
+		implements PushNotificationProviderService {
 	
-	private static Logger logger = LoggerFactory.getLogger(PushNotificationServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(PushNotificationProviderServiceImpl.class);
 
 	@Autowired
-	private PushNotificationMapper mapper;
+	private PushNotificationProviderMapper mapper;
 	
 	@Autowired
 	private AppService appService;
@@ -38,7 +38,7 @@ public class PushNotificationServiceImpl
 	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
-	protected PushNotificationMapper getDao() {
+	protected PushNotificationProviderMapper getDao() {
 		return mapper;
 	}
 	
@@ -59,9 +59,9 @@ public class PushNotificationServiceImpl
 	// ----------------------------------------------------------------------------
 	
 	@Override
-	protected PushNotificationExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+	protected PushNotificationProviderExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
 			Map<String, Object> filter, boolean distinct) {
-		PushNotificationExample example = new PushNotificationExample();
+		PushNotificationProviderExample example = new PushNotificationProviderExample();
 
 		if (sortOrder != null) {
 			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));

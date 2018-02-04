@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.model.invitation;
+package com.bryllyant.kona.app.api.model.social.invitation;
 
 import com.bryllyant.kona.app.entity.KInvitationChannel;
 import com.bryllyant.kona.app.entity.KInvitationStatus;

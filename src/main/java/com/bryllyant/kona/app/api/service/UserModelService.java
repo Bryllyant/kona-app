@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.account.AccountModel;
-import com.bryllyant.kona.app.api.model.position.PositionModel;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.util.ApiUtil;
@@ -267,14 +267,7 @@ public class UserModelService extends BaseModelService {
         
         if (user.getPositionId() != null) {
             Position position = positionModelService.getPosition(user.getPositionId()); 
-            PositionModel positionModel = PositionModel.create(
-                    position.getUid(), 
-                    position.getLatitude(), 
-                    position.getLongitude(), 
-                    position.getIndoorFloor(), 
-                    position.getHorizontalAccuracy(), 
-                    position.getPositionDate()
-            );
+            PositionModel positionModel = PositionModel.from(position);
             model.setPosition(positionModel);
         }
         

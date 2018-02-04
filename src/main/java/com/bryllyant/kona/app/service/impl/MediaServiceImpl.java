@@ -5,6 +5,7 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.MediaMapper;
+import com.bryllyant.kona.app.entity.AppUser;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.MediaExample;
@@ -42,63 +43,54 @@ public class MediaServiceImpl
 	@Autowired
 	FileService fileService;
     
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected MediaMapper getDao() {
 		return mediaDao;
 	}
 	
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected Integer getThumbnailWidth() {
 	    return config.getInteger("image.thumbnailWidth", null);
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected Integer getThumbnailHeight() {
 	    return config.getInteger("image.thumbnailHeight", null);
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected boolean autoGenerateThumbnail() {
 	    return config.getBoolean("image.createThumbnail", false);
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override 
 	protected Media getNewMediaObject() {
 		return new Media();
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override 
 	protected File getNewFileObject() {
 		return new File();
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected FileService getFileService() {
 		return fileService;
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected MediaExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
@@ -122,17 +114,22 @@ public class MediaServiceImpl
 	}
 	
 
-
     @Override 
     protected void updateCoords(Long mediaId) {
         getDao().updateCoords(mediaId);
     }
 
-    // ----------------------------------------------------------------------------
 
-    @Override 
-    public List<Media> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
-    }
+	@Override
+	public List<Media> fetchProximate(
+			Double latitude,
+			Double longitude,
+			Double radius,
+			Date startDate,
+			Date endDate,
+			List<Long> objectIdList
+	) {
+		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+	}
     
 }

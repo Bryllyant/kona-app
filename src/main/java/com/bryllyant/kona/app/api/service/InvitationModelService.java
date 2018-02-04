@@ -1,6 +1,6 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.invitation.InvitationModel;
+import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
 import com.bryllyant.kona.app.api.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.KInvitationChannel;

@@ -4,7 +4,7 @@ import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.media.MediaModel;
-import com.bryllyant.kona.app.api.model.position.PositionModel;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.PositionRequest;
 import com.bryllyant.kona.app.api.model.user.UserModel;
@@ -15,12 +15,12 @@ import com.bryllyant.kona.app.api.service.PositionModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KAuthCodeType;
+import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Position;
-import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AuthCodeService;
+import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
@@ -92,6 +92,9 @@ public class MeController extends BaseController {
     @Autowired
     private PositionModelService positionModelService;
 
+    @Autowired
+    private DeviceService deviceService;
+
    
 
     // ----------------------------------------------------------------------
@@ -144,6 +147,46 @@ public class MeController extends BaseController {
         ]
     }*/
 
+
+    private Device getOrCreateDevice(DeviceModel deviceModel) {
+        if (deviceModel == null) return null;
+
+        Device device = null;
+
+        try {
+            device = deviceModelService.getDevice(deviceModel);
+        } catch (NotFoundException e) {
+            if (deviceModel.getAdvertiserId() == null) {
+                return null;
+            }
+
+            device = new Device();
+        }
+
+        device = deviceModelService.mergeEntity(device, deviceModel);
+
+        if (device.getTypeId() == null) {
+            // FIXME: Assume phone if no device type
+            KDeviceType deviceType = KDeviceType.PHONE;
+
+            device.setTypeId(deviceType.getId());
+
+            if (device.getOsName() == null) {
+                if (deviceModel.getAdvertiserIdType() != null) {
+                    if (deviceModel.getAdvertiserIdType() == DeviceModel.AdvertiserIdType.IDFA) {
+                        device.setOsName("ios");
+                    } else if (deviceModel.getAdvertiserIdType() == DeviceModel.AdvertiserIdType.AAID) {
+                        device.setOsName("android");
+                    }
+                }
+            }
+
+            device = deviceService.save(device);
+        }
+
+        return device;
+    }
+
 	@SuppressWarnings("unchecked")
     @RequestMapping(value="/positions", method=RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> addPositions(HttpServletRequest req,
@@ -171,17 +214,11 @@ public class MeController extends BaseController {
             }
         }
 	    
-	    DeviceModel deviceModel = positionRequest.getDevice();
+	    Device device = getOrCreateDevice(positionRequest.getDevice());
 
-	    if (deviceModel != null) {
-	        try {
-	            Device device = deviceModelService.getDevice(deviceModel);
-	            deviceId = device.getId();
-	        } catch (NotFoundException e) {
-	            // ignore
-	        }
-	    }
-
+	    if (device != null) {
+	        deviceId = device.getId();
+        }
 
 	    List<PositionModel> positionList = positionRequest.getPositions();
 

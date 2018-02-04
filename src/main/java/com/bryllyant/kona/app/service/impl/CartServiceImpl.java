@@ -106,11 +106,16 @@ public class CartServiceImpl
         getDao().updateCoords(cartId);
     }
 
-    // ----------------------------------------------------------------------------
 
-    @Override 
-    public List<Cart> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+    @Override
+    public List<Cart> fetchProximate(
+            Double latitude,
+            Double longitude,
+            Double radius,
+            Date startDate,
+            Date endDate,
+            List<Long> objectIdList
+    ) {
+        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
-
 }

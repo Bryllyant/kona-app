@@ -5,45 +5,26 @@ package com.bryllyant.kona.app.api.model.user;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
-import com.bryllyant.kona.app.api.model.position.PositionModel;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.entity.KUserPresence;
-import com.bryllyant.kona.data.model.KJsonModel;
 import com.bryllyant.kona.data.model.KEntityModel;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class UserModel extends KJsonModel implements KEntityModel {
+public class UserModel extends PersonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
     
     // ----------------------------------------------------------------------
 
-    @NotNull
     private String uid;
     
-    @NotNull
     private String username;
-
-    private String email;
-    private String mobileNumber;
 
     @RestdocsNotExpanded
     private UserModel parent;
 
-    @NotNull
     @RestdocsNotExpanded
     private AccountModel account;
-
-
-    private String firstName;
-    private String lastName;
-    private String displayName;
-    private String photoUrl;
-    private String thumbnailUrl;
-    private String gender;
-    private Date birthDate;
-    private String locale;
-    private String timeZone;
 
     private KUserPresence presence;
 
@@ -52,16 +33,30 @@ public class UserModel extends KJsonModel implements KEntityModel {
 
     private Double distance;
 
-    @NotNull
     private Date createdDate;
-    
-    // ----------------------------------------------------------------------
+
+
+    public static UserModel from(PersonModel person) {
+        UserModel model = new UserModel();
+        model.setFirstName(person.getFirstName());
+        model.setLastName(person.getLastName());
+        model.setDisplayName(person.getDisplayName());
+        model.setPhotoUrl(person.getPhotoUrl());
+        model.setThumbnailUrl(person.getThumbnailUrl());
+        model.setGender(person.getGender());
+        model.setBirthDate(person.getBirthDate());
+        model.setLocale(person.getLocale());
+        model.setTimeZone(person.getTimeZone());
+        model.setMobileNumber(person.getMobileNumber());
+        model.setEmail(person.getEmail());
+        model.setSocialHandles(person.getSocialHandles());
+        return model;
+    }
 
     public static UserModel create(String uid) {
         return create(uid, null, null, null, null);
     }
 
-    // ----------------------------------------------------------------------
 
     public static UserModel create(String uid, String username, String firstName, String lastName, String photoUrl) {
         UserModel model = new UserModel();
@@ -72,9 +67,6 @@ public class UserModel extends KJsonModel implements KEntityModel {
         model.setPhotoUrl(photoUrl);
         return model;
     }
-
-
-    // ----------------------------------------------------------------------
 
 
     @Override
@@ -95,22 +87,6 @@ public class UserModel extends KJsonModel implements KEntityModel {
         this.set("username", username);
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.set("email", email);
-    }
-
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-
-    public void setMobileNumber(String mobileNumber) {
-        this.set("mobileNumber", mobileNumber);
-    }
-
     public UserModel getParent() {
         return parent;
     }
@@ -125,78 +101,6 @@ public class UserModel extends KJsonModel implements KEntityModel {
 
     public void setAccount(AccountModel account) {
         this.set("account", account);
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.set("firstName", firstName);
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.set("lastName", lastName);
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.set("displayName", displayName);
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.set("photoUrl", photoUrl);
-    }
-
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.set("thumbnailUrl", thumbnailUrl);
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.set("gender", gender);
-    }
-
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.set("birthDate", birthDate);
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.set("locale", locale);
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.set("timeZone", timeZone);
     }
 
     public KUserPresence getPresence() {

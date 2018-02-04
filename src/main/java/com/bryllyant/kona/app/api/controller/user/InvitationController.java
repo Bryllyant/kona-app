@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.controller.user;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.api.model.invitation.InvitationModel;
+import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
 import com.bryllyant.kona.app.api.service.InvitationModelService;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.KInvitationStatus;
@@ -60,7 +60,7 @@ public class InvitationController extends BaseController {
 		
 		List<Invitation> invitations = 
 					invitationService
-					.fetchByUserId(getUser().getId(), status, null, null);
+					.fetchByOwnerId(getUser().getId(), status, null, null);
 		
 		return okList(invitationModelService.toInvitationModelList(invitations));
 	}

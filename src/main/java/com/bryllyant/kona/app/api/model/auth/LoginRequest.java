@@ -1,5 +1,9 @@
 package com.bryllyant.kona.app.api.model.auth;
 
+import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
+import com.bryllyant.kona.app.api.model.app.AppVersionModel;
+import com.bryllyant.kona.app.api.model.device.DeviceModel;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.security.Credentials;
 import com.bryllyant.kona.data.model.KJsonModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,17 +14,24 @@ public class LoginRequest extends KJsonModel implements Credentials {
 
     private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
-
     @NotNull
     private String username;
 
-    @NotNull
     private String password;
 
+    // used in login flows where password may be set
+    // after user logs in with an email or mobile number
     private String loginCode;
-    private String appVersion;
-    private String appBuild;
+
+    @RestdocsNotExpanded
+    private DeviceModel device;
+
+    @RestdocsNotExpanded
+    private PositionModel position;
+
+    @RestdocsNotExpanded
+    private AppVersionModel appVersion;
+
 
     @JsonIgnore
     private Boolean authRequest; // used by oauth2 login flow
@@ -28,7 +39,8 @@ public class LoginRequest extends KJsonModel implements Credentials {
     @JsonIgnore
     private Boolean mobileVerified;
 
-    // ----------------------------------------------------------------------
+    @JsonIgnore
+    private Boolean emailVerified;
 
 
     @Override
@@ -57,20 +69,28 @@ public class LoginRequest extends KJsonModel implements Credentials {
         this.set("loginCode", loginCode);
     }
 
-    public String getAppVersion() {
+    public DeviceModel getDevice() {
+        return device;
+    }
+
+    public void setDevice(DeviceModel device) {
+        this.set("device", device);
+    }
+
+    public PositionModel getPosition() {
+        return position;
+    }
+
+    public void setPosition(PositionModel position) {
+        this.set("position", position);
+    }
+
+    public AppVersionModel getAppVersion() {
         return appVersion;
     }
 
-    public void setAppVersion(String appVersion) {
+    public void setAppVersion(AppVersionModel appVersion) {
         this.set("appVersion", appVersion);
-    }
-
-    public String getAppBuild() {
-        return appBuild;
-    }
-
-    public void setAppBuild(String appBuild) {
-        this.set("appBuild", appBuild);
     }
 
     public Boolean getAuthRequest() {
@@ -87,6 +107,14 @@ public class LoginRequest extends KJsonModel implements Credentials {
 
     public void setMobileVerified(Boolean mobileVerified) {
         this.set("mobileVerified", mobileVerified);
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.set("emailVerified", emailVerified);
     }
 }
 

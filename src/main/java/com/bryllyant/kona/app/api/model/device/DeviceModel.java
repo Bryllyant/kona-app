@@ -1,6 +1,7 @@
 package com.bryllyant.kona.app.api.model.device;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
+import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.data.model.KJsonModel;
 import com.bryllyant.kona.data.model.KEntityModel;
@@ -11,7 +12,30 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
 
     private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+    public enum AdvertiserIdType {
+        IDFA,
+        AAID;
+
+        public static AdvertiserIdType from(String name) {
+            if (name == null) return null;
+            name = name.trim().toUpperCase();
+            return AdvertiserIdType.valueOf(name);
+        }
+
+        public static AdvertiserIdType from(Device device) {
+            if (device == null || device.getOsName() == null) return null;
+            String osName = device.getOsName().toLowerCase();
+            switch(osName) {
+                case "ios":
+                    return IDFA;
+                case "android":
+                    return AAID;
+                default:
+                    throw new IllegalArgumentException("Invalid OS name: " + osName);
+
+            }
+        }
+    }
 
     private String uid;
 
@@ -24,8 +48,9 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
     private DeviceModel parent;
 
     private String advertiserId;
+    private AdvertiserIdType advertiserIdType;
     private Boolean limitAdTrackingEnabled;
-    private String os;
+    private String osName;
     private String osVersion;
     private String bleMacAddress;
     private String lanMacAddress;
@@ -41,7 +66,6 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
     private Boolean enabled;
     private Date createdDate;
 
-    // ----------------------------------------------------------------------
 
     public static DeviceModel create(String uid) {
         DeviceModel model = new DeviceModel();
@@ -49,8 +73,13 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
         return model;
     }
 
-    // ----------------------------------------------------------------------
-
+    public static DeviceModel from(Device device) {
+        DeviceModel model = new DeviceModel();
+        model.fromBean(device);
+        model.setAdvertiserIdType(AdvertiserIdType.from(device));
+        model.setType(KDeviceType.getInstance(device.getTypeId()));
+        return model;
+    }
 
     @Override
     public String getUid() {
@@ -86,6 +115,14 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
         this.set("advertiserId", advertiserId);
     }
 
+    public AdvertiserIdType getAdvertiserIdType() {
+        return advertiserIdType;
+    }
+
+    public void setAdvertiserIdType(AdvertiserIdType advertiserIdType) {
+        this.set("advertiserIdType", advertiserIdType);
+    }
+
     public Boolean getLimitAdTrackingEnabled() {
         return limitAdTrackingEnabled;
     }
@@ -94,12 +131,12 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
         this.set("limitAdTrackingEnabled", limitAdTrackingEnabled);
     }
 
-    public String getOs() {
-        return os;
+    public String getOsName() {
+        return osName;
     }
 
-    public void setOs(String os) {
-        this.set("os", os);
+    public void setOsName(String osName) {
+        this.set("osName", osName);
     }
 
     public String getOsVersion() {

@@ -7,8 +7,8 @@ MYBATIS_HOME=/opt/mybatis
 KONA_HOME=/opt/kona
 GENERATOR_HOME=/opt/mybatis/generator
 GENERATOR_JAR="$GENERATOR_HOME/lib/mybatis-generator-core-1.3.5.jar"
-#PLUGINS_JAR="${MYSQL_DBA}/lib/mariadb-java-client.jar:${KONA_HOME}/lib/kona-commons-2.2.0.jar:${KONA_HOME}/lib/kona-framework-4.2.0.jar"
-PLUGINS_JAR="${MYSQL_DBA}/lib/mariadb-java-client.jar:${KONA_HOME}/lib/kona-framework-4.2.0.jar"
+#PLUGINS_JAR="${MYSQL_DBA}/lib/connector/mysql-connector.jar:${KONA_HOME}/lib/kona-commons-2.2.0.jar:${KONA_HOME}/lib/kona-framework-4.2.0.jar"
+PLUGINS_JAR="${MYSQL_DBA}/lib/connector/mysql-connector.jar:${KONA_HOME}/lib/kona-framework-4.2.0.jar"
 CLASSPATH="${GENERATOR_JAR}:${PLUGINS_JAR}"
 MAIN="org.mybatis.generator.api.ShellRunner"
 
@@ -48,7 +48,8 @@ function updateSelectProximate {
         @Param("longitude") Double longitude, 
         @Param("radius") Double radius,
         @Param("startDate") Date startDate,
-        @Param("endDate") Date endDate
+        @Param("endDate") Date endDate,
+        @Param("objectIds") List<Long> objectIdList
     );
 }           
 EOF
@@ -161,29 +162,26 @@ echo
 DAO_DIR="../../src/main/java/com/bryllyant/kona/app/dao"
 java -cp $CLASSPATH $MAIN -configfile $CONFIG_APP -overwrite
 updateSelectProximate ApiLog ApiLogMapper.java
-updateSelectProximate AddressBook AddressBookMapper.java
+updateSelectProximate AppUser AppUserMapper.java
 updateSelectProximate CampaignEvent CampaignEventMapper.java
 updateSelectProximate Cart CartMapper.java
-updateSelectProximate Partner PartnerMapper.java
-updateSelectProximate Payment PaymentMapper.java
-updateSelectProximate Place PlaceMapper.java
-updateSelectProximate Position PositionMapper.java
 updateSelectProximate Media MediaMapper.java
-updateSelectProximate Token TokenMapper.java
+updateSelectProximate Payment PaymentMapper.java
+updateSelectProximate Position PositionMapper.java
+updateSelectProximate Place PlaceMapper.java
 updateSelectProximate Registration RegistrationMapper.java
+updateSelectProximate Token TokenMapper.java
 
 updatePresence User UserMapper.java
 fetchByUserIds PushNotificationDevice PushNotificationDeviceMapper.java
 fetchRandom EmailAddress EmailAddressMapper.java
 
 
-updateCoordsMapper coords AddressBookMapper.xml
 updateCoordsMapper coords ApiLogMapper.xml
 updateCoordsMapper coords AppUserMapper.xml
 updateCoordsMapper coords CampaignEventMapper.xml
 updateCoordsMapper coords CartMapper.xml
 updateCoordsMapper coords MediaMapper.xml
-updateCoordsMapper coords PartnerMapper.xml
 updateCoordsMapper coords PaymentMapper.xml
 updateCoordsMapper coords PositionMapper.xml
 updateCoordsMapper coords RegistrationMapper.xml

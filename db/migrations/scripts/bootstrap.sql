@@ -32,10 +32,10 @@ CREATE TABLE `kona__account` (
   `slug` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   -- `stripe_uid` varchar(255) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `verified` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_date` datetime(6) DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `verified` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -113,7 +113,7 @@ CREATE TABLE `kona__api_version` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(2000) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `published_date` datetime(6) NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -140,8 +140,8 @@ CREATE TABLE `kona__app` (
   `company_name` varchar(255) DEFAULT NULL,
   `company_url` varchar(255) DEFAULT NULL,
   `privacy_url` varchar(255) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `retired_date` datetime(6) DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -205,10 +205,10 @@ CREATE TABLE `kona__app_creds` (
   `client_secret` varchar(255) DEFAULT NULL,
   `redirect_uri` varchar(255) DEFAULT NULL,
   `scope` varchar(255) NOT NULL DEFAULT 'read,write',
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `access_token_timeout` int(11) unsigned DEFAULT NULL, -- seconds / needs to be integer
   `refresh_token_timeout` int(11) unsigned DEFAULT NULL, -- second / needs to be integer
-  `retired_date` datetime(6) DEFAULT NULL,
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -242,7 +242,7 @@ CREATE TABLE `kona__app_legal` (
   `type` enum('terms','privacy') NOT NULL,
   `content` mediumtext NOT NULL,
   `version` int(11) unsigned NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `published_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -303,7 +303,7 @@ CREATE TABLE `kona__app_user` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `coords` geometry NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `revoked_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -345,7 +345,7 @@ CREATE TABLE `kona__app_webhook` (
   `name` varchar(255) NOT NULL,
   `events` varchar(2000) DEFAULT NULL,
   `url` varchar(2000) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -373,7 +373,7 @@ CREATE TABLE `kona__auth_code` (
   `app_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `code` varchar(255) NOT NULL,
-  `valid` tinyint(1) NOT NULL DEFAULT '0',
+  `valid` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `use_count` int(11) unsigned NOT NULL DEFAULT '0',
   `max_use_count` int(11) unsigned default NULL, -- null means no max 
   `expiration_date` datetime(6) DEFAULT NULL,
@@ -420,14 +420,14 @@ CREATE TABLE `kona__file` (
   `name` varchar(255) DEFAULT NULL,
   `content_type` varchar(255) NOT NULL,
   `size` bigint(20) unsigned NOT NULL,
---  `folder` tinyint(1) NOT NULL DEFAULT '0',
---  `shared` tinyint(1) NOT NULL DEFAULT '0',
---  `archive` tinyint(1) NOT NULL DEFAULT '0',
---   `compressed` tinyint(1) NOT NULL DEFAULT '0',
-  `hidden` tinyint(1) NOT NULL DEFAULT '0',
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `temp_file` tinyint(1) NOT NULL DEFAULT '0',
+--  `folder` tinyint(1) unsigned NOT NULL DEFAULT '0',
+--  `shared` tinyint(1) unsigned NOT NULL DEFAULT '0',
+--  `archive` tinyint(1) unsigned NOT NULL DEFAULT '0',
+--   `compressed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `temp_file` tinyint(1) unsigned NOT NULL DEFAULT '0',
 --  `width` int(11) DEFAULT NULL,
 --  `height` int(11) DEFAULT NULL,
 --  `bits_per_pixel` int(11) DEFAULT NULL,
@@ -439,7 +439,7 @@ CREATE TABLE `kona__file` (
   `url_path` varchar(255) DEFAULT NULL,
 --  `thumb_url_path` varchar(255) DEFAULT NULL,
   `upload_time` bigint(20) unsigned DEFAULT NULL,
-  `retired_date` datetime(6) DEFAULT NULL,
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -581,8 +581,8 @@ CREATE TABLE `kona__device` (
   `parent_id` bigint(20) unsigned default NULL, -- is this device part of another device
   `advertiser_id` varchar(255) default NULL,
   `advertiser_id_type` varchar(255) default NULL, -- idfa | aaid
-  `limit_ad_tracking_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `os` varchar(255) default NULL,
+  `limit_ad_tracking_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `os_name` varchar(255) default NULL,
   `os_version` varchar(255) default NULL,
   `ble_mac_address` varchar(255) default NULL,
   `lan_mac_address` varchar(255) default NULL,
@@ -595,8 +595,8 @@ CREATE TABLE `kona__device` (
   `hardware_version` varchar(255) default NULL,
   `firmware_version` varchar(255) default NULL,
   `capabilities` varchar(255) default NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `retired_date` datetime DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `deleted_date` datetime DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -644,6 +644,7 @@ CREATE TABLE `kona__user_device` (
 
 CREATE TABLE `kona__registration` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -656,18 +657,18 @@ CREATE TABLE `kona__registration` (
   `username` varchar(255) default NULL,
   `hostname` varchar(255) default NULL,
   `user_agent` varchar(512) DEFAULT NULL,
-  `platform_name` varchar(255) DEFAULT NULL,
-  `platform_version` varchar(255) DEFAULT NULL,
+  `os_name` varchar(255) default NULL,
+  `os_version` varchar(255) default NULL,
   `app_version` varchar(255) DEFAULT NULL,
   `app_build` varchar(255) DEFAULT NULL,
   `signup_time` bigint(20) unsigned DEFAULT NULL, -- time (ms) as reported by client
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `coords` geometry NOT NULL,
-  `email_verified` tinyint(1) NOT NULL DEFAULT '0',
-  `email_pending` tinyint(1) NOT NULL DEFAULT '0',
-  `mobile_verified` tinyint(1) NOT NULL DEFAULT '0',
-  `mobile_pending` tinyint(1) NOT NULL DEFAULT '0',
+  `email_verified` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `email_pending` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `mobile_verified` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `mobile_pending` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `reminded_date` datetime(6) DEFAULT NULL,
   `registered_date` datetime(6) DEFAULT NULL,
   `deactivated_date` datetime(6) DEFAULT NULL,
@@ -678,6 +679,8 @@ CREATE TABLE `kona__registration` (
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `id` (`id`),
+
+  UNIQUE `ux_kona__registration_uid` (`uid`),
 
   UNIQUE `ux_kona__registration_user` (`user_id`),
 
@@ -835,7 +838,7 @@ CREATE TABLE `kona__setting` (
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `value` varchar(4000) NOT NULL,
-  `overwrite_global` tinyint(1) NOT NULL DEFAULT '0',
+  `overwrite_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -874,8 +877,8 @@ CREATE TABLE `kona__short_url` (
   `short_url` varchar(255) NOT NULL,
   `long_url` varchar(2000) NOT NULL,
   `description` varchar(2000) DEFAULT NULL,
-  `script` tinyint(1) NOT NULL DEFAULT '0',
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `script` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `expired_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -918,6 +921,7 @@ CREATE TABLE `kona__token` (
   `type_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
+  `device_id` bigint(20) unsigned default NULL,
   `app_client_id` varchar(255) NOT NULL,
   `access_token` varchar(255) DEFAULT NULL,
   `refresh_token` varchar(255) DEFAULT NULL,
@@ -931,15 +935,15 @@ CREATE TABLE `kona__token` (
   `user_agent` varchar(512) DEFAULT NULL,
   `app_version` varchar(255) DEFAULT NULL,
   `app_build` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `approved` tinyint(1) NOT NULL DEFAULT '0',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `approved` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `access_count` bigint(20) unsigned DEFAULT NULL,
   `login_date` datetime(6) NOT NULL,
   `last_login_date` datetime(6) DEFAULT NULL,
   `logout_date` datetime(6) DEFAULT NULL,
   `access_expiration_date` datetime(6) DEFAULT NULL,
   `refresh_expiration_date` datetime(6) DEFAULT NULL,
-  `retired_date` datetime(6) DEFAULT NULL,
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -955,6 +959,8 @@ CREATE TABLE `kona__token` (
 
   KEY `ix_kona__token_app` (`app_id`),
 
+  KEY `ix_kona__token_device` (`device_id`),
+
   KEY `ix_kona__token_user` (`user_id`),
 
   KEY `ix_kona__token_type` (`type_id`),
@@ -965,6 +971,9 @@ CREATE TABLE `kona__token` (
 
   CONSTRAINT `fk_kona__token_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`),
+
+  CONSTRAINT `fk_kona__token_device` FOREIGN KEY (`device_id`)
+        REFERENCES `kona__device` (`id`),
 
   CONSTRAINT `fk_kona__token_app_client` FOREIGN KEY (`app_client_id`) 
         REFERENCES `kona__app_creds` (`client_id`),
@@ -1020,8 +1029,8 @@ CREATE TABLE `kona__user` (
   `birth_date` date DEFAULT NULL,
   `locale` varchar(255) DEFAULT NULL,
   `time_zone` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_date` datetime(6) DEFAULT NULL,
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1137,9 +1146,9 @@ CREATE TABLE `kona__media` (
   `thumbnail_width` int(11) unsigned DEFAULT NULL,
   `thumbnail_height` int(11) unsigned DEFAULT NULL,
   `thumbnail_size` bigint(20) unsigned DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `resizeable` tinyint(1) NOT NULL DEFAULT '0',
-  `sprite` tinyint(1) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `resizeable` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `sprite` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `sprite_x_offset` int(11) default NULL,
   `sprite_y_offset` int(11) default NULL,
   `latitude` double DEFAULT NULL,
@@ -1265,8 +1274,8 @@ CREATE TABLE `kona__entity_name_rule` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `pattern` varchar(255) DEFAULT NULL,
-  `black_listed` tinyint(1) NOT NULL DEFAULT '0',
-  `reserved` tinyint(1) NOT NULL DEFAULT '0',
+  `black_listed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `reserved` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1314,14 +1323,20 @@ CREATE TABLE `kona__place` (
   `description` varchar(255) DEFAULT NULL,
   `street1` varchar(255) DEFAULT NULL,
   `street2` varchar(255) DEFAULT NULL,
+  `neighborhood` varchar(255) DEFAULT NULL,
+  `borough` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
+  `county` varchar(255) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `postal_code` varchar(255) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
+  `time_zone` varchar(255) DEFAULT NULL,
+  `utc_offset` int(11) DEFAULT NULL,
   `formatted_address` varchar(512) DEFAULT NULL,
-  `phone_number` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `social_handles` varchar(2000) DEFAULT NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `indoor_floor` int(11) unsigned DEFAULT NULL,
@@ -1331,7 +1346,6 @@ CREATE TABLE `kona__place` (
   `perimeter_coords` geometry NOT NULL,
   `ref_place_id` varchar(255) DEFAULT NULL,
   `ref_google_url` varchar(255) DEFAULT NULL,
-  `utc_offset` int(11) DEFAULT NULL,
   `rating` double DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -1429,11 +1443,11 @@ CREATE TABLE `kona__position` (
   `place_id` bigint(20) unsigned DEFAULT NULL,
   `dwell_time` bigint(20) unsigned DEFAULT NULL, -- time (ms) a person remains in this position
   `sample_no` bigint(20) unsigned DEFAULT NULL,
-  `battery` int(11) DEFAULT NULL,
-  `charging` tinyint(1) DEFAULT null,
+  `battery` double DEFAULT NULL,
+  `charging` tinyint(1) unsigned DEFAULT null,
   `network` varchar(255) DEFAULT NULL, -- wifi|cell
   `source` varchar(255) default NULL, -- gps|access-point|ip-address|beacon|mixed (location_method)
-  `background` tinyint(1) DEFAULT null,
+  `background` tinyint(1) unsigned DEFAULT null,
   `carrier` varchar(255) default NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
@@ -1619,9 +1633,9 @@ CREATE TABLE `kona__sms` (
   `status` varchar(255) DEFAULT NULL,
   `error_code` varchar(255) DEFAULT NULL,
   `error_message` varchar(2000) DEFAULT NULL,
-  `failed` tinyint(1) NOT NULL DEFAULT '0',
-  `delivered` tinyint(1) NOT NULL DEFAULT '0',
-  `opted_out` tinyint(1) NOT NULL DEFAULT '0',
+  `failed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `delivered` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `opted_out` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `click_count` int(11) NOT NULL DEFAULT '0',
   `sent_date` datetime(6) NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -1671,11 +1685,11 @@ CREATE TABLE `kona__email` (
   `from_address` varchar(255) NOT NULL,
   `to_address` varchar(255) NOT NULL,
   `subject` varchar(255) NOT NULL,
-  `failed` tinyint(1) NOT NULL DEFAULT '0',
-  `delivered` tinyint(1) NOT NULL DEFAULT '0',
-  `bounced` tinyint(1) NOT NULL DEFAULT '0',
-  `complained` tinyint(1) NOT NULL DEFAULT '0',
-  `opted_out` tinyint(1) NOT NULL DEFAULT '0',
+  `failed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `delivered` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `bounced` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `complained` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `opted_out` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `open_count` int(11) NOT NULL DEFAULT '0',
   `click_count` int(11) NOT NULL DEFAULT '0',
   `print_count` int(11) NOT NULL DEFAULT '0',
@@ -1749,9 +1763,9 @@ CREATE TABLE `kona__email_address` (
   `postal_code` varchar(255) default NULL,
   `country` varchar(255) default NULL,
   `source` varchar(255) DEFAULT NULL,
-  `scrubbed` tinyint(1) NOT NULL DEFAULT '0',
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `confirmed` tinyint(1) NOT NULL DEFAULT '0',
+  `scrubbed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `confirmed` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `opted_in_date` datetime(6) DEFAULT NULL,
   `opted_out_date` datetime(6) DEFAULT NULL,
   `bounced_date` datetime(6) DEFAULT NULL,
@@ -1886,12 +1900,15 @@ CREATE TABLE `kona__email_group` (
 
 CREATE TABLE `kona__email_group_address` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `group_id` bigint(20) unsigned NOT NULL,
   `address_id` bigint(20) unsigned NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
   PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ix_kona__email_group_address_uid` (`uid`),
 
   UNIQUE KEY `ix_kona__email_group_address_group_address` (`group_id`,`address_id`),
 
@@ -1911,15 +1928,16 @@ CREATE TABLE `kona__email_group_address` (
 
 CREATE TABLE `kona__push_notification_device` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
-  `push_notification_id` bigint(20) unsigned NOT NULL,
+  `push_notification_provider_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
-  `device_uuid` varchar(255) NOT NULL,
-  `platform_name` varchar(255) NOT NULL, -- should match value in push_notification
+  `device_id` bigint(20) unsigned NOT NULL,
+  `push_platform` varchar(255) NOT NULL, -- should match value in push_notification
   `push_token` varchar(1024) DEFAULT NULL,
   `push_endpoint` varchar(1024) DEFAULT NULL,
-  `sandbox` tinyint(1) NOT NULL DEFAULT '0',
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1927,8 +1945,10 @@ CREATE TABLE `kona__push_notification_device` (
 
   UNIQUE KEY `id` (`id`),
 
+  UNIQUE KEY `ux_kona__push_notification_device_uid` (`uid`),
+
   -- different users using same app on same device
-  UNIQUE KEY `ux_kona__push_notification` (`app_id`,`user_id`,`device_uuid`,`sandbox`), 
+  UNIQUE KEY `ux_kona__push_notification_device_cols` (`app_id`,`user_id`,`device_id`,`sandbox`),
 
   UNIQUE KEY `ux_kona__push_notification_device_push_token` (`push_token`(255)),
 
@@ -1936,13 +1956,16 @@ CREATE TABLE `kona__push_notification_device` (
 
   KEY `ix_kona__push_notification_device_user` (`user_id`),
 
-  KEY `ix_kona__push_notification_device_device` (`device_uuid`),
+  KEY `ix_kona__push_notification_device_device` (`device_id`),
 
   CONSTRAINT `fk_kona__push_notification_device_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__push_notification_device_push_notification` FOREIGN KEY (`push_notification_id`) 
-        REFERENCES `kona__push_notification` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_kona__push_notification_device_device` FOREIGN KEY (`device_id`)
+        REFERENCES `kona__device` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__push_notification_device_push_notification_provider` FOREIGN KEY (`push_notification_provider_id`)
+        REFERENCES `kona__push_notification_provider` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__push_notification_device_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
@@ -1951,14 +1974,15 @@ CREATE TABLE `kona__push_notification_device` (
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__push_notification` (
+CREATE TABLE `kona__push_notification_provider` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
-  `platform_name` varchar(255) NOT NULL,
+  `push_platform` varchar(255) NOT NULL,
   `push_server_key` varchar(2048) DEFAULT NULL,
   `push_server_secret` varchar(2048) DEFAULT NULL,
   `push_endpoint` varchar(1024) DEFAULT NULL,
-  `sandbox` tinyint(1) NOT NULL DEFAULT '0',
+  `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1966,9 +1990,11 @@ CREATE TABLE `kona__push_notification` (
 
   UNIQUE KEY `id` (`id`),
 
-  UNIQUE KEY `ux_kona__push_notification` (`app_id`,`platform_name`,`sandbox`),
+  UNIQUE KEY `ux_kona__push_notification_provider_uid` (`uid`),
 
-  CONSTRAINT `fk_kona__push_notification_app` FOREIGN KEY (`app_id`) 
+  UNIQUE KEY `ux_kona__push_notification_provider` (`app_id`,`push_platform`,`sandbox`),
+
+  CONSTRAINT `fk_kona__push_notification_provider_app` FOREIGN KEY (`app_id`)
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1979,7 +2005,7 @@ CREATE TABLE `kona__push_notification_message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
-  `sandbox` tinyint(1) NOT NULL DEFAULT '0',
+  `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `title` varchar(255) DEFAULT NULL,
   `message` varchar(2000) NOT NULL,
   `image_url` varchar(512) DEFAULT NULL,
@@ -2010,7 +2036,7 @@ CREATE TABLE `kona__friendship` (
   `friend_id` bigint(20) unsigned DEFAULT NULL,
   `circle_id` bigint(20) unsigned DEFAULT NULL,
   `status_id` bigint(20) unsigned NOT NULL,
-  `friendship_requested` tinyint(1) NOT NULL DEFAULT '0',
+  `friendship_requested` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -2123,7 +2149,7 @@ CREATE TABLE `kona__friendship_circle` (
       `user_id` bigint(20) unsigned NOT NULL,
       `slug` varchar(255) NOT NULL,
       `name` varchar(255) NOT NULL,
-      `default_circle` tinyint(1) NOT NULL DEFAULT '0',
+      `default_circle` tinyint(1) unsigned NOT NULL DEFAULT '0',
       `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
       `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -2143,33 +2169,31 @@ CREATE TABLE `kona__friendship_circle` (
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__address_book` (
+CREATE TABLE `kona__contact` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `user_id` bigint(20) unsigned NOT NULL,
+  `owner_id` bigint(20) unsigned NOT NULL,
   `ref_user_id` bigint(20) unsigned DEFAULT NULL,
+  `place_id` bigint(20) unsigned DEFAULT NULL,
   `photo_id` bigint(20) unsigned DEFAULT NULL,
   `photo_url` varchar(255) DEFAULT NULL, -- may be external reference
   `thumbnail_url` varchar(255) DEFAULT NULL, -- may be external reference
+
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `display_name` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
-  `postal_code` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `latitude` double DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
-  `coords` geometry NOT NULL,
+  `gender` varchar(255) DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
+  `locale` varchar(255) DEFAULT NULL,
+  `time_zone` varchar(255) DEFAULT NULL,
+
+  `url` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `mobile_number` varchar(255) DEFAULT NULL,
-  `twitter_id` varchar(255) DEFAULT NULL,
-  `twitter_handle` varchar(255) DEFAULT NULL,
-  `facebook_id` varchar(255) DEFAULT NULL,
-  `facebook_username` varchar(255) DEFAULT NULL,
-  `email_verified` tinyint(1) NOT NULL DEFAULT '0',
-  `mobile_verified` tinyint(1) NOT NULL DEFAULT '0',
+  `social_handles` varchar(2000) DEFAULT NULL,
+
+  `email_verified` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `mobile_verified` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `invited_date` datetime(6) DEFAULT NULL,
   `registered_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -2179,24 +2203,22 @@ CREATE TABLE `kona__address_book` (
 
   UNIQUE KEY `id` (`id`),
 
-  UNIQUE `ix_kona__address_book_uid` (`uid`),
+  UNIQUE `ix_kona__contact_uid` (`uid`),
 
-  KEY `ix_kona__address_book_user` (`user_id`),
+  KEY `ix_kona__contact_owner` (`owner_id`),
 
-  KEY `ix_kona__address_book_ref_user` (`ref_user_id`),
+  KEY `ix_kona__contact_ref_user` (`ref_user_id`),
 
-  KEY `ix_kona__address_book_photo` (`photo_id`),
+  KEY `ix_kona__contact_photo` (`photo_id`),
 
-  SPATIAL `ix_kona__address_book_coords` (coords),
-
-  CONSTRAINT `fk_kona__address_book_photo` FOREIGN KEY (`photo_id`) 
+  CONSTRAINT `fk_kona__contact_photo` FOREIGN KEY (`photo_id`)
     REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__address_book_ref_user` FOREIGN KEY (`ref_user_id`) 
+  CONSTRAINT `fk_kona__contact_ref_user` FOREIGN KEY (`ref_user_id`)
     REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__address_book_user` FOREIGN KEY (`user_id`) 
-    REFERENCES `kona__user` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_kona__contact_owner` FOREIGN KEY (`owner_id`)
+    REFERENCES `kona__owner` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2250,8 +2272,8 @@ CREATE TABLE `kona__invitation` (
   `type_id` bigint(20) unsigned NOT NULL,
   `channel_id` bigint(20) unsigned NOT NULL,
   `status_id` bigint(20) unsigned NOT NULL DEFAULT '100',
-  `user_id` bigint(20) unsigned NOT NULL,
-  `address_book_id` bigint(20) unsigned DEFAULT NULL,
+  `owner_id` bigint(20) unsigned NOT NULL,
+  `contact_id` bigint(20) unsigned DEFAULT NULL,
   `invitee_user_id` bigint(20) unsigned DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
@@ -2287,14 +2309,14 @@ CREATE TABLE `kona__invitation` (
 
   KEY `ix_kona__invitation_status` (`status_id`),
 
-  KEY `ix_kona__invitation_user` (`user_id`),
+  KEY `ix_kona__invitation_owner` (`owner_id`),
 
-  KEY `ix_kona__invitation_address_book` (`address_book_id`),
+  KEY `ix_kona__invitation_contact` (`contact_id`),
 
   KEY `ix_kona__invitation_invitee_user` (`invitee_user_id`),
 
-  CONSTRAINT `fk_kona__invitation_address_book` FOREIGN KEY (`address_book_id`) 
-        REFERENCES `kona__address_book` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__invitation_contact` FOREIGN KEY (`contact_id`)
+        REFERENCES `kona__contact` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__invitation_channel` FOREIGN KEY (`channel_id`) 
         REFERENCES `kona__invitation_channel` (`id`),
@@ -2308,7 +2330,7 @@ CREATE TABLE `kona__invitation` (
   CONSTRAINT `fk_kona__invitation_type` FOREIGN KEY (`type_id`) 
         REFERENCES `kona__invitation_type` (`id`),
 
-  CONSTRAINT `fk_kona__invitation_user` FOREIGN KEY (`user_id`) 
+  CONSTRAINT `fk_kona__invitation_owner` FOREIGN KEY (`owner_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2339,7 +2361,7 @@ CREATE TABLE `kona__payment_account` (
   `app_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `added_by_id` bigint(20) unsigned NOT NULL,
-  `default_account` tinyint(1) NOT NULL DEFAULT '0',
+  `default_account` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `max_transaction_amount` decimal(10,2) DEFAULT NULL,
   `max_transaction_count` int(11) unsigned DEFAULT NULL,
   `slug` varchar(255) default NULL,
@@ -2403,7 +2425,7 @@ CREATE TABLE `kona__campaign` (
   `slug` varchar(255) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(4000) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -2448,7 +2470,7 @@ CREATE TABLE `kona__campaign_channel` (
   `url_path` varchar(255) DEFAULT NULL,
   `facebook_tracking_id` varchar(255) DEFAULT NULL,
   `google_tracking_id` varchar(255) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `title` varchar(255) DEFAULT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `main_content` varchar(2000) DEFAULT NULL,
@@ -2571,9 +2593,9 @@ CREATE TABLE `kona__cart` (
   `shipping` decimal(10,2) DEFAULT NULL,
   `tax` decimal(10,2) DEFAULT NULL,
   `total` decimal(10,2) DEFAULT NULL,
-  `checked_out` tinyint(1) NOT NULL DEFAULT '0',
-  `invoiced` tinyint(1) NOT NULL DEFAULT '0',
-  `expired` tinyint(1) NOT NULL DEFAULT '0',
+  `checked_out` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `invoiced` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `expired` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `checked_out_date` datetime(6) DEFAULT NULL,
   `invoiced_date` datetime(6) DEFAULT NULL,
   `expired_date` datetime(6) DEFAULT NULL, -- date cart was externally expired
@@ -2702,15 +2724,15 @@ CREATE TABLE `kona__invoice` (
   `total` decimal(10,2) NOT NULL,
   `amount_due` decimal(10,2) NOT NULL,
   `amount_paid` decimal(10,2) DEFAULT NULL,
-  `paid` tinyint(1) NOT NULL DEFAULT '0',
-  `closed` tinyint(1) NOT NULL DEFAULT '0',
+  `paid` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `closed` tinyint(1) unsigned NOT NULL DEFAULT '0',
 --  `subscription_start_date` datetime(6) DEFAULT NULL,
 --  `subscription_end_date` datetime(6) DEFAULT NULL,
   `invoice_date` datetime(6) NOT NULL,
   `due_date` datetime(6) DEFAULT NULL,
   `paid_date` datetime(6) DEFAULT NULL,
   `closed_date` datetime(6) DEFAULT NULL,
-  `payment_attempted` tinyint(1) NOT NULL DEFAULT '0',
+  `payment_attempted` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `payment_attempt_count` int(11) unsigned DEFAULT NULL,
   `last_payment_attempt_date` datetime(6) DEFAULT NULL,
   `next_payment_attempt_date` datetime(6) DEFAULT NULL,
@@ -2803,29 +2825,23 @@ CREATE TABLE `kona__partner` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `parent_id` bigint(20) unsigned DEFAULT NULL,
-  `slug` varchar(255) NOT NULL,
+  `place_id` bigint(20) unsigned DEFAULT NULL,
   `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `description` varchar(4000) DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
   `logo_url` varchar(255) DEFAULT NULL,
-  `facebook_url` varchar(255) DEFAULT NULL,
-  `twitter_handle` varchar(255) DEFAULT NULL,
-  `first_name` varchar(255) DEFAULT NULL,
-  `last_name` varchar(255) DEFAULT NULL,
-  `phone_number` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `street1` varchar(255) DEFAULT NULL,
-  `street2` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
-  `postal_code` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `latitude` double DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
-  `coords` geometry NOT NULL,
-  `population` int(11) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_date` datetime(6) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `social_handles` varchar(2000) DEFAULT NULL,
+  `contact_first_name` varchar(255) DEFAULT NULL,
+  `contact_last_name` varchar(255) DEFAULT NULL,
+  `contact_email` varchar(255) DEFAULT NULL,
+  `contact_phone_number` varchar(255) DEFAULT NULL,
+  `contact_mobile_number` varchar(255) DEFAULT NULL,
+  `population` int(11) unsigned DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -2837,10 +2853,13 @@ CREATE TABLE `kona__partner` (
 
   KEY `ix_kona__partner_parent` (`parent_id`),
 
-  SPATIAL `ix_kona__partner_coords` (coords),
+  KEY `ix_kona__partner_place` (`place_id`),
+
+  CONSTRAINT `fk_kona__partner_place` FOREIGN KEY (`place_id`) 
+        REFERENCES `kona__place` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__partner_parent` FOREIGN KEY (`parent_id`) 
-        REFERENCES `kona__partner` (`id`) ON DELETE CASCADE
+        REFERENCES `kona__partner` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2873,10 +2892,10 @@ CREATE TABLE `kona__payment` (
   `processor_receipt` text,
   `processor_error` varchar(2000) DEFAULT NULL,
   `processor_fee` decimal(10,2) DEFAULT NULL,
-  `paid` tinyint(1) NOT NULL DEFAULT '0',
-  `refunded` tinyint(1) NOT NULL DEFAULT '0',
-  `disputed` tinyint(1) NOT NULL DEFAULT '0',
-  `failed` tinyint(1) NOT NULL DEFAULT '0',
+  `paid` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `refunded` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `disputed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `failed` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `paid_date` datetime(6) DEFAULT NULL,
   `disputed_date` datetime(6) DEFAULT NULL,
   `refunded_date` datetime(6) DEFAULT NULL,
@@ -2988,8 +3007,8 @@ CREATE TABLE `kona__pre_order` (
   `ref_app_id` bigint(20) unsigned DEFAULT NULL,
   `referred_by_user_id` bigint(20) unsigned DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
-  `reconciled` tinyint(1) NOT NULL DEFAULT '0',
-  `proxy_payment` tinyint(1) NOT NULL DEFAULT '0',
+  `reconciled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `proxy_payment` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `processor` enum('stripe') DEFAULT NULL,
   `payment_description` varchar(4000) DEFAULT NULL,
   `payment_token` varchar(255) DEFAULT NULL,
@@ -3061,9 +3080,9 @@ CREATE TABLE `kona__promo` (
   `promo_code` varchar(255) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(4000) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '0',
-  `signup_default` tinyint(1) NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `visible` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `signup_default` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `use_count` int(11) unsigned DEFAULT NULL,
@@ -3220,11 +3239,11 @@ CREATE TABLE `kona__product` (
   `price` decimal(10,2) DEFAULT NULL,
   `setup_fee` decimal(10,2) DEFAULT NULL,
   `trial_days` int(11) DEFAULT NULL,
-  `subscription` tinyint(1) NOT NULL DEFAULT '0',
+  `subscription` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `subscription_days` int(11) DEFAULT NULL,
   `support_type` enum('Email','Priority') DEFAULT NULL,
-  -- `default_plan` tinyint(1) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '0',
+  -- `default_plan` tinyint(1) unsigned DEFAULT NULL,
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -3259,8 +3278,8 @@ CREATE TABLE `kona__purchase` (
   `payment_type_id` bigint(20) unsigned DEFAULT NULL,
   `kind` varchar(255) DEFAULT NULL, -- field used by google play
   `invoice_no` varchar(255) DEFAULT NULL,
-  `auto_renew` tinyint(1) NOT NULL DEFAULT '0',
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `auto_renew` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `expiration_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),

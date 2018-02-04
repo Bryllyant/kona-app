@@ -182,7 +182,7 @@ public class OAuth2TokenStore implements TokenStore {
         // if authentication is not available, then this token is bad
         if (data == null) {
         	token.setActive(false);
-            token.setRetiredDate(new Date());
+            token.setDeletedDate(new Date());
             apiAuthService.updateToken(token);
             return null;
         }
@@ -237,7 +237,7 @@ public class OAuth2TokenStore implements TokenStore {
         
         if (t != null) {
         	t.setActive(false);
-        	t.setRetiredDate(new Date());
+        	t.setDeletedDate(new Date());
         	apiAuthService.updateToken(t);
         }
     }
@@ -258,7 +258,7 @@ public class OAuth2TokenStore implements TokenStore {
         
         if (t != null) {
         	t.setActive(false);
-        	t.setRetiredDate(new Date());
+        	t.setDeletedDate(new Date());
         	apiAuthService.updateToken(t);
         }
     }

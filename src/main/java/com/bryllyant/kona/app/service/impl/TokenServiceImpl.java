@@ -72,11 +72,17 @@ public class TokenServiceImpl
         getDao().updateCoords(tokenId);
     }
 
-    // ----------------------------------------------------------------------------
 
-    @Override 
-    public List<Token> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
-    }
 
+	@Override
+	public List<Token> fetchProximate(
+			Double latitude,
+			Double longitude,
+			Double radius,
+			Date startDate,
+			Date endDate,
+			List<Long> objectIdList
+	) {
+		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+	}
 }

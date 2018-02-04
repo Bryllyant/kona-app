@@ -4,6 +4,7 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.AppUserMapper;
+import com.bryllyant.kona.app.entity.ApiLog;
 import com.bryllyant.kona.app.entity.AppUser;
 import com.bryllyant.kona.app.entity.AppUserExample;
 import com.bryllyant.kona.app.service.AppUserService;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service(AppUserService.SERVICE_PATH)
@@ -26,15 +29,13 @@ public class AppUserServiceImpl
 	@Autowired
 	private AppUserMapper appUserDao;
     
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected AppUserMapper getDao() {
 		return appUserDao;
 	}
     
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected AppUserExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
 			Map<String, Object> filter, boolean distinct) {
@@ -56,13 +57,26 @@ public class AppUserServiceImpl
 		return example;
 	}
 	
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected AppUser getNewObject() {
 		return new AppUser();
 	}
 
-	// ----------------------------------------------------------------------------
+	@Override
+	protected void updateCoords(Long apiLogId) {
+		getDao().updateCoords(apiLogId);
+	}
 
+	@Override
+	public List<AppUser> fetchProximate(
+			Double latitude,
+			Double longitude,
+			Double radius,
+			Date startDate,
+			Date endDate,
+			List<Long> objectIdList
+	) {
+		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+	}
 }

@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <classPathEntry location="/opt/mysql/dba/lib/mariadb-java-client.jar" />
+    <classPathEntry location="/opt/mysql/dba/lib/connector/mysql-connector.jar" />
 
     <context id="tables" defaultModelType="flat" 
             targetRuntime="MyBatis3">
@@ -21,7 +21,7 @@
             -->
 
 
-        <jdbcConnection driverClass="org.mariadb.jdbc.Driver"
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
             connectionURL="jdbc:mysql://localhost:3306/kona"
             userId="kona"
             password="kona">
@@ -455,12 +455,12 @@
 
 
        <table schema="kona" 
-                tableName="kona__push_notification" 
-                domainObjectName="PushNotification"
+                tableName="kona__push_notification_provider"
+                domainObjectName="PushNotificationProvider"
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotification"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationProvider"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="sandbox" javaType="boolean" />
         </table>
@@ -613,12 +613,12 @@
         </table>
 
         <table schema="kona" 
-                tableName="kona__address_book" 
-                domainObjectName="AddressBook"
+                tableName="kona__contact"
+                domainObjectName="Contact"
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAddressBook"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseContact"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="email_verified" javaType="boolean" />
             <columnOverride column="mobile_verified" javaType="boolean" />

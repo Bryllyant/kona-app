@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 /**
- * PushNotification Controller.
+ * PushNotificationProvider Controller.
  */
 @RestController
 @RequestMapping("/api/push-notifications")
