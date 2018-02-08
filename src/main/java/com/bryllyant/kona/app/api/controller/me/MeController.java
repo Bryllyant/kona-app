@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.app.AppModel;

@@ -1638,6 +1638,7 @@ CREATE TABLE `kona__sms` (
   `opted_out` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `click_count` int(11) NOT NULL DEFAULT '0',
   `sent_date` datetime(6) NOT NULL,
+  `viewed_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1979,8 +1980,8 @@ CREATE TABLE `kona__push_notification_provider` (
   `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `push_platform` varchar(255) NOT NULL,
-  `push_server_key` varchar(2048) DEFAULT NULL,
-  `push_server_secret` varchar(2048) DEFAULT NULL,
+  `push_server_key` varchar(8192) DEFAULT NULL,
+  `push_server_secret` varchar(8192) DEFAULT NULL,
   `push_endpoint` varchar(1024) DEFAULT NULL,
   `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -2005,14 +2006,14 @@ CREATE TABLE `kona__push_notification_message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
+  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `title` varchar(255) DEFAULT NULL,
   `message` varchar(2000) NOT NULL,
   `image_url` varchar(512) DEFAULT NULL,
   `action_url` varchar(2000) DEFAULT NULL,
   `filter` varchar(2000) DEFAULT NULL,
-  `devices` blob DEFAULT NULL,
-  `device_count` int(11) unsigned NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -2022,8 +2023,65 @@ CREATE TABLE `kona__push_notification_message` (
 
   KEY `ix_kona__push_notification_message_app` (`app_id`),
 
+  KEY `ix_kona__push_notification_message_campaign` (`campaign_id`),
+
+  KEY `ix_kona__push_notification_message_campaign_channel` (`campaign_channel_id`),
+
+  CONSTRAINT `fk_kona__push_notification_message_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__push_notification_message_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
+
   CONSTRAINT `fk_kona__push_notification_message_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `kona__push_notification_delivery` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `app_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `device_id` bigint(20) unsigned NOT NULL,
+  `message_id` bigint(20) unsigned NOT NULL,
+  `message_instance_id` varchar(255) NOT NULL, -- unique identifier for this message sent to this device
+  `provider_message_id` varchar(255) default NULL, -- unique identifier from provider to track this message
+  `status` varchar(255) DEFAULT NULL,
+  `error_code` varchar(255) DEFAULT NULL,
+  `error_message` varchar(2000) DEFAULT NULL,
+  `failed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `delivered` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `opted_out` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `viewed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `sent_date` datetime(6) NOT NULL,
+  `delivered_date` datetime(6) DEFAULT NULL,
+  `viewed_date` datetime(6) DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__push_notification_delivery_uid` (`uid`),
+  UNIQUE KEY `ux_kona__push_notification_delivery_message_instance_id` (`message_instance_id`),
+  UNIQUE KEY `ux_kona__push_notification_delivery_provider_message_id` (`provider_message_id`),
+
+  KEY `ix_kona__push_notification_delivery_app` (`app_id`),
+  KEY `ix_kona__push_notification_delivery_user` (`user_id`),
+  KEY `ix_kona__push_notification_delivery_device` (`device_id`),
+  KEY `ix_kona__push_notification_delivery_message` (`message_id`),
+
+  CONSTRAINT `fk_kona__push_notification_delivery_app` FOREIGN KEY (`app_id`)
+        REFERENCES `kona__app` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__push_notification_delivery_user` FOREIGN KEY (`user_id`)
+        REFERENCES `kona__user` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__push_notification_delivery_device` FOREIGN KEY (`device_id`)
+        REFERENCES `kona__push_notification_device` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__push_notification_delivery_message` FOREIGN KEY (`message_id`)
+        REFERENCES `kona__push_notification_message` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

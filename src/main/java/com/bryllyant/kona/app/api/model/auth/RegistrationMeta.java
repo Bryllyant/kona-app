@@ -19,7 +19,7 @@ public class RegistrationMeta extends  KJsonModel {
         // internal use only
         // send verification email and text message
         // default: true
-        private Boolean verify;
+        private Boolean verifyUser;
 
         @RestdocsNotExpanded
         // internal use only
@@ -51,12 +51,12 @@ public class RegistrationMeta extends  KJsonModel {
         // External webhook to call after user is registered. Used by external API clients.
         private String webhookUrl;
 
-        public Boolean getVerify() {
-            return verify;
+        public Boolean getVerifyUser() {
+            return verifyUser;
         }
 
-        public void setVerify(Boolean verify) {
-            this.set("verify", verify);
+        public void setVerifyUser(Boolean verifyUser) {
+            this.set("verifyUser", verifyUser);
         }
 
         public Boolean getEmailVerified() {
@@ -140,7 +140,7 @@ public class RegistrationMeta extends  KJsonModel {
 
         // Set default options
         options.setLogin(false);
-        options.setVerify(true);
+        options.setVerifyUser(true);
         options.setEmailVerified(false);
         options.setMobileVerified(false);
         options.setUpdateCurrentUser(false);

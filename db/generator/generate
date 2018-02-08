@@ -173,8 +173,8 @@ updateSelectProximate Registration RegistrationMapper.java
 updateSelectProximate Token TokenMapper.java
 
 updatePresence User UserMapper.java
-fetchByUserIds PushNotificationDevice PushNotificationDeviceMapper.java
 fetchRandom EmailAddress EmailAddressMapper.java
+#fetchByUserIds PushNotificationDevice PushNotificationDeviceMapper.java
 
 
 updateCoordsMapper coords ApiLogMapper.xml

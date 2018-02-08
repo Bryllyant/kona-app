@@ -5,6 +5,8 @@ import com.bryllyant.kona.app.api.model.device.UserDeviceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Device;
+import com.bryllyant.kona.app.entity.KBaseDevice;
+import com.bryllyant.kona.app.entity.KDevice;
 import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserDevice;
@@ -126,6 +128,9 @@ public class DeviceModelService extends BaseModelService {
 
         device = deviceService.save(device);
 
+        // update device model with newly created device in case it's referenced again after making this call
+        setModel(model, device);
+
         logger.debug("getOrCreateDevice: device:\n" + device);
 
         return device;
@@ -188,12 +193,12 @@ public class DeviceModelService extends BaseModelService {
 
     // ----------------------------------------------------------------------
     
-    public UserDeviceModel toModel(UserDevice userDevice, String... includeKeys) {
+    public UserDeviceModel toUserDeviceModel(UserDevice userDevice, String... includeKeys) {
         
         UserDeviceModel model = new UserDeviceModel();
 
         // create base UserDeviceModel from DeviceModel
-        DeviceModel deviceModel = toModel((Device) userDevice);
+        DeviceModel deviceModel = toModel(userDevice);
         
         util.copyBean(deviceModel, model, true);
         
@@ -215,7 +220,7 @@ public class DeviceModelService extends BaseModelService {
         List<UserDeviceModel> modelList = new ArrayList<>();
 
         for (UserDevice device : deviceList) {
-            modelList.add(toModel(device, includeKeys));
+            modelList.add(toUserDeviceModel(device, includeKeys));
         }
 
         return modelList;
@@ -223,9 +228,7 @@ public class DeviceModelService extends BaseModelService {
 
     // ----------------------------------------------------------------------
 
-    public DeviceModel toModel(Device device, String... includeKeys) {
-        DeviceModel model = new DeviceModel();
-        
+    private <T extends KDevice> void setModel(DeviceModel model, T device) {
         model.fromBean(device);
 
         KDeviceType type = KDeviceType.getInstance(device.getTypeId());
@@ -235,9 +238,15 @@ public class DeviceModelService extends BaseModelService {
         model.setAdvertiserIdType(DeviceModel.AdvertiserIdType.from(device.getAdvertiserIdType()));
 
         if (device.getParentId() != null) {
-            Device parent = getDevice(device.getParentId()); 
+            Device parent = getDevice(device.getParentId());
             model.setParent(DeviceModel.create(parent.getUid()));
         }
+    }
+
+    public <T extends KDevice> DeviceModel toModel(T device, String... includeKeys) {
+        DeviceModel model = new DeviceModel();
+
+        setModel(model, device);
 
         logger.debug("toModel: device: includeKeys: " + includeKeys);
 

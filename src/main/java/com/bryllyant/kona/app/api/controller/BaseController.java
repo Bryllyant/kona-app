@@ -434,7 +434,7 @@ public abstract class BaseController {
 
     // ----------------------------------------------------------------------
 
-    // make user current user is the same user or the parent of the userId we're checking
+    // make sure current user is the same user or the parent of the userId we're checking
     protected void checkUserAuthorization(Long userId) {
         User user = userModelService.getUser(userId);
         checkUserAuthorization(user);

@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.device.UserDeviceModel;
@@ -32,9 +32,9 @@ import java.util.Map;
  * Device Controller.
  */
 @RestController
-@RequestMapping("/api/devices")
-public class UserDeviceController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(UserDeviceController.class);
+@RequestMapping("/api/me/devices")
+public class MyDeviceController extends BaseController {
+    private static Logger logger = LoggerFactory.getLogger(MyDeviceController.class);
 
     // ----------------------------------------------------------------------
 
@@ -54,9 +54,9 @@ public class UserDeviceController extends BaseController {
                                                         @RequestParam(value="q", required=false) String query,
                                                         @RequestParam(value="offset", required=false) Integer offset,
                                                         @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /devices");
+        logApiRequest(req, "GET /me/devices");
 
-        logger.debug("UserDeviceController: raw query: " + query);
+        logger.debug("MyDeviceController: raw query: " + query);
 
         Map<String,Object> filter = toFilterCriteria(query);  // returns keys in camelCase
 
@@ -81,7 +81,7 @@ public class UserDeviceController extends BaseController {
             limit = 99999;
         }
 
-        logger.debug("UserDeviceController: filter: " + KJsonUtil.toJson(filter));
+        logger.debug("MyDeviceController: filter: " + KJsonUtil.toJson(filter));
 
         return okList(deviceModelService.toUserDeviceModelList(
                 userDeviceService.fetchByCriteria(offset, limit, sortOrder, filter, distinct)));
@@ -94,11 +94,11 @@ public class UserDeviceController extends BaseController {
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
     public ResponseEntity<UserDeviceModel> get(HttpServletRequest req,
             @PathVariable String uid) {
-        logApiRequest(req, "GET /devices/" + uid);
+        logApiRequest(req, "GET /me/devices/" + uid);
 
         UserDevice device = deviceModelService.getUserDevice(getUser(), uid);
 
-        return ok(deviceModelService.toModel(device));
+        return ok(deviceModelService.toUserDeviceModel(device));
     }
 
     // ----------------------------------------------------------------------
@@ -112,7 +112,7 @@ public class UserDeviceController extends BaseController {
 
         device = saveObject(device, model);
 
-        return created(deviceModelService.toModel(device));
+        return created(deviceModelService.toUserDeviceModel(device));
     }
 
     // ----------------------------------------------------------------------
@@ -121,7 +121,7 @@ public class UserDeviceController extends BaseController {
     public ResponseEntity<UserDeviceModel> update(HttpServletRequest req,
             @PathVariable String uid,
             @RequestBody UserDeviceModel model) {
-        logApiRequest(req, "PUT /devices/" + uid);
+        logApiRequest(req, "PUT /me/devices/" + uid);
 
         UserDevice device = deviceModelService.getUserDevice(getUser(), uid);
 
@@ -131,7 +131,7 @@ public class UserDeviceController extends BaseController {
         
         device = saveObject(device, model);
 
-        return ok(deviceModelService.toModel(device));
+        return ok(deviceModelService.toUserDeviceModel(device));
     }
 
     // ----------------------------------------------------------------------
@@ -139,13 +139,13 @@ public class UserDeviceController extends BaseController {
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
     public ResponseEntity<UserDeviceModel> remove(HttpServletRequest req,
             @PathVariable String uid) {
-        logApiRequest(req, "DELETE /devices/" + uid);
+        logApiRequest(req, "DELETE /me/devices/" + uid);
 
         UserDevice userDevice = deviceModelService.getUserDevice(getUser(), uid);
 
         userDeviceService.remove(userDevice, true);
 
-        return ok(deviceModelService.toModel(userDevice));
+        return ok(deviceModelService.toUserDeviceModel(userDevice));
     }
 
     // ----------------------------------------------------------------------

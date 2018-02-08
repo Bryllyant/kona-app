@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.util.ApiUtil;
@@ -25,9 +25,9 @@ import java.util.Map;
  * Settings Controller.
  */
 @RestController
-@RequestMapping("/api/settings")
-public class SettingsController extends BaseController {
-	private static Logger logger = LoggerFactory.getLogger(SettingsController.class);
+@RequestMapping("/api/me/settings")
+public class MySettingsController extends BaseController {
+	private static Logger logger = LoggerFactory.getLogger(MySettingsController.class);
 
 	// ----------------------------------------------------------------------
     @Autowired
@@ -45,7 +45,7 @@ public class SettingsController extends BaseController {
 
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> get(HttpServletRequest req) {
-		logApiRequest(req, "GET /settings");
+		logApiRequest(req, "GET /me/settings");
 		return ok(getSettings());
 	}
 
@@ -54,7 +54,7 @@ public class SettingsController extends BaseController {
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<Map<String,Object>> update(HttpServletRequest req,
 			@RequestBody Map<String,Object> map) {
-		logApiRequest(req, "PUT /settings");
+		logApiRequest(req, "PUT /me/settings");
 
 		// NOTE convention:
 		// settings are stored using camelCaseKeys

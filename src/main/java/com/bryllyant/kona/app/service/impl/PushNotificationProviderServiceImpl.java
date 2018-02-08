@@ -34,30 +34,30 @@ public class PushNotificationProviderServiceImpl
 	
 	@Autowired
 	private PushProviderService pushProviderService;
-    
-	// ----------------------------------------------------------------------------
+
+	@Override
+	protected PushNotificationProvider getNewObject() {
+	    return new PushNotificationProvider();
+    }
 
 	@Override @SuppressWarnings("unchecked")
 	protected PushNotificationProviderMapper getDao() {
 		return mapper;
 	}
 	
-	// ----------------------------------------------------------------------------
-	
+
 	@Override @SuppressWarnings("unchecked")
 	protected AppService getAppService() {
 		return appService;
 	}
 	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected PushProviderService getPushProviderService() {
 		return pushProviderService;
 	}
     
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected PushNotificationProviderExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
 			Map<String, Object> filter, boolean distinct) {
@@ -78,8 +78,5 @@ public class PushNotificationProviderServiceImpl
 		
 		return example;
 	}
-
-
-	// ----------------------------------------------------------------------------
 
 }

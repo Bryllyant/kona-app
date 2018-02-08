@@ -340,17 +340,13 @@
             <columnOverride column="limit_ad_tracking_enabled" javaType="boolean" />
         </table>
 
-        <!--
-             NOTE: UserDevice needs to extend custom BaseUserDevice that extends Device 
-             and implements KUserDevice interface.
-        -->
-		<table schema="kona" 
+		<table schema="kona"
                 tableName="kona__user_device" 
                 domainObjectName="UserDevice" 
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.BaseUserDevice"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseUserDevice"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
@@ -486,6 +482,21 @@
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationMessage"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="sandbox" javaType="boolean" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__push_notification_delivery"
+               domainObjectName="PushNotificationDelivery"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationDelivery"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="sandbox" javaType="boolean" />
+            <columnOverride column="viewed" javaType="boolean" />
+            <columnOverride column="failed" javaType="boolean" />
+            <columnOverride column="delivered" javaType="boolean" />
+            <columnOverride column="opted_out" javaType="boolean" />
         </table>
 
 		<table schema="kona" 

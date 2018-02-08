@@ -6,6 +6,8 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.dao.PushNotificationMessageMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppUser;
+import com.bryllyant.kona.app.entity.Device;
+import com.bryllyant.kona.app.entity.PushNotificationDelivery;
 import com.bryllyant.kona.app.entity.PushNotificationProvider;
 import com.bryllyant.kona.app.entity.PushNotificationDevice;
 import com.bryllyant.kona.app.entity.PushNotificationMessage;
@@ -14,6 +16,7 @@ import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.AppUserService;
 import com.bryllyant.kona.app.service.KAbstractPushNotificationMessageService;
+import com.bryllyant.kona.app.service.PushNotificationDeliveryService;
 import com.bryllyant.kona.app.service.PushNotificationDeviceService;
 import com.bryllyant.kona.app.service.PushNotificationMessageService;
 import com.bryllyant.kona.app.service.PushProviderService;
@@ -27,108 +30,104 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(PushNotificationMessageService.SERVICE_PATH)
-public class PushNotificationMessageServiceImpl 
-		extends KAbstractPushNotificationMessageService<PushNotificationMessage,
-													   PushNotificationMessageExample,
-													   App,
-													   User,
-													   AppUser,
-        PushNotificationProvider,
-													   PushNotificationDevice> 
-		implements PushNotificationMessageService {
+public class PushNotificationMessageServiceImpl extends KAbstractPushNotificationMessageService<
+        PushNotificationMessage,
+        PushNotificationMessageExample,
+        App,
+        User,
+        Device,
+        AppUser,
+        PushNotificationDevice,
+        PushNotificationDelivery>
+        implements PushNotificationMessageService {
 
-	private static Logger logger = LoggerFactory.getLogger(PushNotificationMessageServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(PushNotificationMessageServiceImpl.class);
 
-	@Autowired
-	private PushNotificationMessageMapper mapper;
+    @Autowired
+    private PushNotificationMessageMapper mapper;
 
-	@Autowired
-	private AppService appService;
+    @Autowired
+    private AppService appService;
 
-	@Autowired
-	private AppUserService appUserService;
+    @Autowired
+    private AppUserService appUserService;
 
-	@Autowired
-	private PushNotificationDeviceService pushNotificationDeviceService;
+    @Autowired
+    private PushNotificationDeviceService pushNotificationDeviceService;
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private PushNotificationDeliveryService pushNotificationDeliveryService;
 
-	@Autowired
-	private PushProviderService pushProviderService;
-    
-	// ----------------------------------------------------------------------------
-	
-	@Override
-	protected PushNotificationMessage getNewObject() {
-		return new PushNotificationMessage();
-	}
+    @Autowired
+    private UserService userService;
 
-	// ----------------------------------------------------------------------------
+    @Autowired
+    private PushProviderService pushProviderService;
 
-	@Override @SuppressWarnings("unchecked")
-	protected PushNotificationMessageMapper getDao() {
-		return mapper;
-	}
+    @Override
+    protected boolean entityHasBlobs() {
+        return true;
+    }
 
-	// ----------------------------------------------------------------------------
+    @Override
+    protected PushNotificationMessage getNewObject() {
+        return new PushNotificationMessage();
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected AppService getAppService() {
-		return appService;
-	}
+    @Override @SuppressWarnings("unchecked")
+    protected PushNotificationMessageMapper getDao() {
+        return mapper;
+    }
 
-	// ----------------------------------------------------------------------------
+    @Override @SuppressWarnings("unchecked")
+    protected AppService getAppService() {
+        return appService;
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected PushNotificationDeviceService getPushNotificationDeviceService() {
-		return pushNotificationDeviceService;
-	}
+    @Override @SuppressWarnings("unchecked")
+    protected PushNotificationDeviceService getPushNotificationDeviceService() {
+        return pushNotificationDeviceService;
+    }
 
-	// ----------------------------------------------------------------------------
+    @Override @SuppressWarnings("unchecked")
+    protected PushNotificationDeliveryService getPushNotificationDeliveryService() {
+        return pushNotificationDeliveryService;
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected AppUserService getAppUserService() {
-		return appUserService;
-	}
+    @Override @SuppressWarnings("unchecked")
+    protected AppUserService getAppUserService() {
+        return appUserService;
+    }
 
-	// ----------------------------------------------------------------------------
+    @Override @SuppressWarnings("unchecked")
+    protected UserService getUserService() {
+        return userService;
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected UserService getUserService() {
-		return userService;
-	}
+    @Override @SuppressWarnings("unchecked")
+    protected PushProviderService getPushProviderService() {
+        return pushProviderService;
+    }
 
-	// ----------------------------------------------------------------------------
+    @Override
+    protected PushNotificationMessageExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+                                                                      Map<String, Object> filter, boolean distinct) {
+        PushNotificationMessageExample example = new PushNotificationMessageExample();
 
-	@Override @SuppressWarnings("unchecked")
-	protected PushProviderService getPushProviderService() {
-		return pushProviderService;
-	}
+        if (sortOrder != null) {
+            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
+        }
 
-	// ----------------------------------------------------------------------------
+        if (startRow == null) startRow = 0;
+        if (resultSize == null) resultSize = 99999999;
 
-	@Override
-	protected PushNotificationMessageExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		PushNotificationMessageExample example = new PushNotificationMessageExample();
+        example.setOffset(startRow);
+        example.setLimit(resultSize);
+        example.setDistinct(distinct);
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-		example.setOffset(startRow);
-		example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
+        return example;
+    }
 
 }

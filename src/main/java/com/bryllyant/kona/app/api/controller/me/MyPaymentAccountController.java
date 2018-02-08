@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2017 Bryllyant, Inc.  All Rights Reserved.
  */
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.User;
@@ -24,9 +24,9 @@ import java.util.Map;
  * Payment Controller.
  */
 @RestController
-@RequestMapping("/api/payment-accounts")
-public class PaymentAccountController extends BaseController {
-	private static Logger logger = LoggerFactory.getLogger(PaymentAccountController.class);
+@RequestMapping("/api/me/payment-accounts")
+public class MyPaymentAccountController extends BaseController {
+	private static Logger logger = LoggerFactory.getLogger(MyPaymentAccountController.class);
 
 	// ----------------------------------------------------------------------
 	
@@ -38,7 +38,7 @@ public class PaymentAccountController extends BaseController {
     @RequestMapping(value="/stripe/token", method=RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> addStripeToken(HttpServletRequest req,
             @RequestBody Map<String,Object> map) {
-        logApiRequest(req, "POST /payment-accounts/stripe/token");
+        logApiRequest(req, "POST /me/payment-accounts/stripe/token");
         
         @SuppressWarnings("unchecked")
         Map<String,Object> stripeToken = (Map<String,Object>) map.get("stripe_token");

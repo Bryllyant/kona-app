@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.notification.NotificationModel;
@@ -28,9 +28,9 @@ import java.util.Map;
  * UserNotification Controller.
  */
 @RestController
-@RequestMapping("/api/notifications")
-public class NotificationController extends BaseController {
-	private static Logger logger = LoggerFactory.getLogger(NotificationController.class);
+@RequestMapping("/api/me/notifications")
+public class MyNotificationController extends BaseController {
+	private static Logger logger = LoggerFactory.getLogger(MyNotificationController.class);
 	
 	// ----------------------------------------------------------------------
     
@@ -46,7 +46,7 @@ public class NotificationController extends BaseController {
 	public ResponseEntity<List<NotificationModel>> search(HttpServletRequest req,
 			@RequestParam(value="last_uid", required=false) String lastUid,
 			@RequestParam(value="limit", required=false) Integer limit) {
-		logApiRequest(req, "GET /notifications");
+		logApiRequest(req, "GET /me/notifications");
 
         Long userId = getUser().getId();
         
@@ -63,7 +63,7 @@ public class NotificationController extends BaseController {
 	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public ResponseEntity<NotificationModel> get(HttpServletRequest req,
 			@PathVariable String uid) {
-		logApiRequest(req, "GET /notifications/" + uid);
+		logApiRequest(req, "GET /me/notifications/" + uid);
 		
         Notification notification = notificationModelService.getNotification(uid);
         Long userId = getUser().getId();
@@ -83,7 +83,7 @@ public class NotificationController extends BaseController {
 	public ResponseEntity<NotificationModel> update(HttpServletRequest req,
 			@PathVariable String uid,
 			@RequestBody Map<String,Object> map) {
-		logApiRequest(req, "PUT /notifications/" + uid);
+		logApiRequest(req, "PUT /me/notifications/" + uid);
 		
         Notification notification = notificationModelService.getNotification(uid);
         Long userId = getUser().getId();
@@ -103,7 +103,7 @@ public class NotificationController extends BaseController {
 	
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<Map<String,Object>> updateAll(HttpServletRequest req) {
-		logApiRequest(req, "PUT /notifications");
+		logApiRequest(req, "PUT /me/notifications");
 		
         Long userId = getUser().getId();
         

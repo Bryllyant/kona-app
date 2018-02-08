@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.social.friendship.FriendshipCircleModel;
@@ -40,9 +40,9 @@ import java.util.Map;
  * Friendship Controller.
  */
 @RestController
-@RequestMapping("/api/friendships")
-public class FriendshipController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(FriendshipController.class);
+@RequestMapping("/api/me/friendships")
+public class MyFriendshipController extends BaseController {
+    private static Logger logger = LoggerFactory.getLogger(MyFriendshipController.class);
 
     // ----------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ public class FriendshipController extends BaseController {
             @RequestParam(value="followings", required=false) Boolean includeFollowings,
             @RequestParam(value="friends", required=false) Boolean includeFriends) {
 
-		logApiRequest(req, "GET /friendships");
+		logApiRequest(req, "GET /me/friendships");
 		
 		if (includeFollowers == null) {
 			includeFollowers = true;
@@ -127,7 +127,7 @@ public class FriendshipController extends BaseController {
 	@RequestMapping(value="/friends/{friendUid}", method=RequestMethod.GET)
 	public ResponseEntity<FriendshipModel> getFriendship(HttpServletRequest req,
 			@PathVariable String friendUid) {
-		logApiRequest(req, "GET /friendships/friends/" + friendUid);
+		logApiRequest(req, "GET /me/friendships/friends/" + friendUid);
 		
 		User friend = userModelService.getUser(friendUid);
 
@@ -142,22 +142,20 @@ public class FriendshipController extends BaseController {
 		return ok(friendshipModelService.toModel(friendship));
 	}
 
-	// ----------------------------------------------------------------------
-	
+
 	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public ResponseEntity<FriendshipModel> get(HttpServletRequest req,
 			@PathVariable String uid) {
-		logApiRequest(req, "GET /friendships/" + uid);
+		logApiRequest(req, "GET /me/friendships/" + uid);
 
 		return ok(friendshipModelService.toModel(getFriendship(uid)));
 	}
 	
-	// ----------------------------------------------------------------------
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<FriendshipModel> follow(HttpServletRequest req,
 			@RequestBody FriendshipRequest requestModel) {
-		logApiRequest(req, "POST /friendships");
+		logApiRequest(req, "POST /me/friendships");
 
 		Friendship friendship = new Friendship();
 
@@ -172,13 +170,12 @@ public class FriendshipController extends BaseController {
 		return created(friendshipModelService.toModel(friendship));
 	}
 
-	// ----------------------------------------------------------------------
 
 	@RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
 	public ResponseEntity<FriendshipModel> block(HttpServletRequest req,
 			@PathVariable String uid,
 			@RequestBody Map<String,Object> map) {
-		logApiRequest(req, "PUT /friendships/" + uid);
+		logApiRequest(req, "PUT /me/friendships/" + uid);
 
 		Friendship friendship = getFriendship(uid);
 		
@@ -207,12 +204,11 @@ public class FriendshipController extends BaseController {
 		return ok(friendshipModelService.toModel(friendship));
 	}
 
-	// ----------------------------------------------------------------------
-	
+
 	@RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
 	public ResponseEntity<FriendshipModel> unfollow(HttpServletRequest req,
 			@PathVariable String uid) {
-		logApiRequest(req, "DELETE /friendships/" + uid);
+		logApiRequest(req, "DELETE /me/friendships/" + uid);
 
 		Friendship friendship = getFriendship(uid);
 		
@@ -227,8 +223,7 @@ public class FriendshipController extends BaseController {
 		return ok(friendshipModelService.toModel(friendship));
 	}
 
-	// ----------------------------------------------------------------------
-	
+
     private Friendship saveObject(Friendship friendship, FriendshipRequest model) {
     	logger.debug("mapToObject called for friendship: " + friendship);
         
@@ -295,7 +290,7 @@ public class FriendshipController extends BaseController {
                         firstName, 
                         resend);
 
-                logger.debug("FriendshipController: saveObject: invitation: " + invitation);
+                logger.debug("MyFriendshipController: saveObject: invitation: " + invitation);
 
                 return null;
             }
@@ -328,10 +323,6 @@ public class FriendshipController extends BaseController {
         return friendship;
     }
     
-
-    
-    // ----------------------------------------------------------------------
-
     public Friendship getFriendship(String uid) {
         Friendship friendship = friendshipService.fetchByUid(uid);
         if (friendship == null) {

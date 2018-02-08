@@ -4,6 +4,7 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.auth.LoginRequest;
+import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.security.token.AccessToken;
 import com.bryllyant.kona.app.api.security.token.HttpHeaderTokenReader;
 import com.bryllyant.kona.app.config.KConfig;
@@ -325,14 +326,14 @@ public class ApiAuthService {
             }
 
             if (credentials.getDevice() != null) {
-			    Device device = deviceModelService.getDevice(credentials.getDevice());
+			    Device device = deviceModelService.getOrCreateDevice(credentials.getDevice());
 			    token.setDeviceId(device.getId());
             }
 
-            if (credentials.getPosition() != null) {
-			    Position position = positionModelService.getPosition(credentials.getPosition());
-			    token.setLatitude(position.getLatitude());
-                token.setLongitude(position.getLongitude());
+            if (credentials.getPosition() != null && credentials.getPosition().getCoordinates() != null) {
+                PositionModel.Coordinates coords = credentials.getPosition().getCoordinates();
+			    token.setLatitude(coords.getLatitude());
+                token.setLongitude(coords.getLongitude());
             }
 
 

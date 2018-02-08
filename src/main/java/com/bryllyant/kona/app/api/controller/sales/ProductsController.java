@@ -45,7 +45,7 @@ public class ProductsController extends SalesController {
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /app/sales/products");
+        logApiRequest(req, "GET /sales/products");
 
         logger.debug("ProductsController: raw query: " + query);
 

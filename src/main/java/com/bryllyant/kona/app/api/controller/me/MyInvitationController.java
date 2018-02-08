@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.user;
+package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
@@ -30,9 +30,9 @@ import java.util.Map;
  * Invitation Controller.
  */
 @RestController
-@RequestMapping("/api/social/invitations")
-public class InvitationController extends BaseController {
-	private static Logger logger = LoggerFactory.getLogger(InvitationController.class);
+@RequestMapping("/api/me/invitations")
+public class MyInvitationController extends BaseController {
+	private static Logger logger = LoggerFactory.getLogger(MyInvitationController.class);
 
 	// ----------------------------------------------------------------------
 	
@@ -51,7 +51,7 @@ public class InvitationController extends BaseController {
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<InvitationModel>> search(HttpServletRequest req,
 			@RequestParam(value="pending", required=false) Boolean pending) {
-		logApiRequest(req, "GET /social/invitations");
+		logApiRequest(req, "GET /me/invitations");
 		
 		KInvitationStatus status = null;
 		if (pending != null && pending == true) {
@@ -70,7 +70,7 @@ public class InvitationController extends BaseController {
 	@RequestMapping(value="/{code}", method=RequestMethod.GET)
 	public ResponseEntity<InvitationModel> getByCode(HttpServletRequest req,
 			@PathVariable String invitationCode) {
-		logApiRequest(req, "GET /social/invitations/" + invitationCode);
+		logApiRequest(req, "GET /me/invitations/" + invitationCode);
 
 		return ok(invitationModelService.toModel(getInvitation(invitationCode)));
 	}
@@ -80,7 +80,7 @@ public class InvitationController extends BaseController {
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<InvitationModel> create(HttpServletRequest req,
 			@RequestBody Map<String,Object> map) {
-		logApiRequest(req, "POST /social/invitations");
+		logApiRequest(req, "POST /me/invitations");
 
 		Invitation invitation = new Invitation();
 

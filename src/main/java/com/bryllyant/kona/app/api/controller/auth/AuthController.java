@@ -79,8 +79,6 @@ import java.util.Map;
 public class AuthController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    // ----------------------------------------------------------------------
-
     @Autowired
     private ApiAuthService apiAuthService;
 
@@ -847,7 +845,7 @@ public class AuthController extends BaseController {
     ) {
 
         RegistrationMeta.Options options = registrationRequest.getMeta().getOptions();
-        Boolean verify = options.getVerify();
+        Boolean verify = options.getVerifyUser();
         Boolean emailVerified = options.getEmailVerified();
         Boolean mobileVerified = options.getMobileVerified();
         Boolean updateCurrentUser = options.getUpdateCurrentUser();
@@ -1004,6 +1002,9 @@ public class AuthController extends BaseController {
             LoginRequest credentials = new LoginRequest();
             credentials.setUsername(user.getUsername());
             credentials.setPassword(password);
+            credentials.setDevice(deviceModel);
+            credentials.setPosition(meta.getPosition());
+            credentials.setAppVersion(meta.getAppVersion());
 
             logger.debug("createUser: login credentials:\n" + credentials + "\n\nuser:\n" + user);
 
