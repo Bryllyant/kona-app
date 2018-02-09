@@ -451,46 +451,35 @@
 
 
        <table schema="kona" 
-                tableName="kona__push_notification_provider"
-                domainObjectName="PushNotificationProvider"
+                tableName="kona__push_provider"
+                domainObjectName="PushProvider"
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationProvider"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushProvider"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="sandbox" javaType="boolean" />
         </table>
 
         <table schema="kona" 
-                tableName="kona__push_notification_device" 
-                domainObjectName="PushNotificationDevice"
+                tableName="kona__push_device"
+                domainObjectName="PushDevice"
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationDevice"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushDevice"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="sandbox" javaType="boolean" />
         </table>
 
         <table schema="kona" 
-                tableName="kona__push_notification_message" 
-                domainObjectName="PushNotificationMessage"
+                tableName="kona__push"
+                domainObjectName="Push"
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationMessage"/>
-            <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="sandbox" javaType="boolean" />
-        </table>
-
-        <table schema="kona"
-               tableName="kona__push_notification_delivery"
-               domainObjectName="PushNotificationDelivery"
-               delimitAllColumns="true"
-               delimitIdentifiers="true">
-            <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushNotificationDelivery"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePush"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="sandbox" javaType="boolean" />
             <columnOverride column="viewed" javaType="boolean" />
@@ -498,6 +487,7 @@
             <columnOverride column="delivered" javaType="boolean" />
             <columnOverride column="opted_out" javaType="boolean" />
         </table>
+
 
 		<table schema="kona" 
                 tableName="kona__sms" 

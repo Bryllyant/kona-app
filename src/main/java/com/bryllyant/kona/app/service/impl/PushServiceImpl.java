@@ -3,22 +3,20 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.dao.PushNotificationMessageMapper;
+import com.bryllyant.kona.app.dao.PushMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppUser;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.PushNotificationDelivery;
-import com.bryllyant.kona.app.entity.PushNotificationProvider;
-import com.bryllyant.kona.app.entity.PushNotificationDevice;
-import com.bryllyant.kona.app.entity.PushNotificationMessage;
-import com.bryllyant.kona.app.entity.PushNotificationMessageExample;
+import com.bryllyant.kona.app.entity.PushDevice;
+import com.bryllyant.kona.app.entity.Push;
+import com.bryllyant.kona.app.entity.PushExample;
+import com.bryllyant.kona.app.entity.PushProvider;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.AppUserService;
-import com.bryllyant.kona.app.service.KAbstractPushNotificationMessageService;
-import com.bryllyant.kona.app.service.PushNotificationDeliveryService;
-import com.bryllyant.kona.app.service.PushNotificationDeviceService;
-import com.bryllyant.kona.app.service.PushNotificationMessageService;
+import com.bryllyant.kona.app.service.KAbstractPushService;
+import com.bryllyant.kona.app.service.PushDeviceService;
+import com.bryllyant.kona.app.service.PushService;
 import com.bryllyant.kona.app.service.PushProviderService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
@@ -29,22 +27,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Service(PushNotificationMessageService.SERVICE_PATH)
-public class PushNotificationMessageServiceImpl extends KAbstractPushNotificationMessageService<
-        PushNotificationMessage,
-        PushNotificationMessageExample,
+@Service(PushService.SERVICE_PATH)
+public class PushServiceImpl extends KAbstractPushService<
+        Push,
+        PushExample,
         App,
         User,
         Device,
         AppUser,
-        PushNotificationDevice,
-        PushNotificationDelivery>
-        implements PushNotificationMessageService {
+        PushProvider,
+        PushDevice>
+        implements PushService {
 
-    private static Logger logger = LoggerFactory.getLogger(PushNotificationMessageServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(PushServiceImpl.class);
 
     @Autowired
-    private PushNotificationMessageMapper mapper;
+    private PushMapper mapper;
 
     @Autowired
     private AppService appService;
@@ -53,10 +51,7 @@ public class PushNotificationMessageServiceImpl extends KAbstractPushNotificatio
     private AppUserService appUserService;
 
     @Autowired
-    private PushNotificationDeviceService pushNotificationDeviceService;
-
-    @Autowired
-    private PushNotificationDeliveryService pushNotificationDeliveryService;
+    private PushDeviceService pushDeviceService;
 
     @Autowired
     private UserService userService;
@@ -64,18 +59,14 @@ public class PushNotificationMessageServiceImpl extends KAbstractPushNotificatio
     @Autowired
     private PushProviderService pushProviderService;
 
-    @Override
-    protected boolean entityHasBlobs() {
-        return true;
-    }
 
     @Override
-    protected PushNotificationMessage getNewObject() {
-        return new PushNotificationMessage();
+    protected Push getNewObject() {
+        return new Push();
     }
 
     @Override @SuppressWarnings("unchecked")
-    protected PushNotificationMessageMapper getDao() {
+    protected PushMapper getDao() {
         return mapper;
     }
 
@@ -85,13 +76,8 @@ public class PushNotificationMessageServiceImpl extends KAbstractPushNotificatio
     }
 
     @Override @SuppressWarnings("unchecked")
-    protected PushNotificationDeviceService getPushNotificationDeviceService() {
-        return pushNotificationDeviceService;
-    }
-
-    @Override @SuppressWarnings("unchecked")
-    protected PushNotificationDeliveryService getPushNotificationDeliveryService() {
-        return pushNotificationDeliveryService;
+    protected PushDeviceService getPushDeviceService() {
+        return pushDeviceService;
     }
 
     @Override @SuppressWarnings("unchecked")
@@ -110,9 +96,9 @@ public class PushNotificationMessageServiceImpl extends KAbstractPushNotificatio
     }
 
     @Override
-    protected PushNotificationMessageExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-                                                                      Map<String, Object> filter, boolean distinct) {
-        PushNotificationMessageExample example = new PushNotificationMessageExample();
+    protected PushExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+                                                   Map<String, Object> filter, boolean distinct) {
+        PushExample example = new PushExample();
 
         if (sortOrder != null) {
             example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));

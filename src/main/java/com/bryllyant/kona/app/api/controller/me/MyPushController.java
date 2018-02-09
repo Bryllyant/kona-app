@@ -2,20 +2,14 @@ package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.PushNotificationDevice;
-import com.bryllyant.kona.app.entity.PushNotificationProvider;
-import com.bryllyant.kona.app.entity.User;
-import com.bryllyant.kona.app.entity.UserDevice;
+import com.bryllyant.kona.app.entity.PushDevice;
 import com.bryllyant.kona.app.service.DeviceService;
-import com.bryllyant.kona.app.service.PushNotificationDeviceService;
-import com.bryllyant.kona.app.service.PushNotificationProviderService;
+import com.bryllyant.kona.app.service.PushDeviceService;
 import com.bryllyant.kona.app.service.PushProviderService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserDeviceService;
-import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.SystemException;
-import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 /**
- * PushNotificationProvider Controller.
+ * PushProvider Controller.
  */
 @RestController
-@RequestMapping("/api/me/push-notifications")
-public class MyPushNotificationController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(MyPushNotificationController.class);
+@RequestMapping("/api/me/push")
+public class MyPushController extends BaseController {
+    private static Logger logger = LoggerFactory.getLogger(MyPushController.class);
 
     // ----------------------------------------------------------------------
 
@@ -45,10 +38,7 @@ public class MyPushNotificationController extends BaseController {
     private PushProviderService pushProviderService;
 
     @Autowired
-    private PushNotificationDeviceService pushNotificationDeviceService;
-
-    @Autowired
-    private PushNotificationProviderService pushNotificationProviderService;
+    private PushDeviceService pushDeviceService;
 
     @Autowired
     private UserDeviceService userDeviceService;
@@ -64,7 +54,7 @@ public class MyPushNotificationController extends BaseController {
     @RequestMapping(value="/devices", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> create(HttpServletRequest req,
                                                      @RequestBody Map<String,Object> map) {
-        logApiRequest(req, "POST /me/push-devices");
+        logApiRequest(req, "POST /me/push/devices");
 
         Long appId = getAppId(req);
 
@@ -115,7 +105,7 @@ public class MyPushNotificationController extends BaseController {
         device.setLimitAdTrackingEnabled(limitAdTrackingEnabled);
 
         try {
-            PushNotificationDevice pushDevice = pushNotificationDeviceService.save(appId, getUser(), device, pushToken, sandbox);
+            PushDevice pushDevice = pushDeviceService.save(appId, getUser(), device, pushToken, sandbox);
 
             if (pushDevice == null) {
                 throw new SystemException("Error creating push notification device");
@@ -158,7 +148,7 @@ public class MyPushNotificationController extends BaseController {
 //                    userDevice = ud;
 //
 //                    // check if this device is already assigned to this token
-//                    pushDevice = pushNotificationDeviceService
+//                    pushDevice = pushDeviceService
 //                            .fetchByAppIdAndUserIdAndDeviceId(appId, userId, ud.getDeviceId(), sandbox);
 //
 //                    if (pushDevice != null
@@ -187,13 +177,13 @@ public class MyPushNotificationController extends BaseController {
 //
 //
 //        if (pushDevice != null) {
-//            pushDevice = pushNotificationDeviceService
+//            pushDevice = pushDeviceService
 //                    .fetchByAppIdAndUserIdAndDeviceId(appId, userId, deviceId, sandbox);
 //        }
 //
 //        // sanity check - see if this push token is tied to another
-//        PushNotificationDevice otherPushDevice =
-//                pushNotificationDeviceService.fetchByPushToken(pushToken);
+//        PushDevice otherPushDevice =
+//                pushDeviceService.fetchByPushToken(pushToken);
 //
 //        if (otherPushDevice != null && (pushDevice == null || !pushDevice.getId().equals(otherPushDevice.getId()))) {
 //            logger.info("Push token already assigned to different device:\n other device: ${otherPushDevice}\n current push device: ${pushDevice}");
@@ -201,21 +191,21 @@ public class MyPushNotificationController extends BaseController {
 //        }
 //
 //        if (pushDevice == null) {
-//            PushNotificationProvider pushProvider =
-//                    pushNotificationProviderService
+//            PushProvider pushProvider =
+//                    pushProviderService
 //                            .fetchByAppIdAndPlatformAndSandbox(appId, pushPlatform, sandbox);
 //
-//            pushDevice = new PushNotificationDevice();
+//            pushDevice = new PushDevice();
 //            pushDevice.setAppId(appId);
 //            pushDevice.setUserId(userId);
 //            pushDevice.setDeviceId(deviceId);
-//            pushDevice.setPushNotificationProviderId(pushProvider.getId());
+//            pushDevice.setPushProviderId(pushProvider.getId());
 //        }
 //
 //        pushDevice.setPushToken(pushToken);
 //        pushDevice.setSandbox(sandbox);
 //
-//        pushDevice = pushNotificationDeviceService.save(pushDevice);
+//        pushDevice = pushDeviceService.save(pushDevice);
 //
 //        logger.debug("created pushDevice: " + pushDevice);
 
@@ -224,7 +214,7 @@ public class MyPushNotificationController extends BaseController {
     }
 
 
-    public Map<String,Object> toMap(PushNotificationDevice pushDevice) {
+    public Map<String,Object> toMap(PushDevice pushDevice) {
         Device device = deviceService.fetchById(pushDevice.getDeviceId());
 
         Map<String,Object> map = new HashMap<>();

@@ -174,7 +174,7 @@ updateSelectProximate Token TokenMapper.java
 
 updatePresence User UserMapper.java
 fetchRandom EmailAddress EmailAddressMapper.java
-#fetchByUserIds PushNotificationDevice PushNotificationDeviceMapper.java
+#fetchByUserIds PushDevice PushDeviceMapper.java
 
 
 updateCoordsMapper coords ApiLogMapper.xml
