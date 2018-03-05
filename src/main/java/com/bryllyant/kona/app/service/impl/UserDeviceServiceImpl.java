@@ -26,7 +26,7 @@ public class UserDeviceServiceImpl
 	
 	private static Logger logger = LoggerFactory.getLogger(UserDeviceServiceImpl.class);
 
-// ----------------------------------------------------------------------------
+
 
 	@Autowired
 	private UserDeviceMapper userDeviceDao;
@@ -34,48 +34,32 @@ public class UserDeviceServiceImpl
 	@Autowired
 	private DeviceService deviceService;
 	
-// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserDeviceMapper getDao() {
 		return userDeviceDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected UserDevice getNewObject() {
 		return new UserDevice();
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected  DeviceService getDeviceService() {
 	    return deviceService;
 	}
 
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected UserDeviceExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		UserDeviceExample example = new UserDeviceExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected UserDeviceExample getEntityExampleObject() { return new UserDeviceExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
 
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 }

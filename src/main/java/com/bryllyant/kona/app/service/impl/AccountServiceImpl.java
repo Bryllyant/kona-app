@@ -11,14 +11,11 @@ import com.bryllyant.kona.app.service.AccountService;
 import com.bryllyant.kona.app.service.EntityNameRuleService;
 import com.bryllyant.kona.app.service.KAbstractAccountService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.util.KInflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(AccountService.SERVICE_PATH)
 public class AccountServiceImpl
@@ -36,14 +33,14 @@ public class AccountServiceImpl
     @Autowired
     EntityNameRuleService entityNameRuleService;
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     protected Account getNewObject() {
         return new Account();
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -51,7 +48,7 @@ public class AccountServiceImpl
         return accountDao;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -59,7 +56,7 @@ public class AccountServiceImpl
         return userService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     public boolean isAccountNameAvailable(String name) {
@@ -86,28 +83,31 @@ public class AccountServiceImpl
         return (account == null);
     }
 
-    // ----------------------------------------------------------------------------
+
+
+//    @Override
+//    protected AccountExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
+//                                                      Map<String, Object> filter, boolean distinct) {
+//        AccountExample example = new AccountExample();
+//
+//        if (sortOrder != null) {
+//            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
+//        }
+//
+//        if (startRow == null) startRow = 0;
+//        if (resultSize == null) resultSize = 99999999;
+//
+//        example.setOffset(startRow);
+//        example.setLimit(resultSize);
+//        example.setDistinct(distinct);
+//
+//        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
+//        return example;
+//    }
+
 
     @Override
-    protected AccountExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-                                                      Map<String, Object> filter, boolean distinct) {
-        AccountExample example = new AccountExample();
-
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
+    protected AccountExample getEntityExampleObject() {
+        return new AccountExample();
     }
-
-    // ----------------------------------------------------------------------------
-
 }

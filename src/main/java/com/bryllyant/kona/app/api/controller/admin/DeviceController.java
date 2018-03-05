@@ -37,7 +37,7 @@ import com.bryllyant.kona.app.service.DeviceService;
 public class DeviceController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(DeviceController.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private DeviceService deviceService;
@@ -48,7 +48,7 @@ public class DeviceController extends BaseController {
     @Autowired
     private ApiUtil util; 
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method=RequestMethod.GET)
     public ResponseEntity<List<DeviceModel>> search(HttpServletRequest req,
@@ -87,7 +87,7 @@ public class DeviceController extends BaseController {
 
 
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
     public ResponseEntity<DeviceModel> get(HttpServletRequest req,
@@ -99,7 +99,7 @@ public class DeviceController extends BaseController {
         return ok(deviceModelService.toModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<DeviceModel> create(HttpServletRequest req,
@@ -113,7 +113,7 @@ public class DeviceController extends BaseController {
         return created(deviceModelService.toModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
     public ResponseEntity<DeviceModel> update(HttpServletRequest req,
@@ -132,7 +132,7 @@ public class DeviceController extends BaseController {
         return ok(deviceModelService.toModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
     public ResponseEntity<DeviceModel> remove(HttpServletRequest req,
@@ -146,7 +146,7 @@ public class DeviceController extends BaseController {
         return ok(deviceModelService.toModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Device saveObject(HttpServletRequest req, Device device, DeviceModel model) {
         logger.debug("mapToObject called for device: " + device);
@@ -164,7 +164,7 @@ public class DeviceController extends BaseController {
         return deviceService.save(device);
     }
 
-    // ----------------------------------------------------------------------
+
     
 
     @Override

@@ -99,7 +99,7 @@ public class ApiAuthService {
     private PositionModelService positionModelService;
 
 
-	// ----------------------------------------------------------------------
+
 
 
 	// NOTE: this accessToken could either be an APP clientId or a USER accessToken 
@@ -139,13 +139,15 @@ public class ApiAuthService {
 	
 
 
-	// ----------------------------------------------------------------------
+	public List<String> getUserRoles(User user) {
+	    return userService.getRoles(user);
+    }
+
 
 	public  HttpServletRequest getCurrentHttpServletRequest() {
 		return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 	}
 
-	// ----------------------------------------------------------------------
 
 	public User getUser() {
 		User user = null;
@@ -159,7 +161,7 @@ public class ApiAuthService {
 		return user;
 	}
 
-	// ----------------------------------------------------------------------
+
 	public User getUser(HttpServletRequest req) {
 	    User user = null;
 
@@ -172,7 +174,7 @@ public class ApiAuthService {
 	    return user;
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public Token getToken() {
 	    Token token = null;
@@ -187,7 +189,7 @@ public class ApiAuthService {
 	}
 
 
-	// ----------------------------------------------------------------------
+
 	
 	public String getAccessToken(HttpServletRequest req) {
 		String accessToken = getAccessToken();
@@ -199,25 +201,25 @@ public class ApiAuthService {
 		return accessToken;
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
 	public App getApp() {
 	    return getApp(getCurrentHttpServletRequest());
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
 	public App getApp(HttpServletRequest req) {
 		return fetchAppByClientId(getClientId(req));
 	}
 	
-	// ----------------------------------------------------------------------
+
 
     public Long getAppId() {
         return getAppId(getCurrentHttpServletRequest()); 
     }
 
-	// ----------------------------------------------------------------------
+
     public Long getAppId(HttpServletRequest req) {
         Long appId = null;
 
@@ -230,7 +232,7 @@ public class ApiAuthService {
 		return appId;
     }
 	
-	// ----------------------------------------------------------------------
+
 
 	public String getClientId(HttpServletRequest req) {
 		String clientId = null;
@@ -244,13 +246,13 @@ public class ApiAuthService {
 		return clientId;
 	}
 
-	// ----------------------------------------------------------------------
+
 	
 	public Token directLogin(String username, String password) {
 		return directLogin(null, username, password);
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
 	public Token directLogin(String clientId, String username, String password) {
 		Token token = null;
@@ -274,7 +276,7 @@ public class ApiAuthService {
 		return token;
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	public Token oauth2Login(String clientId, String username, String password) {
 		Token token = null;
@@ -297,7 +299,7 @@ public class ApiAuthService {
 		return token;
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
 	public Token oauth2Login(HttpServletRequest req, LoginRequest credentials, KServiceClient client) {
 		String clientId = getClientId(req);
@@ -349,55 +351,55 @@ public class ApiAuthService {
 		}
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public Token fetchTokenByRefreshToken(String refreshToken) {
 		return tokenService.fetchByRefreshToken(refreshToken);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public Token fetchTokenByAccessToken(String accessToken) {
 		return fetchTokenByAccessToken(accessToken, true);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public Token fetchTokenByAccessToken(String accessToken, boolean validate) {
 		return tokenService.fetchByAccessToken(accessToken, validate);
 	}
 
-	// ----------------------------------------------------------------------
+
 	
 	public User fetchUserByAccessToken(String accessToken) {
 	    return userService.fetchByAccessToken(accessToken, false);
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	public List<Token> fetchTokensByClientId(String clientId) {
 		return tokenService.fetchByClientId(clientId);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public Token updateToken(Token token) {
 		return tokenService.update(token);
 	}
 
-	// ----------------------------------------------------------------------
+
 	
 	public Token createToken(Long userId, String clientId) {
 		return oauth2TokenService.createToken(clientId, userId);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public User fetchUserById(Long userId) {
 		return userService.fetchById(userId);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public App fetchAppByClientId(String clientId) {
 		App app = null;
@@ -411,20 +413,20 @@ public class ApiAuthService {
 		return app;
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public App fetchAppById(Long appId) {
 		return appService.fetchById(appId);
 	}
 
 
-	// ----------------------------------------------------------------------
+
 
 	public AppCreds fetchAppCredsByClientId(String clientId) {
 		return appCredsService.fetchByClientId(clientId);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public AccessToken getClientAccessToken(HttpServletRequest req) {
 		AccessToken accessToken = null;
@@ -456,7 +458,7 @@ public class ApiAuthService {
 		return accessToken;
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	public List<String> toScopeList(String scope) {
 		if (scope == null) {
@@ -477,7 +479,7 @@ public class ApiAuthService {
 	}
 	
 	
-	// ----------------------------------------------------------------------
+
 	
 	// ensure that a comma or space separated list of scopes is always saved as comma separated
     public String toScopeString(String scope) {
@@ -485,14 +487,14 @@ public class ApiAuthService {
         return KStringUtil.toCommaList(scopeList);
     }
 
-	// ----------------------------------------------------------------------
+
 	
 	public String getUserInfo(HttpServletRequest req) {
 		User user = getUser();
 		return getUserInfo(req, user);
 	}
 	
-	// ----------------------------------------------------------------------
+
 		
 	public String getUserInfo(HttpServletRequest req, User user) {
 		// If we're accessing this method from an authenticated resource
@@ -526,13 +528,13 @@ public class ApiAuthService {
 		return message;
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
 	public List<String> getVerificationCodes(String mobileNumber) {
         return verificationCodeMap.get(mobileNumber);
     }
     
-	// ----------------------------------------------------------------------
+
 
     public void addVerificationCode(String mobileNumber, String code) {
         List<String> codes = getVerificationCodes(mobileNumber);
@@ -546,13 +548,13 @@ public class ApiAuthService {
         verificationCodeMap.put(mobileNumber, codes);
     }
     
-	// ----------------------------------------------------------------------
+
 
     public void removeVerificationCodes(String mobileNumber) {
         verificationCodeMap.remove(mobileNumber);
     }
     
-	// ----------------------------------------------------------------------
+
 
     public String sendVerificationCode(Long appId, String mobileNumber,
             final String country, final boolean sendTestCode) {
@@ -600,7 +602,7 @@ public class ApiAuthService {
         return code;
     }
     
-    // ----------------------------------------------------------------------
+
     
     public void changePassword(final String username, String password) {
         //logger.debug("change password for username: [" + username + "]");
@@ -609,7 +611,7 @@ public class ApiAuthService {
         userAuthService.setPlainPassword(user.getId(), password);
     }
     
-    // ----------------------------------------------------------------------
+
 
     public boolean resetPassword(final String username) {
         //logger.debug("reset password for username: [" + username + "]");

@@ -22,9 +22,8 @@ import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.KAuthCodeType;
 import com.bryllyant.kona.app.entity.KDeviceType;
-import com.bryllyant.kona.app.entity.KUserPresence;
+import com.bryllyant.kona.app.entity.KUser;
 import com.bryllyant.kona.app.entity.KUserRole;
-import com.bryllyant.kona.app.entity.KUserStatus;
 import com.bryllyant.kona.app.entity.KUserType;
 import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.entity.Registration;
@@ -122,7 +121,7 @@ public class AuthController extends BaseController {
     private ApiUtil util;
 
 
-    // ----------------------------------------------------------------------
+
 
     /**
      * Login a user.
@@ -158,7 +157,7 @@ public class AuthController extends BaseController {
         return loggedIn(authModelService.toModel(user, token));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @PreAuthorize("hasRole('APP_INTERNAL')")
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
@@ -182,36 +181,22 @@ public class AuthController extends BaseController {
         return ok(authModelService.toModel(token));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
     public ResponseEntity<AuthSessionModel> register(HttpServletRequest req,
-//            @RequestParam(value = "_verify", required = false) Boolean verify, // undocumented parameter
-//            @RequestParam(value = "_email_verified", required = false) Boolean emailVerified, // undocumented parameter
-//            @RequestParam(value = "_mobile_verified", required = false) Boolean mobileVerified, // undocumented parameter
-//            @RequestParam(value = "_update", required = false) Boolean updateUser, // undocumented parameter
-//            @RequestParam(value = "login", required = false) boolean login,
-//            @RequestParam(value = "scope", required = false) String scope,
-//            @RequestParam(value = "webhook_url", required = false) String webhookUrl,
             @RequestBody RegistrationRequest registrationRequest) {
         logApiRequest(req, "POST /auth/users");
 
-//        verify,
-//                emailVerified,
-//                mobileVerified,
-//                updateUser,
-//                login,
-//                scope,
-//                webhookUrl,
-        AuthSessionModel session = createUser(req, registrationRequest);
+        logger.debug("register: registrationRequest: " + registrationRequest);
 
-        logger.debug("register: registrationRequest: " + KJsonUtil.toJson(registrationRequest, 1000));
+        AuthSessionModel session = createUser(req, registrationRequest);
 
         return created(session, "/api/me");
     }
 
-    // ----------------------------------------------------------------------
+
 
     // Confirmation Request
     @RequestMapping(value="/confirmation", method=RequestMethod.POST)
@@ -228,7 +213,7 @@ public class AuthController extends BaseController {
         return created(getResultObject("request_sent", true));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/users/{auth_code}", method = RequestMethod.GET)
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -251,7 +236,7 @@ public class AuthController extends BaseController {
         return ok(userModelService.toMeModel(user));
     }
 
-    // ----------------------------------------------------------------------
+
 
     // Request a password reset
     @RequestMapping(value = "/password/reset", method = RequestMethod.POST)
@@ -274,7 +259,7 @@ public class AuthController extends BaseController {
         return ok(getResultObject("password_reset", true));
     }
 
-    // ----------------------------------------------------------------------
+
 
     // if password
     @RequestMapping(value = "/password", method = RequestMethod.PUT)
@@ -341,7 +326,7 @@ public class AuthController extends BaseController {
         return ok(getResultObject("password_changed", true));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/mobile-verification", method = RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -387,7 +372,7 @@ public class AuthController extends BaseController {
         return ok(getResultObject("code", code));
     }
 
-    // ----------------------------------------------------------------------
+
 
     // USE WITH CARE! Generate an access token for a user for a specific clientId.
     // Typical use case is the generating a token for a developer for a new app they created.
@@ -464,7 +449,7 @@ public class AuthController extends BaseController {
         return ok(authModelService.toModel(token));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/tokens", method = RequestMethod.GET)
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -487,7 +472,7 @@ public class AuthController extends BaseController {
         return okList(authModelService.toTokenModelList(tokenList));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/tokens/{access_token}", method = RequestMethod.GET)
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -528,7 +513,7 @@ public class AuthController extends BaseController {
         return ok(authModelService.toModel(user, token));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @PreAuthorize("hasRole('APP_INTERNAL')")
     @RequestMapping(value = "/tokens/{access_token}", method = RequestMethod.DELETE)
@@ -630,7 +615,7 @@ public class AuthController extends BaseController {
         return tokenList;
     }
 
-    // ----------------------------------------------------------------------
+
     
     /*
     protected Credentials toCredentials(Map<String,Object> map) {
@@ -776,7 +761,7 @@ public class AuthController extends BaseController {
         request.setMobileVerified(mobileVerified);
     }
 
-    // ----------------------------------------------------------------------
+
 
 //    private Device getOrCreateDevice(DeviceModel model) {
 //        if (model == null) return null;
@@ -829,7 +814,7 @@ public class AuthController extends BaseController {
 //        return device;
 //    }
 
-    // ----------------------------------------------------------------------
+
 //    Boolean verify,
 //    Boolean emailVerified,
 //    Boolean mobileVerified,
@@ -887,9 +872,8 @@ public class AuthController extends BaseController {
             user = new User();
 
             user.setTypeId(KUserType.USER.getId());
-            user.setStatusId(KUserStatus.ENABLED.getId());
-            user.setPresenceId(KUserPresence.OFFLINE.getId());
-            user.setRoles(KUserRole.USER.getId());
+            user.setEnabled(true);
+            user.setPresence(KUser.Presence.OFFLINE);
         }
 
         DeviceModel deviceModel = registrationRequest.getMeta().getDevice();
@@ -925,7 +909,7 @@ public class AuthController extends BaseController {
                 client.setDeviceId(device.getId());
             }
 
-            user = userService.registerUser(user, password, client, false);
+            user = userService.registerUser(user, password, null, client, false);
 
             if (device != null) {
                 String type = KDeviceType.getInstance(device.getTypeId()).getName().toLowerCase();

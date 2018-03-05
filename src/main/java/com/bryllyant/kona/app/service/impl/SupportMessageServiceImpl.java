@@ -15,7 +15,6 @@ import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.SupportMessageService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ public class SupportMessageServiceImpl
     private SystemService system;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected SupportMessageMapper getDao() {
@@ -60,36 +59,20 @@ public class SupportMessageServiceImpl
         return new SupportMessage();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected SupportMessageExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	SupportMessageExample example = new SupportMessageExample();
+    protected SupportMessageExample getEntityExampleObject() { return new SupportMessageExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
     
-    // ----------------------------------------------------------------------------
+
 
     protected void sendNotification(SupportMessage message) {
 

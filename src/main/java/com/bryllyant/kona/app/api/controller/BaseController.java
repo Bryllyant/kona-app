@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app.api.controller;
 
+import com.bryllyant.kona.app.api.model.ModelResultSet;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.api.util.ApiUtil;
@@ -21,6 +22,7 @@ import com.bryllyant.kona.app.service.KAuthException;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
+import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.media.model.KImage;
 import com.bryllyant.kona.media.util.KImageUtil;
@@ -58,7 +60,7 @@ import java.util.Map;
 public abstract class BaseController {
     private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 
-    // ----------------------------------------------------------------------
+
     @Autowired
     private KConfig config;
 
@@ -78,6 +80,9 @@ public abstract class BaseController {
     private MediaService mediaService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ApiLogService apiLogService;
 
     @Autowired
@@ -86,12 +91,12 @@ public abstract class BaseController {
     @Autowired
     private FileUtil fileUtil;
     
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private UserModelService userModelService;
 
-    // ----------------------------------------------------------------------
+
 
     protected User getUser() {
         User user = apiAuthService.getUser();
@@ -103,7 +108,7 @@ public abstract class BaseController {
         return user;
     }
     
-    // ----------------------------------------------------------------------
+
 
     protected Long getAppId(HttpServletRequest req) {
         String clientId = apiAuthService.getClientId(req);
@@ -113,52 +118,30 @@ public abstract class BaseController {
         return creds.getAppId();
     }
 
-    // ----------------------------------------------------------------------
     protected boolean haveRole(String role) {
         return hasRole(getUser(), role);
     }
 
-    // ----------------------------------------------------------------------
-
-    protected boolean haveRole(KUserRole role) {
-        return hasRole(getUser(), role);
-    }
-
-    // ----------------------------------------------------------------------
 
     protected boolean hasRole(User user, String role) {
-        Long roles = user.getRoles();
-        return KUserRole.haveRole(roles, role);
+        return userService.hasRole(user, role);
     }
 
-    // ----------------------------------------------------------------------
-
-    protected boolean hasRole(User user, KUserRole role) {
-        Long roles = user.getRoles();
-        return KUserRole.haveRole(roles, role);
-    }
-
-    // ----------------------------------------------------------------------
 
     protected Integer getImageMinWidth() {
         return config.getInteger("image.minWidth", 100);
     }
 
-    // ----------------------------------------------------------------------
 
     protected Integer getImageMinHeight() {
         return config.getInteger("image.minHeight", 100);
     }
 
 
-
-    // ----------------------------------------------------------------------
-
     protected Map<String,Object> getResultObject() {
         return getResultObject(null, null);
     }
 
-    // ----------------------------------------------------------------------
 
     protected Map<String,Object> getResultObject(String key, Object value) {
         Map<String,Object> map = new HashMap<String,Object>();
@@ -173,13 +156,13 @@ public abstract class BaseController {
 
   
 
-    // ----------------------------------------------------------------------
+
 
     protected ResponseEntity<Map<String,Object>> created(Map<String,Object> map) {
         return created(map, true);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected ResponseEntity<Map<String,Object>> created(Map<String,Object> map, boolean setLocation) {
         if (setLocation) {
@@ -197,13 +180,13 @@ public abstract class BaseController {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel> ResponseEntity<T> created(T model) {
         return created(model, null);
     }
 
-    // ----------------------------------------------------------------------
+
     protected <T extends KModel> ResponseEntity<T> created(T model, String redirectLocationPath) {
         if (redirectLocationPath != null) {
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -220,7 +203,7 @@ public abstract class BaseController {
         }    
     } 
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel & KEntityModel> ResponseEntity<T> created(T model, boolean setLocation) {
         if (setLocation && model.getUid() != null) {
@@ -238,7 +221,7 @@ public abstract class BaseController {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected ResponseEntity<Map<String,Object>> loggedIn(Map<String,Object> map) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -252,7 +235,7 @@ public abstract class BaseController {
         return new ResponseEntity<Map<String,Object>>(map, httpHeaders, HttpStatus.CREATED);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel> ResponseEntity<T> loggedIn(T model) {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -266,61 +249,65 @@ public abstract class BaseController {
         return new ResponseEntity<T>(model, httpHeaders, HttpStatus.CREATED);
     }
     
-    // ----------------------------------------------------------------------
+
 
     protected ResponseEntity<Map<String,Object>> ok(Map<String,Object> map, HttpHeaders httpHeaders) {
         return new ResponseEntity<Map<String,Object>>(map, httpHeaders, HttpStatus.OK);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel> ResponseEntity<T> ok(T model, HttpHeaders httpHeaders) {
         return new ResponseEntity<T>(model, httpHeaders, HttpStatus.OK);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected ResponseEntity<Map<String,Object>> ok(Map<String,Object> map) {
         return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel> ResponseEntity<T> ok(T model) {
         return new ResponseEntity<T>(model, HttpStatus.OK);
     }
     
-    // ----------------------------------------------------------------------
+
 
     protected ResponseEntity<List<Map<String,Object>>> ok(List<Map<String,Object>> list) {
         return new ResponseEntity<List<Map<String,Object>>>(list, HttpStatus.OK);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel> ResponseEntity<List<T>> okList(List<T> list) {
         return new ResponseEntity<List<T>>(list, HttpStatus.OK);
     }
 
-    // ----------------------------------------------------------------------
+    protected <T extends KModel> ResponseEntity<ModelResultSet<T>> okList(ModelResultSet<T> result) {
+        return new ResponseEntity<ModelResultSet<T>>(result, HttpStatus.OK);
+    }
+
+
 
     protected ResponseEntity<List<Map<String,Object>>> ok(List<Map<String,Object>> list, HttpHeaders httpHeaders) {
         return new ResponseEntity<List<Map<String,Object>>>(list, httpHeaders, HttpStatus.OK);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected <T extends KModel> ResponseEntity<List<T>> okList(List<T> list, HttpHeaders httpHeaders) {
         return new ResponseEntity<List<T>>(list, httpHeaders, HttpStatus.OK);
     }
     
-    // ----------------------------------------------------------------------
+
 
     protected ApiLog logApiRequest(HttpServletRequest req, String endPoint) {
         return logApiRequest(req, endPoint, (String[]) null);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected ApiLog logApiRequest(HttpServletRequest req, String endPoint, String... scopes) {
         StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
@@ -426,13 +413,13 @@ public abstract class BaseController {
         return apiLogService.add(log);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected Map<String,Object> getSettings() {
         return settingService.getUserSettings(getUser());
     }
 
-    // ----------------------------------------------------------------------
+
 
     // make sure current user is the same user or the parent of the userId we're checking
     protected void checkUserAuthorization(Long userId) {
@@ -440,7 +427,7 @@ public abstract class BaseController {
         checkUserAuthorization(user);
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected void checkUserAuthorization(User user) {
         User currentUser = getUser();
@@ -450,13 +437,13 @@ public abstract class BaseController {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected KServiceClient getServiceClient(HttpServletRequest req) {
         return getServiceClient(null, null, null, req);
     }
 
-    // ----------------------------------------------------------------------
+
 
     // sometimes the appId will be different from what is passed in to the request
     protected KServiceClient getServiceClient(Long appId, Long userId, Long deviceId, HttpServletRequest req) {
@@ -490,7 +477,7 @@ public abstract class BaseController {
         return client;
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected String[] getSearchSortOrder(String sort) {
         String[] sortOrder = null;
@@ -500,7 +487,7 @@ public abstract class BaseController {
         return sortOrder;
     }
 
-    // ----------------------------------------------------------------------
+
 
     protected File getUploadedFile(MultipartHttpServletRequest req, User user) {
         try {
@@ -549,7 +536,8 @@ public abstract class BaseController {
             throw new SystemException(e);
         }
     }
-    // ----------------------------------------------------------------------
+
+
 
     protected Media addMedia(MultipartHttpServletRequest req, User user, Map<String,Object> options) {
         try {
@@ -586,18 +574,18 @@ public abstract class BaseController {
         } 
     }   
 
-    // ----------------------------------------------------------------------
 
 
 
-    // ----------------------------------------------------------------------
+
+
 
     /*
     public Map<String,Object> toMap(User user) {
         return toMap(user, false);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Map<String,Object> toMap(User user, boolean extra) {
         if (user == null) return null;
@@ -700,7 +688,7 @@ public abstract class BaseController {
     }
     */
 
-    // ----------------------------------------------------------------------
+
 
     /*
     public List<Map<String,Object>> toUserMapList(List<User> users) {
@@ -716,13 +704,13 @@ public abstract class BaseController {
     
 
     
-    // ----------------------------------------------------------------------
+
 
     protected Object copyBean(Object source, Object target, boolean skipNullValues) {
         return util.copyBean(source, target, skipNullValues);
     }
     
-    // ----------------------------------------------------------------------
+
 
     // https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html
     @ExceptionHandler(HttpMessageNotReadableException.class) 
@@ -799,7 +787,7 @@ public abstract class BaseController {
         return new ResponseEntity< Map<String,Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
-    // ----------------------------------------------------------------------
+
 
     protected Map<String,Object> toFilterCriteria(String json) {
         if (json == null) {

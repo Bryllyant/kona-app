@@ -11,7 +11,6 @@ import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.app.entity.KUserPresence;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;

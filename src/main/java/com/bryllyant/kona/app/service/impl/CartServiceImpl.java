@@ -43,63 +43,47 @@ public class CartServiceImpl
     @Autowired
     TokenService tokenService;
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartMapper getDao() {
         return cartDao;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     protected Cart getNewObject() {
     	return new Cart();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected TokenService getTokenService() {
         return tokenService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartItemService getCartItemService() {
         return cartItemService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected CartExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	CartExample example = new CartExample();
+    protected CartExample getEntityExampleObject() { return new CartExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override 
     protected void updateCoords(Long cartId) {

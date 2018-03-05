@@ -93,7 +93,7 @@ public class RegistrationModelService extends BaseModelService {
         return registration;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Registration getRegistration(RegistrationModel model) {
         if (model == null) return null;
@@ -107,7 +107,7 @@ public class RegistrationModelService extends BaseModelService {
         return getRegistration(uid);
     }
    
-    // ----------------------------------------------------------------------
+
 
     public RegistrationModel toModel(Registration registration, String... includeKeys) {
         if (registration == null) return null;
@@ -165,7 +165,7 @@ public class RegistrationModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<RegistrationModel> toRegistrationModelList(List<Registration> registrations, String... includeKeys) {
         List<RegistrationModel> modelList = new ArrayList<>();
@@ -177,7 +177,7 @@ public class RegistrationModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Registration toEntity(RegistrationModel model) {
         Registration registration = new Registration();
@@ -186,7 +186,7 @@ public class RegistrationModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Registration mergeEntity(Registration registration, RegistrationModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -243,6 +243,6 @@ public class RegistrationModelService extends BaseModelService {
         return registration;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

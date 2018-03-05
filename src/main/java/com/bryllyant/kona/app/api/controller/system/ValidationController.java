@@ -45,7 +45,7 @@ import java.util.Map;
 public class ValidationController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(ValidationController.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private ApiAuthService apiAuthService;
@@ -74,7 +74,7 @@ public class ValidationController extends BaseController {
     @Autowired
     private SystemService system;
 
-    // ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/access-tokens/{accessToken}", method=RequestMethod.GET)
 	@PreAuthorize("hasRole('APP')")
@@ -158,7 +158,7 @@ public class ValidationController extends BaseController {
 		return ok(getResultObject("valid", true));
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	// Allow periods in username
 	@RequestMapping(value="/usernames/{username:.*}", method=RequestMethod.GET)
@@ -192,7 +192,7 @@ public class ValidationController extends BaseController {
 		return ok(getResultObject("valid", valid));
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	// NOTE: default PathVariable will not accept period in URI so it must
 	// be expressed the the following way: {variable:.*}
@@ -234,7 +234,7 @@ public class ValidationController extends BaseController {
 
 		return ok(getResultObject("valid", valid));
 	}
-	// ----------------------------------------------------------------------
+
 
 	// NOTE: default PathVariable will not accept period in URI so it must
 	// be expressed the the following way: {variable:.*}
@@ -310,7 +310,7 @@ public class ValidationController extends BaseController {
 	}
 
 
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/apps/{name:.*}", method=RequestMethod.GET)
 	@PreAuthorize("hasRole('APP')")
@@ -325,7 +325,7 @@ public class ValidationController extends BaseController {
 	}
 
 
-	// ----------------------------------------------------------------------
+
 
 	// Allow periods in promoCode
 	@RequestMapping(value="/promo-codes/{promoCode:.*}", method=RequestMethod.GET)

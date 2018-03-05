@@ -12,7 +12,7 @@ public class InvitationModel extends KJsonModel implements KEntityModel {
 
 	private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+
 	
 	private String uid;
 	private KInvitationType type;
@@ -31,7 +31,7 @@ public class InvitationModel extends KJsonModel implements KEntityModel {
 	private Date acceptedDate;
 	private Date registeredDate;
 
-    // ----------------------------------------------------------------------
+
     
     public static InvitationModel create(String uid) {
         InvitationModel model = new InvitationModel();
@@ -39,7 +39,7 @@ public class InvitationModel extends KJsonModel implements KEntityModel {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     @Override
     public String getUid() {
@@ -172,7 +172,7 @@ public class InvitationModel extends KJsonModel implements KEntityModel {
     }
 
 
-    // ----------------------------------------------------------------------
+
 
 
 }

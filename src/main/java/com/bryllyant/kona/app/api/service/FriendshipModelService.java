@@ -36,7 +36,7 @@ public class FriendshipModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
     
-    // ----------------------------------------------------------------------
+
 
     public Friendship getFriendship(String friendshipUid) {
         Friendship friendship = friendshipService.fetchByUid(friendshipUid);
@@ -48,7 +48,7 @@ public class FriendshipModelService extends BaseModelService {
         return friendship;
     }
 
-   // ----------------------------------------------------------------------
+
 
     public Friendship getFriendship(Long friendshipId) {
         Friendship friendship = friendshipService.fetchById(friendshipId);
@@ -61,7 +61,7 @@ public class FriendshipModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Friendship getFriendship(FriendshipModel model) {
         if (model == null) return null;
@@ -76,7 +76,7 @@ public class FriendshipModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public FriendshipCircle getFriendshipCircle(String uid) {
         FriendshipCircle circle = friendshipCircleService.fetchByUid(uid);
@@ -88,7 +88,7 @@ public class FriendshipModelService extends BaseModelService {
         return circle;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public FriendshipCircle getFriendshipCircle(FriendshipCircleModel model) {
         if (model == null) return null;
@@ -102,7 +102,7 @@ public class FriendshipModelService extends BaseModelService {
         return getFriendshipCircle(uid);
     }
 
-   // ----------------------------------------------------------------------
+
     
     public final FriendshipModel toModel(Friendship friendship, String... includeKeys) {
         if (friendship == null) return null;
@@ -128,7 +128,7 @@ public class FriendshipModelService extends BaseModelService {
         return model;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public final List<FriendshipModel> toFriendshipModelList(List<Friendship> friendships, String... includeKeys) {
         List<FriendshipModel> modelList = new ArrayList<>();
@@ -140,7 +140,7 @@ public class FriendshipModelService extends BaseModelService {
         return modelList;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Friendship toEntity(FriendshipModel model) {
         Friendship friendship = new Friendship();
@@ -148,7 +148,7 @@ public class FriendshipModelService extends BaseModelService {
         return mergeEntity(friendship, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Friendship mergeEntity(Friendship friendship, FriendshipModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -183,7 +183,7 @@ public class FriendshipModelService extends BaseModelService {
         return friendship;
     }
     
-    // ----------------------------------------------------------------------
+
    
     
 }

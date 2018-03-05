@@ -41,7 +41,7 @@ import com.bryllyant.kona.app.service.SystemService;
 public class EmailEventController extends BaseController {
     private static Logger logger = Logger.getLogger(EmailEventController.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private Environment env;
@@ -55,7 +55,7 @@ public class EmailEventController extends BaseController {
     @Autowired
     private SystemService system; 
 
-    // ----------------------------------------------------------------------
+
     
     private void error(Throwable t) {
         system.alert("EmailEventController: Error", t);
@@ -63,7 +63,7 @@ public class EmailEventController extends BaseController {
         throw new RuntimeException(t);
     }
     
-    // ----------------------------------------------------------------------
+
 	
     @RequestMapping(value="/open/{messageId}", method=RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -83,7 +83,7 @@ public class EmailEventController extends BaseController {
         }
     }
     
-    // ----------------------------------------------------------------------
+
     
     @RequestMapping(value="/forward/{messageId}", method=RequestMethod.GET)
     //@ResponseBody
@@ -104,7 +104,7 @@ public class EmailEventController extends BaseController {
         }
     }
     
-    // ----------------------------------------------------------------------
+
     
     @RequestMapping(value="/print/{messageId}", method=RequestMethod.GET)
     //@ResponseBody
@@ -125,7 +125,7 @@ public class EmailEventController extends BaseController {
         }
     }
     
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value="/click/{messageId}", method=RequestMethod.GET)
     //@ResponseBody
@@ -151,7 +151,7 @@ public class EmailEventController extends BaseController {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value="/unsubscribe/{messageId}", method=RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -174,7 +174,7 @@ public class EmailEventController extends BaseController {
 		}
     }
     
-    // ----------------------------------------------------------------------
+
     
     private EmailEvent createEvent(HttpServletRequest req, String uid, KEmailEventType type) {
         Date now = new Date();
@@ -249,7 +249,7 @@ public class EmailEventController extends BaseController {
         return event;
     }
 
-    // ----------------------------------------------------------------------
+
     
     private EmailAddress getEmailAddress(Email email) {
         EmailAddress address = null;

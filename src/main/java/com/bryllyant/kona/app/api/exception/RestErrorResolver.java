@@ -8,7 +8,6 @@ import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.rest.DefaultRestErrorResolver;
 import com.bryllyant.kona.rest.RestError;
-import com.bryllyant.kona.util.KJsonUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -31,7 +30,7 @@ public class RestErrorResolver extends DefaultRestErrorResolver {
     private ApiAuthService apiAuthService;
 
 
-    // ----------------------------------------------------------------------
+
 
     @PostConstruct
     public void init() {
@@ -74,7 +73,7 @@ public class RestErrorResolver extends DefaultRestErrorResolver {
 
     }
 
-    // ----------------------------------------------------------------------
+
 
 
     @Override

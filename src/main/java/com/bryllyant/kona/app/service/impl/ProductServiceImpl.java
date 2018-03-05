@@ -27,33 +27,17 @@ public class ProductServiceImpl
     private ProductMapper productDao;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected ProductMapper getDao() {
         return productDao;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected ProductExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	ProductExample example = new ProductExample();
+    protected ProductExample getEntityExampleObject() { return new ProductExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
 
 }

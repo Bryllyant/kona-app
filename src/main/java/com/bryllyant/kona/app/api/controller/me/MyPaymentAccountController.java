@@ -28,12 +28,12 @@ import java.util.Map;
 public class MyPaymentAccountController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(MyPaymentAccountController.class);
 
-	// ----------------------------------------------------------------------
+
 	
 	@Autowired
     private StripeService stripeService;
 	
-	// ----------------------------------------------------------------------
+
 
     @RequestMapping(value="/stripe/token", method=RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> addStripeToken(HttpServletRequest req,
@@ -103,5 +103,5 @@ public class MyPaymentAccountController extends BaseController {
         
         return created(getResultObject("token", cardToken));
     }
-	// ----------------------------------------------------------------------
+
 }

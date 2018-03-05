@@ -11,14 +11,14 @@ import java.util.Map;
 public abstract class BaseModelService {
     private static final Logger logger = LoggerFactory.getLogger(BaseModelService.class);
     
-    // ----------------------------------------------------------------------
+
 
 
     
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     protected Map<String,Object> toMap(String key, Object value) {
         Map<String,Object> map = new HashMap<>();

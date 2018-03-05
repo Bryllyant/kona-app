@@ -36,7 +36,7 @@ import groovy.lang.GroovyShell;
 public class RedirectController extends BaseController {
     private static Logger logger = Logger.getLogger(RedirectController.class);
     
-	// ----------------------------------------------------------------------
+
 
     @Autowired
     private ShortUrlService shortUrlService; 
@@ -44,7 +44,7 @@ public class RedirectController extends BaseController {
     @Autowired
     private RedirectService redirectService; 
 
-	// ----------------------------------------------------------------------
+
     
 	@RequestMapping(value="/{shortUrlPath}", method=RequestMethod.GET)
 	public void redirect(HttpServletRequest req, HttpServletResponse resp,
@@ -58,7 +58,7 @@ public class RedirectController extends BaseController {
         }
 	}
 	
-	// ----------------------------------------------------------------------
+
     
 	private void doRedirect(HttpServletRequest req, HttpServletResponse resp,
 			String path) throws IOException {
@@ -89,7 +89,7 @@ public class RedirectController extends BaseController {
         resp.sendRedirect(url);
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
     @SuppressWarnings("unused")
     private String explode(HttpServletRequest req, String url) {
@@ -113,7 +113,7 @@ public class RedirectController extends BaseController {
     	return longUrl;
     }
     
-    // ----------------------------------------------------------------------
+
     
     private String explode(HttpServletRequest req, ShortUrl shortUrl) {
     	String longUrl = null;
@@ -128,7 +128,7 @@ public class RedirectController extends BaseController {
     	return longUrl;
     }
     
-    // ----------------------------------------------------------------------
+
     
 	private String evalScript(HttpServletRequest req, String script) {
 		Binding binding = new Binding();

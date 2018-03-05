@@ -348,7 +348,7 @@ public class PositionModel extends KJsonModel implements KEntityModel {
     private Date capturedDate;
     private Date createdDate;
 
-    // ----------------------------------------------------------------------
+
 
     public static PositionModel from(Position position) {
         PositionModel model = new PositionModel();

@@ -28,7 +28,7 @@ public class AccountModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     public Account getAccount(String uid) {
         Account account = accountService.fetchByUid(uid);
@@ -40,7 +40,7 @@ public class AccountModelService extends BaseModelService {
         return account;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Account getAccount(Long accountId) {
         Account account = accountService.fetchById(accountId);
@@ -53,7 +53,7 @@ public class AccountModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Account getAccount(AccountModel model) {
         if (model == null) return null;
@@ -67,21 +67,21 @@ public class AccountModelService extends BaseModelService {
         return getAccount(uid);
     }
    
-    // ----------------------------------------------------------------------
+
 
     public AccountModel toModel(Account account, String... includeKeys) {
         if (account == null) return null;
 
-        User owner = userModelService.getUser(account.getOwnerId()); 
-
-        AccountModel model = new AccountModel(); 
+        AccountModel model = new AccountModel();
         
         model.fromBean(account);
         
-        // set
-        UserModel userModel = UserModel.create(owner.getUid());
-        model.setOwner(userModel);
-        
+        if (account.getOwnerId() != null) {
+            User owner = userModelService.getUser(account.getOwnerId());
+            model.setOwner(UserModel.create(owner.getUid()));
+        }
+
+
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
         }
@@ -89,7 +89,7 @@ public class AccountModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<AccountModel> toAccountModelList(List<Account> accounts, String... includeKeys) {
         List<AccountModel> modelList = new ArrayList<>();
@@ -101,7 +101,7 @@ public class AccountModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Account toEntity(AccountModel model) {
         Account account = new Account();
@@ -110,7 +110,7 @@ public class AccountModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Account mergeEntity(Account account, AccountModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -133,6 +133,6 @@ public class AccountModelService extends BaseModelService {
         return account;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

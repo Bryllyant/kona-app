@@ -96,24 +96,7 @@ public class PushServiceImpl extends KAbstractPushService<
     }
 
     @Override
-    protected PushExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-                                                   Map<String, Object> filter, boolean distinct) {
-        PushExample example = new PushExample();
+    protected PushExample getEntityExampleObject() { return new PushExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-
-        return example;
-    }
 
 }

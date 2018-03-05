@@ -29,7 +29,7 @@ public class MediaModelService extends BaseModelService {
     private ApiUtil util;
 
    
-    // ----------------------------------------------------------------------
+
 
     public Media getMedia(String mediaUid) {
         Media media = mediaService.fetchByUid(mediaUid);
@@ -41,7 +41,7 @@ public class MediaModelService extends BaseModelService {
         return media;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Media getMedia(Long mediaId) {
         Media media = mediaService.fetchById(mediaId);
@@ -54,7 +54,7 @@ public class MediaModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Media getMedia(MediaModel model) {
         if (model == null) return null;
@@ -68,7 +68,7 @@ public class MediaModelService extends BaseModelService {
         return getMedia(uid);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final MediaModel toModel(Media media, String... includeKeys) {
         
@@ -103,7 +103,7 @@ public class MediaModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final List<MediaModel> toMediaModelList(List<Media> mediaList, String... includeKeys) {
         List<MediaModel> modelList = new ArrayList<MediaModel>();
@@ -116,7 +116,7 @@ public class MediaModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Media toEntity(MediaModel model) {
         Media media = new Media();
@@ -124,7 +124,7 @@ public class MediaModelService extends BaseModelService {
         return mergeEntity(media, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Media mergeEntity(Media media, MediaModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -148,7 +148,7 @@ public class MediaModelService extends BaseModelService {
         return media;
     }
     
-    // ----------------------------------------------------------------------
+
    
     
 }

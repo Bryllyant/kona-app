@@ -33,7 +33,7 @@ public class PlaceModelService extends BaseModelService {
     private ApiUtil util;
 
    
-    // ----------------------------------------------------------------------
+
 
     public Place getPlace(String placeUid) {
         Place place = placeService.fetchByUid(placeUid);
@@ -45,7 +45,7 @@ public class PlaceModelService extends BaseModelService {
         return place;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Place getPlace(Long placeId) {
         Place place = placeService.fetchById(placeId);
@@ -57,7 +57,7 @@ public class PlaceModelService extends BaseModelService {
         return place;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Place getPlace(PlaceModel model) {
         if (model == null) return null;
@@ -71,7 +71,7 @@ public class PlaceModelService extends BaseModelService {
         return getPlace(uid);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final PlaceModel toModel(Place place, String... includeKeys) {
         
@@ -112,7 +112,7 @@ public class PlaceModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final List<PlaceModel> toPlaceModelList(List<Place> placeList, String... includeKeys) {
         List<PlaceModel> modelList = new ArrayList<PlaceModel>();
@@ -125,7 +125,7 @@ public class PlaceModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Place toEntity(PlaceModel model) {
         Place place = new Place();
@@ -133,7 +133,7 @@ public class PlaceModelService extends BaseModelService {
         return mergeEntity(place, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Place mergeEntity(Place place, PlaceModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -171,7 +171,7 @@ public class PlaceModelService extends BaseModelService {
         return place;
     }
     
-    // ----------------------------------------------------------------------
+
    
     
 }

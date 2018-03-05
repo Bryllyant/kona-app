@@ -36,7 +36,7 @@ import java.util.Map;
 public class MyDeviceController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(MyDeviceController.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private UserDeviceService userDeviceService;
@@ -47,7 +47,7 @@ public class MyDeviceController extends BaseController {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method=RequestMethod.GET)
     public ResponseEntity<List<UserDeviceModel>> search(HttpServletRequest req,
@@ -89,7 +89,7 @@ public class MyDeviceController extends BaseController {
 
 
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
     public ResponseEntity<UserDeviceModel> get(HttpServletRequest req,
@@ -101,7 +101,7 @@ public class MyDeviceController extends BaseController {
         return ok(deviceModelService.toUserDeviceModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<UserDeviceModel> create(HttpServletRequest req,
@@ -115,7 +115,7 @@ public class MyDeviceController extends BaseController {
         return created(deviceModelService.toUserDeviceModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
     public ResponseEntity<UserDeviceModel> update(HttpServletRequest req,
@@ -134,7 +134,7 @@ public class MyDeviceController extends BaseController {
         return ok(deviceModelService.toUserDeviceModel(device));
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
     public ResponseEntity<UserDeviceModel> remove(HttpServletRequest req,
@@ -148,13 +148,13 @@ public class MyDeviceController extends BaseController {
         return ok(deviceModelService.toUserDeviceModel(userDevice));
     }
 
-    // ----------------------------------------------------------------------
+
 
     public UserDevice saveObject(UserDevice userDevice, UserDeviceModel model) {
         return saveObject(getUser(), userDevice, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public UserDevice saveObject(User user, UserDevice userDevice, UserDeviceModel model) {
         logger.debug("saveObject: userDevice: " + userDevice);
@@ -183,7 +183,7 @@ public class MyDeviceController extends BaseController {
         return userDevice;
     }
 
-    // ----------------------------------------------------------------------
+
 
     @Override
     public Map<String,Object> toFilterCriteria(String json) {

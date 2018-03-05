@@ -44,7 +44,7 @@ public class CampaignModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     public Campaign getCampaign(String uid) {
         Campaign campaign = campaignService.fetchByUid(uid);
@@ -56,7 +56,7 @@ public class CampaignModelService extends BaseModelService {
         return campaign;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Campaign getCampaign(Long campaignId) {
         Campaign campaign = campaignService.fetchById(campaignId);
@@ -69,7 +69,7 @@ public class CampaignModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Campaign getCampaign(CampaignModel model) {
         if (model == null) return null;
@@ -83,7 +83,7 @@ public class CampaignModelService extends BaseModelService {
         return getCampaign(uid);
     }
    
-    // ----------------------------------------------------------------------
+
 
     public CampaignModel toModel(Campaign campaign, String... includeKeys) {
         if (campaign == null) return null;
@@ -115,7 +115,7 @@ public class CampaignModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<CampaignModel> toCampaignModelList(List<Campaign> campaigns, String... includeKeys) {
         List<CampaignModel> modelList = new ArrayList<>();
@@ -127,7 +127,7 @@ public class CampaignModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Campaign toEntity(CampaignModel model) {
         Campaign campaign = new Campaign();
@@ -136,7 +136,7 @@ public class CampaignModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Campaign mergeEntity(Campaign campaign, CampaignModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -168,6 +168,6 @@ public class CampaignModelService extends BaseModelService {
         return campaign;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

@@ -27,33 +27,17 @@ public class CampaignServiceImpl
     private CampaignMapper campaignDao;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CampaignMapper getDao() {
         return campaignDao;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected CampaignExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	CampaignExample example = new CampaignExample();
+    protected CampaignExample getEntityExampleObject() { return new CampaignExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
 
 }

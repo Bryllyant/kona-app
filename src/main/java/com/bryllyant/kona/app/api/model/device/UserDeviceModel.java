@@ -7,14 +7,14 @@ public class UserDeviceModel extends DeviceModel {
 
     private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+
 
     @RestdocsNotExpanded
     private UserModel user;
 
     private String name;
 
-    // ----------------------------------------------------------------------
+
 
     public UserModel getUser() {
         return user;
@@ -33,6 +33,6 @@ public class UserDeviceModel extends DeviceModel {
     }
 
 
-    // ----------------------------------------------------------------------
+
 }
 

@@ -26,43 +26,26 @@ public class AppLegalServiceImpl
 	@Autowired
 	private AppLegalMapper appLegalDao;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected AppLegalMapper getDao() {
 		return appLegalDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     protected boolean entityHasBlobs() {
         return true;
     }
     
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected AppLegalExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		AppLegalExample example = new AppLegalExample();
+	 @Override
+    protected AppLegalExample getEntityExampleObject() { return new AppLegalExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 
 }

@@ -29,7 +29,7 @@ import java.util.Map;
 public class ProductsController extends SalesController {
 	private static Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
-	// ----------------------------------------------------------------------
+
 	
     @Autowired
     private ProductService productService;
@@ -37,7 +37,7 @@ public class ProductsController extends SalesController {
     @Autowired
     private SystemService system;
 	
-	// ----------------------------------------------------------------------
+
 
 	   
     @RequestMapping(method=RequestMethod.GET)

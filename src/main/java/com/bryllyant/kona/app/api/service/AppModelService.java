@@ -30,7 +30,7 @@ public class AppModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
     
-    // ----------------------------------------------------------------------
+
 
     public App getApp(String uid) {
         App app = appService.fetchByUid(uid);
@@ -42,7 +42,7 @@ public class AppModelService extends BaseModelService {
         return app;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public App getApp(Long appId) {
         App app = appService.fetchById(appId);
@@ -54,7 +54,7 @@ public class AppModelService extends BaseModelService {
         return app;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public App getApp(AppModel model) {
         if (model == null) return null;
@@ -68,7 +68,7 @@ public class AppModelService extends BaseModelService {
         return getApp(uid);
     }
 
-    // ----------------------------------------------------------------------
+
     
     public final AppModel toModel(App app, String... includeKeys) {
         if (app == null) return null;
@@ -83,7 +83,7 @@ public class AppModelService extends BaseModelService {
         
         model.setType(type);
 
-        model.setLogoUrl(util.toAbsoluteUrl(app.getLogoUrl()));
+        model.setLogoUrl(util.toAbsoluteUrl(app.getLogoUrlPath()));
 
         UserModel userModel = UserModel.create(user.getUid());
         model.setUser(userModel);
@@ -95,7 +95,7 @@ public class AppModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final List<AppModel> toAppModelList(List<App> apps, String... includeKeys) {
         List<AppModel> modelList = new ArrayList<AppModel>();
@@ -107,7 +107,7 @@ public class AppModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public App toEntity(AppModel model) {
         App app = new App();
@@ -115,7 +115,7 @@ public class AppModelService extends BaseModelService {
         return mergeEntity(app, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public App mergeEntity(App app, AppModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -148,6 +148,6 @@ public class AppModelService extends BaseModelService {
         return app;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

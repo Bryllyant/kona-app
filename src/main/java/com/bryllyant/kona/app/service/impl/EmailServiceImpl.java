@@ -55,7 +55,7 @@ public class EmailServiceImpl
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Autowired
 	private EmailMapper emailDao;
@@ -87,124 +87,107 @@ public class EmailServiceImpl
 	@Autowired
 	private UserService userService;
 	
-	// ----------------------------------------------------------------------------
+
 	
 	private AmazonSimpleEmailServiceClient client = null;
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailMapper getDao() {
 		return emailDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected EmailEventMapper getEmailEventDao() {
 		return emailEventDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailAddressService getEmailAddressService() {
 		return emailAddressService;
 	}
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailGroupService getEmailGroupService() {
 		return emailGroupService;
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailGroupAddressService getEmailGroupAddressService() {
 		return emailGroupAddressService;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected EmailContentService getEmailContentService() {
         return emailContentService;
     }
 	
-	// ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected EmailAttachmentService getEmailAttachmentService() {
         return emailAttachmentService;
     }
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected QueueService getQueueService() {
 		return queueService;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	@Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
 
-	// ----------------------------------------------------------------------------
+
 
     @Override
     protected Email getNewEmailObject() {
     	return new Email();
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     protected EmailEvent getNewEmailEventObject() {
     	return new EmailEvent();
     }
 
-	// ----------------------------------------------------------------------------
+
 
     @Override
     protected EmailAddress getNewEmailAddressObject() {
     	return new EmailAddress();
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public String getEmailTestDomain() {
     	return config.getString("email.testDomain");
     }
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected EmailExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		EmailExample example = new EmailExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected EmailExample getEntityExampleObject() { return new EmailExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
 
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected AmazonSimpleEmailServiceClient getAmazonSESClient() {
@@ -238,83 +221,83 @@ public class EmailServiceImpl
         return client;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getAmazonSESBounceQueueName() {
 		return config.getString("aws.ses.bounce.queue");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getAmazonSESComplaintQueueName() {
 		return config.getString("aws.ses.complaint.queue");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getAmazonSESDeliveryQueueName() {
 		return config.getString("aws.ses.delivery.queue");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getSystemMailhost() {
 		return config.getString("system.mail.mailhost");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getSystemSenderEmailAddress() {
 		return config.getString("system.mail.from");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getSystemFromEmailAddress() {
 		return config.getString("system.mail.from");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getSystemBaseUrl() {
 		return config.getString("system.app.baseUrl");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getEmailEventUrl() {
         return config.getString("email.event.baseUrl");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getEmailFooterHtmlSelector() {
 		return config.getString("email.footer.selector");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getEmailTextFooterTemplatePath() {
 		return config.getString("email.templates.footer.emailTextFooter");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getEmailHtmlFooterTemplatePath() {
 		return config.getString("email.templates.footer.emailHtmlFooter");
 	}
 	
-	// ----------------------------------------------------------------------------
+
     
 }

@@ -32,7 +32,7 @@ import java.util.Map;
 public class MyPushController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(MyPushController.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private PushProviderService pushProviderService;
@@ -49,7 +49,7 @@ public class MyPushController extends BaseController {
     @Autowired
     private SystemService system;
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value="/devices", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> create(HttpServletRequest req,

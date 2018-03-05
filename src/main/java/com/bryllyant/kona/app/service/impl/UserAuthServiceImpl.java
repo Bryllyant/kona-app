@@ -32,48 +32,32 @@ public class UserAuthServiceImpl
 	private UserService userService;
 	
 	
-// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserAuthMapper getDao() {
 		return userAuthDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected UserAuth getNewObject() {
 		return new UserAuth();
 	}
 
-	// ----------------------------------------------------------------------------
+
     
-	@Override
-	protected UserAuthExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		UserAuthExample example = new UserAuthExample();
+	 @Override
+    protected UserAuthExample getEntityExampleObject() { return new UserAuthExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 
 
 	@Override
@@ -81,6 +65,6 @@ public class UserAuthServiceImpl
 		// TODO Auto-generated method stub
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 }

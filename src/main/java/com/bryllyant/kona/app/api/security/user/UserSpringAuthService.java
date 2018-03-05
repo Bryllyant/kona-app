@@ -35,7 +35,7 @@ public class UserSpringAuthService implements UserDetailsService {
     @Autowired
     private ApiAuthService apiAuthService;
     
-    // ----------------------------------------------------------------------
+
     
     // username provided is an application accessToken
     @Override
@@ -58,12 +58,12 @@ public class UserSpringAuthService implements UserDetailsService {
                 throw new UsernameNotFoundException("User not found for Access Token: " + accessToken);
             }
             
-            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            List<GrantedAuthority> authorities = new ArrayList<>();
 
-            Set<KUserRole> roles = KUserRole.parse(user.getRoles());
+            List<String> roles = apiAuthService.getUserRoles(user);
 
-            for (KUserRole role : roles) {
-            	authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+            for (String role : roles) {
+            	authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
             }
             
             List<GrantedAuthority> appAuthorities = getAppAuthorities(token);
@@ -84,9 +84,9 @@ public class UserSpringAuthService implements UserDetailsService {
              *          )
              */
             boolean enabled = user.isEnabled();
-            boolean accountNonExpired = user.isEnabled();
             boolean credentialsNonExpired = true;
-            boolean accountNonLocked = user.isActive();
+            boolean accountNonLocked = user.isEnabled();
+            boolean accountNonExpired = user.getDeletedDate() == null;
 
             details = new org.springframework.security.core.userdetails.User(
                         accessToken, "", enabled, accountNonExpired, 
@@ -105,7 +105,7 @@ public class UserSpringAuthService implements UserDetailsService {
         return details;
     }
     
-    // ----------------------------------------------------------------------
+
     
     private List<GrantedAuthority> getAppAuthorities(Token token) {
         if (token == null || token.getAppClientId() == null) return null;

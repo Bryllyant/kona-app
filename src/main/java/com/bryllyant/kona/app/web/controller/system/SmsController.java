@@ -44,7 +44,7 @@ public class SmsController extends BaseController {
 	    }
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	private SmsMessage createMessage(HttpServletRequest req, HttpServletResponse resp) {
 		//String messageSid = req.getParameter("MessageSid");
@@ -99,7 +99,7 @@ public class SmsController extends BaseController {
 
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	// application/x-www-form-urlencoded 
 	// https://www.twilio.com/docs/api/twiml/sms/twilio_request
@@ -110,7 +110,7 @@ public class SmsController extends BaseController {
 		resp.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
-	// ----------------------------------------------------------------------------
+
    
 	// application/x-www-form-urlencoded 
 	// https://www.twilio.com/docs/api/twiml/sms/twilio_request
@@ -122,7 +122,7 @@ public class SmsController extends BaseController {
 	}
     
 
-	// ----------------------------------------------------------------------------
+
 
 	// don't specify method to allow GET or POST
 	//@RequestMapping(value="/status", method=RequestMethod.POST)

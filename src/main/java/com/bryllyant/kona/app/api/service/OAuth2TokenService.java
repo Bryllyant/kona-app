@@ -69,7 +69,7 @@ public class OAuth2TokenService implements ResourceServerTokenServices {
 	@Autowired
 	private AuthService authService;
 	
-	// ----------------------------------------------------------------------
+
     
 	public Token login(String clientId, String username, String password) {
 		ClientDetails client = clientDetailsService.loadClientByClientId(clientId);
@@ -104,7 +104,7 @@ public class OAuth2TokenService implements ResourceServerTokenServices {
         return token;
 	}
 	
-	// ----------------------------------------------------------------------
+
     
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) 
@@ -128,14 +128,14 @@ public class OAuth2TokenService implements ResourceServerTokenServices {
         }
     }
     
-	// ----------------------------------------------------------------------
+
 
     @Override
     public OAuth2AccessToken readAccessToken(String accessToken) {
         throw new UnsupportedOperationException("Not supported: read access token");
     }
     
-	// ----------------------------------------------------------------------
+
 	
 	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
 
@@ -171,7 +171,7 @@ public class OAuth2TokenService implements ResourceServerTokenServices {
 		return new OAuth2Authentication(storedOAuth2Request, userAuth);
 	}
 	
-	// ----------------------------------------------------------------------
+
 	
 	// USE WITH CARE: This assumes userId has already been authenticated.  Typical use case
 	// would be generating an access_token for a developer already logged in through a

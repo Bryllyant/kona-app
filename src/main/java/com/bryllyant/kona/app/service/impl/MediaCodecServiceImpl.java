@@ -14,12 +14,12 @@ public class MediaCodecServiceImpl
 
 	private static Logger logger = Logger.getLogger(MediaCodecServiceImpl.class);
 
-	// ----------------------------------------------------------------------------
+
 	
 	@Autowired
 	private KConfig config;
 
-	// ----------------------------------------------------------------------------
+
 	
 	protected String ffmpeg() {
 		String FFMPEG_BINDIR = config.getString("ffmpeg.bindir");
@@ -29,7 +29,7 @@ public class MediaCodecServiceImpl
 		return FFMPEG_BINDIR + "ffmpeg";
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	protected String ffprobe() {
 		String FFMPEG_BINDIR = config.getString("ffmpeg.bindir");
@@ -39,7 +39,7 @@ public class MediaCodecServiceImpl
 		return FFMPEG_BINDIR + "ffprobe";
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	
 }

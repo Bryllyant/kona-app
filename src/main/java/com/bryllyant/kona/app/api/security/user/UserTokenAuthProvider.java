@@ -29,7 +29,7 @@ public class UserTokenAuthProvider implements AuthenticationProvider {
     @Autowired
     private ApiAuthService apiAuthService;
     
-    // ----------------------------------------------------------------------
+
     
     /**
      * Returns an authentication object based on the token value contained in the authentication parameter. To do so,
@@ -73,7 +73,7 @@ public class UserTokenAuthProvider implements AuthenticationProvider {
         return authResult;
 	}
 
-	// ----------------------------------------------------------------------
+
     
 	@Override
 	public boolean supports(Class<?> authentication) {

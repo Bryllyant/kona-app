@@ -26,36 +26,19 @@ public class AppWebhookServiceImpl
 	@Autowired
 	private AppWebhookMapper appWebhookDao;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected AppWebhookMapper getDao() {
 		return appWebhookDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected AppWebhookExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		AppWebhookExample example = new AppWebhookExample();
+	 @Override
+    protected AppWebhookExample getEntityExampleObject() { return new AppWebhookExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 
 }

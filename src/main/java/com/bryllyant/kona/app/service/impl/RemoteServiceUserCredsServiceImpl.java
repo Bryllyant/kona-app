@@ -26,34 +26,17 @@ public class RemoteServiceUserCredsServiceImpl
 	@Autowired
 	private RemoteServiceUserCredsMapper remoteServiceUserCredsDao;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected RemoteServiceUserCredsMapper getDao() {
 		return remoteServiceUserCredsDao;
 	}
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected RemoteServiceUserCredsExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		RemoteServiceUserCredsExample example = new RemoteServiceUserCredsExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected RemoteServiceUserCredsExample getEntityExampleObject() { return new RemoteServiceUserCredsExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
     
 }

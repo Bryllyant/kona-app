@@ -10,13 +10,9 @@ import java.util.Set;
 public class MeModel extends UserModel {
     private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
-
     private Boolean emailVerified;
     private Boolean mobileVerified;
-    private Set<KUserRole> roles;
-
-    // ----------------------------------------------------------------------
+    private Set<String> roles;
 
     public Boolean getEmailVerified() {
         return emailVerified;
@@ -34,14 +30,12 @@ public class MeModel extends UserModel {
         this.set("mobileVerified", mobileVerified);
     }
 
-    public Set<KUserRole> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<KUserRole> roles) {
+    public void setRoles(Set<String> roles) {
         this.set("roles", roles);
     }
 
-
-    // ----------------------------------------------------------------------
 }

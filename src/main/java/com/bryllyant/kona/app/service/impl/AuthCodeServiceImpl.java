@@ -58,35 +58,35 @@ public class AuthCodeServiceImpl
 	@Autowired
 	SystemService system;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected AuthCodeMapper getDao() {
 		return authCodeDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override @SuppressWarnings("unchecked")
 	protected RegistrationService getRegistrationService() {
 		return registrationService;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override
 	protected AuthCode getNewObject() {
 		return new AuthCode();
 	}
     
-	// ----------------------------------------------------------------------------
+
 
 	//system.passwordReset.urlTemplate = http://example.com/account/passsword/{code}
 	private String createPasswordResetUrl(String code) {
@@ -95,7 +95,7 @@ public class AuthCodeServiceImpl
 		return url;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	//system.confirmationCode.urlTemplate = http://example.com/system/confirmations/{code}
 	private String createEmailConfirmationUrl(String code) {
@@ -104,7 +104,7 @@ public class AuthCodeServiceImpl
 		return url;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	//system.confirmationCode.urlTemplate = http://example.comm/system/confirmations/{code}
 	private String createMobileConfirmationUrl(String code) {
@@ -113,7 +113,7 @@ public class AuthCodeServiceImpl
 		return url;
 	}
     
-	// ----------------------------------------------------------------------------
+
 	
 	@Override
 	protected String getAuthCodeUrl(Long typeId, Long appId, Long userId, String code) {
@@ -145,7 +145,7 @@ public class AuthCodeServiceImpl
 		return url;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override
 	protected void sendAuthCode(Long typeId, Long appId, Long userId, String authCodeUrl) {
@@ -172,7 +172,7 @@ public class AuthCodeServiceImpl
 		}
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	protected void sendRequestPasswordEmail(Long appId, Long userId, String passwordResetUrl) {
         User user = userService.fetchById(userId);
@@ -213,7 +213,7 @@ public class AuthCodeServiceImpl
 		
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	protected void sendEmailConfirmationEmail(Long appId, Long userId, String authCodeUrl) {
         User user = userService.fetchById(userId);
@@ -255,7 +255,7 @@ public class AuthCodeServiceImpl
 		
 	}
 	
-	// ----------------------------------------------------------------------------
+
     
 	protected void sendMobileConfirmationSms(Long appId, Long userId, String authCodeUrl) {
 		User user = userService.fetchById(userId);
@@ -289,30 +289,13 @@ public class AuthCodeServiceImpl
 		}
 	}
     
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected AuthCodeExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		AuthCodeExample example = new AuthCodeExample();
+	 @Override
+    protected AuthCodeExample getEntityExampleObject() { return new AuthCodeExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 	
 	@Override
 	protected Date getAuthCodeExpirationDate(Long typeId, Long appId, Long userId) {
@@ -331,7 +314,7 @@ public class AuthCodeServiceImpl
 		}
 	}
 
-	// ----------------------------------------------------------------------------
+
 	
 	// explicitly set to null to indicate unlimited use
 	

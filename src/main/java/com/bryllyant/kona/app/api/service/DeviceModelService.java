@@ -40,7 +40,7 @@ public class DeviceModelService extends BaseModelService {
     private ApiUtil util;
 
 
-    // ----------------------------------------------------------------------
+
 
     public Device getDevice(String uid) {
         Device device = deviceService.fetchByUid(uid);
@@ -60,7 +60,7 @@ public class DeviceModelService extends BaseModelService {
         return device;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Device getDevice(DeviceModel model) {
         if (model == null) return null;
@@ -136,7 +136,7 @@ public class DeviceModelService extends BaseModelService {
         return device;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Device getDevice(Long deviceId) {
         Device device = deviceService.fetchById(deviceId);
@@ -148,7 +148,7 @@ public class DeviceModelService extends BaseModelService {
         return device;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public UserDevice getUserDevice(User user, Long deviceId) {
         Device device = getDevice(deviceId);
@@ -156,7 +156,7 @@ public class DeviceModelService extends BaseModelService {
         return getUserDevice(user, device);
     }
     
-    // ----------------------------------------------------------------------
+
 
     public UserDevice getUserDevice(User user, String deviceUid) {
         Device device = getDevice(deviceUid);
@@ -164,7 +164,7 @@ public class DeviceModelService extends BaseModelService {
         return getUserDevice(user, device);
     }
     
-    // ----------------------------------------------------------------------
+
 
     public UserDevice getUserDevice(User user, Device device) {
 
@@ -177,7 +177,7 @@ public class DeviceModelService extends BaseModelService {
         return userDevice;
     }
 
-    // ----------------------------------------------------------------------
+
 
 
     public Long getDeviceId(Object uid, boolean checkAuthorization) {
@@ -191,7 +191,7 @@ public class DeviceModelService extends BaseModelService {
         return id;
     }
 
-    // ----------------------------------------------------------------------
+
     
     public UserDeviceModel toUserDeviceModel(UserDevice userDevice, String... includeKeys) {
         
@@ -214,7 +214,7 @@ public class DeviceModelService extends BaseModelService {
         return model;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public List<UserDeviceModel> toUserDeviceModelList(List<UserDevice> deviceList, String... includeKeys) {
         List<UserDeviceModel> modelList = new ArrayList<>();
@@ -226,7 +226,7 @@ public class DeviceModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     private <T extends KDevice> void setModel(DeviceModel model, T device) {
         model.fromBean(device);
@@ -259,7 +259,7 @@ public class DeviceModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<DeviceModel> toDeviceModelList(List<Device> deviceList, String... includeKeys) {
         List<DeviceModel> modelList = new ArrayList<DeviceModel>();
@@ -273,7 +273,7 @@ public class DeviceModelService extends BaseModelService {
     
 
     
-    // ----------------------------------------------------------------------
+
 
     public Device toEntity(DeviceModel model) {
         Device device = new Device();
@@ -281,7 +281,7 @@ public class DeviceModelService extends BaseModelService {
         return mergeEntity(device, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Device mergeEntity(Device device, DeviceModel model) {
         logger.debug("toEntity called for model: " + model);

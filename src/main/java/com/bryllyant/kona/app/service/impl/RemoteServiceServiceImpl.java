@@ -26,34 +26,17 @@ public class RemoteServiceServiceImpl
 	@Autowired
 	private RemoteServiceMapper remoteServiceDao;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected RemoteServiceMapper getDao() {
 		return remoteServiceDao;
 	}
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected RemoteServiceExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		RemoteServiceExample example = new RemoteServiceExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected RemoteServiceExample getEntityExampleObject() { return new RemoteServiceExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
     
 }

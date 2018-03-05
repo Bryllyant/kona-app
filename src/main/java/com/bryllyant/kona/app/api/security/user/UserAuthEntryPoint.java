@@ -22,8 +22,10 @@ public class UserAuthEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
     public UserAuthEntryPoint(String loginFormUrl) {
 		super(loginFormUrl);
+
 		String env = System.getProperty("env", "dev").trim().toLowerCase();
-		if (env.equals("prd")) {
+
+		if (env.equals("prod")) {
             logger.debug("PROD env detected: setting forceHttps to true");
 			setForceHttps(true);
 		}

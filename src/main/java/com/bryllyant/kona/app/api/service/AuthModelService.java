@@ -24,7 +24,7 @@ import java.util.List;
 public class AuthModelService extends BaseModelService {
     private static final Logger logger = LoggerFactory.getLogger(AuthModelService.class);
     
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private ApiAuthService apiAuthService;
@@ -35,7 +35,7 @@ public class AuthModelService extends BaseModelService {
     @Autowired
     private UserModelService userModelService;
     
-    // ----------------------------------------------------------------------
+
 
     public Token getToken(String accessToken) {
         Token token = tokenService.fetchByAccessToken(accessToken, false);
@@ -47,7 +47,7 @@ public class AuthModelService extends BaseModelService {
         return token;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Token getToken(Long tokenId) {
         Token token = tokenService.fetchById(tokenId);
@@ -59,7 +59,7 @@ public class AuthModelService extends BaseModelService {
         return token;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Token getToken(TokenModel model) {
         if (model == null) return null;
@@ -74,7 +74,7 @@ public class AuthModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public TokenModel toModel(Token token, String... includeKeys) {
         if (token == null) return null;
@@ -107,7 +107,7 @@ public class AuthModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
     
     public final List<TokenModel> toTokenModelList(List<Token> tokens, String... includeKeys) {
         List<TokenModel> modelList = new ArrayList<TokenModel>();
@@ -119,7 +119,7 @@ public class AuthModelService extends BaseModelService {
         return modelList;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public AuthSessionModel toModel(User user, Token token) {
         if (user == null && token == null) return null;
@@ -132,7 +132,7 @@ public class AuthModelService extends BaseModelService {
         return toModel(session);
     } 
     
-    // ----------------------------------------------------------------------
+
 
     public AuthSessionModel toModel(AuthSession authSession) {
         if (authSession == null) return null;
@@ -148,7 +148,7 @@ public class AuthModelService extends BaseModelService {
         return model;
     } 
     
-    // ----------------------------------------------------------------------
+
 
     public AuthSession toEntity(AuthSessionModel model) {
 
@@ -172,7 +172,7 @@ public class AuthModelService extends BaseModelService {
         return session;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Token toTokenEntity(TokenModel model) {
         Token token = new Token();
@@ -180,7 +180,7 @@ public class AuthModelService extends BaseModelService {
         return mergeTokenEntity(token, model);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Token mergeTokenEntity(Token token, TokenModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -226,6 +226,6 @@ public class AuthModelService extends BaseModelService {
         return token;
     }
     
-    // ---------------------------------------------------------------------- 
+
     
 }

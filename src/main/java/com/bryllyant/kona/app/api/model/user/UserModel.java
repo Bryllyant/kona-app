@@ -6,7 +6,7 @@ package com.bryllyant.kona.app.api.model.user;
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
-import com.bryllyant.kona.app.entity.KUserPresence;
+import com.bryllyant.kona.app.entity.KUser;
 import com.bryllyant.kona.data.model.KEntityModel;
 
 import java.util.Date;
@@ -14,8 +14,6 @@ import java.util.Date;
 public class UserModel extends PersonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
     
-    // ----------------------------------------------------------------------
-
     private String uid;
     
     private String username;
@@ -26,14 +24,18 @@ public class UserModel extends PersonModel implements KEntityModel {
     @RestdocsNotExpanded
     private AccountModel account;
 
-    private KUserPresence presence;
+    private KUser.Presence presence;
 
     @RestdocsNotExpanded
     private PositionModel position;
 
+    private Boolean enabled;
+
     private Double distance;
 
     private Date createdDate;
+
+    private Date deletedDate;
 
 
     public static UserModel from(PersonModel person) {
@@ -103,11 +105,11 @@ public class UserModel extends PersonModel implements KEntityModel {
         this.set("account", account);
     }
 
-    public KUserPresence getPresence() {
+    public KUser.Presence getPresence() {
         return presence;
     }
 
-    public void setPresence(KUserPresence presence) {
+    public void setPresence(KUser.Presence presence) {
         this.set("presence", presence);
     }
 
@@ -133,5 +135,21 @@ public class UserModel extends PersonModel implements KEntityModel {
 
     public void setCreatedDate(Date createdDate) {
         this.set("createdDate", createdDate);
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.set("enabled", enabled);
+    }
+
+    public Date getDeletedDate() {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(Date deletedDate) {
+        this.set("deletedDate", deletedDate);
     }
 }

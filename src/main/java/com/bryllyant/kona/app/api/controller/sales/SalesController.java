@@ -54,7 +54,7 @@ public class SalesController extends BaseController {
     @Autowired
     private InvoiceService invoiceService;
 
-    // ----------------------------------------------------------------------
+
     
     protected Map<String,Object> toMap(Product product) {
         if (product == null) return null;
@@ -73,7 +73,7 @@ public class SalesController extends BaseController {
         return result;
     }
 
-    // ----------------------------------------------------------------------
+
     
     protected List<Map<String,Object>> toProductMapList(List<Product> products) {
         List<Map<String,Object>> mapList = new ArrayList<>();
@@ -85,7 +85,7 @@ public class SalesController extends BaseController {
         return mapList;
     }
 
-  // ----------------------------------------------------------------------
+
     
     protected Map<String,Object> toMap(Payment payment) {
         if (payment == null) return null;
@@ -111,7 +111,7 @@ public class SalesController extends BaseController {
         return result;
     }
 
-    // ----------------------------------------------------------------------
+
     
     protected List<Map<String,Object>> toPaymentMapList(List<Payment> payments) {
         List<Map<String,Object>> mapList = new ArrayList<>();

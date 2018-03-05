@@ -34,7 +34,7 @@ import java.util.Map;
 public class MyInvitationController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(MyInvitationController.class);
 
-	// ----------------------------------------------------------------------
+
 	
     @Autowired
     private InvitationService invitationService;
@@ -46,7 +46,7 @@ public class MyInvitationController extends BaseController {
     private InvitationModelService invitationModelService;
 
 	
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<InvitationModel>> search(HttpServletRequest req,
@@ -65,7 +65,7 @@ public class MyInvitationController extends BaseController {
 		return okList(invitationModelService.toInvitationModelList(invitations));
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/{code}", method=RequestMethod.GET)
 	public ResponseEntity<InvitationModel> getByCode(HttpServletRequest req,
@@ -75,7 +75,7 @@ public class MyInvitationController extends BaseController {
 		return ok(invitationModelService.toModel(getInvitation(invitationCode)));
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<InvitationModel> create(HttpServletRequest req,
@@ -90,7 +90,7 @@ public class MyInvitationController extends BaseController {
 	}
 
 	
-	// ----------------------------------------------------------------------
+
 	
     private Invitation saveObject(HttpServletRequest req, Invitation invitation, Map<String,Object> map) {
     	logger.debug("mapToObject called for invitation: " + invitation);
@@ -162,7 +162,7 @@ public class MyInvitationController extends BaseController {
         return invitation;
     }
     
-    // ----------------------------------------------------------------------
+
 
     protected Invitation getInvitation(String invitationCode) {
         Invitation invitation = invitationService.fetchByInvitationCode(invitationCode);
@@ -175,7 +175,7 @@ public class MyInvitationController extends BaseController {
 
     }
     
-    // ----------------------------------------------------------------------
+
 
  
 

@@ -8,6 +8,7 @@ import com.bryllyant.kona.app.dao.UserMapper;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppUser;
+import com.bryllyant.kona.app.entity.AuthRole;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.Media;
@@ -17,9 +18,11 @@ import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserAuth;
 import com.bryllyant.kona.app.entity.UserExample;
+import com.bryllyant.kona.app.entity.UserRole;
 import com.bryllyant.kona.app.service.AccountService;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.AppUserService;
+import com.bryllyant.kona.app.service.AuthRoleService;
 import com.bryllyant.kona.app.service.EntityNameRuleService;
 import com.bryllyant.kona.app.service.InvitationService;
 import com.bryllyant.kona.app.service.KAbstractUserService;
@@ -31,25 +34,30 @@ import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserAuthService;
+import com.bryllyant.kona.app.service.UserRoleService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.app.util.KUtil;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.locale.KValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service(UserService.SERVICE_PATH)
 public class UserServiceImpl 
 		extends KAbstractUserService<User,UserExample,
 									 UserAuth,
+                                     AuthRole,
+                                     UserRole,
 									 Media,
 									 Account,
 									 File,
+                                     App,
 									 AppUser,
 									 Registration,
 									 Invitation,
@@ -90,23 +98,41 @@ public class UserServiceImpl
 
 	@Autowired
 	private PositionService positionService;
-	
+
+    @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
+    private AuthRoleService authRoleService;
+
 	@Autowired
 	EntityNameRuleService entityNameRuleService;
-	
+
 	@Autowired
 	SystemService system;
 	
 
-	// ----------------------------------------------------------------------------
-	
 	protected Long getDefaultAppId() {
 		return system.getSystemApp().getId();
 	}
-	
-	// ----------------------------------------------------------------------------
 
-	@Override
+    @Override
+    protected AuthRole getGuestRole() {
+	    return authRoleService.fetchByName("GUEST");
+    }
+
+    @Override
+    protected List<AuthRole> getDefaultRoles() {
+        AuthRole role = authRoleService.fetchByName("USER");
+
+        List<AuthRole> roles = new ArrayList<>();
+
+        roles.add(role);
+
+        return roles;
+    }
+
+    @Override
 	public boolean isUsernameAvailable(String name) {
 	    // usernames cannot be null or be empty string
         if (name == null || name.length() == 0) {
@@ -149,75 +175,76 @@ public class UserServiceImpl
         return isUnique;
 	}
 	
-	// ----------------------------------------------------------------------------
-    
+
 	@Override
 	protected User getNewObject() {
 		return new User();
 	}
 
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected String generateUid() {
         return KUtil.uuid();
 	}
 	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected  AccountService getAccountService() {
         return accountService;
 	}
-	
-	// ----------------------------------------------------------------------------
+
+    @Override @SuppressWarnings("unchecked")
+    protected  UserRoleService getUserRoleService() {
+        return userRoleService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected  AuthRoleService getAuthRoleService() {
+        return authRoleService;
+    }
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected  TokenService getTokenService() {
         return tokenService;
 	}
-	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserAuthService getUserAuthService() {
         return userAuthService;
 	}
 	
-	// ----------------------------------------------------------------------------
 	@Override @SuppressWarnings("unchecked")
     protected MediaService getMediaService() {
         return mediaService;
     }
-	// ----------------------------------------------------------------------------
+
+    @Override @SuppressWarnings("unchecked")
+    protected AppService getAppService() {
+        return appService;
+    }
 
 	@Override @SuppressWarnings("unchecked")
 	protected AppUserService getAppUserService() {
         return appUserService;
 	}
-	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected RegistrationService getRegistrationService() {
         return registrationService;
 	}
 	
-	// ----------------------------------------------------------------------------
-
 	@Override @SuppressWarnings("unchecked")
 	protected InvitationService getInvitationService() {
 		return invitationService;
 	}
 	
-	// ----------------------------------------------------------------------------
 
     @Override @SuppressWarnings("unchecked")
     protected PositionService getPositionService() {
         return positionService;
     }
     
-	// ----------------------------------------------------------------------------
 
 	@Override
 	protected void sendRegisteredUserEmail(Long appId, User user) {
@@ -258,36 +285,20 @@ public class UserServiceImpl
 		}
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserMapper getDao() {
 		return userDao;
 	}
 	
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected UserExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		UserExample example = new UserExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected UserExample getEntityExampleObject() { return new UserExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 
 
 }

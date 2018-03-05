@@ -29,34 +29,18 @@ public class CampaignEventServiceImpl
     private CampaignEventMapper campaignEventDao;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CampaignEventMapper getDao() {
         return campaignEventDao;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected CampaignEventExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	CampaignEventExample example = new CampaignEventExample();
+    protected CampaignEventExample getEntityExampleObject() { return new CampaignEventExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
     
     @Override
     protected void updateCoords(Long campaignEventId) {

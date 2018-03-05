@@ -13,7 +13,7 @@
         <property name="endingDelimiter" value="`" />
 
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
-        <plugin type="com.bryllyant.kona.data.mybatis.KLimitPlugin" />
+        <plugin type="com.bryllyant.kona.data.mybatis.KonaFrameworkPlugin" />
 
             <!--
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
@@ -60,9 +60,9 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAccount"/>
+            <property name="fullTextColumns" value="uid,name,slug"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
-            <columnOverride column="active" javaType="boolean" />
             <columnOverride column="verified" javaType="boolean" />
         </table>
 
@@ -73,6 +73,7 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseApiVersion"/>
+           <property name="fullTextColumns" value="name,description"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
         </table>
@@ -84,6 +85,7 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseApp"/>
+            <property name="fullTextColumns" value="name,slug,description,company_name"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
         </table>
@@ -106,7 +108,10 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppConfig"/>
+            <property name="fullTextColumns" value="env,name,value"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="override_global" javaType="boolean" />
+            <columnOverride column="env" javaType="com.bryllyant.kona.app.entity.KAppConfig.Env" />
         </table>
 
         <table schema="kona" 
@@ -116,6 +121,7 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppLegal"/>
+            <property name="fullTextColumns" value="uid,content"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="active" javaType="boolean" />
         </table>
@@ -127,8 +133,9 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppUser"/>
+            <property name="fullTextColumns" value="uid,ref_user_id,email,mobile_number,first_name,last_name,display_name"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="active" javaType="boolean" />
+            <columnOverride column="enabled" javaType="boolean" />
             <!-- IGNORE coords columns since this is GIS column used by the db -->
             <ignoreColumn column="coords" />
         </table>
@@ -140,6 +147,7 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAppWebhook"/>
+            <property name="fullTextColumns" value="uid,name,slug,url,events"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
         </table>
@@ -164,6 +172,7 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthCode"/>
+            <property name="fullTextColumns" value="code"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="valid" javaType="boolean" />
         </table>
@@ -204,16 +213,55 @@
         <table schema="kona" 
                 tableName="kona__user" 
                 domainObjectName="User" 
-                delimitAllColumns="true" 
+                delimitAllColumns="true"
                 delimitIdentifiers="true">
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseUser"/>
             <property name="useActualColumnNames" value="false"/>
+            <property name="fullTextColumns" value="uid,username,email,mobile_number,first_name,last_name,display_name"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="active" javaType="boolean" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="presence" javaType="com.bryllyant.kona.app.entity.KUser.Presence" />
+            <columnOverride column="gender" javaType="com.bryllyant.kona.app.entity.KUser.Gender" />
+        </table>
 
-            <columnOverride column="roles" javaType="java.lang.Long" 
-                   typeHandler="com.bryllyant.kona.app.util.KUserRoleHandler" />
+        <table schema="kona"
+               tableName="kona__auth_priv"
+               domainObjectName="AuthPriv"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthPriv"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
 
+        <table schema="kona"
+               tableName="kona__auth_role"
+               domainObjectName="AuthRole"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthRole"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__auth_role_priv"
+               domainObjectName="AuthRolePriv"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthRolePriv"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__user_role"
+               domainObjectName="UserRole"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseUserRole"/>
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
 
@@ -265,7 +313,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSetting"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="overwrite_global" javaType="boolean" />
+            <columnOverride column="override_global" javaType="boolean" />
         </table>
 
         <table schema="kona" 
@@ -382,7 +430,6 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="hidden" javaType="boolean" />
             <columnOverride column="enabled" javaType="boolean" />
-            <columnOverride column="active" javaType="boolean" />
             <columnOverride column="temp_file" javaType="boolean" />
         </table>
 
@@ -741,7 +788,7 @@
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseProduct"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="subscription" javaType="boolean" />
-            <columnOverride column="active" javaType="boolean" />
+            <columnOverride column="enabled" javaType="boolean" />
         </table>
 
 
@@ -850,6 +897,52 @@
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePaymentAccount"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="default_account" javaType="boolean" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__landing_page_template"
+               domainObjectName="LandingPageTemplate"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseLandingPageTemplate"/>
+            <property name="fullTextColumns" value="uid,name,slug,description"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__landing_page_template_param"
+               domainObjectName="LandingPageTemplateParam"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseLandingPageTemplateParam"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="required" javaType="boolean" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KLandingPageTemplateParam.Type" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__landing_page"
+               domainObjectName="LandingPage"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseLandingPage"/>
+            <property name="fullTextColumns" value="uid,name,slug,description,facebook_tracking_id,google_tracking_id"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__landing_page_param"
+               domainObjectName="LandingPageParam"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseLandingPageParam"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
         </table>
         <!-- Sales Tables -->
     </context>

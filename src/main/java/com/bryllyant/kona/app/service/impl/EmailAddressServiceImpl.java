@@ -42,7 +42,7 @@ public class EmailAddressServiceImpl
     private EmailGroupAddressService emailGroupAddressService;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -50,7 +50,7 @@ public class EmailAddressServiceImpl
         return emailAddressDao;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -58,7 +58,7 @@ public class EmailAddressServiceImpl
         return emailGroupService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -66,37 +66,20 @@ public class EmailAddressServiceImpl
         return emailGroupAddressService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     protected EmailAddress getNewObject() {
         return new EmailAddress();
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected EmailAddressExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-                                                           Map<String, Object> filter, boolean distinct) {
-        EmailAddressExample example = new EmailAddressExample();
+    protected EmailAddressExample getEntityExampleObject() { return new EmailAddressExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
 
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-
-        return example;
-    }
-
-    // ----------------------------------------------------------------------------
 
     @Override
     protected List<EmailAddress> daoFetchRandom(Long count, List<String> sourceList, List<Long> excludeGroupIds) {

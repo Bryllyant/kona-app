@@ -28,7 +28,7 @@ public class NotificationModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     public Notification getNotification(String uid) {
         Notification notification = notificationService.fetchByUid(uid);
@@ -40,7 +40,7 @@ public class NotificationModelService extends BaseModelService {
         return notification;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Notification getNotification(Long notificationId) {
         Notification notification = notificationService.fetchById(notificationId);
@@ -53,7 +53,7 @@ public class NotificationModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Notification getNotification(NotificationModel model) {
         if (model == null) return null;
@@ -67,7 +67,7 @@ public class NotificationModelService extends BaseModelService {
         return getNotification(uid);
     }
    
-    // ----------------------------------------------------------------------
+
 
     public final NotificationModel toModel(Notification notification, String... includeKeys) {
         if (notification == null) return null;
@@ -89,7 +89,7 @@ public class NotificationModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final List<NotificationModel> toNotificationModelList(List<Notification> notifications, String... includeKeys) {
         List<NotificationModel> modelList = new ArrayList<NotificationModel>();
@@ -101,7 +101,7 @@ public class NotificationModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Notification toEntity(NotificationModel model) {
         Notification notification = new Notification();
@@ -110,7 +110,7 @@ public class NotificationModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Notification mergeEntity(Notification notification, NotificationModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -133,6 +133,6 @@ public class NotificationModelService extends BaseModelService {
         return notification;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

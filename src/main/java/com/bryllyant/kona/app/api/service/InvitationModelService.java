@@ -21,7 +21,7 @@ import java.util.List;
 public class InvitationModelService extends BaseModelService {
     private static final Logger logger = LoggerFactory.getLogger(InvitationModelService.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private InvitationService invitationService;
@@ -29,7 +29,7 @@ public class InvitationModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
     
-    // ----------------------------------------------------------------------
+
 
     public Invitation getInvitation(String invitationCode) {
         Invitation invitation = invitationService.fetchByInvitationCode(invitationCode);
@@ -41,7 +41,7 @@ public class InvitationModelService extends BaseModelService {
         return invitation;
     }
 
-   // ----------------------------------------------------------------------
+
 
     public Invitation getInvitation(Long invitationId) {
         Invitation invitation = invitationService.fetchById(invitationId);
@@ -54,7 +54,7 @@ public class InvitationModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Invitation getInvitation(InvitationModel model) {
         if (model == null) return null;
@@ -68,7 +68,7 @@ public class InvitationModelService extends BaseModelService {
         return getInvitation(uid);
     }
 
-    // ----------------------------------------------------------------------
+
     
     public final InvitationModel toModel(Invitation invitation, String... includeKeys) {
         if (invitation == null) return null;
@@ -92,7 +92,7 @@ public class InvitationModelService extends BaseModelService {
         return model;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public final List<InvitationModel> toInvitationModelList(List<Invitation> invitations, String... includeKeys) {
         List<InvitationModel> modelList = new ArrayList<>();
@@ -104,7 +104,7 @@ public class InvitationModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Invitation toEntity(InvitationModel model, boolean disableValidation) {
         Invitation invitation = new Invitation();
@@ -112,7 +112,7 @@ public class InvitationModelService extends BaseModelService {
         return mergeEntity(invitation, model, disableValidation);
     }
 
-    // ----------------------------------------------------------------------
+
 
 
     public Invitation mergeEntity(Invitation invitation, InvitationModel model, boolean disableValidation) {
@@ -159,6 +159,6 @@ public class InvitationModelService extends BaseModelService {
         return invitation;
     }
     
-    // ----------------------------------------------------------------------
+
     
 }

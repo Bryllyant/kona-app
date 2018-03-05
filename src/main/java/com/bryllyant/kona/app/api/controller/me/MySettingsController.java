@@ -29,19 +29,19 @@ import java.util.Map;
 public class MySettingsController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(MySettingsController.class);
 
-	// ----------------------------------------------------------------------
+
     @Autowired
     private SettingService settingService;    
     
     @Autowired
     private ApiUtil util;
 
-	// ----------------------------------------------------------------------
+
 	
 	//private Gson gson = new Gson();
 	ObjectMapper mapper = new ObjectMapper();
 
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> get(HttpServletRequest req) {
@@ -49,7 +49,7 @@ public class MySettingsController extends BaseController {
 		return ok(getSettings());
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<Map<String,Object>> update(HttpServletRequest req,
@@ -82,7 +82,7 @@ public class MySettingsController extends BaseController {
 		return ok(settings); 
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	private Map<String,Object> saveSettings(User user, Map<String,Object> map) {
 	    
@@ -93,14 +93,14 @@ public class MySettingsController extends BaseController {
 	    return getSettings(user);
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	private boolean isValidKey(String key) {
 		return true;
 	}
 
 
-	// ----------------------------------------------------------------------
+
 
 	protected Map<String,Object> getSettings(User user) {
 		Map<String,Object> settings = settingService.getUserSettings(user);

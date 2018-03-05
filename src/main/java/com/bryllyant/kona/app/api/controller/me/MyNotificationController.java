@@ -32,7 +32,7 @@ import java.util.Map;
 public class MyNotificationController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(MyNotificationController.class);
 	
-	// ----------------------------------------------------------------------
+
     
     @Autowired
     private NotificationService notificationService;
@@ -40,7 +40,7 @@ public class MyNotificationController extends BaseController {
     @Autowired
     private NotificationModelService notificationModelService;
 
-	// ----------------------------------------------------------------------
+
     
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<NotificationModel>> search(HttpServletRequest req,
@@ -58,7 +58,7 @@ public class MyNotificationController extends BaseController {
 		return okList(notificationModelService.toNotificationModelList(result));
 	}
 
-	// ----------------------------------------------------------------------
+
 	
 	@RequestMapping(value="/{uid}", method=RequestMethod.GET)
 	public ResponseEntity<NotificationModel> get(HttpServletRequest req,
@@ -77,7 +77,7 @@ public class MyNotificationController extends BaseController {
 	
 
 
-	// ----------------------------------------------------------------------
+
 	
 	@RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
 	public ResponseEntity<NotificationModel> update(HttpServletRequest req,
@@ -99,7 +99,7 @@ public class MyNotificationController extends BaseController {
 		return ok(notificationModelService.toModel(notification));
 	}
 
-	// ----------------------------------------------------------------------
+
 	
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<Map<String,Object>> updateAll(HttpServletRequest req) {
@@ -135,6 +135,6 @@ public class MyNotificationController extends BaseController {
 		return ok(getResultObject("update_count", updateCount));
 	}
 	
-    // ----------------------------------------------------------------------
+
 
 }

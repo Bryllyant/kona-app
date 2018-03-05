@@ -30,55 +30,38 @@ public class ShortUrlServiceImpl
 	@Autowired
 	private KConfig config;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected ShortUrlMapper getDao() {
 		return shortUrlDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override
 	protected ShortUrl getNewObject() {
 		return new ShortUrl();
 	}
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getDefaultVanityDomain() {
 		return config.getString("shortUrl.domain");
 	}
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected boolean useHttps() {
         return config.getBoolean("shortUrl.https", false);
 	}
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected ShortUrlExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		ShortUrlExample example = new ShortUrlExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected ShortUrlExample getEntityExampleObject() { return new ShortUrlExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
     
 }

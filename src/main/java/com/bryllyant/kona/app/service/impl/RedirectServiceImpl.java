@@ -31,48 +31,31 @@ public class RedirectServiceImpl
 	@Autowired
 	ShortUrlService shortUrlService;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected RedirectMapper getDao() {
 		return redirectDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override
 	protected Redirect getNewObject() {
 		return new Redirect();
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected ShortUrlService getShortUrlService() {
 		return shortUrlService;
 	}
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected RedirectExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		RedirectExample example = new RedirectExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected RedirectExample getEntityExampleObject() { return new RedirectExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
     
 }

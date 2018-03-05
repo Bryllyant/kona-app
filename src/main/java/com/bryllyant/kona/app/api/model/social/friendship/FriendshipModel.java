@@ -12,8 +12,6 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
 
 	private static final long serialVersionUID = 1L;
 	
-    // ---------------------------------------------------------------
-	
 	private String uid;
 
 	@RestdocsNotExpanded
@@ -23,15 +21,13 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
 
 	private Date createdDate;
 
-    // ----------------------------------------------------------------------
-    
+
     public static FriendshipModel create(String uid) {
         FriendshipModel model = new FriendshipModel();
         model.setUid(uid);
         return model;
     }
 
-    // ----------------------------------------------------------------------
 
     @Override
     public String getUid() {
@@ -68,7 +64,7 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
     }
 
 
-    // ---------------------------------------------------------------
+
 
     
 

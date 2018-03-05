@@ -31,7 +31,7 @@ import java.util.Map;
 public class SystemController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(SystemController.class);
 
-	// ----------------------------------------------------------------------
+
 	
 	@Autowired
 	private AppLegalService appLegalService;
@@ -42,7 +42,7 @@ public class SystemController extends BaseController {
 	@Autowired
 	private SystemService system;
 	
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/alert", method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> alert(HttpServletRequest req,
@@ -70,7 +70,7 @@ public class SystemController extends BaseController {
 		}
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/legal/terms", method = RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> getTerms(HttpServletRequest req) {
@@ -87,7 +87,7 @@ public class SystemController extends BaseController {
 	    return ok(toMap(terms));
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/legal/privacy", method = RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> getPrivacy(HttpServletRequest req) {
@@ -103,7 +103,7 @@ public class SystemController extends BaseController {
 	}
 
 	   
-	// ----------------------------------------------------------------------
+
     protected Map<String,Object> toMap(AppLegal appLegal) {
         if (appLegal == null) return null;
 

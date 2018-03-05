@@ -10,7 +10,7 @@ public class FriendshipCircleModel extends KJsonModel {
 
 	private static final long serialVersionUID = 1L;
 	
-    // ---------------------------------------------------------------
+
 	
 	private String uid;
 
@@ -21,7 +21,7 @@ public class FriendshipCircleModel extends KJsonModel {
 	private Boolean defaultCircle;
 	private Date createdDate;
 
-    // ----------------------------------------------------------------------
+
     
     public static FriendshipCircleModel create(String uid) {
         FriendshipCircleModel model = new FriendshipCircleModel();
@@ -29,7 +29,7 @@ public class FriendshipCircleModel extends KJsonModel {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getUid() {
         return uid;
@@ -72,7 +72,7 @@ public class FriendshipCircleModel extends KJsonModel {
     }
 
 
-    // ---------------------------------------------------------------
+
 
     
 

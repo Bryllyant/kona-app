@@ -14,6 +14,7 @@
     <http pattern="/assets/**" security="none" />
     <http pattern="/system/**" security="none" />
     <http pattern="/files/**" security="none" />
+    <http pattern="/hello/**" security="none" />
 
     <!-- only allow remote services from localhost -->
     <!-- a login mechanism must be specified so default to http-basic here -->

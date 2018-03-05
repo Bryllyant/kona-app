@@ -63,64 +63,48 @@ public class InvitationServiceImpl
 	SystemService system;
     
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected InvitationMapper getDao() {
 		return invitationDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected ContactService getContactService() {
 		return contactService;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected FriendshipService getFriendshipService() {
 		return friendshipService;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override
 	protected Invitation getNewObject() {
 		return new Invitation();
 	}
 	
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected InvitationExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		InvitationExample example = new InvitationExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected InvitationExample getEntityExampleObject() { return new InvitationExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override
 	protected String getInvitationUrl(Long userId, String code) {
@@ -131,7 +115,7 @@ public class InvitationServiceImpl
 		return url;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	protected Invitation sendInvitation(Invitation invitation, Contact contact, String invitationUrl) {
 		KInvitationChannel channel = KInvitationChannel.getInstance(invitation.getChannelId());
@@ -150,26 +134,26 @@ public class InvitationServiceImpl
 		}	
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	protected Invitation sendEmail(Invitation invitation, Contact contact, String invitationUrl) {
 		return invitation;
 		
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	protected Invitation sendFacebook(Invitation invitation, Contact contact, String invitationUrl) {
 		return invitation;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	protected Invitation sendTwitter(Invitation invitation, Contact contact, String invitationUrl) {
 		return invitation;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	protected Invitation sendSms(Invitation invitation, Contact contact, String invitationUrl) {
 		KInvitationType type = KInvitationType.getInstance(invitation.getTypeId());
@@ -210,7 +194,7 @@ public class InvitationServiceImpl
 		return invitation;
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	private String getSmsTextString(String templatePath, User user, Contact contact, String invitationUrl) {
 		Map<String,Object> params = new HashMap<String,Object>();

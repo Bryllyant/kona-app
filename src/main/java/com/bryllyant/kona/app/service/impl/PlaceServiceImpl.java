@@ -32,41 +32,25 @@ public class PlaceServiceImpl
 	@Autowired
 	GeocodingService geocodingService;
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected PlaceMapper getDao() {
 		return placeDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override @SuppressWarnings("unchecked")
 	protected GeocodingService getGeocodingService() {
 		return geocodingService;
 	}
 	
-    // ----------------------------------------------------------------------------
 
-	@Override
-	protected PlaceExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		PlaceExample example = new PlaceExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected PlaceExample getEntityExampleObject() { return new PlaceExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
 
 
@@ -75,7 +59,7 @@ public class PlaceServiceImpl
         getDao().updateCoords(placeId);
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override 
     public List<Place> fetchProximate(

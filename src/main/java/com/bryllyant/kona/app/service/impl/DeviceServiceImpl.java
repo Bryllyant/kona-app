@@ -8,13 +8,10 @@ import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.DeviceExample;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.KAbstractDeviceService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(DeviceService.SERVICE_PATH)
 public class DeviceServiceImpl 
@@ -27,35 +24,19 @@ public class DeviceServiceImpl
 	private DeviceMapper deviceDao;
 	
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected DeviceMapper getDao() {
 		return deviceDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected DeviceExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		DeviceExample example = new DeviceExample();
+	 @Override
+    protected DeviceExample getEntityExampleObject() { return new DeviceExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 
 }

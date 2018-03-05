@@ -21,7 +21,7 @@ public class RouterController extends BaseController {
 	   @Autowired
 	    private Environment env;
 
-	// ----------------------------------------------------------------------
+
     
 	@RequestMapping(method=RequestMethod.GET)
 	public final String routeDefault(HttpServletRequest req) {
@@ -32,7 +32,7 @@ public class RouterController extends BaseController {
 	}
     
 
-	// ----------------------------------------------------------------------
+
 	
 	@RequestMapping(value="/{keyword}", method=RequestMethod.GET)
 	public final String routeKeyword(HttpServletRequest req,
@@ -48,6 +48,6 @@ public class RouterController extends BaseController {
         return "redirect:/app?keyword=" + keyword;
 	}
     
-	// ----------------------------------------------------------------------
+
     
 }

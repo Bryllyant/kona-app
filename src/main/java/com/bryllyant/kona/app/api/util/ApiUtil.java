@@ -34,11 +34,11 @@ import java.util.Map;
 public class ApiUtil {
     private static Logger logger = LoggerFactory.getLogger(ApiUtil.class);
 
-    // ----------------------------------------------------------------------
+
 
     public final static String BIRTH_DATE_FORMAT = "yyyy-MM-dd";
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private KConfig config;
@@ -50,7 +50,7 @@ public class ApiUtil {
     private SystemService system;
 
 
-    // ----------------------------------------------------------------------
+
 
     public String getConfigUrl(String key) {
         String url = config.getString(key);
@@ -64,7 +64,7 @@ public class ApiUtil {
         return url;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String toAbsoluteUrl(String filePublicPath) {
         if (filePublicPath == null) return null;
@@ -79,7 +79,7 @@ public class ApiUtil {
         return fileService.toAbsoluteUrl(filePublicPath);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Date toDate(String jsonDate) {
         if (jsonDate == null) return null;
@@ -94,7 +94,7 @@ public class ApiUtil {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getGenderValue(Object o) {
         String value = getStringValue(o);
@@ -113,7 +113,7 @@ public class ApiUtil {
     }
 
 
-    // ----------------------------------------------------------------------
+
 
     public String getStringValue(Object o) {
         if (o == null) {
@@ -132,7 +132,7 @@ public class ApiUtil {
         return s;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Double getDoubleValue(Object o) {
         String s = getStringValue(o);
@@ -144,7 +144,7 @@ public class ApiUtil {
         return Double.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Integer getIntegerValue(Object o) {
         String s = getStringValue(o);
@@ -156,7 +156,7 @@ public class ApiUtil {
         return Integer.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Long getLongValue(Object o) {
         String s = getStringValue(o);
@@ -168,14 +168,14 @@ public class ApiUtil {
         return Long.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Boolean getBooleanValue(Object o) {
         return getBooleanValue(o, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Boolean getBooleanValue(Object o, Boolean defaultValue) {
         String s = getStringValue(o);
@@ -187,7 +187,7 @@ public class ApiUtil {
         return Boolean.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Date getDateValue(Object o) {
         logger.debug("getDateValue called for raw object: " + o);
@@ -207,7 +207,7 @@ public class ApiUtil {
         return d;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getPhoneNumberValue(Object o) {
         String s = getStringValue(o);
@@ -226,7 +226,7 @@ public class ApiUtil {
         return s;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getEmailValue(Object o) {
         String s = getStringValue(o);
@@ -242,7 +242,7 @@ public class ApiUtil {
         return s;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getUrlValue(Object o) {
         String s = getStringValue(o);
@@ -259,7 +259,7 @@ public class ApiUtil {
     }
 
 
-    // ----------------------------------------------------------------------
+
 
     public String[] splitKey(String key) {
         String prefix = "";
@@ -313,7 +313,7 @@ public class ApiUtil {
         return result;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Object copyBean(Object source, Object target, boolean skipNullValues) {
         try {
@@ -324,7 +324,7 @@ public class ApiUtil {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     public void copyMap(Map<String, Object> source, Map<String, Object> target, boolean skipNullValues) {
 
@@ -339,7 +339,7 @@ public class ApiUtil {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     /**
      * Copy the initialized properties of a model to the target object.
@@ -364,7 +364,7 @@ public class ApiUtil {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Map<String, Object> camelCaseKeys(Map<String, Object> map) {
 
@@ -382,7 +382,7 @@ public class ApiUtil {
         return result;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Map<String, Object> snakeCaseKeys(Map<String, Object> map) {
 

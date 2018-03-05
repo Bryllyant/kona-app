@@ -32,7 +32,7 @@ public class ProductModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     public Product getProduct(String uid) {
         Product product = productService.fetchByUid(uid);
@@ -44,7 +44,7 @@ public class ProductModelService extends BaseModelService {
         return product;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Product getProduct(Long productId) {
         Product product = productService.fetchById(productId);
@@ -57,7 +57,7 @@ public class ProductModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Product getProduct(ProductModel model) {
         if (model == null) return null;
@@ -71,7 +71,7 @@ public class ProductModelService extends BaseModelService {
         return getProduct(uid);
     }
    
-    // ----------------------------------------------------------------------
+
 
     public ProductModel toModel(Product product, String... includeKeys) {
         if (product == null) return null;
@@ -93,7 +93,7 @@ public class ProductModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<ProductModel> toProductModelList(List<Product> products, String... includeKeys) {
         List<ProductModel> modelList = new ArrayList<>();
@@ -105,7 +105,7 @@ public class ProductModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Product toEntity(ProductModel model) {
         Product product = new Product();
@@ -114,7 +114,7 @@ public class ProductModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Product mergeEntity(Product product, ProductModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -136,6 +136,6 @@ public class ProductModelService extends BaseModelService {
         return product;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

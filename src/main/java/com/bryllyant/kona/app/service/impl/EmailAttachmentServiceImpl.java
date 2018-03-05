@@ -37,71 +37,54 @@ public class EmailAttachmentServiceImpl
 	@Autowired
 	private UserService userService;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailAttachmentMapper getDao() {
 		return emailAttachmentDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 	@Override 
     protected boolean entityHasBlobs() {
 	    return false;
     }
 
-	// ----------------------------------------------------------------------------
+
 
     @Override
     protected EmailAttachment getNewObject() {
     	return new EmailAttachment();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
     protected File getNewFileObject() {
         return new File();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected FileService getFileService() {
         return fileService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected EmailAttachmentExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		EmailAttachmentExample example = new EmailAttachmentExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected EmailAttachmentExample getEntityExampleObject() { return new EmailAttachmentExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
 
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 
     
 }

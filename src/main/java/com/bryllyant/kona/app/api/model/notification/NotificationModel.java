@@ -10,7 +10,7 @@ import java.util.Date;
 public class NotificationModel extends KJsonModel implements KEntityModel {
 	private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+
 	
 	private String uid;
 
@@ -22,7 +22,7 @@ public class NotificationModel extends KJsonModel implements KEntityModel {
 	private Date lastViewedDate;
 	private Date createdDate;
 
-	// ----------------------------------------------------------------------
+
 
 	public static NotificationModel create(String uid) {
 	    NotificationModel model = new NotificationModel();
@@ -30,7 +30,7 @@ public class NotificationModel extends KJsonModel implements KEntityModel {
 	    return model;
 	}
 
-	// ----------------------------------------------------------------------
+
 
     @Override
     public String getUid() {
@@ -83,5 +83,5 @@ public class NotificationModel extends KJsonModel implements KEntityModel {
     }
 
 
-    // ----------------------------------------------------------------------
+
 }

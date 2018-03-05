@@ -37,48 +37,32 @@ public class PaymentServiceImpl
     @Autowired
     private InvoiceService invoiceService;
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PaymentMapper getDao() {
         return paymentDao;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected Payment getNewPaymentObject() {
     	return new Payment();
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override @SuppressWarnings("unchecked")
     protected InvoiceService getInvoiceService() {
         return invoiceService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected PaymentExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	PaymentExample example = new PaymentExample();
+    protected PaymentExample getEntityExampleObject() { return new PaymentExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
     
 
 

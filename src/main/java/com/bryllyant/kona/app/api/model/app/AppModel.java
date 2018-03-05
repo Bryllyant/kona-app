@@ -12,7 +12,7 @@ import java.util.Date;
 public class AppModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+
 
     @NotNull
     private String uid;
@@ -45,7 +45,7 @@ public class AppModel extends KJsonModel implements KEntityModel {
     @NotNull
     private Date createdDate;
     
-    // ----------------------------------------------------------------------
+
     
     public static AppModel create(String uid) {
         AppModel model = new AppModel();
@@ -53,7 +53,7 @@ public class AppModel extends KJsonModel implements KEntityModel {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
 
     @Override

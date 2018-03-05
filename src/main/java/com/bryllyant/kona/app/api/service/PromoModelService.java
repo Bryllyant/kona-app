@@ -33,7 +33,7 @@ public class PromoModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     public Promo getPromo(String uid) {
         Promo promo = promoService.fetchByUid(uid);
@@ -45,7 +45,7 @@ public class PromoModelService extends BaseModelService {
         return promo;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Promo getPromo(Long promoId) {
         Promo promo = promoService.fetchById(promoId);
@@ -58,7 +58,7 @@ public class PromoModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
+
 
     public Promo getPromo(PromoModel model) {
         if (model == null) return null;
@@ -72,7 +72,7 @@ public class PromoModelService extends BaseModelService {
         return getPromo(uid);
     }
    
-    // ----------------------------------------------------------------------
+
 
     public PromoModel toModel(Promo promo, String... includeKeys) {
         if (promo == null) return null;
@@ -100,7 +100,7 @@ public class PromoModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<PromoModel> toPromoModelList(List<Promo> promos, String... includeKeys) {
         List<PromoModel> modelList = new ArrayList<>();
@@ -112,7 +112,7 @@ public class PromoModelService extends BaseModelService {
         return modelList;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Promo toEntity(PromoModel model) {
         Promo promo = new Promo();
@@ -121,7 +121,7 @@ public class PromoModelService extends BaseModelService {
     }
 
     
-    // ----------------------------------------------------------------------
+
 
     public Promo mergeEntity(Promo promo, PromoModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -148,6 +148,6 @@ public class PromoModelService extends BaseModelService {
         return promo;
     }
     
-    // ----------------------------------------------------------------------
+
    
 }

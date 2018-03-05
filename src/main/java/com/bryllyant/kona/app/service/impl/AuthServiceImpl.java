@@ -5,7 +5,6 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.entity.AppCreds;
 import com.bryllyant.kona.app.entity.KTokenType;
-import com.bryllyant.kona.app.entity.KUserPresence;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserAuth;
@@ -39,62 +38,40 @@ public class AuthServiceImpl
 	@Autowired
 	private AppCredsService appCredsService;
 	
-	// ----------------------------------------------------------------------------
 
 	@Override
 	public Long getLoginTokenTypeId() {
 		return KTokenType.BEARER.getId();
 	}
 	
-	// ----------------------------------------------------------------------------
-
-	@Override
-	public Long getLoggedInPresenceId() {
-		return KUserPresence.ONLINE.getId();
-	}
-	
-	// ----------------------------------------------------------------------------
-	
-	@Override
-	public Long getLoggedOutPresenceId() {
-		return KUserPresence.OFFLINE.getId();
-	}
-	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected TokenService getTokenService() {
 		return tokenService;
 	}
 	
-	// ----------------------------------------------------------------------------
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
 
-	// ----------------------------------------------------------------------------
-	
+
 	@Override @SuppressWarnings("unchecked")
 	protected UserAuthService getUserAuthService() {
 		return userAuthService;
 	}
 	
-	// ----------------------------------------------------------------------------
-	
+
 	@Override @SuppressWarnings("unchecked")
 	protected AppCredsService getAppCredsService() {
 		return appCredsService;
 	}
 
-	// ----------------------------------------------------------------------------
-	
+
 	@Override
 	protected Token getNewObject() {
 		return new Token();
 	}
-	
-	// ----------------------------------------------------------------------------
 
 }

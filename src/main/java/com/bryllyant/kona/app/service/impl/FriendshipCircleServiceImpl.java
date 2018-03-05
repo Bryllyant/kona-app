@@ -23,35 +23,19 @@ public class FriendshipCircleServiceImpl
 	@Autowired
 	private FriendshipCircleMapper circleDao;
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected FriendshipCircleMapper getDao() {
 		return circleDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected FriendshipCircleExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		FriendshipCircleExample example = new FriendshipCircleExample();
+	 @Override
+    protected FriendshipCircleExample getEntityExampleObject() { return new FriendshipCircleExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 
 }

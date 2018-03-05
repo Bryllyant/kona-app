@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class TokenModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
     
-    // ----------------------------------------------------------------------
+
 
     public enum TokenType {
         BASIC,
@@ -34,7 +34,7 @@ public class TokenModel extends KJsonModel {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     @NotNull
     private TokenType tokenType;
@@ -51,7 +51,7 @@ public class TokenModel extends KJsonModel {
     @NotNull
     private Integer expiresIn;
 
-    // ----------------------------------------------------------------------
+
 
     public TokenType getTokenType() {
         return tokenType;
@@ -73,7 +73,7 @@ public class TokenModel extends KJsonModel {
         return expiresIn;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public void setTokenType(TokenType tokenType) {
         set("tokenType", tokenType);
@@ -95,7 +95,7 @@ public class TokenModel extends KJsonModel {
         set("expiresIn", expiresIn);
     }
     
-    // ----------------------------------------------------------------------
+
     
     
     

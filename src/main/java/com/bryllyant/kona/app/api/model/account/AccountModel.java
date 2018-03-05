@@ -20,6 +20,7 @@ public class AccountModel extends KJsonModel implements KEntityModel {
 
     @NotNull
     private String name;
+    private String slug;
 
     private Boolean enabled;
     private Boolean active;
@@ -27,7 +28,7 @@ public class AccountModel extends KJsonModel implements KEntityModel {
 
     private Date createdDate;
     
-    // ----------------------------------------------------------------------
+
     
     public static AccountModel create(String uid) {
         AccountModel model = new AccountModel();
@@ -35,7 +36,7 @@ public class AccountModel extends KJsonModel implements KEntityModel {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     @Override
     public String getUid() {
@@ -61,6 +62,14 @@ public class AccountModel extends KJsonModel implements KEntityModel {
 
     public void setName(String name) {
         this.set("name", name);
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.set("slug", slug);
     }
 
     public Boolean getEnabled() {

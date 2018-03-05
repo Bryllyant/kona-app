@@ -73,7 +73,7 @@ public class ChargesController extends SalesController {
     @Autowired
     private SystemService system;
 	
-	// ----------------------------------------------------------------------
+
 
 	   
     @RequestMapping(method=RequestMethod.GET)
@@ -114,7 +114,7 @@ public class ChargesController extends SalesController {
                 paymentService.fetchByCriteria(offset, limit, sortOrder, filter, distinct)));
     }
 
-    // ----------------------------------------------------------------------
+
 
     private String getValue(Map<String,Object> map, String key) {
         return getValue(map, key, true);
@@ -130,7 +130,7 @@ public class ChargesController extends SalesController {
         return value;
     }
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method=RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -215,7 +215,7 @@ public class ChargesController extends SalesController {
         return created(charge);
     }
     
-    // ----------------------------------------------------------------------
+
 
     private void sendMedia(User user, Media media) {
         if (user.getEmail() == null) {

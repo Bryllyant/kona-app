@@ -52,69 +52,69 @@ public class GooglePlayServiceImpl
     InvoiceService invoiceService;
     
 
-    // ----------------------------------------------------------------------------
+
     
     @Override
 	protected Purchase getNewPurchaseObject() {
 		return new Purchase();
 	}
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
 	protected String getGooglePlayPackageName(Long appId) {
 		return null;
 	}
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getGooglePlayAppName(Long appId)  {
     	return null;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getGooglePlayServiceAccountPrivateKey(Long appId) {
     	return null;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getGooglePlayServiceAccountEmail(Long appId) {
         return null;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override @SuppressWarnings("unchecked")
     protected PurchaseService getPurchaseService() {
         return purchaseService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PaymentService getPaymentService() {
         return paymentService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected ProductService getProductService() {
         return productService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected InvoiceService getInvoiceService() {
         return invoiceService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
 }

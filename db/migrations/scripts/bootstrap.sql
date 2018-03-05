@@ -21,7 +21,7 @@ CREATE TABLE `_changelog` (
 
   PRIMARY KEY (`ID`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -29,11 +29,10 @@ CREATE TABLE `kona__account` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `owner_id` bigint(20) unsigned DEFAULT NULL,
-  `slug` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   -- `stripe_uid` varchar(255) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `verified` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -47,10 +46,12 @@ CREATE TABLE `kona__account` (
 
   UNIQUE KEY `ux_kona__account_owner` (`owner_id`),
 
+  FULLTEXT `ft_kona__account` (`uid`,`name`,`slug`),
+
   CONSTRAINT `fk_kona__account_owner` FOREIGN KEY (`owner_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -105,7 +106,7 @@ CREATE TABLE `kona__api_log` (
   CONSTRAINT `fk_kona__api_log_version` FOREIGN KEY (`version_id`) 
         REFERENCES `kona__api_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -120,9 +121,11 @@ CREATE TABLE `kona__api_version` (
 
   PRIMARY KEY (`id`),
 
-  UNIQUE KEY `ux_kona__api_version_name` (`name`)
+  UNIQUE KEY `ux_kona__api_version_name` (`name`),
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  FULLTEXT `ft_kona__api_version` (`name`,`description`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -133,14 +136,14 @@ CREATE TABLE `kona__app` (
   `user_id` bigint(20) unsigned NOT NULL,
   `logo_id` bigint(20) unsigned DEFAULT NULL,
   `logo_url_path` varchar(255) DEFAULT NULL,
-  `slug` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `description` varchar(2000) DEFAULT NULL,
   `app_url` varchar(255) DEFAULT NULL,
   `company_name` varchar(255) DEFAULT NULL,
   `company_url` varchar(255) DEFAULT NULL,
   `privacy_url` varchar(255) DEFAULT NULL,
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -159,6 +162,8 @@ CREATE TABLE `kona__app` (
 
   KEY `ix_kona__app_logo` (`logo_id`),
 
+  FULLTEXT `ft_kona__app` (`name`,`slug`,`description`,`company_name`),
+
   CONSTRAINT `fk_kona__app_logo` FOREIGN KEY (`logo_id`) 
         REFERENCES `kona__media` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 
@@ -168,16 +173,19 @@ CREATE TABLE `kona__app` (
   CONSTRAINT `fk_kona__app_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__app_config` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `app_id` bigint(20) unsigned NOT NULL,
-  `env` enum('dev','qa','beta','sandbox','prd') DEFAULT NULL,
+  `uid` varchar(255) NOT NULL,
+  `parent_id` bigint(20) unsigned default NULL,
+  `app_id` bigint(20) unsigned default NULL, -- set null for global
+  `env` varchar(255) DEFAULT NULL, -- set null for global
   `name` varchar(255) NOT NULL,
   `value` varchar(4000) NOT NULL,
+  `override_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -185,14 +193,23 @@ CREATE TABLE `kona__app_config` (
 
   UNIQUE KEY `id` (`id`),
 
-  UNIQUE KEY `kona__app_config_env_name` (`app_id`,`env`,`name`),
+  UNIQUE KEY `ux_kona__app_config_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__app_config_env_name` (`app_id`,`env`,`name`),
 
   KEY `ix_kona__app_config_app` (`app_id`),
 
-  CONSTRAINT `fk_kona__app_config_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `ix_kona__app_config_parent` (`parent_id`),
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  FULLTEXT `ft_kona__app_config` (`env`,`name`,`value`),
+
+  CONSTRAINT `fk_kona__app_config_parent` FOREIGN KEY (`parent_id`)
+        REFERENCES `kona__app_config` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__app_config_app` FOREIGN KEY (`app_id`) 
+        REFERENCES `kona__app` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -208,7 +225,6 @@ CREATE TABLE `kona__app_creds` (
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `access_token_timeout` int(11) unsigned DEFAULT NULL, -- seconds / needs to be integer
   `refresh_token_timeout` int(11) unsigned DEFAULT NULL, -- second / needs to be integer
-  `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -230,7 +246,7 @@ CREATE TABLE `kona__app_creds` (
   CONSTRAINT `fk_kona__app_creds_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -240,9 +256,9 @@ CREATE TABLE `kona__app_legal` (
   `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `type` enum('terms','privacy') NOT NULL,
-  `content` mediumtext NOT NULL,
+  `content` longtext NOT NULL,
   `version` int(11) unsigned NOT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0', -- currently active version
   `published_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -253,16 +269,18 @@ CREATE TABLE `kona__app_legal` (
 
   UNIQUE KEY `ux_kona__app_legal_uid` (`uid`),
 
-  UNIQUE KEY `kona__app_legal_type_version` (`app_id`, `type`, `version`),
+  UNIQUE KEY `ux_kona__app_legal_type_version` (`app_id`, `type`, `version`),
 
   KEY `ix_kona__app_legal_app` (`app_id`),
 
   KEY `ix_kona__app_legal_type` (`type`),
 
+  FULLTEXT `ft_kona__app_legal` (`uid`,`content`),
+
   CONSTRAINT `fk_kona__app_legal_app` FOREIGN KEY (`app_id`)
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -276,7 +294,7 @@ CREATE TABLE `kona__app_type` (
 
   UNIQUE KEY `ux_kona__app_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -303,7 +321,7 @@ CREATE TABLE `kona__app_user` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `coords` geometry NOT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `revoked_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -322,6 +340,8 @@ CREATE TABLE `kona__app_user` (
 
   KEY `ix_kona__user_app_token` (`token_id`),
 
+  FULLTEXT `ft_kona__app_user` (`uid`,`ref_user_id`,`email`,`mobile_number`,`first_name`,`last_name`,`display_name`),
+
   SPATIAL `ix_kona__user_app_coords` (coords),
 
   CONSTRAINT `fk_kona__app_user_app` FOREIGN KEY (`app_id`) 
@@ -333,7 +353,7 @@ CREATE TABLE `kona__app_user` (
   CONSTRAINT `fk_kona__app_user_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -341,10 +361,10 @@ CREATE TABLE `kona__app_webhook` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
-  `slug` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `events` varchar(2000) DEFAULT NULL,
+  `slug` varchar(255) NOT NULL,
   `url` varchar(2000) DEFAULT NULL,
+  `events` varchar(2000) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -359,10 +379,12 @@ CREATE TABLE `kona__app_webhook` (
 
   KEY `ix_kona__app_webhook_app` (`app_id`),
 
+  FULLTEXT `ft_kona__app_webhook` (`uid`,`name`,`slug`,`url`,`events`),
+
   CONSTRAINT `fk_kona__app_webhook_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -394,6 +416,8 @@ CREATE TABLE `kona__auth_code` (
 
   KEY `ix_kona__auth_code_user` (`user_id`),
 
+  FULLTEXT `ft_kona__auth_code` (`code`),
+
   CONSTRAINT `fk_kona__auth_code_type` FOREIGN KEY (`type_id`) 
         REFERENCES `kona__auth_code_type` (`id`),
 
@@ -403,7 +427,7 @@ CREATE TABLE `kona__auth_code` (
   CONSTRAINT `fk_kona__auth_code_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -426,7 +450,6 @@ CREATE TABLE `kona__file` (
 --   `compressed` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `temp_file` tinyint(1) unsigned NOT NULL DEFAULT '0',
 --  `width` int(11) DEFAULT NULL,
 --  `height` int(11) DEFAULT NULL,
@@ -487,7 +510,7 @@ CREATE TABLE `kona__file` (
   CONSTRAINT `fk_kona__file_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -504,7 +527,7 @@ CREATE TABLE `kona__file_access` (
 
   UNIQUE KEY `ux_kona__file_access_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -518,7 +541,7 @@ CREATE TABLE `kona__file_type` (
 
   UNIQUE KEY `ux_kona__file_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -555,7 +578,7 @@ CREATE TABLE `kona__redirect` (
   CONSTRAINT `fk_kona__redirect_short_url` FOREIGN KEY (`short_url_id`) 
         REFERENCES `kona__short_url` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -570,7 +593,7 @@ CREATE TABLE `kona__device_type` (
 
   UNIQUE `ux_device_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -595,7 +618,7 @@ CREATE TABLE `kona__device` (
   `hardware_version` varchar(255) default NULL,
   `firmware_version` varchar(255) default NULL,
   `capabilities` varchar(255) default NULL,
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `deleted_date` datetime DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -608,7 +631,7 @@ CREATE TABLE `kona__device` (
 
   UNIQUE KEY `ux_kona__device_advertiser_id` (`advertiser_id`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -619,8 +642,8 @@ CREATE TABLE `kona__user_device` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) unsigned NOT NULL, 
   `device_id` bigint(20) unsigned NOT NULL, 
-  `slug` varchar(255) NOT NULL,
   `name` varchar(255) default NULL,
+  `slug` varchar(255) NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -638,7 +661,7 @@ CREATE TABLE `kona__user_device` (
   CONSTRAINT `fk_kona__user_device_device` FOREIGN KEY (`device_id`) 
         REFERENCES `kona__device` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -671,7 +694,6 @@ CREATE TABLE `kona__registration` (
   `mobile_pending` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `reminded_date` datetime(6) DEFAULT NULL,
   `registered_date` datetime(6) DEFAULT NULL,
-  `deactivated_date` datetime(6) DEFAULT NULL,
   `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -724,7 +746,7 @@ CREATE TABLE `kona__registration` (
   CONSTRAINT `fk_kona__registration_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -742,13 +764,14 @@ CREATE TABLE `kona__remote_service` (
 
   UNIQUE KEY `ux_kona__remote_service_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__remote_service_app_creds` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `remote_service_id` bigint(20) unsigned NOT NULL,
   `authorize_uri` varchar(1024) DEFAULT NULL,
@@ -766,6 +789,8 @@ CREATE TABLE `kona__remote_service_app_creds` (
 
   UNIQUE KEY `id` (`id`),
 
+  UNIQUE KEY `ux_kona__remote_service_app_creds_uid` (`uid`),
+
   UNIQUE KEY `ux_kona__remote_service_app_creds_app_remote_service` (`app_id`,`remote_service_id`),
 
   KEY `ix_kona__remote_service_app_creds_remote_service` (`remote_service_id`),
@@ -776,13 +801,14 @@ CREATE TABLE `kona__remote_service_app_creds` (
   CONSTRAINT `fk_kona__remote_service_app_creds_remote_service` FOREIGN KEY (`remote_service_id`) 
         REFERENCES `kona__remote_service` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__remote_service_user_creds` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
@@ -802,6 +828,8 @@ CREATE TABLE `kona__remote_service_user_creds` (
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__remote_service_user_creds_uid` (`uid`),
 
   UNIQUE KEY `ux_kona__remote_service_user_creds_app_account_name` (`app_id`,`account_id`,`name`),
 
@@ -827,24 +855,28 @@ CREATE TABLE `kona__remote_service_user_creds` (
   CONSTRAINT `fk_kona__remote_service_user_creds_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__setting` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `parent_id` bigint(20) unsigned DEFAULT NULL,
   `account_id` bigint(20) unsigned DEFAULT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `value` varchar(4000) NOT NULL,
-  `overwrite_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `override_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__setting_uid` (`uid`),
 
   UNIQUE KEY `ux_kona__setting_user_name` (`user_id`,`name`),
 
@@ -854,7 +886,12 @@ CREATE TABLE `kona__setting` (
 
   KEY `ix_kona__setting_account` (`account_id`),
 
+  KEY `ix_kona__setting_parent` (`parent_id`),
+
   KEY `ix_kona__setting_name` (`name`),
+
+  CONSTRAINT `fk_kona__setting_parent` FOREIGN KEY (`parent_id`)
+        REFERENCES `kona__setting` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__setting_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
@@ -862,7 +899,7 @@ CREATE TABLE `kona__setting` (
   CONSTRAINT `fk_kona__setting_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -911,7 +948,7 @@ CREATE TABLE `kona__short_url` (
   CONSTRAINT `fk_kona__short_url_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -935,7 +972,7 @@ CREATE TABLE `kona__token` (
   `user_agent` varchar(512) DEFAULT NULL,
   `app_version` varchar(255) DEFAULT NULL,
   `app_build` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0', -- token currently being used
   `approved` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `access_count` bigint(20) unsigned DEFAULT NULL,
   `login_date` datetime(6) NOT NULL,
@@ -943,7 +980,7 @@ CREATE TABLE `kona__token` (
   `logout_date` datetime(6) DEFAULT NULL,
   `access_expiration_date` datetime(6) DEFAULT NULL,
   `refresh_expiration_date` datetime(6) DEFAULT NULL,
-  `deleted_date` datetime(6) DEFAULT NULL,
+  `expired_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -984,7 +1021,7 @@ CREATE TABLE `kona__token` (
   CONSTRAINT `fk_kona__token_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1001,8 +1038,64 @@ CREATE TABLE `kona__token_type` (
 
   UNIQUE KEY `ux_kona__token_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__auth_role` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__auth_role_name` (`name`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__auth_priv` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__auth_priv_name` (`name`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__auth_role_priv` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `role_id` bigint(20) unsigned NOT NULL,
+  `priv_id` bigint(20) unsigned NOT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ,
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__auth_role_priv_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__auth_role_priv` (`role_id`, `priv_id`),
+
+  CONSTRAINT `fk_kona__auth_role_priv_role` FOREIGN KEY (`role_id`)
+        REFERENCES `kona__auth_role` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__auth_role_priv_priv` FOREIGN KEY (`priv_id`)
+        REFERENCES `kona__auth_priv` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1011,10 +1104,8 @@ CREATE TABLE `kona__user` (
   `uid` varchar(255) NOT NULL,
   `parent_id` bigint(20) unsigned DEFAULT NULL,
   `type_id` bigint(20) unsigned DEFAULT NULL,
-  `roles` set('SYSTEM','ADMIN','USER', 'GUEST') NOT NULL DEFAULT 'GUEST',
   `account_id` bigint(20) unsigned NOT NULL,
-  `status_id` bigint(20) unsigned DEFAULT NULL,
-  `presence_id` bigint(20) unsigned DEFAULT NULL,
+--  `presence_id` bigint(20) unsigned DEFAULT NULL,
   `position_id` bigint(20) unsigned DEFAULT NULL,
   `photo_id` bigint(20) unsigned DEFAULT NULL,
   `photo_url` varchar(255) DEFAULT NULL, 
@@ -1029,7 +1120,8 @@ CREATE TABLE `kona__user` (
   `birth_date` date DEFAULT NULL,
   `locale` varchar(255) DEFAULT NULL,
   `time_zone` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `presence` varchar(255) DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -1052,11 +1144,12 @@ CREATE TABLE `kona__user` (
 
   KEY `ix_kona__user_type` (`type_id`),
 
-  KEY `ix_kona__user_status` (`status_id`),
 
   KEY `ix_kona__user_account` (`account_id`),
 
-  KEY `ix_kona__user_presence` (`presence_id`),
+  FULLTEXT `ft_kona__user` (`uid`,`username`,`email`,`mobile_number`,`first_name`,`last_name`,`display_name`),
+
+--  KEY `ix_kona__user_presence` (`presence_id`),
 
   CONSTRAINT `fk_kona__user_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
@@ -1070,16 +1163,37 @@ CREATE TABLE `kona__user` (
   CONSTRAINT `fk_kona__user_photo` FOREIGN KEY (`photo_id`) 
         REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__user_status` FOREIGN KEY (`status_id`) 
-        REFERENCES `kona__user_status` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__user_presence` FOREIGN KEY (`presence_id`) 
-        REFERENCES `kona__user_presence` (`id`) ON DELETE SET NULL,
+--  CONSTRAINT `fk_kona__user_presence` FOREIGN KEY (`presence_id`)
+--        REFERENCES `kona__user_presence` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__user_type` FOREIGN KEY (`type_id`) 
         REFERENCES `kona__user_type` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__user_role` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `role_id` bigint(20) unsigned NOT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ,
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__user_role_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__user_role` (`user_id`, `role_id`),
+
+  CONSTRAINT `fk_kona__user_role_user` FOREIGN KEY (`user_id`)
+        REFERENCES `kona__user` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__user_role_role` FOREIGN KEY (`role_id`)
+        REFERENCES `kona__auth_role` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1088,6 +1202,7 @@ CREATE TABLE `kona__user_auth` (
   `user_id` bigint(20) unsigned NOT NULL,
   `voice_sample_id` bigint(20) unsigned default NULL,
   `fingerprint_id` bigint(20) unsigned default NULL,
+  `facial_scan_id` bigint(20) unsigned default NULL,
   `password` varchar(255) DEFAULT NULL,
   `pin` varchar(255) DEFAULT NULL,
   `question1` varchar(255) DEFAULT NULL,
@@ -1107,16 +1222,21 @@ CREATE TABLE `kona__user_auth` (
 
   KEY `ix_kona__user_fingerprint` (`fingerprint_id`),
 
+  KEY `ix_kona__user_facial_scan` (`facial_scan_id`),
+
   CONSTRAINT `fk_kona__user_auth_voice_sample` FOREIGN KEY (`voice_sample_id`) 
         REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__user_auth_fingerprint` FOREIGN KEY (`fingerprint_id`) 
         REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
 
+  CONSTRAINT `fk_kona__user_auth_facial_scan` FOREIGN KEY (`facial_scan_id`)
+        REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
+
   CONSTRAINT `fk_kona__user_auth_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1192,22 +1312,22 @@ CREATE TABLE `kona__media` (
   CONSTRAINT `fk_kona__media_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__user_presence` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `ux_kona__user_presence_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--CREATE TABLE `kona__user_presence` (
+--  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--  `name` varchar(255) DEFAULT NULL,
+--  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--
+--  PRIMARY KEY (`id`),
+--
+--  UNIQUE KEY `ux_kona__user_presence_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1222,22 +1342,8 @@ CREATE TABLE `kona__user_role` (
 
   UNIQUE KEY `ux_kona__user_role_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- --------------------------------------------------------------------------
-
-CREATE TABLE `kona__user_status` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `ux_kona__user_status_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------------------------
 
@@ -1251,7 +1357,7 @@ CREATE TABLE `kona__user_type` (
 
   UNIQUE KEY `ux_kona__user_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1266,7 +1372,7 @@ CREATE TABLE `kona__auth_code_type` (
 
   UNIQUE KEY `ux_kona__auth_code_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1285,7 +1391,7 @@ CREATE TABLE `kona__entity_name_rule` (
 
   UNIQUE KEY `ux_kona__entity_name_rule` (`pattern`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1293,8 +1399,8 @@ CREATE TABLE `kona__entity_name_rule` (
 CREATE TABLE `kona__place_category` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `slug` varchar(255) DEFAULT NULL, 
   `name` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1302,11 +1408,11 @@ CREATE TABLE `kona__place_category` (
 
   UNIQUE KEY `ux_kona__place_category_uid` (`uid`),
 
-  FULLTEXT KEY `ftx_kona_place_category` (`name`),
-
   UNIQUE KEY `ux_kona__place_category` (`slug`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  FULLTEXT KEY `ft_kona_place_category` (`uid`, `name`, `slug`),
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1315,8 +1421,8 @@ CREATE TABLE `kona__place` (
   `uid` varchar(255) NOT NULL,
   `added_by_id` bigint(20) unsigned default NULL,
   `category_id` bigint(20) unsigned default NULL,
-  `slug` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   `photo_id` bigint(20) unsigned DEFAULT NULL,
   `photo_url` varchar(255) DEFAULT NULL,
   `thumbnail_url` varchar(255) DEFAULT NULL,
@@ -1364,9 +1470,7 @@ CREATE TABLE `kona__place` (
 
   KEY `ix_kona__place_photo` (`photo_id`),
 
-  FULLTEXT KEY `ftx_kona_place_slug` (`name`),
-
-  FULLTEXT KEY `ftx_kona_place_description` (`name`, `description`),
+  FULLTEXT KEY `ft_kona_place` (`uid`, `name`, `slug`, `description`),
 
   CONSTRAINT `fk_kona__place_category` FOREIGN KEY (`category_id`) 
 		REFERENCES `kona__place_category` (`id`) ON DELETE SET NULL,
@@ -1377,7 +1481,7 @@ CREATE TABLE `kona__place` (
   CONSTRAINT `fk_kona__place_photo` FOREIGN KEY (`photo_id`) 
 		REFERENCES `kona__media` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1398,12 +1502,12 @@ CREATE TABLE `kona__place_tag` (
 
   KEY `ix_kona_place_tag_place` (`place_id`),
 
-  FULLTEXT KEY `ftx_kona_place_tag` (`tag`),
+  FULLTEXT KEY `ft_kona_place_tag` (`uid`,`tag`,`slug`),
 
   CONSTRAINT `fk_kona__place_tag_place` FOREIGN KEY (`place_id`) 
 		REFERENCES `kona__place` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1412,8 +1516,8 @@ CREATE TABLE `kona__place_map` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `place_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
   `slug` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `map` longtext DEFAULT NULL, -- JSON blob describing interior space
   `floor` int(11) unsigned DEFAULT NULL, -- indoor floor associated with map
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -1430,7 +1534,7 @@ CREATE TABLE `kona__place_map` (
   CONSTRAINT `fk_kona__place_map_place` FOREIGN KEY (`place_id`)
 		REFERENCES `kona__place` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1506,7 +1610,7 @@ CREATE TABLE `kona__position` (
   CONSTRAINT `fk_kona__position_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -1522,7 +1626,7 @@ CREATE TABLE `kona__notification_channel` (
 
   UNIQUE KEY `ux_kona__notification_channel_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1548,7 +1652,7 @@ CREATE TABLE `kona__notification` (
   CONSTRAINT `fk_kona__notification_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1578,7 +1682,7 @@ CREATE TABLE `kona__notification_delivery` (
   CONSTRAINT `fk_kona__notification_delivery_notification` FOREIGN KEY (`notification_id`)
         REFERENCES `kona__notification` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1614,7 +1718,7 @@ CREATE TABLE `kona__support_message` (
   CONSTRAINT `fk_kona__support_message_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL 
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1669,7 +1773,7 @@ CREATE TABLE `kona__sms` (
   CONSTRAINT `fk_kona__sms_to_user` FOREIGN KEY (`to_user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ------------------------------------------------
 
@@ -1739,7 +1843,7 @@ CREATE TABLE `kona__email` (
   CONSTRAINT `fk_kona__email_to_address` FOREIGN KEY (`to_address_id`) 
         REFERENCES `kona__email_address` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1785,7 +1889,7 @@ CREATE TABLE `kona__email_address` (
   CONSTRAINT `fk_kona__email_address_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1808,7 +1912,7 @@ CREATE TABLE `kona__email_content` (
   CONSTRAINT `fk_kona__email_content_owner` FOREIGN KEY (`owner_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1834,7 +1938,7 @@ CREATE TABLE `kona__email_attachment` (
   CONSTRAINT `fk_kona__email_attachment_file` FOREIGN KEY (`file_id`)
         REFERENCES `kona__file` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1863,7 +1967,7 @@ CREATE TABLE `kona__email_event` (
   CONSTRAINT `fk_kona__email_event_type` FOREIGN KEY (`type_id`) 
         REFERENCES `kona__email_event_type` (`id`) ON DELETE RESTRICT
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1876,15 +1980,15 @@ CREATE TABLE `kona__email_event_type` (
 
   PRIMARY KEY (`id`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__email_group` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1894,7 +1998,7 @@ CREATE TABLE `kona__email_group` (
 
   UNIQUE KEY `ux_kona__email_group_slug` (`slug`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1921,7 +2025,7 @@ CREATE TABLE `kona__email_group_address` (
   CONSTRAINT `fk_kona__email_group_address_group` FOREIGN KEY (`group_id`) 
         REFERENCES `kona__email_group` (`id`) ON DELETE CASCADE 
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -1949,7 +2053,7 @@ CREATE TABLE `kona__push_device` (
   UNIQUE KEY `ux_kona__push_device_uid` (`uid`),
 
   -- different users using same app on same device
-  UNIQUE KEY `ux_kona__push_device_cols` (`app_id`,`user_id`,`device_id`,`sandbox`),
+  UNIQUE KEY `ux_kona__push_device` (`app_id`,`user_id`,`device_id`,`sandbox`),
 
   UNIQUE KEY `ux_kona__push_device_push_token` (`push_token`(255)),
 
@@ -1971,7 +2075,7 @@ CREATE TABLE `kona__push_device` (
   CONSTRAINT `fk_kona__push_device_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -1998,7 +2102,7 @@ CREATE TABLE `kona__push_provider` (
   CONSTRAINT `fk_kona__push_provider_app` FOREIGN KEY (`app_id`)
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2060,7 +2164,7 @@ CREATE TABLE `kona__push` (
   CONSTRAINT `fk_kona__push_app` FOREIGN KEY (`app_id`)
         REFERENCES `kona__app` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2104,7 +2208,7 @@ CREATE TABLE `kona__friendship` (
   CONSTRAINT `fk_kona__friendship_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -2147,7 +2251,7 @@ CREATE TABLE `kona__friendship_event` (
   CONSTRAINT `fk_kona__friendship_event_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2161,7 +2265,7 @@ CREATE TABLE `kona__friendship_event_type` (
 
   UNIQUE KEY `ux_kona__friendship_event_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2174,7 +2278,7 @@ CREATE TABLE `kona__friendship_status` (
 
   UNIQUE KEY `ux_kona__friendship_status_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2200,7 +2304,7 @@ CREATE TABLE `kona__friendship_circle` (
       CONSTRAINT `fk_kona__circle_user` FOREIGN KEY (`user_id`) 
             REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2256,7 +2360,7 @@ CREATE TABLE `kona__contact` (
   CONSTRAINT `fk_kona__contact_owner` FOREIGN KEY (`owner_id`)
     REFERENCES `kona__owner` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2270,7 +2374,7 @@ CREATE TABLE `kona__invitation_channel` (
 
     UNIQUE KEY `ux_kona__invitation_channel_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2284,7 +2388,7 @@ CREATE TABLE `kona__invitation_type` (
 
   UNIQUE KEY `ux_kona__invitation_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2298,7 +2402,7 @@ CREATE TABLE `kona__invitation_status` (
 
   UNIQUE KEY `ux_kona__invitation_status_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2369,7 +2473,7 @@ CREATE TABLE `kona__invitation` (
   CONSTRAINT `fk_kona__invitation_owner` FOREIGN KEY (`owner_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2386,7 +2490,7 @@ CREATE TABLE `kona__payment_account_type` (
 
   UNIQUE KEY `ux_kona__payment_account_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2448,7 +2552,7 @@ CREATE TABLE `kona__payment_account` (
   CONSTRAINT `fk_kona__payment_account_added_by` FOREIGN KEY (`added_by_id`)
         REFERENCES `kona__user` (`id`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2490,7 +2594,7 @@ CREATE TABLE `kona__campaign` (
   CONSTRAINT `fk_kona__campaign_promo` FOREIGN KEY (`promo_id`) 
         REFERENCES `kona__promo` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2538,7 +2642,7 @@ CREATE TABLE `kona__campaign_channel` (
   CONSTRAINT `fk_kona__campaign_channel_type` FOREIGN KEY (`type_id`) 
         REFERENCES `kona__campaign_type` (`id`) ON DELETE RESTRICT
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2585,7 +2689,7 @@ CREATE TABLE `kona__campaign_event` (
   CONSTRAINT `fk_kona__campaign_event_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2602,7 +2706,7 @@ CREATE TABLE `kona__campaign_type` (
 
   UNIQUE KEY `ux_kona__campaign_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2671,7 +2775,7 @@ CREATE TABLE `kona__cart` (
   CONSTRAINT `fk_kona__cart_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2716,7 +2820,7 @@ CREATE TABLE `kona__cart_item` (
   CONSTRAINT `fk_kona__cart_item_product` FOREIGN KEY (`product_id`) 
         REFERENCES `kona__product` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2738,7 +2842,7 @@ CREATE TABLE `kona__currency` (
 
   UNIQUE KEY `ix_kona__currency_iso_code` (`iso_code`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2806,7 +2910,7 @@ CREATE TABLE `kona__invoice` (
   CONSTRAINT `fk_invoice_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2851,7 +2955,7 @@ CREATE TABLE `kona__invoice_item` (
   CONSTRAINT `fk_kona__invoice_item_product` FOREIGN KEY (`product_id`) 
         REFERENCES `kona__product` (`id`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2897,7 +3001,7 @@ CREATE TABLE `kona__partner` (
   CONSTRAINT `fk_kona__partner_parent` FOREIGN KEY (`parent_id`) 
         REFERENCES `kona__partner` (`id`) ON DELETE SET NULL
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -2994,7 +3098,7 @@ CREATE TABLE `kona__payment` (
   CONSTRAINT `fk_kona__payment_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -3011,7 +3115,7 @@ CREATE TABLE `kona__payment_status` (
 
   UNIQUE KEY `ux_kona__payment_status_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -3027,7 +3131,7 @@ CREATE TABLE `kona__payment_type` (
 
   UNIQUE KEY `ux_kona__payment_type_name` (`name`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -3103,7 +3207,7 @@ CREATE TABLE `kona__pre_order` (
   CONSTRAINT `fk_kona__pre_order_referred_by` FOREIGN KEY (`referred_by_user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -3151,7 +3255,7 @@ CREATE TABLE `kona__promo` (
   CONSTRAINT `fk_kona__promo_product` FOREIGN KEY (`product_id`) 
         REFERENCES `kona__product` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -3206,7 +3310,7 @@ CREATE TABLE `kona__promo` (
 --   CONSTRAINT `fk_kona__promo_page_promo` FOREIGN KEY (`promo_id`) 
 --         REFERENCES `kona__promo` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 -- 
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -3258,7 +3362,7 @@ CREATE TABLE `kona__sales_lead` (
   CONSTRAINT `fk_kona__sales_lead_referred_by` FOREIGN KEY (`referred_by_user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -3279,7 +3383,7 @@ CREATE TABLE `kona__product` (
   `subscription_days` int(11) DEFAULT NULL,
   `support_type` enum('Email','Priority') DEFAULT NULL,
   -- `default_plan` tinyint(1) unsigned DEFAULT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -3296,7 +3400,7 @@ CREATE TABLE `kona__product` (
   CONSTRAINT `fk_kona__product_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`) ON UPDATE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -3374,8 +3478,151 @@ CREATE TABLE `kona__purchase` (
   CONSTRAINT `fk_kona__purchase_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__landing_page_template` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `added_by_id` bigint(20) unsigned default NULL,
+  `file_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` varchar(4000) default NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__landing_page_template_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__landing_page_template_slug` (`slug`),
+
+  KEY `ix_kona__landing_page_template_added_by` (`added_by_id`),
+
+  KEY `ix_kona__landing_page_template_file` (`file_id`),
+
+  FULLTEXT `ft_kona__landing_page_template` (`uid`,`name`, `slug`, `description`),
+
+  CONSTRAINT `fk_kona__landing_page_template_added_by` FOREIGN KEY (`added_by_id`)
+		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__landing_page_template_file` FOREIGN KEY (`file_id`)
+        REFERENCES `kona__file` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__landing_page` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `app_id` bigint(20) unsigned NOT NULL,
+  `added_by_id` bigint(20) unsigned default NULL,
+  `template_id` bigint(20) unsigned NOT NULL,
+  `short_url` varchar(255) default NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` varchar(4000) default NULL,
+  `facebook_tracking_id` varchar(255) DEFAULT NULL,
+  `google_tracking_id` varchar(255) DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE `ux_kona__landing_page_uid` (`uid`),
+
+    UNIQUE `ux_kona__landing_page_slug` (`app_id`, `slug`),
+
+  UNIQUE `ix_kona__landing_page_short_url` (`short_url`),
+
+  KEY `ix_kona__landing_page_added_by` (`added_by_id`),
+
+  KEY `ix_kona__landing_page_template` (`template_id`),
+
+
+  FULLTEXT `ft_kona__landing_page` (`uid`,`name`,`slug`, `description`, `facebook_tracking_id`, `google_tracking_id`),
+
+  CONSTRAINT `fk_kona__landing_page_app` FOREIGN KEY (`app_id`)
+        REFERENCES `kona__app` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__landing_page_added_by` FOREIGN KEY (`added_by_id`)
+		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__landing_page_template` FOREIGN KEY (`template_id`)
+        REFERENCES `kona__landing_page_template` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__landing_page_short_url` FOREIGN KEY (`short_url`)
+        REFERENCES `kona__short_url` (`short_url`) ON DELETE SET NULL
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__landing_page_template_param` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `template_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `required` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__landing_page_template_param_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__landing_page_template_param_name` (`template_id`, `name`),
+
+  KEY `ix_kona__landing_page_template_param_template` (`template_id`),
+
+  CONSTRAINT `fk_kona__landing_page_template_param_template` FOREIGN KEY (`template_id`)
+        REFERENCES `kona__landing_page_template` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__landing_page_param` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `landing_page_id` bigint(20) unsigned NOT NULL,
+  `template_id` bigint(20) unsigned NOT NULL,
+  `file_id` bigint(20) unsigned default NULL,
+  `name` varchar(255) NOT NULL,
+  `value` longtext NOT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__landing_page_param_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__landing_page_param_name` (`landing_page_id`, `name`),
+
+  KEY `ix_kona__landing_page_param_page` (`landing_page_id`),
+
+  KEY `ix_kona__landing_page_param_template` (`template_id`),
+
+  CONSTRAINT `fk_kona__landing_page_param_file` FOREIGN KEY (`file_id`)
+        REFERENCES `kona__file` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__landing_page_param_page` FOREIGN KEY (`landing_page_id`)
+        REFERENCES `kona__landing_page` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__landing_page_param_template` FOREIGN KEY (`template_id`)
+        REFERENCES `kona__landing_page_template` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__landing_page_param_name` FOREIGN KEY (`template_id`, `name`)
+        REFERENCES `kona__landing_page_template_param` (`template_id`, `name`) ON DELETE RESTRICT ON UPDATE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
@@ -3441,19 +3688,12 @@ VALUES
 
 -- --------------------------------------------------------------------------
 
-INSERT INTO `kona__user_role` 
+INSERT INTO `kona__auth_role`
 VALUES 
-    (1,'SYSTEM', now(), now()),
-    (2,'ADMIN', now(), now()),
-    (4,'USER', now(), now()),
-    (8,'GUEST', now(), now());
-
--- --------------------------------------------------------------------------
-
-INSERT INTO `kona__user_status` 
-VALUES 
-    (100,'ENABLED', now(), now()),
-    (200,'LOCKED', now(), now());
+    (100,'SYSTEM', now(), now()),
+    (200,'ADMIN', now(), now()),
+    (300,'USER', now(), now()),
+    (400,'GUEST', now(), now());
 
 -- --------------------------------------------------------------------------
 
@@ -3626,9 +3866,21 @@ VALUES
     (600,'BANNER', now(), now()),
     (700,'SOCIAL_DEAL', now(), now()),
     (999,'OTHER', now(), now());
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+set @userId = 1;
 set @accountId = 1;
-set @accountName = 'system';
-set @accountDisplayName = 'System';
+set @accountSlug = 'system';
+set @accountName = 'System';
 
 
 -- ----------------------- 
@@ -3641,16 +3893,14 @@ insert into kona__account(
     slug,
     name,
     enabled,
-    active,
     verified,
     created_date
 ) values (
     @accountId,
     replace(uuid(),'-',''),
-    null,
+    @userId,
+    @accountSlug,
     @accountName,
-    @accountDisplayName,
-    1,
     1,
     1,
     now()
@@ -3662,44 +3912,60 @@ insert into kona__account(
 -- This is strictly an internal account that's used to run
 -- background jobs, etc. and has no user_auth record.
 -- ----------------------- 
-set @userId = 1;
 set @username = 'system';
 set @firstName = 'System';
 set @lastName = 'User';
 set @displayName = 'System';
 
 set @typeId = 100; -- SYSTEM Type
-set @roles = 1; -- SYSTEM Role
-set @statusId = 100; -- ENABLED
+set @roleId = 100; -- SYSTEM Role
 
 
 insert into kona__user(
     id, 
     uid, 
     type_id, 
-    roles,
-    account_id, 
-    status_id, 
-    username, 
+    account_id,
+    username,
     first_name, 
     last_name, 
     display_name,
-    active, 
+    enabled,
     created_date
 ) values (
     @userId, 
     replace(uuid(),'-',''),
     @typeId, 
-    @roles, 
-    @accountId, 
-    @statusId, 
-    @username, 
+    @accountId,
+    @username,
     @firstName, 
     @lastName, 
     @displayName, 
     1, 
     now()
 );
+
+insert into kona__user_role(
+    uid,
+    user_id,
+    role_id
+) values (
+    replace(uuid(),'-',''),
+    @userId,
+    @roleId
+);
+
+
+
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
 -- // seed auth tables
 -- Migration SQL that makes the change goes here.
 

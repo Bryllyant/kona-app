@@ -36,26 +36,9 @@ public class AppUserServiceImpl
 	}
     
 
-	@Override
-	protected AppUserExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		AppUserExample example = new AppUserExample();
+	 @Override
+    protected AppUserExample getEntityExampleObject() { return new AppUserExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
 	
 
 	@Override

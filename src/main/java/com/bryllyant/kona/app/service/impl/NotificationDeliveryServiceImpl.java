@@ -27,35 +27,19 @@ public class NotificationDeliveryServiceImpl
 	private NotificationDeliveryMapper notificationDeliveryDao;
     
 
-	// ----------------------------------------------------------------------------
+
     
 	@Override @SuppressWarnings("unchecked")
 	protected NotificationDeliveryMapper getDao() {
 		return notificationDeliveryDao;
 	}
 	
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected NotificationDeliveryExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		NotificationDeliveryExample example = new NotificationDeliveryExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected NotificationDeliveryExample getEntityExampleObject() { return new NotificationDeliveryExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 
 }

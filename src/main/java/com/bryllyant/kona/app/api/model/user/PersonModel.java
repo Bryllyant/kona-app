@@ -5,6 +5,7 @@ package com.bryllyant.kona.app.api.model.user;
 
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.social.SocialHandleModel;
+import com.bryllyant.kona.app.entity.KUser;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ public class PersonModel extends KJsonModel {
     private String displayName;
     private String photoUrl;
     private String thumbnailUrl;
-    private String gender;
+    private KUser.Gender gender;
     private Date birthDate;
     private String locale;
     private String timeZone;
@@ -41,7 +42,7 @@ public class PersonModel extends KJsonModel {
     }
 
     public PersonModel(String firstName, String lastName, String displayName, String photoUrl,
-                       String thumbnailUrl, String gender, Date birthDate, String locale,
+                       String thumbnailUrl, KUser.Gender gender, Date birthDate, String locale,
                        String timeZone, String url, String email, String phoneNumber,
                        String mobileNumber, List<SocialHandleModel> socialHandles) {
         this.firstName = firstName;
@@ -100,11 +101,11 @@ public class PersonModel extends KJsonModel {
         this.set("thumbnailUrl", thumbnailUrl);
     }
 
-    public String getGender() {
+    public KUser.Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(KUser.Gender gender) {
         this.set("gender", gender);
     }
 

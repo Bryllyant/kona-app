@@ -11,7 +11,7 @@ import java.util.Date;
 public class MediaModel extends KJsonModel implements KEntityModel {
 	private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+
 	private String uid;
 
 	@RestdocsNotExpanded
@@ -37,7 +37,7 @@ public class MediaModel extends KJsonModel implements KEntityModel {
 
 	private Date createdDate;
 
-	// ----------------------------------------------------------------------
+
 
 	public static MediaModel create(String uid) {
 	    MediaModel model = new MediaModel();
@@ -45,7 +45,7 @@ public class MediaModel extends KJsonModel implements KEntityModel {
 	    return model;
 	}
 
-	// ----------------------------------------------------------------------
+
 
 
     @Override

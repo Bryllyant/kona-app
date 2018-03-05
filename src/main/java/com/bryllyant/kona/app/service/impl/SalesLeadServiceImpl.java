@@ -42,36 +42,20 @@ public class SalesLeadServiceImpl
     private SystemService system;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected SalesLeadMapper getDao() {
         return salesLeadDao;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected SalesLeadExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	SalesLeadExample example = new SalesLeadExample();
+    protected SalesLeadExample getEntityExampleObject() { return new SalesLeadExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
     
-    // ----------------------------------------------------------------------------
+
 
     protected void sendNotification(SalesLead lead) {
 

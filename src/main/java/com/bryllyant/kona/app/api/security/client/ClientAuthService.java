@@ -35,7 +35,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 	@Autowired
 	private ApiAuthService apiAuthService;
 	
-	// ----------------------------------------------------------------------
+
 
 	// username provided is an application clientId
 	@Override
@@ -79,7 +79,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 		return (details);
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	@Override
 	public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
@@ -136,7 +136,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 		return details;
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	public List<GrantedAuthority> getAuthorities(App app) {
 		List<GrantedAuthority> authorities = 

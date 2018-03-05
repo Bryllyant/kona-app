@@ -37,7 +37,7 @@ import java.util.List;
 public class FileUtil {
 	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
-	// ----------------------------------------------------------------------
+
 
 	@Autowired
 	private KConfig config;
@@ -48,7 +48,7 @@ public class FileUtil {
 	@Autowired
 	private ApiAuthService apiAuthService;
 	
-	// ----------------------------------------------------------------------
+
     
     protected void resizeImage(KMedia media) throws IOException {
         Integer maxWidth = config.getInteger("image.maxWidth", -1);
@@ -70,7 +70,7 @@ public class FileUtil {
         }
     }
     
-    // ----------------------------------------------------------------------
+
     
     
     // NOTE: this method simply uploads a file into a File object 
@@ -161,7 +161,6 @@ public class FileUtil {
             file.setName(mpf.getOriginalFilename());
             file.setContentType(contentType);
             file.setSize(fileSize);
-            file.setActive(true);
             file.setEnabled(true);
             file.setHidden(false);
             file.setCreatedDate(new Date());

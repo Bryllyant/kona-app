@@ -52,75 +52,59 @@ public class CartItemServiceImpl
     @Autowired
     UserService userService;
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartItemMapper getDao() {
         return cartItemDao;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected CartItem getNewObject() {
     	return new CartItem();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PurchaseService getPurchaseService() {
         return purchaseService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PromoService getPromoService() {
         return promoService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected ProductService getProductService() {
         return productService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartService getCartService() {
         return cartService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected CartItemExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	CartItemExample example = new CartItemExample();
+    protected CartItemExample getEntityExampleObject() { return new CartItemExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
 
 }

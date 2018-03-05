@@ -31,7 +31,7 @@ public class AppCredsServiceImpl
 	@Autowired
     private TokenService tokenService;
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected AppCredsMapper getDao() {
@@ -43,29 +43,12 @@ public class AppCredsServiceImpl
         return tokenService;
 	}
 
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected AppCredsExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		AppCredsExample example = new AppCredsExample();
+	 @Override
+    protected AppCredsExample getEntityExampleObject() { return new AppCredsExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 
 }

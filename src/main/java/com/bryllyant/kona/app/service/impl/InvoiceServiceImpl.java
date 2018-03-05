@@ -51,82 +51,66 @@ public class InvoiceServiceImpl
     @Autowired
     private AccountService accountService;
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected InvoiceMapper getDao() {
         return invoiceDao;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected Invoice getNewInvoiceObject() {
     	return new Invoice();
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected InvoiceItem getNewInvoiceItemObject() {
     	return new InvoiceItem();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected AccountService getAccountService() {
         return accountService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartService getCartService() {
         return cartService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartItemService getCartItemService() {
         return cartItemService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected InvoiceItemService getInvoiceItemService() {
         return invoiceItemService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected ProductService getProductService() {
         return productService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected InvoiceExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	InvoiceExample example = new InvoiceExample();
+    protected InvoiceExample getEntityExampleObject() { return new InvoiceExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
 
 }

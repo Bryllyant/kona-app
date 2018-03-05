@@ -5,6 +5,7 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.Account;
+import com.bryllyant.kona.app.entity.KAppConfig;
 import com.bryllyant.kona.app.entity.PaymentAccount;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
@@ -49,21 +50,21 @@ public class StripeServiceImpl extends KAbstractStripeService<User,PaymentAccoun
 	@Autowired
 	private SystemService system;
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PaymentAccountService getPaymentAccountService() {
         return paymentAccountService;
     }	
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected String getStripeApiKey(Long appId) {
@@ -86,7 +87,7 @@ public class StripeServiceImpl extends KAbstractStripeService<User,PaymentAccoun
 		return key;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected void sendPrimaryCardUpdateEmail(User user, KCard card) {
@@ -114,11 +115,15 @@ public class StripeServiceImpl extends KAbstractStripeService<User,PaymentAccoun
 
 	}
 
-	// ----------------------------------------------------------------------------
+
 	
 	private Configuration getConfig(Long appId) {
-		String env = System.getProperty("env", "dev");
+		String _env = System.getProperty("env", "dev");
+
+        KAppConfig.Env  env = KAppConfig.Env.valueOf(_env.toUpperCase());
+
 		Map<String,Object> config = appConfigService.getConfig(appId, env);
+
 		if (config == null) {
 			throw new IllegalStateException("Cofiguration not found for appId: " + appId);
 		}

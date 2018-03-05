@@ -10,14 +10,14 @@ public class FriendshipRequest extends KJsonModel {
 
 	private static final long serialVersionUID = 1L;
 
-    // ---------------------------------------------------------------
+
 
     public enum FriendshipType {
         FOLLOW,
         FRIEND
     }
 
-    // ---------------------------------------------------------------
+
 	
 	private FriendshipType type;
 
@@ -31,7 +31,7 @@ public class FriendshipRequest extends KJsonModel {
 
 	private Date createdDate;
 
-    // ---------------------------------------------------------------
+
 
     public FriendshipType getType() {
         return type;
@@ -74,7 +74,7 @@ public class FriendshipRequest extends KJsonModel {
     }
 
 
-    // ----------------------------------------------------------------------
+
     
   
 

@@ -35,7 +35,7 @@ public class PositionServiceImpl
 
     private static Logger logger = LoggerFactory.getLogger(PositionServiceImpl.class);
 
-    // ----------------------------------------------------------------------------
+
 
     @Autowired
     private PositionMapper positionDao;
@@ -46,48 +46,31 @@ public class PositionServiceImpl
     @Autowired
     private UserDeviceService userDeviceService;
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PositionMapper getDao() {
         return positionDao;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserDeviceService getUserDeviceService() {
         return userDeviceService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected PositionExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-        PositionExample example = new PositionExample();
-
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
+    protected PositionExample getEntityExampleObject() { return new PositionExample(); }
 
 
 

@@ -47,7 +47,7 @@ public class AppServiceImpl
     @Autowired
     private ApiVersionService apiVersionService;
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -55,7 +55,7 @@ public class AppServiceImpl
         return appDao;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -63,14 +63,14 @@ public class AppServiceImpl
         return appCredsService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     protected AppCreds getNewObject() {
         return new AppCreds();
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     protected Long toApiVersionId(String version) {
@@ -109,27 +109,10 @@ public class AppServiceImpl
 
 
     @Override
-    protected AppExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-                                                  Map<String, Object> filter, boolean distinct) {
-        AppExample example = new AppExample();
+    protected AppExample getEntityExampleObject() { return new AppExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
 
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-
-        return example;
-    }
-
-    // ----------------------------------------------------------------------------
 
     @Override
     public App getSystemApp() {
@@ -138,7 +121,7 @@ public class AppServiceImpl
         return fetchBySlug(appSlug);
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     public boolean isAppNameAvailable(String name) {

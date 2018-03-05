@@ -50,7 +50,7 @@ public class PositionModelService extends BaseModelService {
     @Autowired
     private ApiUtil util;
 
-    // ----------------------------------------------------------------------
+
 
     public Position getPosition(String positionUid) {
         Position position = positionService.fetchByUid(positionUid);
@@ -62,7 +62,7 @@ public class PositionModelService extends BaseModelService {
         return position;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Position getPosition(Long positionId) {
         Position position = positionService.fetchById(positionId);
@@ -74,7 +74,7 @@ public class PositionModelService extends BaseModelService {
         return position;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Position getPosition(PositionModel model) {
         if (model == null) return null;
@@ -88,7 +88,7 @@ public class PositionModelService extends BaseModelService {
         return getPosition(uid);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final PositionModel toModel(Position position, String... includeKeys) {
 
@@ -137,7 +137,7 @@ public class PositionModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public final List<PositionModel> toPositionModelList(List<Position> positionList, String... includeKeys) {
         List<PositionModel> modelList = new ArrayList<PositionModel>();
@@ -149,7 +149,7 @@ public class PositionModelService extends BaseModelService {
         return modelList;
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Position toEntity(PositionModel model) {
         Position position = new Position();
@@ -157,7 +157,7 @@ public class PositionModelService extends BaseModelService {
         return mergeEntity(position, model);
     }
     
-    // ----------------------------------------------------------------------
+
 
     public Position mergeEntity(Position position, PositionModel model) {
         logger.debug("toEntity called for model: " + model);
@@ -306,7 +306,7 @@ public class PositionModelService extends BaseModelService {
         return device;
     }
 
-    // ----------------------------------------------------------------------
+
    
     
 }

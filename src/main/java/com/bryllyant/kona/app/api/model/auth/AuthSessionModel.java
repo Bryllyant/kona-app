@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class AuthSessionModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
 
-    // ---------------------------------------------------------------
+
 
     /**
      * User object
@@ -26,7 +26,7 @@ public class AuthSessionModel extends KJsonModel {
     private TokenModel token;
 
 
-    // ---------------------------------------------------------------
+
 
 
     public MeModel getUser() {

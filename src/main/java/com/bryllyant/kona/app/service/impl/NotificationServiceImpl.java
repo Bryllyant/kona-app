@@ -32,7 +32,7 @@ public class NotificationServiceImpl
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Autowired
 	private KConfig config;
@@ -54,42 +54,42 @@ public class NotificationServiceImpl
 	
 	private Long appId = null;
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected NotificationMapper getDao() {
 		return notificationDao;
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected boolean entityHasBlobs() {
 		return true;
 	}
     
-	// ----------------------------------------------------------------------------
+
 	
 	@Override
     protected Notification getNewNotificationObject() {
     	return new Notification();
     }
 
-	// ----------------------------------------------------------------------------
+
     
 	@Override
     protected NotificationDelivery getNewNotificationDeliveryObject() {
     	return new NotificationDelivery();
     }
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected NotificationDeliveryService getNotificationDeliveryService() {
@@ -97,20 +97,20 @@ public class NotificationServiceImpl
 	}
 
 
-	// ----------------------------------------------------------------------------
+
 
 	protected Configuration getUserConfig(User user) {
 		return new MapConfiguration(settingService.getUserSettings(user));
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	protected User getUser(Long userId) {
 		return userService.fetchById(userId);
 	}
 
 	
-	// ----------------------------------------------------------------------------
+
 	
 	protected Long getAppId() {
 		if (appId == null) {
@@ -120,30 +120,14 @@ public class NotificationServiceImpl
 		return appId;
 	}
 	
-	// ----------------------------------------------------------------------------
+
     
 
-	@Override
-	protected NotificationExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		NotificationExample example = new NotificationExample();
+	 @Override
+    protected NotificationExample getEntityExampleObject() { return new NotificationExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-		example.setOffset(startRow);
-		example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
     
-	// ----------------------------------------------------------------------------
+
     
 	@Override
 	protected boolean isChannelEnabled(Long userId, String eventJson, KNotificationChannel channel) {
@@ -170,13 +154,13 @@ public class NotificationServiceImpl
         return config.getBoolean(configParam, false);
     }
 
-	// ----------------------------------------------------------------------------
+
 
 	protected void sendNotification(Notification notification, NotificationDelivery delivery) {
 		KNotificationChannel channel = KNotificationChannel.getInstance(delivery.getChannelId());
 	}
 
-	// ----------------------------------------------------------------------------
+
 	
 	//urlTemplate.notification = https://example.com/#/notifications/{code}
 	protected String createNotificationUrl(String code) {
@@ -185,5 +169,5 @@ public class NotificationServiceImpl
 		return url;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 }

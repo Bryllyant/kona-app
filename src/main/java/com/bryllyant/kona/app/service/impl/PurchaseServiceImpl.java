@@ -62,64 +62,48 @@ public class PurchaseServiceImpl
     private AccountService accountService;
     
    
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PurchaseMapper getDao() {
         return purchaseDao;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected Purchase getNewObject() {
     	return new Purchase();
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override @SuppressWarnings("unchecked")
     protected PromoService getPromoService() {
         return promoService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected ProductService getProductService() {
         return productService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected PurchaseExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	PurchaseExample example = new PurchaseExample();
+    protected PurchaseExample getEntityExampleObject() { return new PurchaseExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
     
-    // ----------------------------------------------------------------------------
+
 
     protected void sendPendingProductExpirationEmail(Purchase purchase, int days) {
         Account account = accountService.fetchById(purchase.getAccountId());

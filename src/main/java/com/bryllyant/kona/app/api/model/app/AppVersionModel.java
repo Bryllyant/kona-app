@@ -12,12 +12,12 @@ import java.util.Date;
 public class AppVersionModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
 
-    // ----------------------------------------------------------------------
+
 
     private String version;
     private String build;
 
-    // ----------------------------------------------------------------------
+
 
     public static AppVersionModel create(String version, String build) {
         AppVersionModel model = new AppVersionModel();
@@ -26,7 +26,7 @@ public class AppVersionModel extends KJsonModel {
         return model;
     }
 
-    // ----------------------------------------------------------------------
+
 
 
     public String getVersion() {

@@ -39,7 +39,7 @@ public class OAuth2TokenStore implements TokenStore {
     @Autowired
 	private UserSpringAuthService userSpringAuthService;
     
-    // ----------------------------------------------------------------------------
+
 
     private Collection<OAuth2AccessToken> extractAccessTokens(List<Token> tokens) {
         List<OAuth2AccessToken> accessTokens = new ArrayList<OAuth2AccessToken>();
@@ -52,7 +52,7 @@ public class OAuth2TokenStore implements TokenStore {
         return accessTokens;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
     public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
@@ -60,7 +60,7 @@ public class OAuth2TokenStore implements TokenStore {
         return extractAccessTokens(tokens);
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
     // In our use case, userName is the tokenKey so we should only ever get 1 result.
@@ -84,7 +84,7 @@ public class OAuth2TokenStore implements TokenStore {
     	return tokens;
     }
     
-    // ----------------------------------------------------------------------------
+
     
 	@Override
     public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
@@ -118,7 +118,7 @@ public class OAuth2TokenStore implements TokenStore {
         return token;
     }
 	
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public OAuth2AccessToken readAccessToken(String tokenValue) {
@@ -131,28 +131,28 @@ public class OAuth2TokenStore implements TokenStore {
         return toOAuth2AccessToken(token);
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
         return readAuthentication(token.getValue());
     }
     
-	// ----------------------------------------------------------------------------
+
     
     private Token fetchTokenByAccessToken(String accessToken) {
         Token token = apiAuthService.fetchTokenByAccessToken(accessToken, false);
         return validateToken(token);
     }
     
-	// ----------------------------------------------------------------------------
+
     
     private Token fetchTokenByRefreshToken(String refreshToken) {
         Token token = apiAuthService.fetchTokenByRefreshToken(refreshToken);
         return validateToken(token);
     }
     
-	// ----------------------------------------------------------------------------
+
     
     private Token validateToken(Token token) {
         if (token == null || !token.isActive()) {
@@ -168,7 +168,7 @@ public class OAuth2TokenStore implements TokenStore {
         return token;
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public OAuth2Authentication readAuthentication(String accessToken) {
@@ -182,7 +182,7 @@ public class OAuth2TokenStore implements TokenStore {
         // if authentication is not available, then this token is bad
         if (data == null) {
         	token.setActive(false);
-            token.setDeletedDate(new Date());
+            token.setExpiredDate(new Date());
             apiAuthService.updateToken(token);
             return null;
         }
@@ -194,7 +194,7 @@ public class OAuth2TokenStore implements TokenStore {
         }
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
@@ -212,7 +212,7 @@ public class OAuth2TokenStore implements TokenStore {
         }
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public OAuth2RefreshToken readRefreshToken(String tokenValue) {
@@ -229,7 +229,7 @@ public class OAuth2TokenStore implements TokenStore {
         return t.getRefreshToken();
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public void removeAccessToken(OAuth2AccessToken token) {
@@ -237,19 +237,19 @@ public class OAuth2TokenStore implements TokenStore {
         
         if (t != null) {
         	t.setActive(false);
-        	t.setDeletedDate(new Date());
+        	t.setExpiredDate(new Date());
         	apiAuthService.updateToken(t);
         }
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken refreshToken) {
         removeRefreshToken(refreshToken);
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     // NOTE: removing the refresh token invalidates the entire token
@@ -258,12 +258,12 @@ public class OAuth2TokenStore implements TokenStore {
         
         if (t != null) {
         	t.setActive(false);
-        	t.setDeletedDate(new Date());
+        	t.setExpiredDate(new Date());
         	apiAuthService.updateToken(t);
         }
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     // This token should already be stored in the database since it was generated
@@ -285,7 +285,7 @@ public class OAuth2TokenStore implements TokenStore {
     	}
     }
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
     public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
@@ -304,7 +304,7 @@ public class OAuth2TokenStore implements TokenStore {
     	}
     }
     
-	// ----------------------------------------------------------------------------
+
 
     private OAuth2AccessToken toOAuth2AccessToken(Token t) {
         if (t == null) return null;

@@ -58,7 +58,7 @@ import java.util.Map;
 public class MeController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(MeController.class);
 
-    // ----------------------------------------------------------------------
+
 
 
 
@@ -97,7 +97,7 @@ public class MeController extends BaseController {
 
    
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method=RequestMethod.GET)
     public ResponseEntity<MeModel> getMe(HttpServletRequest req) {
@@ -107,11 +107,11 @@ public class MeController extends BaseController {
 		return ok(userModelService.toMeModel(user));
 	}
 
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(method=RequestMethod.PUT)
 	public ResponseEntity<MeModel> updateMe(HttpServletRequest req,
-			@RequestBody UserModel model) {
+			@RequestBody MeModel model) {
 		logApiRequest(req, "PUT /me");
 
 		User user = getUser();
@@ -126,7 +126,7 @@ public class MeController extends BaseController {
 		return ok(userModelService.toMeModel(user));
 	}
 
-	// ----------------------------------------------------------------------
+
 	// REQUEST
     /*{
         "device": {
@@ -254,40 +254,23 @@ public class MeController extends BaseController {
 
 
 
-	// ----------------------------------------------------------------------
 
 	@RequestMapping(value = "/media", method = RequestMethod.POST, consumes="multipart/form-data")
-	public ResponseEntity<MediaModel> addMedia(MultipartHttpServletRequest req,
+	public ResponseEntity<MediaModel> addMediaRequest(MultipartHttpServletRequest req,
                                                @RequestParam(value="upload_date", required=false) Long uploadDate,
                                                @RequestParam(value="latitude", required=false) Double latitude,
                                                @RequestParam(value="longitude", required=false) Double longitude,
                                                @RequestParam(value="description", required=false) String description) {
 		logApiRequest(req, "POST /me/media");
-		
-		
-		logger.debug("MeController: addMedia: uploadDate: " + uploadDate);
 
-		Long uploadTime = null;
-
-		if (uploadDate != null) {
-		    uploadTime = new Date().getTime() - uploadDate;
-		}
-		 
-		Map<String,Object> options = new HashMap<String,Object>();
-
-		options.put("latitude", latitude);
-		options.put("longitude", longitude);
-		options.put("description", description);
-		options.put("uploadTime", uploadTime);
-
-		Media media = addMedia(req, getUser(), options);
+		Media media = addMedia(req, uploadDate, latitude, longitude, description);
 
 		return created(mediaModelService.toModel(media));
-	}	
+	}
 
-	// ----------------------------------------------------------------------
 
-	@RequestMapping(value="/media/{uid}", method=RequestMethod.DELETE)
+
+    @RequestMapping(value="/media/{uid}", method=RequestMethod.DELETE)
 	public ResponseEntity<MediaModel> removeMedia(HttpServletRequest req, 
 			@PathVariable String uid) {
 		logApiRequest(req, "DELETE /me/media/" + uid);
@@ -301,7 +284,6 @@ public class MeController extends BaseController {
 		return ok(mediaModelService.toModel(media));
 	}
 	
-	   // ----------------------------------------------------------------------
 
     // NOTE: spring doesn't work well with PUT and multipart/form-data
     //@RequestMapping(value = "/photo", method = RequestMethod.PUT, consumes="multipart/form-data")
@@ -315,29 +297,13 @@ public class MeController extends BaseController {
             @RequestParam(value="description", required=false) String description) {
         logApiRequest(req, "POST /me/photo");
 
-        logger.debug("MeController: updatePhoto: uploadDate: " + uploadDate);
-
-        Long uploadTime = null;
-
-        if (uploadDate != null) {
-            uploadTime = new Date().getTime() - uploadDate;
-        }
-
-        Map<String,Object> options = new HashMap<String,Object>();
-
-        options.put("latitude", latitude);
-        options.put("longitude", longitude);
-        options.put("description", description);
-        options.put("uploadTime", uploadTime);
-
-        Media media = addMedia(req, getUser(), options);;
+        Media media = addMedia(req, uploadDate, latitude, longitude, description);
 
         userService.updatePhoto(getUser(), media.getId(), media.getUrlPath(), media.getThumbnailUrlPath());
 
         return created(mediaModelService.toModel(media));
     }
 
-    // ----------------------------------------------------------------------
 
     @RequestMapping(value="/photo", method=RequestMethod.DELETE)
     public ResponseEntity<MediaModel> removePhoto(HttpServletRequest req) {
@@ -360,10 +326,27 @@ public class MeController extends BaseController {
         return ok(mediaModelService.toModel(media));
     }
 
+    protected Media addMedia(MultipartHttpServletRequest req,
+                             Long uploadDate,
+                             Double latitude,
+                             Double longitude,
+                             String description) {
 
+        logger.debug("MeController: addMedia: uploadDate: " + uploadDate);
 
-	
+        Long uploadTime = null;
 
-	// ----------------------------------------------------------------------
+        if (uploadDate != null) {
+            uploadTime = new Date().getTime() - uploadDate;
+        }
 
+        Map<String,Object> options = new HashMap<>();
+
+        options.put("latitude", latitude);
+        options.put("longitude", longitude);
+        options.put("description", description);
+        options.put("uploadTime", uploadTime);
+
+        return addMedia(req, getUser(), options);
+    }
 }

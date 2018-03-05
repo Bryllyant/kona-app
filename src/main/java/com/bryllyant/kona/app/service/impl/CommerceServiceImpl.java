@@ -111,140 +111,140 @@ public class CommerceServiceImpl
     @Autowired
     PaymentAccountService paymentAccountService;
 
-    // ----------------------------------------------------------------------------
+
 
     @Override
     protected Payment getNewPaymentObject() {
         return new Payment();
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected Purchase getNewPurchaseObject() {
         return new Purchase();
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getGooglePlayPackageName(Long appId) {
         return null;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getAppleVerifyReceiptUrl(Long appId) {
         return null;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getAppleVerifyReceiptSandboxUrl(Long appId) {
         return null;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected String getAppleAppSharedSecret(Long appId) {
         return null;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PurchaseService getPurchaseService() {
         return purchaseService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PromoService getPromoService() {
         return promoService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PaymentService getPaymentService() {
         return paymentService;
     }
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected PaymentAccountService getPaymentAccountService() {
         return paymentAccountService;
     } 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected ProductService getProductService() {
         return productService;
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override @SuppressWarnings("unchecked")
     protected InvoiceItemService getInvoiceItemService() {
         return invoiceItemService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected InvoiceService getInvoiceService() {
         return invoiceService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartService getCartService() {
         return cartService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CartItemService getCartItemService() {
         return cartItemService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected AccountService getAccountService() {
         return accountService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected GooglePlayService getGooglePlayService() {
         return googlePlayService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected StripeService getStripeService() {
         return stripeService;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected SystemService getSystemService() {
@@ -252,7 +252,7 @@ public class CommerceServiceImpl
     }
     
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected void sendReceiptEmail(Invoice invoice, boolean externalPayment) {
@@ -294,7 +294,7 @@ public class CommerceServiceImpl
         
     }
     
-    // ----------------------------------------------------------------------------
+
     
     @Override
     protected void sendInvalidCardEmail(Invoice invoice) {

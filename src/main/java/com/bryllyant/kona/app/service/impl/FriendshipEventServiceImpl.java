@@ -23,35 +23,19 @@ public class FriendshipEventServiceImpl
 	@Autowired
 	private FriendshipEventMapper eventDao;
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected FriendshipEventMapper getDao() {
 		return eventDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 	
-	@Override
-	protected FriendshipEventExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		FriendshipEventExample example = new FriendshipEventExample();
+	 @Override
+    protected FriendshipEventExample getEntityExampleObject() { return new FriendshipEventExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 
 }

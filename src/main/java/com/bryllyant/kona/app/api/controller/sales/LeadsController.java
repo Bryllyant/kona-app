@@ -63,7 +63,7 @@ public class LeadsController extends SalesController {
     @Autowired
     private SystemService system;
 
-    // ----------------------------------------------------------------------
+
 
     protected void message(HttpServletRequest req, String from, String subject, String body) {
         logger.debug("Support Email:\nfrom: " + from + "\nsubject: " + subject + "\nbody:\n" + body);
@@ -78,7 +78,7 @@ public class LeadsController extends SalesController {
     }
 
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")

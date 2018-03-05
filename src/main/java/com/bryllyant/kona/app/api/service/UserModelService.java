@@ -7,7 +7,6 @@ import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.KAuthCodeType;
-import com.bryllyant.kona.app.entity.KUserPresence;
 import com.bryllyant.kona.app.entity.KUserRole;
 import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.Registration;
@@ -29,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +63,6 @@ public class UserModelService extends BaseModelService {
     @Autowired
     private ApiUtil util; 
 
-    // ----------------------------------------------------------------------
 
     public User getUser(String username) {
         User user = null;
@@ -92,10 +91,6 @@ public class UserModelService extends BaseModelService {
     }
     
 
-
-    
-    // ----------------------------------------------------------------------
-
     public User getUser(UserModel model) {
         if (model == null) return null;
 
@@ -121,8 +116,6 @@ public class UserModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
-
     public User getUser(Long userId) {
         User user = userService.fetchById(userId);
 
@@ -134,10 +127,8 @@ public class UserModelService extends BaseModelService {
     }
     
 
-    // ----------------------------------------------------------------------
-
     public List<UserModel> toUserModelList(List<User> users, String... includeKeys) {
-        List<UserModel> modelList = new ArrayList<UserModel>();
+        List<UserModel> modelList = new ArrayList<>();
 
         for (User user : users) {
             modelList.add(toModel(user, includeKeys));
@@ -145,7 +136,16 @@ public class UserModelService extends BaseModelService {
 
         return modelList;
     }
-    // ----------------------------------------------------------------------
+
+    public List<MeModel> toMeModelList(List<User> users, String... includeKeys) {
+        List<MeModel> modelList = new ArrayList<>();
+
+        for (User user : users) {
+            modelList.add(toMeModel(user, includeKeys));
+        }
+
+        return modelList;
+    }
 
     /*
     public User mergeEntity(User user, UserModel userModel) {
@@ -203,9 +203,6 @@ public class UserModelService extends BaseModelService {
     */
     
 
-
-    // ----------------------------------------------------------------------
-
     public MeModel toMeModel(User user, String... includeKeys) {
         if (user == null) return null;
 
@@ -218,11 +215,11 @@ public class UserModelService extends BaseModelService {
         
         Registration registration = registrationService.fetchByUserId(user.getId());
 
-        Set<KUserRole> roles = KUserRole.parse(user.getRoles());
+        List<String> roles = userService.getRoles(user);
 
         model.setEmailVerified(registration.isEmailVerified());
         model.setMobileVerified(registration.isMobileVerified());
-        model.setRoles(roles);
+        model.setRoles(new HashSet<>(roles));
 
         if (includeKeys != null && includeKeys.length > 0) {
             logger.debug("toMeModel: includeKeys: " + KJsonUtil.toJson(includeKeys));
@@ -233,7 +230,6 @@ public class UserModelService extends BaseModelService {
         return model;
     }
 
-    // ----------------------------------------------------------------------
 
     public UserModel toModel(User user, String... includeKeys) {
         if (user == null) return null;
@@ -241,15 +237,6 @@ public class UserModelService extends BaseModelService {
         UserModel model = new UserModel();
         
         model.fromBean(user);
-        
-        //String presence = "offline";
-        KUserPresence presence = KUserPresence.OFFLINE;
-
-        if (user.getPresenceId() != null) {
-            presence = KUserPresence.getInstance(user.getPresenceId());
-        }
-
-        model.setPresence(presence);
         
         String photoUrl = util.toAbsoluteUrl(user.getPhotoUrl());
         model.setPhotoUrl(photoUrl);
@@ -281,22 +268,19 @@ public class UserModelService extends BaseModelService {
     }
     
     
-    // ----------------------------------------------------------------------
-    
+
     public void sendEmailVerification(Long appId, Long userId) {
         authCodeService.requestAuthCode(
                 KAuthCodeType.EMAIL_CONFIRMATION.getId(), appId, userId, true);
     }
     
-    // ----------------------------------------------------------------------
-    
+
     public void sendMobileVerification(Long appId, Long userId) {
         authCodeService.requestAuthCode(
                 KAuthCodeType.MOBILE_CONFIRMATION.getId(), appId, userId, true);
     }
     
-    // ----------------------------------------------------------------------
-    
+
     // NOTE: mobileNumber expected to be in E.164 format
     public boolean setMobileNumber(User user, String mobileNumber, boolean disableValidation, boolean updateUser) {
         if (mobileNumber == null) return false;
@@ -335,8 +319,7 @@ public class UserModelService extends BaseModelService {
         return false;
     }
     
-    // ----------------------------------------------------------------------
-    
+
     public boolean setEmail(User user, String email, boolean disableValidation, boolean updateUser) {
         if (email == null) return false;
 
@@ -368,8 +351,7 @@ public class UserModelService extends BaseModelService {
         return false;
     }
     
-    // ----------------------------------------------------------------------
-    
+
     public boolean setUsername(User user, String username, boolean disableValidation) {
         if (username == null) return false;
         
@@ -395,25 +377,17 @@ public class UserModelService extends BaseModelService {
     }
     
    
-    
-  
-    
-    
-    // ----------------------------------------------------------------------
-
     public User toMeEntity(MeModel model, boolean disableValidation, boolean updateUser) {
         User user = new User();
         return mergeEntity(user, model, disableValidation, updateUser);
     }
     
-    // ----------------------------------------------------------------------
 
     public User toEntity(UserModel model, boolean disableValidation, boolean updateUser) {
         User user = new User();
         return mergeEntity(user, model, disableValidation, updateUser);
     }
 
-    // ----------------------------------------------------------------------
 
     public User mergeEntity(User user, UserModel model, boolean disableValidation, boolean updateUser) {
         logger.debug("toEntity called for model: " + model);
@@ -473,15 +447,15 @@ public class UserModelService extends BaseModelService {
                     break;
                     */
 
-                case "presence":
-                    try {
-                        KUserPresence presence = model.getPresence();
-                        user.setPresenceId(presence.getId());
-                    } catch (Exception e) {
-                        throw new BadRequestException("presence value not valid: " + model.getPresence());
-                    }
-
-                    break;
+//                case "presence":
+//                    try {
+//                        KUserPresence presence = model.getPresence();
+//                        user.setPresenceId(presence.getId());
+//                    } catch (Exception e) {
+//                        throw new BadRequestException("presence value not valid: " + model.getPresence());
+//                    }
+//
+//                    break;
 
                 case "username":
                     setUsername(user, model.getUsername(), disableValidation);

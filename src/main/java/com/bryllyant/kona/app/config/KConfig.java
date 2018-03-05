@@ -24,13 +24,13 @@ public class KConfig {
     @Autowired
     private SystemService system;
 
-    // ----------------------------------------------------------------------
+
 
     public String getString(String key) {
         return getString(key, null);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getString(String key, String defaultValue) {
         if (key == null) {
@@ -48,13 +48,13 @@ public class KConfig {
         return value.trim();
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getGender(String key) {
         return getGender(key, null);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getGender(String key, String defaultValue) {
         String value = getString(key, defaultValue);
@@ -73,14 +73,14 @@ public class KConfig {
     }
 
 
-    // ----------------------------------------------------------------------
+
 
     public Double getDouble(String key) {
         return getDouble(key, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
     public Double getDouble(String key, Double defaultValue) {
         String s = getString(key);
 
@@ -91,14 +91,14 @@ public class KConfig {
         return Double.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Integer getInteger(String key) {
         return getInteger(key, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Integer getInteger(String key, Integer defaultValue) {
         String s = getString(key);
@@ -110,14 +110,14 @@ public class KConfig {
         return Integer.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Long getLong(String key) {
         return getLong(key, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Long getLong(String key, Long defaultValue) {
         String s = getString(key);
@@ -129,14 +129,14 @@ public class KConfig {
         return Long.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Boolean getBoolean(String key) {
         return getBoolean(key, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Boolean getBoolean(String key, Boolean defaultValue) {
         String s = getString(key);
@@ -148,13 +148,13 @@ public class KConfig {
         return Boolean.valueOf(s);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Date getDate(String key) {
         return getDate(key, null);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public Date getDate(String key, Date defaultValue) {
         logger.debug("getDate called for key: " + key);
@@ -180,14 +180,14 @@ public class KConfig {
         }
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getPhoneNumber(String key) {
         return getPhoneNumber(key, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getPhoneNumber(String key, String defaultValue) {
         String s = getString(key, defaultValue);
@@ -206,13 +206,13 @@ public class KConfig {
         return s;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getEmailValue(String key) {
         return getEmail(key, null);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getEmail(String key, String defaultValue) {
         String s = getString(key, defaultValue);
@@ -228,14 +228,14 @@ public class KConfig {
         return s;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getUrl(String key) {
         return getUrl(key, null);
 
     }
 
-    // ----------------------------------------------------------------------
+
 
     public String getUrl(String key, String defaultValue) {
         String s = getString(key, defaultValue);
@@ -251,19 +251,19 @@ public class KConfig {
         return s;
     }
 
-    // ----------------------------------------------------------------------
+
 
     public List<String> getList(String key) {
         return getList(key, ",", String.class);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public <T> List<T> getList(String key, Class<T> clazz) {
         return getList(key, ",", clazz);
     }
 
-    // ----------------------------------------------------------------------
+
 
     public <T> List<T> getList(String key, String delimiter, Class<T> clazz) {
         List<T> list = new ArrayList<>();

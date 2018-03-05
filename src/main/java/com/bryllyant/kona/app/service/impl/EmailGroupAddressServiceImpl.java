@@ -8,13 +8,10 @@ import com.bryllyant.kona.app.entity.EmailGroupAddress;
 import com.bryllyant.kona.app.entity.EmailGroupAddressExample;
 import com.bryllyant.kona.app.service.EmailGroupAddressService;
 import com.bryllyant.kona.app.service.KAbstractEmailGroupAddressService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 
 @Service(EmailGroupAddressService.SERVICE_PATH)
@@ -28,37 +25,20 @@ public class EmailGroupAddressServiceImpl
 	@Autowired
 	private EmailGroupAddressMapper emailGroupAddressDao;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailGroupAddressMapper getDao() {
 		return emailGroupAddressDao;
 	}
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected EmailGroupAddressExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		EmailGroupAddressExample example = new EmailGroupAddressExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected EmailGroupAddressExample getEntityExampleObject() { return new EmailGroupAddressExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
 
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 	
     
 }

@@ -44,7 +44,7 @@ import java.util.Map;
 public class MyFriendshipController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(MyFriendshipController.class);
 
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private FriendshipService friendshipService;
@@ -60,7 +60,7 @@ public class MyFriendshipController extends BaseController {
     @Autowired
     private UserModelService userModelService;
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<FriendshipModel>> search(
@@ -122,7 +122,7 @@ public class MyFriendshipController extends BaseController {
 		return okList(friendshipModelService.toFriendshipModelList(all));
 	}
 	
-	// ----------------------------------------------------------------------
+
 
 	@RequestMapping(value="/friends/{friendUid}", method=RequestMethod.GET)
 	public ResponseEntity<FriendshipModel> getFriendship(HttpServletRequest req,

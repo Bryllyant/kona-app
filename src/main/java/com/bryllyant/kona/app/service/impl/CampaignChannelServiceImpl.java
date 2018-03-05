@@ -27,33 +27,17 @@ public class CampaignChannelServiceImpl
     private CampaignChannelMapper campaignChannelDao;
 
 
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected CampaignChannelMapper getDao() {
         return campaignChannelDao;
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override
-    protected CampaignChannelExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-            Map<String, Object> filter, boolean distinct) {
-    	CampaignChannelExample example = new CampaignChannelExample();
+    protected CampaignChannelExample getEntityExampleObject() { return new CampaignChannelExample(); }
 
-        if (sortOrder != null) {
-            example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-        }
-
-        if (startRow == null) startRow = 0;
-        if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-        example.setDistinct(distinct);
-
-        KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-        return example;
-    }
 
 }

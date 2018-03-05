@@ -29,7 +29,7 @@ import java.util.Map;
 public class SupportController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(SupportController.class);
     
-    // ----------------------------------------------------------------------
+
 
     @Autowired
     private SupportMessageService supportMessageService;
@@ -37,7 +37,7 @@ public class SupportController extends BaseController {
     @Autowired
     private UserModelService userModelService;
 
-    // ----------------------------------------------------------------------
+
 
     @RequestMapping(value = "/messages", method=RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
@@ -75,7 +75,7 @@ public class SupportController extends BaseController {
         return created(toMap(supportMessage));
     }
 
-    // ----------------------------------------------------------------------
+
     protected Map<String,Object> toMap(SupportMessage supportMessage) {
         if (supportMessage == null) return null;
 
@@ -85,7 +85,7 @@ public class SupportController extends BaseController {
         result.put("created_date", supportMessage.getCreatedDate());
         return result;
     }
-    // ----------------------------------------------------------------------
+
 
     /*
 	private void message(HttpServletRequest req, String subject, String body) {

@@ -40,7 +40,7 @@ public class FileServiceImpl
 	@Autowired
 	UserService userService;
     
-	// ----------------------------------------------------------------------------
+
 
     // called once when app/service is initialized
 	@PostConstruct
@@ -48,7 +48,7 @@ public class FileServiceImpl
 		logger.debug("FileService: _init() called");
 	}
 
-	// ----------------------------------------------------------------------------
+
     
     // called once before app/service is shutdown
     @PreDestroy
@@ -66,28 +66,28 @@ public class FileServiceImpl
 		}
     }
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected File getNewObject() {
 		return new File();
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected FileMapper getDao() {
 		return fileDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected UserService getUserService() {
 		return userService;
 	}
     
-	// ----------------------------------------------------------------------------
+
     
     @Override
 	protected String getPublicBaseUrl() {
@@ -95,36 +95,20 @@ public class FileServiceImpl
 		
 	}
     
-	// ----------------------------------------------------------------------------
+
 
     @Override
 	protected String getLocalBasePath() {
         return config.getString("system.files.localBasePath");
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	
-	@Override
-	protected FileExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		FileExample example = new FileExample();
+	 @Override
+    protected FileExample getEntityExampleObject() { return new FileExample(); }
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
-
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
     
 }

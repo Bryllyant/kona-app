@@ -33,28 +33,28 @@ public class FriendshipServiceImpl
 	@Autowired
 	//NotificationService notificationService;
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected FriendshipMapper getDao() {
 		return friendshipDao;
 	}
 	
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected FriendshipEventService getFriendshipEventService() {
 		return friendshipEventService;
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected Friendship getNewFriendshipObject() {
 		return new Friendship();
 	}
 
-	// ----------------------------------------------------------------------------
+
 
 	@Override
 	protected FriendshipEvent getNewFriendshipEventObject() {
@@ -62,29 +62,13 @@ public class FriendshipServiceImpl
 	}
 
 
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected FriendshipExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		FriendshipExample example = new FriendshipExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected FriendshipExample getEntityExampleObject() { return new FriendshipExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
-
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
-
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		return example;
-	}
 	
-	// ----------------------------------------------------------------------------
+
 	
 	@Override
 	protected void notifyEvent(Friendship friendship, KFriendshipEvent event) {

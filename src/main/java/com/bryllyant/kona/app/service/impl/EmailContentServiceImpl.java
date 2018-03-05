@@ -31,57 +31,40 @@ public class EmailContentServiceImpl
 	@Autowired
 	private EmailAttachmentService emailAttachmentService;
     
-	// ----------------------------------------------------------------------------
+
 
 	@Override @SuppressWarnings("unchecked")
 	protected EmailContentMapper getDao() {
 		return emailContentDao;
 	}
     
-	// ----------------------------------------------------------------------------
+
 	@Override 
     protected boolean entityHasBlobs() {
 	    return false;
     }
 
-	// ----------------------------------------------------------------------------
+
 
     @Override
     protected EmailContent getNewObject() {
     	return new EmailContent();
     }
     
-    // ----------------------------------------------------------------------------
+
 
     @Override @SuppressWarnings("unchecked")
     protected EmailAttachmentService getEmailAttachmentService() {
         return emailAttachmentService;
     }
     
-	// ----------------------------------------------------------------------------
 
-	@Override
-	protected EmailContentExample getExampleObjectInstance(Integer startRow, Integer resultSize, String[] sortOrder,
-			Map<String, Object> filter, boolean distinct) {
-		EmailContentExample example = new EmailContentExample();
 
-		if (sortOrder != null) {
-			example.setOrderByClause(KMyBatisUtil.getOrderByString(sortOrder));
-		}
+	 @Override
+    protected EmailContentExample getEntityExampleObject() { return new EmailContentExample(); }
 
-		if (startRow == null) startRow = 0;
-		if (resultSize == null) resultSize = 99999999;
 
-        example.setOffset(startRow);
-        example.setLimit(resultSize);
-		example.setDistinct(distinct);
 
-		KMyBatisUtil.buildExample(example.or().getClass(), example.or(), filter);
-		
-		return example;
-	}
-
-	// ----------------------------------------------------------------------------
 
     
 }
