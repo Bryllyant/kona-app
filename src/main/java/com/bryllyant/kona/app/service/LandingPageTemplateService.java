@@ -7,6 +7,6 @@ import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.remote.service.KService;
 
 public interface LandingPageTemplateService extends KService, KLandingPageTemplateService<LandingPageTemplate> {
-	public static final String SERVICE_PATH = "rpc/LandingPageTemplateService";
+	String SERVICE_PATH = "rpc/LandingPageTemplateService";
 	
 }

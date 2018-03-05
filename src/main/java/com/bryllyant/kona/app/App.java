@@ -3,6 +3,7 @@ package com.bryllyant.kona.app;
 import com.bryllyant.kona.app.web.service.LandingPageResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -17,6 +18,9 @@ import java.nio.file.Path;
 @EnableWebMvc
 public class App extends WebMvcConfigurerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
+
+    @Autowired
+    LandingPageResourceResolver landingPageResourceResolver;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -40,7 +44,7 @@ public class App extends WebMvcConfigurerAdapter {
                 .addResourceLocations(landingPagesFileUrl)
                 .setCachePeriod(3600)
                 .resourceChain(true)
-                .addResolver(new LandingPageResourceResolver());
+                .addResolver(landingPageResourceResolver);
     }
 
 

@@ -1,5 +1,11 @@
 package com.bryllyant.kona.app.web.service;
 
+import com.bryllyant.kona.app.entity.LandingPage;
+import com.bryllyant.kona.app.entity.LandingPageTemplate;
+import com.bryllyant.kona.app.service.FileService;
+import com.bryllyant.kona.app.service.LandingPageService;
+import com.bryllyant.kona.app.service.LandingPageTemplateService;
+import com.bryllyant.kona.encryption.KZipUtil;
 import com.bryllyant.kona.util.KFileUtil;
 import com.bryllyant.kona.util.KJsonUtil;
 import org.jsoup.Jsoup;
@@ -8,7 +14,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 
@@ -21,8 +29,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class LandingPageResourceResolver extends PathResourceResolver{
     private static final Logger logger = LoggerFactory.getLogger(LandingPageResourceResolver.class);
+
+    @Autowired
+    LandingPageService landingPageService;
+
+    @Autowired
+    LandingPageTemplateService landingPageTemplateService;
+
+    @Autowired
+    FileService fileService;
+
 
     @Override
     protected boolean checkResource(Resource resource, Resource location) throws IOException {
@@ -57,6 +76,8 @@ public class LandingPageResourceResolver extends PathResourceResolver{
         // If top level dir does not exist then we need to create it
 
         try {
+            logger.debug("getResource: resourcePath: {}   location: {}",resourcePath, location);
+
             // get root path of resourcePath
             String rootPath = resourcePath;
 
@@ -68,6 +89,7 @@ public class LandingPageResourceResolver extends PathResourceResolver{
             }
 
             int nameCount = _resourcePath.getNameCount();
+            logger.debug("getResource: reourcePath nameCount: {}", nameCount);
 
             if (_resourcePath.getNameCount() == 0) {
                 // we should never get here since we should have at least one path name
@@ -89,7 +111,33 @@ public class LandingPageResourceResolver extends PathResourceResolver{
                 rootFolder.mkdirs();
 
                 // TODO: download and unpack template
-                String html = "<html><head></head><body><h1>TEST</h1></body></html>";
+                //String html = "<html><head></head><body><h1>TEST</h1></body></html>";
+                LandingPage page = landingPageService.fetchByUrlPath(rootPath);
+
+                if (page == null || page.getTemplateId() == null) {
+                    logger.info("Landing page not found for url path: {}", rootPath);
+                    return null;
+                }
+
+                LandingPageTemplate template = landingPageTemplateService.fetchById(page.getTemplateId());
+
+                if (template == null) {
+                    logger.error("Landing page template not found for url path: {}", rootPath);
+                    return null;
+                }
+
+                com.bryllyant.kona.app.entity.File file = fileService.fetchById(template.getFileId(), true);
+
+                KZipUtil.unzip(file.getData(), rootDir);
+
+                // at this point we should have:   rootDir + "/index.html"
+                File htmlFile = new File(rootDir + "/index.html");
+                if (!htmlFile.exists()) {
+                    logger.error("Template does not include index.html. Aborting.");
+                    return null;
+                }
+
+                String html = KFileUtil.readFile(htmlFile);
 
                 Map<String,Object> config = new HashMap<>();
                 config.put("apiBaseUrl", "http://dev.moodcast.cc/api/");
@@ -149,6 +197,32 @@ public class LandingPageResourceResolver extends PathResourceResolver{
     protected Resource resolveResourceInternal(HttpServletRequest request, String requestPath, List<? extends Resource> locations, ResourceResolverChain chain) {
         Resource result = null;
         try {
+            logger.debug("resolveResourceInternal: requestPath: {}\nrequest: {}\npathInfo: {}\nrequestURL: {}",
+                    requestPath, request, request.getPathInfo(), request.getRequestURL().toString());
+
+            // pathInfo: /hello/page-template-name
+            // pathInfo: /hello/page-template-name/
+
+            // if we don't get /hello/page-template-name/ then return null
+            String pathInfo = request.getPathInfo();
+
+            String[] pathParts = pathInfo.split("/");
+            String rawRequestPath = pathInfo.substring(2 + pathParts[1].length());
+
+            logger.debug("resolveResourceInternal: rawRequestPath: {}", rawRequestPath);
+
+            if (pathParts.length == 3) {
+
+                if (!requestPath.equals(pathParts[2])) {
+                    throw new IllegalStateException("Request Path mismatch: pathInfo: " + pathInfo + " requestPath: " + requestPath);
+                }
+
+                if (!rawRequestPath.endsWith("/")) {
+                    logger.debug("resolveResourceInternal: requestPath must end with '/' to be serve index.html");
+                    return null;
+                }
+            }
+
             result = super.resolveResourceInternal(request, requestPath, locations, chain);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);

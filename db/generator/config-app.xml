@@ -670,9 +670,6 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="email_verified" javaType="boolean" />
             <columnOverride column="mobile_verified" javaType="boolean" />
-
-            <!-- IGNORE coords columns since this is GIS column used by the db -->
-            <ignoreColumn column="coords" />
         </table>
 
         <table schema="kona" 
@@ -906,6 +903,7 @@
                delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseLandingPageTemplate"/>
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisDao&lt;LandingPageTemplate,LandingPageTemplateExample&gt;" />
             <property name="fullTextColumns" value="uid,name,slug,description"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
@@ -942,7 +940,6 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseLandingPageParam"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
-            <columnOverride column="enabled" javaType="boolean" />
         </table>
         <!-- Sales Tables -->
     </context>

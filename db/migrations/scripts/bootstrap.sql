@@ -180,8 +180,8 @@ CREATE TABLE `kona__app` (
 CREATE TABLE `kona__app_config` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `parent_id` bigint(20) unsigned default NULL,
   `app_id` bigint(20) unsigned default NULL, -- set null for global
+  `parent_id` bigint(20) unsigned default NULL,
   `env` varchar(255) DEFAULT NULL, -- set null for global
   `name` varchar(255) NOT NULL,
   `value` varchar(4000) NOT NULL,
@@ -434,33 +434,23 @@ CREATE TABLE `kona__auth_code` (
 CREATE TABLE `kona__file` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
+  `app_id` bigint(20) unsigned DEFAULT NULL,
   `type_id` bigint(20) unsigned DEFAULT NULL,
   `access_id` bigint(20) unsigned DEFAULT NULL,
   `parent_id` bigint(20) unsigned DEFAULT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `account_id` bigint(20) unsigned DEFAULT NULL,
   `token_id` bigint(20) unsigned DEFAULT NULL,
---  `thumb_id` bigint(20) unsigned DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `content_type` varchar(255) NOT NULL,
   `size` bigint(20) unsigned NOT NULL,
---  `folder` tinyint(1) unsigned NOT NULL DEFAULT '0',
---  `shared` tinyint(1) unsigned NOT NULL DEFAULT '0',
---  `archive` tinyint(1) unsigned NOT NULL DEFAULT '0',
---   `compressed` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `temp_file` tinyint(1) unsigned NOT NULL DEFAULT '0',
---  `width` int(11) DEFAULT NULL,
---  `height` int(11) DEFAULT NULL,
---  `bits_per_pixel` int(11) DEFAULT NULL,
---  `frames_per_second` int(11) DEFAULT NULL,
---  `duration` bigint(20) unsigned DEFAULT NULL,
   `src_hostname` varchar(255) DEFAULT NULL,
   `src_filename` varchar(255) DEFAULT NULL,
   `local_path` varchar(255) DEFAULT NULL,
   `url_path` varchar(255) DEFAULT NULL,
---  `thumb_url_path` varchar(255) DEFAULT NULL,
   `upload_time` bigint(20) unsigned DEFAULT NULL,
   `deleted_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -484,7 +474,7 @@ CREATE TABLE `kona__file` (
 
   KEY `ix_kona__file_token` (`token_id`),
 
---  KEY `ix_kona__file_thumb` (`thumb_id`),
+  KEY `ix_kona__file_app` (`app_id`),
 
   KEY `ix_kona__file_access` (`access_id`),
 
@@ -495,8 +485,8 @@ CREATE TABLE `kona__file` (
   CONSTRAINT `fk_kona__file_parent` FOREIGN KEY (`parent_id`) 
         REFERENCES `kona__file` (`id`) ON DELETE CASCADE,
 
---  CONSTRAINT `fk_kona__file_thumb` FOREIGN KEY (`thumb_id`) 
---        REFERENCES `kona__file` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__file_app` FOREIGN KEY (`app_id`)
+        REFERENCES `kona__app` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__file_token` FOREIGN KEY (`token_id`) 
         REFERENCES `kona__token` (`id`) ON DELETE SET NULL,
@@ -1105,7 +1095,6 @@ CREATE TABLE `kona__user` (
   `parent_id` bigint(20) unsigned DEFAULT NULL,
   `type_id` bigint(20) unsigned DEFAULT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
---  `presence_id` bigint(20) unsigned DEFAULT NULL,
   `position_id` bigint(20) unsigned DEFAULT NULL,
   `photo_id` bigint(20) unsigned DEFAULT NULL,
   `photo_url` varchar(255) DEFAULT NULL, 
@@ -1149,7 +1138,6 @@ CREATE TABLE `kona__user` (
 
   FULLTEXT `ft_kona__user` (`uid`,`username`,`email`,`mobile_number`,`first_name`,`last_name`,`display_name`),
 
---  KEY `ix_kona__user_presence` (`presence_id`),
 
   CONSTRAINT `fk_kona__user_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
@@ -1163,10 +1151,7 @@ CREATE TABLE `kona__user` (
   CONSTRAINT `fk_kona__user_photo` FOREIGN KEY (`photo_id`) 
         REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
 
---  CONSTRAINT `fk_kona__user_presence` FOREIGN KEY (`presence_id`)
---        REFERENCES `kona__user_presence` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__user_type` FOREIGN KEY (`type_id`) 
+  CONSTRAINT `fk_kona__user_type` FOREIGN KEY (`type_id`)
         REFERENCES `kona__user_type` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -1244,6 +1229,7 @@ CREATE TABLE `kona__media` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `parent_id` bigint(20) unsigned default NULL,
+  `app_id` bigint(20) unsigned DEFAULT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `file_id` bigint(20) unsigned DEFAULT NULL,
@@ -1291,6 +1277,8 @@ CREATE TABLE `kona__media` (
 
   SPATIAL `ix_kona__media_coords` (coords),
 
+  KEY `ix_kona__media_app` (`app_id`),
+
   KEY `ix_kona__media_user` (`user_id`),
 
   KEY `ix_kona__media_account` (`account_id`),
@@ -1309,38 +1297,11 @@ CREATE TABLE `kona__media` (
   CONSTRAINT `fk_kona__media_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 
-  CONSTRAINT `fk_kona__media_user` FOREIGN KEY (`user_id`) 
+  CONSTRAINT `fk_kona__media_app` FOREIGN KEY (`app_id`)
+        REFERENCES `kona__app` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__media_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- --------------------------------------------------------------------------
-
---CREATE TABLE `kona__user_presence` (
---  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
---  `name` varchar(255) DEFAULT NULL,
---  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
---  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
---
---  PRIMARY KEY (`id`),
---
---  UNIQUE KEY `ux_kona__user_presence_name` (`name`)
---
---) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- --------------------------------------------------------------------------
-
-CREATE TABLE `kona__user_role` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `ux_kona__user_role_name` (`name`)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -1408,9 +1369,9 @@ CREATE TABLE `kona__place_category` (
 
   UNIQUE KEY `ux_kona__place_category_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__place_category` (`slug`)
+  UNIQUE KEY `ux_kona__place_category` (`slug`),
 
-  FULLTEXT KEY `ft_kona_place_category` (`uid`, `name`, `slug`),
+  FULLTEXT KEY `ft_kona_place_category` (`uid`, `name`, `slug`)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2084,8 +2045,8 @@ CREATE TABLE `kona__push_provider` (
   `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `push_platform` varchar(255) NOT NULL,
-  `push_server_key` varchar(8192) DEFAULT NULL,
-  `push_server_secret` varchar(8192) DEFAULT NULL,
+  `push_server_key` text DEFAULT NULL,
+  `push_server_secret` text DEFAULT NULL,
   `push_endpoint` varchar(1024) DEFAULT NULL,
   `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -3408,10 +3369,10 @@ CREATE TABLE `kona__purchase` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `parent_id` bigint(20) unsigned DEFAULT NULL,
+  `app_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `product_id` bigint(20) unsigned NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
   `promo_id` bigint(20) unsigned DEFAULT NULL,
   `partner_id` bigint(20) unsigned DEFAULT NULL,
   `campaign_id` bigint(20) unsigned DEFAULT NULL,
@@ -3520,13 +3481,13 @@ CREATE TABLE `kona__landing_page_template` (
 CREATE TABLE `kona__landing_page` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
+  `app_id` bigint(20) unsigned default NULL,
   `added_by_id` bigint(20) unsigned default NULL,
   `template_id` bigint(20) unsigned NOT NULL,
-  `short_url` varchar(255) default NULL,
   `name` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
   `description` varchar(4000) default NULL,
+  `url_path` varchar(255) NOT NULL,
+  `short_url` varchar(255) default NULL,
   `facebook_tracking_id` varchar(255) DEFAULT NULL,
   `google_tracking_id` varchar(255) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -3537,7 +3498,7 @@ CREATE TABLE `kona__landing_page` (
 
   UNIQUE `ux_kona__landing_page_uid` (`uid`),
 
-    UNIQUE `ux_kona__landing_page_slug` (`app_id`, `slug`),
+  UNIQUE `ux_kona__landing_page_url_path` (`url_path`),
 
   UNIQUE `ix_kona__landing_page_short_url` (`short_url`),
 
@@ -3546,10 +3507,10 @@ CREATE TABLE `kona__landing_page` (
   KEY `ix_kona__landing_page_template` (`template_id`),
 
 
-  FULLTEXT `ft_kona__landing_page` (`uid`,`name`,`slug`, `description`, `facebook_tracking_id`, `google_tracking_id`),
+  FULLTEXT `ft_kona__landing_page` (`uid`,`name`, `description`, `url_path`, `facebook_tracking_id`, `google_tracking_id`),
 
   CONSTRAINT `fk_kona__landing_page_app` FOREIGN KEY (`app_id`)
-        REFERENCES `kona__app` (`id`) ON DELETE CASCADE,
+        REFERENCES `kona__app` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__landing_page_added_by` FOREIGN KEY (`added_by_id`)
 		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
@@ -3678,13 +3639,13 @@ VALUES
 
 -- --------------------------------------------------------------------------
 
-INSERT INTO `kona__user_presence` 
-VALUES 
-    (100,'ONLINE', now(), now()),
-    (200,'AWAY', now(), now()),
-    (300,'BUSY', now(), now()),
-    (400,'INVISIBLE', now(), now()),
-    (999,'OFFLINE', now(), now());
+--INSERT INTO `kona__user_presence`
+--VALUES
+--    (100,'ONLINE', now(), now()),
+--    (200,'AWAY', now(), now()),
+--    (300,'BUSY', now(), now()),
+--    (400,'INVISIBLE', now(), now()),
+--    (999,'OFFLINE', now(), now());
 
 -- --------------------------------------------------------------------------
 
