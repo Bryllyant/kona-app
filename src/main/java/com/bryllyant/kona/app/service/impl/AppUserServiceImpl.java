@@ -21,18 +21,18 @@ import java.util.Map;
 
 @Service(AppUserService.SERVICE_PATH)
 public class AppUserServiceImpl 
-		extends KAbstractAppUserService<AppUser,AppUserExample> 
+		extends KAbstractAppUserService<AppUser, AppUserExample, AppUserMapper>
 		implements AppUserService {
 	
 	private static Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
 	@Autowired
-	private AppUserMapper appUserDao;
+	private AppUserMapper appUserMapper;
     
 
 	@Override @SuppressWarnings("unchecked")
-	protected AppUserMapper getDao() {
-		return appUserDao;
+	protected AppUserMapper getMapper() {
+		return appUserMapper;
 	}
     
 
@@ -48,7 +48,7 @@ public class AppUserServiceImpl
 
 	@Override
 	protected void updateCoords(Long apiLogId) {
-		getDao().updateCoords(apiLogId);
+		getMapper().updateCoords(apiLogId);
 	}
 
 	@Override
@@ -60,6 +60,6 @@ public class AppUserServiceImpl
 			Date endDate,
 			List<Long> objectIdList
 	) {
-		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+		return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
 	}
 }

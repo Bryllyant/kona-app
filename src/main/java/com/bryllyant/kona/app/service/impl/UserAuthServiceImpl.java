@@ -20,13 +20,13 @@ import java.util.Map;
 
 @Service(UserAuthService.SERVICE_PATH)
 public class UserAuthServiceImpl 
-		extends KAbstractUserAuthService<UserAuth,UserAuthExample,User> 
+		extends KAbstractUserAuthService<UserAuth, UserAuthExample, UserAuthMapper,User>
 		implements UserAuthService {
 	
 	private static Logger logger = LoggerFactory.getLogger(UserAuthServiceImpl.class);
 
 	@Autowired
-	private UserAuthMapper userAuthDao;
+	private UserAuthMapper userAuthMapper;
 	
 	@Autowired
 	private UserService userService;
@@ -35,8 +35,8 @@ public class UserAuthServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected UserAuthMapper getDao() {
-		return userAuthDao;
+	protected UserAuthMapper getMapper() {
+		return userAuthMapper;
 	}
     
 

@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.KInvitationChannel;
 import com.bryllyant.kona.app.entity.KInvitationStatus;
@@ -94,7 +94,7 @@ public class InvitationModelService extends BaseModelService {
     
 
 
-    public final List<InvitationModel> toInvitationModelList(List<Invitation> invitations, String... includeKeys) {
+    public final List<InvitationModel> toModelList(List<Invitation> invitations, String... includeKeys) {
         List<InvitationModel> modelList = new ArrayList<>();
 
         for (Invitation invitation : invitations) {

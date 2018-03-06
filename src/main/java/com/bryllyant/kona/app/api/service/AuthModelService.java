@@ -3,7 +3,6 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.auth.AuthSessionModel;
 import com.bryllyant.kona.app.api.model.auth.TokenModel;
 import com.bryllyant.kona.app.api.model.user.MeModel;
-import com.bryllyant.kona.app.entity.KTokenType;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.model.AuthSession;
@@ -85,8 +84,6 @@ public class AuthModelService extends BaseModelService {
             expiresIn = KDateUtil.diffSecs(token.getAccessExpirationDate(), new Date());
         }
         
-        KTokenType tokenType = KTokenType.getInstance(token.getTypeId());
-
         String scope = token.getScope();
         if (scope != null) {
             scope = scope.replaceAll(",", " ");
@@ -94,7 +91,7 @@ public class AuthModelService extends BaseModelService {
 
         TokenModel model = new TokenModel();
 
-        model.setTokenType(TokenModel.TokenType.value(tokenType));
+        model.setTokenType(token.getType());
         model.setAccessToken(token.getAccessToken());
         model.setRefreshToken(token.getRefreshToken());
         model.setScope(scope);
@@ -189,13 +186,7 @@ public class AuthModelService extends BaseModelService {
 
             switch (key) {
                 case "tokenType":
-                    KTokenType type = model.getTokenType().toKTokenType();
-
-                    if (type == null) {
-                        throw new BadRequestException("Invalid type: " + type);
-                    }
-
-                    token.setTypeId(type.getId());
+                    token.setType(model.getTokenType());
                     break;
 
                 case "accessToken":

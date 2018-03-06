@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Service(UserDeviceService.SERVICE_PATH)
 public class UserDeviceServiceImpl 
-		extends KAbstractUserDeviceService<UserDevice,UserDeviceExample,User,Device> 
+		extends KAbstractUserDeviceService<UserDevice, UserDeviceExample, UserDeviceMapper,User,Device>
 		implements UserDeviceService {
 	
 	private static Logger logger = LoggerFactory.getLogger(UserDeviceServiceImpl.class);
@@ -29,7 +29,7 @@ public class UserDeviceServiceImpl
 
 
 	@Autowired
-	private UserDeviceMapper userDeviceDao;
+	private UserDeviceMapper userDeviceMapper;
 
 	@Autowired
 	private DeviceService deviceService;
@@ -37,8 +37,8 @@ public class UserDeviceServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected UserDeviceMapper getDao() {
-		return userDeviceDao;
+	protected UserDeviceMapper getMapper() {
+		return userDeviceMapper;
 	}
     
 

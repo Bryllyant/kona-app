@@ -24,13 +24,13 @@ import java.util.Map;
 
 @Service(UserRoleService.SERVICE_PATH)
 public class UserRoleServiceImpl
-		extends KAbstractUserRoleService<UserRole,UserRoleExample,User,AuthRole>
+		extends KAbstractUserRoleService<UserRole, UserRoleExample, UserRoleMapper,User,AuthRole>
 		implements UserRoleService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserRoleServiceImpl.class);
 
 	@Autowired
-	private UserRoleMapper userRoleDao;
+	private UserRoleMapper userRoleMapper;
 
     @Autowired
     private AuthRoleService authRoleService;
@@ -41,8 +41,8 @@ public class UserRoleServiceImpl
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected UserRoleMapper getDao() {
-		return userRoleDao;
+	protected UserRoleMapper getMapper() {
+		return userRoleMapper;
 	}
 
 	@Override

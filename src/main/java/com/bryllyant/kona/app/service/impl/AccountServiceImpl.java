@@ -19,13 +19,13 @@ import org.springframework.stereotype.Service;
 
 @Service(AccountService.SERVICE_PATH)
 public class AccountServiceImpl
-        extends KAbstractAccountService<Account, AccountExample, User>
+        extends KAbstractAccountService<Account, AccountExample, AccountMapper,User>
         implements AccountService {
 
     private static Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     @Autowired
-    private AccountMapper accountDao;
+    private AccountMapper accountMapper;
 
     @Autowired
     UserService userService;
@@ -44,8 +44,8 @@ public class AccountServiceImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    protected AccountMapper getDao() {
-        return accountDao;
+    protected AccountMapper getMapper() {
+        return accountMapper;
     }
 
 

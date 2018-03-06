@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.rest.exception.BadRequestException;

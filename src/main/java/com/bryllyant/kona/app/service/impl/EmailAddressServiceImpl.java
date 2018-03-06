@@ -12,20 +12,17 @@ import com.bryllyant.kona.app.service.EmailAddressService;
 import com.bryllyant.kona.app.service.EmailGroupAddressService;
 import com.bryllyant.kona.app.service.EmailGroupService;
 import com.bryllyant.kona.app.service.KAbstractEmailAddressService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Service(EmailAddressService.SERVICE_PATH)
 public class EmailAddressServiceImpl
-        extends KAbstractEmailAddressService<EmailAddress,
-        EmailAddressExample,
+        extends KAbstractEmailAddressService<EmailAddress, EmailAddressExample, EmailAddressMapper,
         EmailGroup,
         EmailGroupAddress>
         implements EmailAddressService {
@@ -33,7 +30,7 @@ public class EmailAddressServiceImpl
     private static Logger logger = LoggerFactory.getLogger(EmailAddressServiceImpl.class);
 
     @Autowired
-    private EmailAddressMapper emailAddressDao;
+    private EmailAddressMapper emailAddressMapper;
 
     @Autowired
     private EmailGroupService emailGroupService;
@@ -42,22 +39,16 @@ public class EmailAddressServiceImpl
     private EmailGroupAddressService emailGroupAddressService;
 
 
-
-
     @Override
-    @SuppressWarnings("unchecked")
-    protected EmailAddressMapper getDao() {
-        return emailAddressDao;
+    protected EmailAddressMapper getMapper() {
+        return emailAddressMapper;
     }
-
-
 
     @Override
     @SuppressWarnings("unchecked")
     protected EmailGroupService getEmailGroupService() {
         return emailGroupService;
     }
-
 
 
     @Override
@@ -83,7 +74,7 @@ public class EmailAddressServiceImpl
 
     @Override
     protected List<EmailAddress> daoFetchRandom(Long count, List<String> sourceList, List<Long> excludeGroupIds) {
-        return emailAddressDao.fetchRandom(count, sourceList, excludeGroupIds);
+        return emailAddressMapper.fetchRandom(count, sourceList, excludeGroupIds);
     }
 
 }

@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.notification.NotificationModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Notification;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.NotificationService;
@@ -91,7 +91,7 @@ public class NotificationModelService extends BaseModelService {
 
 
 
-    public final List<NotificationModel> toNotificationModelList(List<Notification> notifications, String... includeKeys) {
+    public final List<NotificationModel> toModelList(List<Notification> notifications, String... includeKeys) {
         List<NotificationModel> modelList = new ArrayList<NotificationModel>();
 
         for (Notification notification : notifications) {

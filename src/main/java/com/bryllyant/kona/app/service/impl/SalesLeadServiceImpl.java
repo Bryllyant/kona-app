@@ -24,13 +24,13 @@ import java.util.Map;
 
 @Service(SalesLeadService.SERVICE_PATH)
 public class SalesLeadServiceImpl 
-		extends KAbstractSalesLeadService<SalesLead,SalesLeadExample> 
+		extends KAbstractSalesLeadService<SalesLead, SalesLeadExample, SalesLeadMapper>
 		implements SalesLeadService {
 	
 	private static Logger logger = LoggerFactory.getLogger(SalesLeadServiceImpl.class);
 	   
     @Autowired
-    private SalesLeadMapper salesLeadDao;
+    private SalesLeadMapper salesLeadMapper;
     
 	@Autowired
 	private KConfig config;
@@ -45,8 +45,8 @@ public class SalesLeadServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected SalesLeadMapper getDao() {
-        return salesLeadDao;
+    protected SalesLeadMapper getMapper() {
+        return salesLeadMapper;
     }
     
 

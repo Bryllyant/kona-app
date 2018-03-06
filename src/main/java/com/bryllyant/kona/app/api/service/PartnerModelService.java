@@ -1,15 +1,12 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
-import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.api.model.social.SocialHandleModel;
 import com.bryllyant.kona.app.api.model.user.PersonModel;
-import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.Place;
-import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.PartnerService;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -112,7 +109,7 @@ public class PartnerModelService extends BaseModelService {
         return model;
     }
 
-    public List<PartnerModel> toPartnerModelList(List<Partner> partners, String... includeKeys) {
+    public List<PartnerModel> toModelList(List<Partner> partners, String... includeKeys) {
         List<PartnerModel> modelList = new ArrayList<>();
 
         for (Partner partner : partners) {

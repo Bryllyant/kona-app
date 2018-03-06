@@ -15,28 +15,19 @@ import org.springframework.stereotype.Service;
 
 @Service(DeviceService.SERVICE_PATH)
 public class DeviceServiceImpl 
-		extends KAbstractDeviceService<Device,DeviceExample> 
+		extends KAbstractDeviceService<Device, DeviceExample, DeviceMapper>
 		implements DeviceService {
 	
 	private static Logger logger = LoggerFactory.getLogger(DeviceServiceImpl.class);
 
 	@Autowired
-	private DeviceMapper deviceDao;
+	private DeviceMapper deviceMapper;
 	
-
-
-
 	@Override @SuppressWarnings("unchecked")
-	protected DeviceMapper getDao() {
-		return deviceDao;
+	protected DeviceMapper getMapper() {
+		return deviceMapper;
 	}
-	
-
 	
 	 @Override
     protected DeviceExample getEntityExampleObject() { return new DeviceExample(); }
-
-	
-
-
 }

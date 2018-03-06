@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2017 Bryllyant, Inc  All Rights Reserved.
  */
-package com.bryllyant.kona.app.api.util;
+package com.bryllyant.kona.app.util;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.service.FileService;

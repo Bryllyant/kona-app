@@ -2,12 +2,10 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.KAppType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
-import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,14 +72,10 @@ public class AppModelService extends BaseModelService {
         if (app == null) return null;
 
         User user = userModelService.getUser(app.getUserId());
-        KAppType type = KAppType.getInstance(app.getTypeId());
 
         AppModel model = new AppModel(); 
-        
-        
+
         model.fromBean(app);
-        
-        model.setType(type);
 
         model.setLogoUrl(util.toAbsoluteUrl(app.getLogoUrlPath()));
 
@@ -97,7 +91,7 @@ public class AppModelService extends BaseModelService {
 
 
 
-    public final List<AppModel> toAppModelList(List<App> apps, String... includeKeys) {
+    public final List<AppModel> toModelList(List<App> apps, String... includeKeys) {
         List<AppModel> modelList = new ArrayList<AppModel>();
 
         for (App app : apps) {
@@ -125,24 +119,12 @@ public class AppModelService extends BaseModelService {
         for (String key : model.initializedKeys()) {
 
             switch (key) {
-                
-                case "type":
-                    KAppType type = model.getType();
-
-                    if (type == null) {
-                        throw new BadRequestException("Invalid type: " + type);
-                    }
-
-                    app.setTypeId(type.getId());
-                    break;
-                    
                 case "user":
                     UserModel userModel = model.getUser();
                     User user = userModelService.getUser(userModel);
                     app.setUserId(user.getId());
                     break;
             }
-
         }
 
         return app;

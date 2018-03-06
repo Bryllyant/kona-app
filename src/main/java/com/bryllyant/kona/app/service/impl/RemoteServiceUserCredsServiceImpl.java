@@ -18,19 +18,19 @@ import java.util.Map;
 
 @Service(RemoteServiceUserCredsService.SERVICE_PATH)
 public class RemoteServiceUserCredsServiceImpl 
-		extends KAbstractRemoteServiceUserCredsService<RemoteServiceUserCreds,RemoteServiceUserCredsExample> 
+		extends KAbstractRemoteServiceUserCredsService<RemoteServiceUserCreds, RemoteServiceUserCredsExample, RemoteServiceUserCredsMapper>
 		implements RemoteServiceUserCredsService {
 	
 	private static Logger logger = LoggerFactory.getLogger(RemoteServiceUserCredsServiceImpl.class);
 
 	@Autowired
-	private RemoteServiceUserCredsMapper remoteServiceUserCredsDao;
+	private RemoteServiceUserCredsMapper remoteServiceUserCredsMapper;
     
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected RemoteServiceUserCredsMapper getDao() {
-		return remoteServiceUserCredsDao;
+	protected RemoteServiceUserCredsMapper getMapper() {
+		return remoteServiceUserCredsMapper;
 	}
     
 

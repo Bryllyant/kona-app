@@ -119,7 +119,7 @@ public class MyFriendshipController extends BaseController {
 			all.addAll(followings);
 		}
 		
-		return okList(friendshipModelService.toFriendshipModelList(all));
+		return okList(friendshipModelService.toModelList(all));
 	}
 	
 

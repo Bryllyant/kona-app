@@ -5,7 +5,6 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.MediaMapper;
-import com.bryllyant.kona.app.entity.AppUser;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.MediaExample;
@@ -14,7 +13,6 @@ import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.KAbstractMediaService;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service(MediaService.SERVICE_PATH)
 public class MediaServiceImpl 
-		extends KAbstractMediaService<Media,MediaExample,User,File> 
+		extends KAbstractMediaService<Media, MediaExample, MediaMapper,User,File>
 		implements MediaService {
 	
 	private static Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
@@ -35,7 +32,7 @@ public class MediaServiceImpl
     private KConfig config;
 
 	@Autowired
-	private MediaMapper mediaDao;
+	private MediaMapper mediaMapper;
     
 	@Autowired
 	UserService userService;
@@ -45,8 +42,8 @@ public class MediaServiceImpl
     
 
 	@Override @SuppressWarnings("unchecked")
-	protected MediaMapper getDao() {
-		return mediaDao;
+	protected MediaMapper getMapper() {
+		return mediaMapper;
 	}
 	
 
@@ -99,7 +96,7 @@ public class MediaServiceImpl
 
     @Override 
     protected void updateCoords(Long mediaId) {
-        getDao().updateCoords(mediaId);
+        getMapper().updateCoords(mediaId);
     }
 
 
@@ -112,7 +109,7 @@ public class MediaServiceImpl
 			Date endDate,
 			List<Long> objectIdList
 	) {
-		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+		return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
 	}
     
 }

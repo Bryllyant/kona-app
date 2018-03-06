@@ -4,13 +4,11 @@ import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.Promo;
-import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -117,7 +115,7 @@ public class CampaignModelService extends BaseModelService {
 
 
 
-    public List<CampaignModel> toCampaignModelList(List<Campaign> campaigns, String... includeKeys) {
+    public List<CampaignModel> toModelList(List<Campaign> campaigns, String... includeKeys) {
         List<CampaignModel> modelList = new ArrayList<>();
 
         for (Campaign campaign : campaigns) {

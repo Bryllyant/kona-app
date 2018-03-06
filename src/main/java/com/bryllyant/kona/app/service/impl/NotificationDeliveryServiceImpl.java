@@ -18,20 +18,20 @@ import java.util.Map;
 
 @Service(NotificationDeliveryService.SERVICE_PATH)
 public class NotificationDeliveryServiceImpl 
-		extends KAbstractNotificationDeliveryService<NotificationDelivery,NotificationDeliveryExample> 
+		extends KAbstractNotificationDeliveryService<NotificationDelivery, NotificationDeliveryExample, NotificationDeliveryMapper>
 		implements NotificationDeliveryService {
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationDeliveryServiceImpl.class);
 
 	@Autowired
-	private NotificationDeliveryMapper notificationDeliveryDao;
+	private NotificationDeliveryMapper notificationDeliveryMapper;
     
 
 
     
 	@Override @SuppressWarnings("unchecked")
-	protected NotificationDeliveryMapper getDao() {
-		return notificationDeliveryDao;
+	protected NotificationDeliveryMapper getMapper() {
+		return notificationDeliveryMapper;
 	}
 	
 

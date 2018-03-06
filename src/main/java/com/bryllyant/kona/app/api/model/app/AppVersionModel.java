@@ -1,13 +1,6 @@
 package com.bryllyant.kona.app.api.model.app;
 
-import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.entity.KAppType;
-import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
-
-import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 public class AppVersionModel extends KJsonModel {
     private static final long serialVersionUID = 1L;

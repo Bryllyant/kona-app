@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service(SmsService.SERVICE_PATH)
-public class SmsServiceImpl extends KAbstractSmsService<Sms,SmsExample,User> implements SmsService {
+public class SmsServiceImpl extends KAbstractSmsService<Sms, SmsExample, SmsMapper,User> implements SmsService {
     
     private static Logger logger = LoggerFactory.getLogger(SmsServiceImpl.class);
     
@@ -28,7 +28,7 @@ public class SmsServiceImpl extends KAbstractSmsService<Sms,SmsExample,User> imp
     private KConfig config;
     
     @Autowired
-    private SmsMapper smsDao;
+    private SmsMapper smsMapper;
 
     @Autowired
     private UserService userService;
@@ -82,8 +82,8 @@ public class SmsServiceImpl extends KAbstractSmsService<Sms,SmsExample,User> imp
 
 
     @Override @SuppressWarnings("unchecked")
-    protected SmsMapper getDao() {
-        return smsDao;
+    protected SmsMapper getMapper() {
+        return smsMapper;
     }
     
 

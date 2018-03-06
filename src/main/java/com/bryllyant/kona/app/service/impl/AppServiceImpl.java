@@ -27,13 +27,13 @@ import java.util.Map;
 
 @Service(AppService.SERVICE_PATH)
 public class AppServiceImpl
-        extends KAbstractAppService<App, AppExample, AppCreds>
+        extends KAbstractAppService<App, AppExample, AppMapper, AppCreds>
         implements AppService {
 
     private static Logger logger = LoggerFactory.getLogger(AppServiceImpl.class);
 
     @Autowired
-    private AppMapper appDao;
+    private AppMapper appMapper;
 
     @Autowired
     private KConfig config;
@@ -51,8 +51,8 @@ public class AppServiceImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    protected AppMapper getDao() {
-        return appDao;
+    protected AppMapper getMapper() {
+        return appMapper;
     }
 
 

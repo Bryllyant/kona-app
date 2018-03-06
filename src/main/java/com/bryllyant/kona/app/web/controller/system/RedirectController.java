@@ -3,14 +3,14 @@
  */
 package com.bryllyant.kona.app.web.controller.system;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.bryllyant.kona.app.api.controller.BaseController;
+import com.bryllyant.kona.app.entity.Redirect;
+import com.bryllyant.kona.app.entity.ShortUrl;
+import com.bryllyant.kona.app.service.RedirectService;
+import com.bryllyant.kona.app.service.ShortUrlService;
+import com.bryllyant.kona.http.KServletUtil;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,15 +18,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.bryllyant.kona.http.KServletUtil;
-
-import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.entity.Redirect;
-import com.bryllyant.kona.app.entity.ShortUrl;
-import com.bryllyant.kona.app.service.RedirectService;
-import com.bryllyant.kona.app.service.ShortUrlService;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * Redirect Controller.
@@ -65,20 +62,23 @@ public class RedirectController extends BaseController {
         Date now = new Date();
         
         ShortUrl surl = shortUrlService.fetchByPath(path);
+
         if (surl == null) {
             throw new IOException("ShortUrl path not found: " + path);
         }
+
         String redirectUrl = explode(req, surl);
         
         Redirect redirect = new Redirect();
         redirect.setShortUrlId(surl.getId());
-        redirect.setPromoId(surl.getPromoId());
         redirect.setRequestUrl(KServletUtil.getFullRequestURL(req));
         redirect.setRedirectUrl(redirectUrl);
         redirect.setHostname(KServletUtil.getClientHostname(req));
         redirect.setUserAgent(KServletUtil.getClientUserAgent(req));
         redirect.setReferer(KServletUtil.getClientReferer(req));
         redirect.setLocale(KServletUtil.getClientLocale(req));
+        redirect.setLatitude(KServletUtil.getClientLatitude(req));
+        redirect.setLongitude(KServletUtil.getClientLongitude(req));
         redirect.setRequestedDate(now);
         redirect.setRedirectedDate(now);
         redirect.setCreatedDate(now);
@@ -86,6 +86,7 @@ public class RedirectController extends BaseController {
         redirect = redirectService.add(redirect);
         
         String url = resp.encodeRedirectURL(redirectUrl);
+
         resp.sendRedirect(url);
 	}
 	

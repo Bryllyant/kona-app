@@ -41,8 +41,7 @@ import java.util.Map;
 
 @Service(EmailService.SERVICE_PATH)
 public class EmailServiceImpl 
-		extends KAbstractEmailService<Email,
-                                      EmailExample,
+		extends KAbstractEmailService<Email, EmailExample, EmailMapper,
                                       EmailEvent,
                                       EmailEventExample,
                                       EmailGroup,
@@ -58,10 +57,10 @@ public class EmailServiceImpl
 
 
 	@Autowired
-	private EmailMapper emailDao;
+	private EmailMapper emailMapper;
 	
 	@Autowired
-	private EmailEventMapper emailEventDao;
+	private EmailEventMapper emailEventMapper;
     
 	@Autowired
 	private KConfig config;
@@ -94,15 +93,15 @@ public class EmailServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected EmailMapper getDao() {
-		return emailDao;
+	protected EmailMapper getMapper() {
+		return emailMapper;
 	}
 	
 
 	
 	@Override @SuppressWarnings("unchecked")
 	protected EmailEventMapper getEmailEventDao() {
-		return emailEventDao;
+		return emailEventMapper;
 	}
     
 

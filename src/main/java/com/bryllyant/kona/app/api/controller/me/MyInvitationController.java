@@ -62,7 +62,7 @@ public class MyInvitationController extends BaseController {
 					invitationService
 					.fetchByOwnerId(getUser().getId(), status, null, null);
 		
-		return okList(invitationModelService.toInvitationModelList(invitations));
+		return okList(invitationModelService.toModelList(invitations));
 	}
 	
 

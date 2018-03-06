@@ -15,19 +15,19 @@ import org.springframework.stereotype.Service;
 
 @Service(AuthPrivService.SERVICE_PATH)
 public class AuthPrivServiceImpl
-		extends KAbstractAuthPrivService<AuthPriv,AuthPrivExample>
+		extends KAbstractAuthPrivService<AuthPriv, AuthPrivExample, AuthPrivMapper>
 		implements AuthPrivService {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthPrivServiceImpl.class);
 
 	@Autowired
-	private AuthPrivMapper authPrivDao;
+	private AuthPrivMapper authPrivMapper;
 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected AuthPrivMapper getDao() {
-		return authPrivDao;
+	protected AuthPrivMapper getMapper() {
+		return authPrivMapper;
 	}
 
 	 @Override

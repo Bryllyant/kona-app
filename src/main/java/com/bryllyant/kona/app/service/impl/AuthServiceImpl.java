@@ -4,7 +4,6 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.entity.AppCreds;
-import com.bryllyant.kona.app.entity.KTokenType;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserAuth;
@@ -40,8 +39,8 @@ public class AuthServiceImpl
 	
 
 	@Override
-	public Long getLoginTokenTypeId() {
-		return KTokenType.BEARER.getId();
+	public Token.Type getLoginTokenType() {
+		return Token.Type.BEARER;
 	}
 	
 

@@ -18,19 +18,19 @@ import java.util.Map;
 
 @Service(AppWebhookService.SERVICE_PATH)
 public class AppWebhookServiceImpl 
-		extends KAbstractAppWebhookService<AppWebhook,AppWebhookExample> 
+		extends KAbstractAppWebhookService<AppWebhook, AppWebhookExample, AppWebhookMapper>
 		implements AppWebhookService {
 	
 	private static Logger logger = LoggerFactory.getLogger(AppWebhookServiceImpl.class);
 
 	@Autowired
-	private AppWebhookMapper appWebhookDao;
+	private AppWebhookMapper appWebhookMapper;
     
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected AppWebhookMapper getDao() {
-		return appWebhookDao;
+	protected AppWebhookMapper getMapper() {
+		return appWebhookMapper;
 	}
     
 

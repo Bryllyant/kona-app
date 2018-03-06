@@ -20,20 +20,20 @@ import java.util.Map;
 
 @Service(CampaignEventService.SERVICE_PATH)
 public class CampaignEventServiceImpl 
-		extends KAbstractCampaignEventService<CampaignEvent,CampaignEventExample> 
+		extends KAbstractCampaignEventService<CampaignEvent, CampaignEventExample, CampaignEventMapper>
 		implements CampaignEventService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CampaignEventServiceImpl.class);
     
     @Autowired
-    private CampaignEventMapper campaignEventDao;
+    private CampaignEventMapper campaignEventMapper;
 
 
 
 
     @Override @SuppressWarnings("unchecked")
-    protected CampaignEventMapper getDao() {
-        return campaignEventDao;
+    protected CampaignEventMapper getMapper() {
+        return campaignEventMapper;
     }
     
 
@@ -44,7 +44,7 @@ public class CampaignEventServiceImpl
     
     @Override
     protected void updateCoords(Long campaignEventId) {
-        getDao().updateCoords(campaignEventId);
+        getMapper().updateCoords(campaignEventId);
     }
 
 
@@ -57,6 +57,6 @@ public class CampaignEventServiceImpl
             Date endDate,
             List<Long> objectIdList
     ) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
 }

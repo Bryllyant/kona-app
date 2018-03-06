@@ -26,13 +26,13 @@ import java.util.Map;
 
 @Service(FileService.SERVICE_PATH)
 public class FileServiceImpl 
-		extends KAbstractFileService<File,FileExample,User> 
+		extends KAbstractFileService<File, FileExample, FileMapper,User>
 		implements FileService {
 	
 	private static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
 	@Autowired
-	private FileMapper fileDao;
+	private FileMapper fileMapper;
     
 	@Autowired
 	private KConfig config;
@@ -76,8 +76,8 @@ public class FileServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected FileMapper getDao() {
-		return fileDao;
+	protected FileMapper getMapper() {
+		return fileMapper;
 	}
 	
 

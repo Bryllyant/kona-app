@@ -18,20 +18,20 @@ import java.util.Map;
 
 @Service(ProductService.SERVICE_PATH)
 public class ProductServiceImpl 
-		extends KAbstractProductService<Product,ProductExample> 
+		extends KAbstractProductService<Product, ProductExample, ProductMapper>
 		implements ProductService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
     
     @Autowired
-    private ProductMapper productDao;
+    private ProductMapper productMapper;
 
 
 
 
     @Override @SuppressWarnings("unchecked")
-    protected ProductMapper getDao() {
-        return productDao;
+    protected ProductMapper getMapper() {
+        return productMapper;
     }
     
 

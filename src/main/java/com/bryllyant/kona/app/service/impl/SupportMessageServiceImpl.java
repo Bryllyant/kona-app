@@ -25,13 +25,13 @@ import java.util.Map;
 
 @Service(SupportMessageService.SERVICE_PATH)
 public class SupportMessageServiceImpl 
-		extends KAbstractSupportMessageService<SupportMessage,SupportMessageExample,User> 
+		extends KAbstractSupportMessageService<SupportMessage, SupportMessageExample, SupportMessageMapper,User>
 		implements SupportMessageService {
 	
 	private static Logger logger = LoggerFactory.getLogger(SupportMessageServiceImpl.class);
 	   
     @Autowired
-    private SupportMessageMapper supportMessageDao;
+    private SupportMessageMapper supportMessageMapper;
     
 	@Autowired
 	private KConfig config;
@@ -49,8 +49,8 @@ public class SupportMessageServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected SupportMessageMapper getDao() {
-        return supportMessageDao;
+    protected SupportMessageMapper getMapper() {
+        return supportMessageMapper;
     }
     
 

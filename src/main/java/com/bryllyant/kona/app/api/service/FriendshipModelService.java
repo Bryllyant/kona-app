@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.social.friendship.FriendshipCircleModel;
 import com.bryllyant.kona.app.api.model.social.friendship.FriendshipModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.FriendshipCircle;
 import com.bryllyant.kona.app.entity.KFriendshipStatus;
@@ -130,7 +130,7 @@ public class FriendshipModelService extends BaseModelService {
     
 
 
-    public final List<FriendshipModel> toFriendshipModelList(List<Friendship> friendships, String... includeKeys) {
+    public final List<FriendshipModel> toModelList(List<Friendship> friendships, String... includeKeys) {
         List<FriendshipModel> modelList = new ArrayList<>();
 
         for (Friendship friendship : friendships) {

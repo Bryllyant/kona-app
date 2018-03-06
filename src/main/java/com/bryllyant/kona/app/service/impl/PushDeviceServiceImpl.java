@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 
 @Service(PushDeviceService.SERVICE_PATH)
 public class PushDeviceServiceImpl
-        extends KAbstractPushDeviceService<
-        PushDevice,
-        PushDeviceExample,
+        extends KAbstractPushDeviceService<PushDevice, PushDeviceExample, PushDeviceMapper,
         User,
         Device,
         UserDevice,
@@ -48,7 +46,7 @@ public class PushDeviceServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PushDeviceMapper getDao() {
+    protected PushDeviceMapper getMapper() {
         return mapper;
     }
 

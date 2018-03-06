@@ -15,19 +15,19 @@ import org.springframework.stereotype.Service;
 
 @Service(ApiVersionService.SERVICE_PATH)
 public class ApiVersionServiceImpl 
-		extends KAbstractApiVersionService<ApiVersion,ApiVersionExample> 
+		extends KAbstractApiVersionService<ApiVersion, ApiVersionExample, ApiVersionMapper>
 		implements ApiVersionService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ApiVersionServiceImpl.class);
 
 	@Autowired
-	private ApiVersionMapper apiVersionDao;
+	private ApiVersionMapper apiVersionMapper;
 	
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected ApiVersionMapper getDao() {
-		return apiVersionDao;
+	protected ApiVersionMapper getMapper() {
+		return apiVersionMapper;
 	}
 
 

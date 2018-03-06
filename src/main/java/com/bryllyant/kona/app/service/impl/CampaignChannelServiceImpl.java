@@ -18,20 +18,20 @@ import java.util.Map;
 
 @Service(CampaignChannelService.SERVICE_PATH)
 public class CampaignChannelServiceImpl 
-		extends KAbstractCampaignChannelService<CampaignChannel,CampaignChannelExample> 
+		extends KAbstractCampaignChannelService<CampaignChannel, CampaignChannelExample, CampaignChannelMapper>
 		implements CampaignChannelService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CampaignChannelServiceImpl.class);
     
     @Autowired
-    private CampaignChannelMapper campaignChannelDao;
+    private CampaignChannelMapper campaignChannelMapper;
 
 
 
 
     @Override @SuppressWarnings("unchecked")
-    protected CampaignChannelMapper getDao() {
-        return campaignChannelDao;
+    protected CampaignChannelMapper getMapper() {
+        return campaignChannelMapper;
     }
     
 

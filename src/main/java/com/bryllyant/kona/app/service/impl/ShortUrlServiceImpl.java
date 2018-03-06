@@ -19,13 +19,13 @@ import java.util.Map;
 
 @Service(ShortUrlService.SERVICE_PATH)
 public class ShortUrlServiceImpl 
-		extends KAbstractShortUrlService<ShortUrl,ShortUrlExample> 
+		extends KAbstractShortUrlService<ShortUrl, ShortUrlExample, ShortUrlMapper>
 		implements ShortUrlService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ShortUrlServiceImpl.class);
 
 	@Autowired
-	private ShortUrlMapper shortUrlDao;
+	private ShortUrlMapper shortUrlMapper;
     
 	@Autowired
 	private KConfig config;
@@ -33,8 +33,8 @@ public class ShortUrlServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected ShortUrlMapper getDao() {
-		return shortUrlDao;
+	protected ShortUrlMapper getMapper() {
+		return shortUrlMapper;
 	}
     
 

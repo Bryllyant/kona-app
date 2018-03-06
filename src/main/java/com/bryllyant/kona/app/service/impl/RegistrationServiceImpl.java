@@ -22,11 +22,11 @@ import java.util.Map;
 
 @Service(RegistrationService.SERVICE_PATH)
 public class RegistrationServiceImpl 
-		extends KAbstractRegistrationService<Registration,RegistrationExample,User> implements RegistrationService {
+		extends KAbstractRegistrationService<Registration, RegistrationExample, RegistrationMapper,User> implements RegistrationService {
 	private static Logger logger = LoggerFactory.getLogger(RegistrationServiceImpl.class);
 
 	@Autowired
-	private RegistrationMapper registrationDao;
+	private RegistrationMapper registrationMapper;
 	
 
 	@Override
@@ -35,15 +35,15 @@ public class RegistrationServiceImpl
 	}
 
 	@Override @SuppressWarnings("unchecked")
-	protected RegistrationMapper getDao() {
-		return registrationDao;
+	protected RegistrationMapper getMapper() {
+		return registrationMapper;
 	}
 
 
     
     @Override 
     protected void updateCoords(Long registrationId) {
-        getDao().updateCoords(registrationId);
+        getMapper().updateCoords(registrationId);
     }
 
 
@@ -60,6 +60,6 @@ public class RegistrationServiceImpl
 			Date endDate,
 			List<Long> objectIdList
 	) {
-		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+		return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
 	}
 }

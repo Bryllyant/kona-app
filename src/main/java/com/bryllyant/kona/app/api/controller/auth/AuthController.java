@@ -17,15 +17,11 @@ import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.AuthModelService;
 import com.bryllyant.kona.app.api.service.DeviceModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KAuthCodeType;
-import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.KUser;
-import com.bryllyant.kona.app.entity.KUserRole;
 import com.bryllyant.kona.app.entity.KUserType;
-import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
@@ -67,6 +63,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.bryllyant.kona.app.entity.KAuthCode.Type.EMAIL_CONFIRMATION;
+import static com.bryllyant.kona.app.entity.KAuthCode.Type.MOBILE_CONFIRMATION;
 
 
 /**
@@ -253,8 +252,7 @@ public class AuthController extends BaseController {
 
         User user = userModelService.getUser(username);
 
-        authCodeService.requestAuthCode(
-                KAuthCodeType.PASSWORD_RESET.getId(), getAppId(req), user.getId(), true);
+        authCodeService.requestAuthCode(AuthCode.Type.PASSWORD_RESET, user.getId(), true);
 
         return ok(getResultObject("password_reset", true));
     }
@@ -565,13 +563,11 @@ public class AuthController extends BaseController {
 
         Map<String, Object> result = getResultObject();
 
-        KAuthCodeType type = KAuthCodeType.getInstance(authCode.getTypeId());
-
-        if (type == KAuthCodeType.EMAIL_CONFIRMATION) {
+        if (authCode.getType() == EMAIL_CONFIRMATION) {
             result.put("channel", "email");
         }
 
-        if (type == KAuthCodeType.MOBILE_CONFIRMATION) {
+        if (authCode.getType() == MOBILE_CONFIRMATION) {
             result.put("channel", "mobile");
         }
 
@@ -583,19 +579,17 @@ public class AuthController extends BaseController {
     private void requestAuthCodes(User user, Long appId, boolean resend) {
         Registration registration = registrationService.fetchByUserId(user.getId());
 
-        List<Long> typeIdList = new ArrayList<>();
+        List<AuthCode.Type> typeList = new ArrayList<>();
 
         if (user.getMobileNumber() != null && !registration.isMobileVerified()) {
-            typeIdList.add(KAuthCodeType.MOBILE_CONFIRMATION.getId());
+            typeList.add(AuthCode.Type.MOBILE_CONFIRMATION);
         }
 
         if (user.getEmail() != null && !registration.isEmailVerified()) {
-            typeIdList.add(KAuthCodeType.EMAIL_CONFIRMATION.getId());
+            typeList.add(AuthCode.Type.EMAIL_CONFIRMATION);
         }
 
-        Long[] typeIds = typeIdList.toArray(new Long[0]);
-
-        authCodeService.requestAuthCodes(typeIds, appId, user.getId(), resend);
+        authCodeService.requestAuthCodes(typeList, user.getId(), resend);
     }
 
     private List<Token> fetchTokenList(String clientId, User user) {
@@ -912,13 +906,13 @@ public class AuthController extends BaseController {
             user = userService.registerUser(user, password, null, client, false);
 
             if (device != null) {
-                String type = KDeviceType.getInstance(device.getTypeId()).getName().toLowerCase();
+                String typeName = "device";
 
-                if (type.equals("other")) {
-                    type = "device";
+                if (device.getType() != Device.Type.OTHER) {
+                    typeName = device.getType().name().toLowerCase();
                 }
 
-                String displayName = user.getUsername() + "-" + type;
+                String displayName = user.getUsername() + "-" + typeName;
 
                 userDeviceService.create(user, device, displayName);
             }
@@ -969,11 +963,11 @@ public class AuthController extends BaseController {
         // if updateUser, mergeEntity will auto send email and mobile verifications
 
         if (!updateCurrentUser && verify && !mobileVerified && user.getMobileNumber() != null) {
-            userModelService.sendMobileVerification(appId, user.getId());
+            userModelService.sendMobileVerification(user.getId());
         }
 
         if (!updateCurrentUser && verify && !emailVerified && user.getEmail() != null) {
-            userModelService.sendEmailVerification(appId, user.getId());
+            userModelService.sendEmailVerification(user.getId());
         }
 
 

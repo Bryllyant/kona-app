@@ -18,23 +18,20 @@ import com.bryllyant.kona.app.service.InvoiceItemService;
 import com.bryllyant.kona.app.service.InvoiceService;
 import com.bryllyant.kona.app.service.KAbstractInvoiceService;
 import com.bryllyant.kona.app.service.ProductService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service(InvoiceService.SERVICE_PATH)
 public class InvoiceServiceImpl 
-		extends KAbstractInvoiceService<Invoice,InvoiceExample,InvoiceItem,Cart,CartItem,Product,Account> 
+		extends KAbstractInvoiceService<Invoice, InvoiceExample, InvoiceMapper,InvoiceItem,Cart,CartItem,Product,Account>
 		implements InvoiceService {
 	
 	private static Logger logger = LoggerFactory.getLogger(InvoiceServiceImpl.class);
     
     @Autowired
-    private InvoiceMapper invoiceDao;
+    private InvoiceMapper invoiceMapper;
     
     @Autowired
     private CartService cartService;
@@ -54,8 +51,8 @@ public class InvoiceServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected InvoiceMapper getDao() {
-        return invoiceDao;
+    protected InvoiceMapper getMapper() {
+        return invoiceMapper;
     }
     
 

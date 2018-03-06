@@ -20,13 +20,13 @@ import java.util.Map;
 
 @Service(TokenService.SERVICE_PATH)
 public class TokenServiceImpl 
-		extends KAbstractTokenService<Token,TokenExample> 
+		extends KAbstractTokenService<Token, TokenExample, TokenMapper>
 		implements TokenService {
 	
 	private static Logger logger = LoggerFactory.getLogger(TokenServiceImpl.class);
 
 	@Autowired
-	private TokenMapper tokenDao;
+	private TokenMapper tokenMapper;
 	
 
 	
@@ -38,8 +38,8 @@ public class TokenServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected TokenMapper getDao() {
-		return tokenDao;
+	protected TokenMapper getMapper() {
+		return tokenMapper;
 	}
 
 
@@ -52,7 +52,7 @@ public class TokenServiceImpl
 
     @Override 
     protected void updateCoords(Long tokenId) {
-        getDao().updateCoords(tokenId);
+        getMapper().updateCoords(tokenId);
     }
 
 
@@ -66,6 +66,6 @@ public class TokenServiceImpl
 			Date endDate,
 			List<Long> objectIdList
 	) {
-		return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+		return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
 	}
 }

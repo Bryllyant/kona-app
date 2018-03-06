@@ -8,23 +8,20 @@ import com.bryllyant.kona.app.entity.AppConfig;
 import com.bryllyant.kona.app.entity.AppConfigExample;
 import com.bryllyant.kona.app.service.AppConfigService;
 import com.bryllyant.kona.app.service.KAbstractAppConfigService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service(AppConfigService.SERVICE_PATH)
 public class AppConfigServiceImpl
-        extends KAbstractAppConfigService<AppConfig, AppConfigExample>
+        extends KAbstractAppConfigService<AppConfig, AppConfigExample, AppConfigMapper>
         implements AppConfigService {
 
     private static Logger logger = LoggerFactory.getLogger(AppConfigServiceImpl.class);
 
     @Autowired
-    private AppConfigMapper appConfigDao;
+    private AppConfigMapper appConfigMapper;
 
     @Override
     protected AppConfig getNewObject() {
@@ -33,8 +30,8 @@ public class AppConfigServiceImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    protected AppConfigMapper getDao() {
-        return appConfigDao;
+    protected AppConfigMapper getMapper() {
+        return appConfigMapper;
     }
 
     @Override

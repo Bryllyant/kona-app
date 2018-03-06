@@ -18,19 +18,19 @@ import java.util.Map;
 
 @Service(RemoteServiceService.SERVICE_PATH)
 public class RemoteServiceServiceImpl 
-		extends KAbstractRemoteServiceService<RemoteService,RemoteServiceExample> 
+		extends KAbstractRemoteServiceService<RemoteService, RemoteServiceExample, RemoteServiceMapper>
 		implements RemoteServiceService {
 	
 	private static Logger logger = LoggerFactory.getLogger(RemoteServiceServiceImpl.class);
 
 	@Autowired
-	private RemoteServiceMapper remoteServiceDao;
+	private RemoteServiceMapper remoteServiceMapper;
     
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected RemoteServiceMapper getDao() {
-		return remoteServiceDao;
+	protected RemoteServiceMapper getMapper() {
+		return remoteServiceMapper;
 	}
     
 

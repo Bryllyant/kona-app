@@ -28,9 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service(PushService.SERVICE_PATH)
-public class PushServiceImpl extends KAbstractPushService<
-        Push,
-        PushExample,
+public class PushServiceImpl extends KAbstractPushService<Push, PushExample, PushMapper,
         App,
         User,
         Device,
@@ -66,7 +64,7 @@ public class PushServiceImpl extends KAbstractPushService<
     }
 
     @Override @SuppressWarnings("unchecked")
-    protected PushMapper getDao() {
+    protected PushMapper getMapper() {
         return mapper;
     }
 

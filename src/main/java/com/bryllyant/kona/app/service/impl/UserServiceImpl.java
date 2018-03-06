@@ -50,7 +50,7 @@ import java.util.Map;
 
 @Service(UserService.SERVICE_PATH)
 public class UserServiceImpl 
-		extends KAbstractUserService<User,UserExample,
+		extends KAbstractUserService<User, UserExample, UserMapper,
 									 UserAuth,
                                      AuthRole,
                                      UserRole,
@@ -67,7 +67,7 @@ public class UserServiceImpl
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
-	private UserMapper userDao;
+	private UserMapper userMapper;
 	
 	@Autowired
 	private KConfig config;
@@ -288,8 +288,8 @@ public class UserServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected UserMapper getDao() {
-		return userDao;
+	protected UserMapper getMapper() {
+		return userMapper;
 	}
 	
 

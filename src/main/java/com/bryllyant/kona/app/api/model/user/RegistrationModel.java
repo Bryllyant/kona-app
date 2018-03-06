@@ -7,10 +7,7 @@ import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
-import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
-import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
-import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -32,10 +29,6 @@ public class RegistrationModel extends KJsonModel implements KEntityModel {
     private DeviceModel device;
     @RestdocsNotExpanded
     private CampaignModel campaign;
-    @RestdocsNotExpanded
-    private PartnerModel partner;
-    @RestdocsNotExpanded
-    private PromoModel promo;
     @RestdocsNotExpanded
     private UserModel referredBy;
 
@@ -128,22 +121,6 @@ public class RegistrationModel extends KJsonModel implements KEntityModel {
 
     public void setCampaign(CampaignModel campaign) {
         this.set("campaign", campaign);
-    }
-
-    public PartnerModel getPartner() {
-        return partner;
-    }
-
-    public void setPartner(PartnerModel partner) {
-        this.set("partner", partner);
-    }
-
-    public PromoModel getPromo() {
-        return promo;
-    }
-
-    public void setPromo(PromoModel promo) {
-        this.set("promo", promo);
     }
 
     public UserModel getReferredBy() {

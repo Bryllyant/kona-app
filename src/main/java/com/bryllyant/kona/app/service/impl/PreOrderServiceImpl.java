@@ -25,13 +25,13 @@ import java.util.Map;
 
 @Service(PreOrderService.SERVICE_PATH)
 public class PreOrderServiceImpl 
-		extends KAbstractPreOrderService<PreOrder,PreOrderExample> 
+		extends KAbstractPreOrderService<PreOrder, PreOrderExample, PreOrderMapper>
 		implements PreOrderService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PreOrderServiceImpl.class);
     
     @Autowired
-    private PreOrderMapper preOrderDao;
+    private PreOrderMapper preOrderMapper;
     
     @Autowired
     private StripeService stripeService;
@@ -48,8 +48,8 @@ public class PreOrderServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PreOrderMapper getDao() {
-        return preOrderDao;
+    protected PreOrderMapper getMapper() {
+        return preOrderMapper;
     }
     
 

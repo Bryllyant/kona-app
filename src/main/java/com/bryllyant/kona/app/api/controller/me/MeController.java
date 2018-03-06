@@ -3,11 +3,10 @@ package com.bryllyant.kona.app.api.controller.me;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
-import com.bryllyant.kona.app.api.model.media.MediaModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
+import com.bryllyant.kona.app.api.model.media.MediaModel;
 import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.PositionRequest;
-import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.service.AppModelService;
 import com.bryllyant.kona.app.api.service.DeviceModelService;
 import com.bryllyant.kona.app.api.service.MediaModelService;
@@ -15,7 +14,6 @@ import com.bryllyant.kona.app.api.service.PositionModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.User;
@@ -165,11 +163,10 @@ public class MeController extends BaseController {
 
         device = deviceModelService.mergeEntity(device, deviceModel);
 
-        if (device.getTypeId() == null) {
+        if (device.getType() == null) {
             // FIXME: Assume phone if no device type
-            KDeviceType deviceType = KDeviceType.PHONE;
 
-            device.setTypeId(deviceType.getId());
+            device.setType(Device.Type.PHONE);
 
             if (device.getOsName() == null) {
                 if (deviceModel.getAdvertiserIdType() != null) {

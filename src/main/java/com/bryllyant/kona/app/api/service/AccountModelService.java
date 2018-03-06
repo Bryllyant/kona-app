@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
@@ -91,7 +91,7 @@ public class AccountModelService extends BaseModelService {
 
 
 
-    public List<AccountModel> toAccountModelList(List<Account> accounts, String... includeKeys) {
+    public List<AccountModel> toModelList(List<Account> accounts, String... includeKeys) {
         List<AccountModel> modelList = new ArrayList<>();
 
         for (Account account : accounts) {

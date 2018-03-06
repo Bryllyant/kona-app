@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.media.MediaModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.MediaService;
@@ -105,7 +105,7 @@ public class MediaModelService extends BaseModelService {
 
 
 
-    public final List<MediaModel> toMediaModelList(List<Media> mediaList, String... includeKeys) {
+    public final List<MediaModel> toModelList(List<Media> mediaList, String... includeKeys) {
         List<MediaModel> modelList = new ArrayList<MediaModel>();
 
         for (Media item : mediaList) {

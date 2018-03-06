@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Product;
 import com.bryllyant.kona.app.entity.Promo;
@@ -102,7 +102,7 @@ public class PromoModelService extends BaseModelService {
 
 
 
-    public List<PromoModel> toPromoModelList(List<Promo> promos, String... includeKeys) {
+    public List<PromoModel> toModelList(List<Promo> promos, String... includeKeys) {
         List<PromoModel> modelList = new ArrayList<>();
 
         for (Promo promo : promos) {

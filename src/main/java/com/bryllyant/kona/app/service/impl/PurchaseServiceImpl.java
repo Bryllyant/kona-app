@@ -32,13 +32,13 @@ import java.util.Map;
 
 @Service(PurchaseService.SERVICE_PATH)
 public class PurchaseServiceImpl 
-		extends KAbstractPurchaseService<Purchase,PurchaseExample,Product,Promo,User,Account> 
+		extends KAbstractPurchaseService<Purchase, PurchaseExample, PurchaseMapper,Product,Promo,User,Account>
 		implements PurchaseService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PurchaseServiceImpl.class);
     
     @Autowired
-    private PurchaseMapper purchaseDao;
+    private PurchaseMapper purchaseMapper;
     
 	@Autowired
 	private KConfig config;
@@ -65,8 +65,8 @@ public class PurchaseServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PurchaseMapper getDao() {
-        return purchaseDao;
+    protected PurchaseMapper getMapper() {
+        return purchaseMapper;
     }
     
 

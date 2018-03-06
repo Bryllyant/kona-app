@@ -1,11 +1,13 @@
 package com.bryllyant.kona.app.api.controller.admin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.bryllyant.kona.app.api.controller.BaseController;
+import com.bryllyant.kona.app.api.model.device.DeviceModel;
+import com.bryllyant.kona.app.api.service.DeviceModelService;
+import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.entity.Device;
+import com.bryllyant.kona.app.service.DeviceService;
+import com.bryllyant.kona.rest.exception.ValidationException;
+import com.bryllyant.kona.util.KJsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bryllyant.kona.app.entity.KDeviceType;
-import com.bryllyant.kona.rest.exception.ValidationException;
-import com.bryllyant.kona.util.KJsonUtil;
-
-import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.api.model.device.DeviceModel;
-import com.bryllyant.kona.app.api.service.DeviceModelService;
-import com.bryllyant.kona.app.api.util.ApiUtil;
-import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.service.DeviceService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -153,8 +149,8 @@ public class DeviceController extends BaseController {
         
         device = deviceModelService.mergeEntity(device, model);
 
-        if (device.getTypeId() == null) {
-            device.setTypeId(KDeviceType.OTHER.getId());
+        if (device.getType() == null) {
+            device.setType(Device.Type.OTHER);
         }
         
         if (device.getId() == null) {

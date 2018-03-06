@@ -20,8 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service(EmailGroupService.SERVICE_PATH)
 public class EmailGroupServiceImpl 
-		extends KAbstractEmailGroupService<EmailGroup,
-                                      EmailGroupExample,
+		extends KAbstractEmailGroupService<EmailGroup, EmailGroupExample, EmailGroupMapper,
                                       EmailAddress,
                                       EmailGroupAddress> 
 		implements EmailGroupService {
@@ -29,7 +28,7 @@ public class EmailGroupServiceImpl
 	private static Logger logger = LoggerFactory.getLogger(EmailGroupServiceImpl.class);
 
 	@Autowired
-	private EmailGroupMapper emailGroupDao;
+	private EmailGroupMapper emailGroupMapper;
     
 	@Autowired
 	private EmailAddressService emailAddressService;
@@ -41,8 +40,8 @@ public class EmailGroupServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected EmailGroupMapper getDao() {
-		return emailGroupDao;
+	protected EmailGroupMapper getMapper() {
+		return emailGroupMapper;
 	}
     
 

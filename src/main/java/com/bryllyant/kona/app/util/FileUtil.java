@@ -1,13 +1,11 @@
 /*
  * Copyright (C) 2017 Bryllyant, Inc  All Rights Reserved.
  */
-package com.bryllyant.kona.app.api.util;
+package com.bryllyant.kona.app.util;
 
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.File;
-import com.bryllyant.kona.app.entity.KFileAccess;
-import com.bryllyant.kona.app.entity.KFileType;
 import com.bryllyant.kona.app.entity.KMedia;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
@@ -82,10 +80,10 @@ public class FileUtil {
             MultipartHttpServletRequest req, 
             String paramName, 
             User user, 
-            KFileAccess access) throws IOException {
+            File.Access access) throws IOException {
 
         if (access == null) {
-            access = KFileAccess.PUBLIC;
+            access = File.Access.PUBLIC;
         }
 
         List<File> fileList = new ArrayList<File>();
@@ -138,17 +136,11 @@ public class FileUtil {
 
             String contentType = mpf.getContentType();
 
-            KFileType type = KFileType.getInstance(contentType);
-
-            Long typeId = null;
-            if (type != null) {
-                typeId = type.getId();
-            }
-
+            File.Type type = File.getTypeByContentType(contentType);
 
             File file = new File();
-            file.setTypeId(typeId);
-            file.setAccessId(access.getId());
+            file.setType(type);
+            file.setAccess(access);
 
             if (user != null) {
                 file.setUserId(user.getId());
@@ -167,15 +159,9 @@ public class FileUtil {
 
             logger.debug("upload: fileObject (without data): " + file);
             
-            if (type != null && type == KFileType.IMAGE && data != null) {
-                //java.io.File tmpFile = KFileUtil.writeTempFile(data);
-                //logger.debug("FileUtil.upload: original data: " + tmpFile.getAbsolutePath());
-
+            if (type != null && type == File.Type.IMAGE && data != null) {
                 KImage image = KImageUtil.getNormalizedImage(data);
                 data = image.getData();
-
-                //java.io.File tmpFile2 = KFileUtil.writeTempFile(data);
-                //logger.debug("FileUtil.upload: normalized/rotated data: " + tmpFile2.getAbsolutePath());
             }
 
             file.setData(data);

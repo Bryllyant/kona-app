@@ -55,7 +55,7 @@ public class MyNotificationController extends BaseController {
 		}
 
 		List<Notification> result = notificationService.fetchByUserIdSinceUid(userId, lastUid, limit);
-		return okList(notificationModelService.toNotificationModelList(result));
+		return okList(notificationModelService.toModelList(result));
 	}
 
 

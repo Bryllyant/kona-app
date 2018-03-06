@@ -1,6 +1,6 @@
 package com.bryllyant.kona.app.api.model.auth;
 
-import com.bryllyant.kona.app.entity.KTokenType;
+import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
@@ -10,34 +10,8 @@ public class TokenModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
     
 
-
-    public enum TokenType {
-        BASIC,
-        BEARER;
-        
-        public KTokenType toKTokenType() {
-            return KTokenType.getInstance(name());
-        }
-        
-        public static TokenType value(KTokenType type) {
-            if (type == null) return null;
-
-            TokenType[] values = TokenType.class.getEnumConstants();
-
-            for (TokenType value : values) {
-                if (value.name().equalsIgnoreCase(type.name().trim())) {
-                    return value;
-                }
-            }
-
-            throw new IllegalArgumentException("ERROR: TokenType: type not found: " + type);
-        }
-    }
-
-
-
     @NotNull
-    private TokenType tokenType;
+    private Token.Type tokenType;
 
     @NotNull
     private String accessToken;
@@ -53,7 +27,7 @@ public class TokenModel extends KJsonModel {
 
 
 
-    public TokenType getTokenType() {
+    public Token.Type getTokenType() {
         return tokenType;
     }
 
@@ -75,7 +49,7 @@ public class TokenModel extends KJsonModel {
 
 
 
-    public void setTokenType(TokenType tokenType) {
+    public void setTokenType(Token.Type tokenType) {
         set("tokenType", tokenType);
     }
 

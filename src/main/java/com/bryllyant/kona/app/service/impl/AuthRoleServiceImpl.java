@@ -18,19 +18,19 @@ import java.util.Map;
 
 @Service(AuthRoleService.SERVICE_PATH)
 public class AuthRoleServiceImpl
-		extends KAbstractAuthRoleService<AuthRole,AuthRoleExample>
+		extends KAbstractAuthRoleService<AuthRole, AuthRoleExample, AuthRoleMapper>
 		implements AuthRoleService {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthRoleServiceImpl.class);
 
 	@Autowired
-	private AuthRoleMapper authRoleDao;
+	private AuthRoleMapper authRoleMapper;
 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected AuthRoleMapper getDao() {
-		return authRoleDao;
+	protected AuthRoleMapper getMapper() {
+		return authRoleMapper;
 	}
 
 	 @Override

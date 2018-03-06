@@ -18,15 +18,14 @@ import java.util.Map;
 
 @Service(EmailContentService.SERVICE_PATH)
 public class EmailContentServiceImpl 
-		extends KAbstractEmailContentService<EmailContent,
-                                      EmailContentExample,
+		extends KAbstractEmailContentService<EmailContent, EmailContentExample, EmailContentMapper,
                                       EmailAttachment>
 		implements EmailContentService {
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailContentServiceImpl.class);
 
 	@Autowired
-	private EmailContentMapper emailContentDao;
+	private EmailContentMapper emailContentMapper;
 	
 	@Autowired
 	private EmailAttachmentService emailAttachmentService;
@@ -34,8 +33,8 @@ public class EmailContentServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected EmailContentMapper getDao() {
-		return emailContentDao;
+	protected EmailContentMapper getMapper() {
+		return emailContentMapper;
 	}
     
 

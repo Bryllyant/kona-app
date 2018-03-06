@@ -22,21 +22,21 @@ import java.util.Map;
 
 @Service(PartnerService.SERVICE_PATH)
 public class PartnerServiceImpl 
-		extends KAbstractPartnerService<Partner,PartnerExample,Place>
+		extends KAbstractPartnerService<Partner, PartnerExample, PartnerMapper,Place>
 		implements PartnerService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PartnerServiceImpl.class);
     
     @Autowired
-    private PartnerMapper partnerDao;
+    private PartnerMapper partnerMapper;
 
     @Autowired
     private PlaceService placeService;
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PartnerMapper getDao() {
-        return partnerDao;
+    protected PartnerMapper getMapper() {
+        return partnerMapper;
     }
 
     @Override @SuppressWarnings("unchecked")
@@ -51,13 +51,13 @@ public class PartnerServiceImpl
 
 //    @Override
 //    protected void updateCoords(Long partnerId) {
-//        getDao().updateCoords(partnerId);
+//        getMapper().updateCoords(partnerId);
 //    }
 //
 //
 //    @Override
 //    public List<Partner> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-//        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+//        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate);
 //    }
 
 }

@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.entity.User;
@@ -114,7 +114,7 @@ public class PlaceModelService extends BaseModelService {
 
 
 
-    public final List<PlaceModel> toPlaceModelList(List<Place> placeList, String... includeKeys) {
+    public final List<PlaceModel> toModelList(List<Place> placeList, String... includeKeys) {
         List<PlaceModel> modelList = new ArrayList<PlaceModel>();
 
         for (Place item : placeList) {

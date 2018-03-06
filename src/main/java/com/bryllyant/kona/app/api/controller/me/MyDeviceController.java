@@ -3,9 +3,8 @@ package com.bryllyant.kona.app.api.controller.me;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.device.UserDeviceModel;
 import com.bryllyant.kona.app.api.service.DeviceModelService;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserDevice;
 import com.bryllyant.kona.app.service.UserDeviceService;
@@ -164,8 +163,8 @@ public class MyDeviceController extends BaseController {
         
         Device device = deviceModelService.toEntity(model);
 
-        if (device.getTypeId() == null) {
-            device.setTypeId(KDeviceType.OTHER.getId());
+        if (device.getType() == null) {
+            device.setType(Device.Type.OTHER);
         }
 
         logger.debug("saveObject: device: " + device);

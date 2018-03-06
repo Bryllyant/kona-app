@@ -3,16 +3,13 @@ package com.bryllyant.kona.app.api.controller;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.api.util.ApiUtil;
-import com.bryllyant.kona.app.api.util.FileUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.FileUtil;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.ApiLog;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppCreds;
 import com.bryllyant.kona.app.entity.File;
-import com.bryllyant.kona.app.entity.KFileAccess;
-import com.bryllyant.kona.app.entity.KFileType;
-import com.bryllyant.kona.app.entity.KUserRole;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
@@ -23,6 +20,8 @@ import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KModel;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.media.model.KImage;
 import com.bryllyant.kona.media.util.KImageUtil;
@@ -34,8 +33,6 @@ import com.bryllyant.kona.rest.exception.ForbiddenException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.rest.exception.SystemException;
 import com.bryllyant.kona.rest.exception.ValidationException;
-import com.bryllyant.kona.data.model.KEntityModel;
-import com.bryllyant.kona.data.model.KModel;
 import com.bryllyant.kona.util.KJsonUtil;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.MapConfiguration;
@@ -56,6 +53,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.bryllyant.kona.app.entity.KFile.Type.IMAGE;
 
 public abstract class BaseController {
     private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
@@ -511,14 +510,11 @@ public abstract class BaseController {
 
             //List<File> fileList = fileUtil.upload(req, paramName, getUser().getId(), KFileAccess.PUBLIC, resizeImage);
 
-            List<File> fileList = fileUtil.upload(req, paramName, user, KFileAccess.PUBLIC);
+            List<File> fileList = fileUtil.upload(req, paramName, user, File.Access.PUBLIC);
 
             file = fileList.get(0);
 
-
-            KFileType type = KFileType.getInstance(file.getTypeId());
-
-            if (type == KFileType.IMAGE) {
+            if (file.getType() == IMAGE) {
                 KImage image = KImageUtil.toImage(file.getData());
 
                 Integer width = image.getWidth();

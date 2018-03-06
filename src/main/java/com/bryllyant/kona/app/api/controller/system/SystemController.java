@@ -3,8 +3,8 @@ package com.bryllyant.kona.app.api.controller.system;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.AppLegal;
-import com.bryllyant.kona.app.service.AppLegalService;
+import com.bryllyant.kona.app.entity.Policy;
+import com.bryllyant.kona.app.service.PolicyService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -34,7 +34,7 @@ public class SystemController extends BaseController {
 
 	
 	@Autowired
-	private AppLegalService appLegalService;
+	private PolicyService policyService;
 
 	@Autowired
 	private ApiAuthService apiAuthService;
@@ -76,7 +76,7 @@ public class SystemController extends BaseController {
 	public ResponseEntity<Map<String,Object>> getTerms(HttpServletRequest req) {
 	    logApiRequest(req, "/system/legal/terms");
 
-	    AppLegal terms = appLegalService.fetchActive(system.getSystemApp().getId(), "terms");
+	    Policy terms = policyService.fetchActive(Policy.Type.TERMS);
 
 	    if (terms == null) {
 	        throw new NotFoundException("Terms not found");
@@ -93,7 +93,7 @@ public class SystemController extends BaseController {
 	public ResponseEntity<Map<String,Object>> getPrivacy(HttpServletRequest req) {
 	    logApiRequest(req, "/system/legal/privacy");
 
-	    AppLegal privacy = appLegalService.fetchActive(system.getSystemApp().getId(), "privacy");
+	    Policy privacy = policyService.fetchActive(Policy.Type.PRIVACY);
 
 	    if (privacy == null) {
 	        throw new NotFoundException("Privacy not found");
@@ -104,7 +104,7 @@ public class SystemController extends BaseController {
 
 	   
 
-    protected Map<String,Object> toMap(AppLegal appLegal) {
+    protected Map<String,Object> toMap(Policy appLegal) {
         if (appLegal == null) return null;
 
         Map<String,Object> result = new HashMap<String,Object>();

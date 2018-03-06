@@ -19,13 +19,13 @@ import java.util.Map;
 
 @Service(FriendshipService.SERVICE_PATH)
 public class FriendshipServiceImpl 
-		extends KAbstractFriendshipService<Friendship,FriendshipExample,FriendshipEvent> 
+		extends KAbstractFriendshipService<Friendship, FriendshipExample, FriendshipMapper,FriendshipEvent>
 		implements FriendshipService {
 	
 	private static Logger logger = LoggerFactory.getLogger(FriendshipServiceImpl.class);
 
 	@Autowired
-	private FriendshipMapper friendshipDao;
+	private FriendshipMapper friendshipMapper;
 	
 	@Autowired
 	FriendshipEventService friendshipEventService;
@@ -36,8 +36,8 @@ public class FriendshipServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected FriendshipMapper getDao() {
-		return friendshipDao;
+	protected FriendshipMapper getMapper() {
+		return friendshipMapper;
 	}
 	
 

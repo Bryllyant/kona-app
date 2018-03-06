@@ -20,13 +20,13 @@ import java.util.Map;
 
 @Service(AppCredsService.SERVICE_PATH)
 public class AppCredsServiceImpl 
-		extends KAbstractAppCredsService<AppCreds,AppCredsExample,Token> 
+		extends KAbstractAppCredsService<AppCreds, AppCredsExample, AppCredsMapper,Token>
 		implements AppCredsService {
 	
 	private static Logger logger = LoggerFactory.getLogger(AppCredsServiceImpl.class);
 
 	@Autowired
-	private AppCredsMapper appCredsDao;
+	private AppCredsMapper appCredsMapper;
     
 	@Autowired
     private TokenService tokenService;
@@ -34,8 +34,8 @@ public class AppCredsServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected AppCredsMapper getDao() {
-		return appCredsDao;
+	protected AppCredsMapper getMapper() {
+		return appCredsMapper;
 	}
     
 	@Override @SuppressWarnings("unchecked")

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service(LandingPageTemplateParamService.SERVICE_PATH)
 public class LandingPageTemplateParamServiceImpl
-		extends KAbstractLandingPageTemplateParamService<LandingPageTemplateParam,LandingPageTemplateParamExample>
+		extends KAbstractLandingPageTemplateParamService<LandingPageTemplateParam, LandingPageTemplateParamExample, LandingPageTemplateParamMapper>
 		implements LandingPageTemplateParamService {
 	
 	private static Logger logger = LoggerFactory.getLogger(LandingPageTemplateParamServiceImpl.class);
@@ -25,7 +25,7 @@ public class LandingPageTemplateParamServiceImpl
 
 	
 	@Override @SuppressWarnings("unchecked")
-	protected LandingPageTemplateParamMapper getDao() {
+	protected LandingPageTemplateParamMapper getMapper() {
 		return mapper;
 	}
 

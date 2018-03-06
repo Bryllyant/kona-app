@@ -2,9 +2,9 @@ package com.bryllyant.kona.app.api.model.app;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.entity.KAppType;
-import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -18,7 +18,7 @@ public class AppModel extends KJsonModel implements KEntityModel {
     private String uid;
 
     @NotNull
-    private KAppType type;
+    private App.Type type;
 
     @NotNull
     @RestdocsNotExpanded
@@ -53,9 +53,6 @@ public class AppModel extends KJsonModel implements KEntityModel {
         return model;
     }
 
-
-
-
     @Override
     public String getUid() {
         return uid;
@@ -66,11 +63,11 @@ public class AppModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public KAppType getType() {
+    public App.Type getType() {
         return type;
     }
 
-    public void setType(KAppType type) {
+    public void setType(App.Type type) {
         this.set("type", type);
     }
 

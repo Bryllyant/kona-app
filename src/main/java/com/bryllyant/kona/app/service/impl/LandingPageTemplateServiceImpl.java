@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service(LandingPageTemplateService.SERVICE_PATH)
 public class LandingPageTemplateServiceImpl
-		extends KAbstractLandingPageTemplateService<LandingPageTemplate,LandingPageTemplateExample,User,File>
+		extends KAbstractLandingPageTemplateService<LandingPageTemplate, LandingPageTemplateExample, LandingPageTemplateMapper,User,File>
 		implements LandingPageTemplateService {
 	
 	private static Logger logger = LoggerFactory.getLogger(LandingPageTemplateServiceImpl.class);
@@ -54,7 +54,7 @@ public class LandingPageTemplateServiceImpl
     }
 
     @Override
-	protected LandingPageTemplateMapper getDao() {
+	protected LandingPageTemplateMapper getMapper() {
 		return mapper;
 	}
 	

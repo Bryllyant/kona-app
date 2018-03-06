@@ -29,13 +29,13 @@ import java.util.Map;
 
 @Service(CartItemService.SERVICE_PATH)
 public class CartItemServiceImpl 
-		extends KAbstractCartItemService<CartItem,CartItemExample,Cart,User,Account,Promo,Product,Purchase> 
+		extends KAbstractCartItemService<CartItem, CartItemExample, CartItemMapper,Cart,User,Account,Promo,Product,Purchase>
 		implements CartItemService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CartItemServiceImpl.class);
     
     @Autowired
-    private CartItemMapper cartItemDao;
+    private CartItemMapper cartItemMapper;
     
     @Autowired
     PurchaseService purchaseService;
@@ -55,8 +55,8 @@ public class CartItemServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected CartItemMapper getDao() {
-        return cartItemDao;
+    protected CartItemMapper getMapper() {
+        return cartItemMapper;
     }
     
 

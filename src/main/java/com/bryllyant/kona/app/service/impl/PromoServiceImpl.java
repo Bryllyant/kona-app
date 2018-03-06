@@ -22,13 +22,13 @@ import java.util.Map;
 
 @Service(PromoService.SERVICE_PATH)
 public class PromoServiceImpl 
-		extends KAbstractPromoService<Promo,PromoExample,Account,Product,Purchase> 
+		extends KAbstractPromoService<Promo, PromoExample, PromoMapper,Account,Product,Purchase>
 		implements PromoService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PromoServiceImpl.class);
     
     @Autowired
-    private PromoMapper promoDao;
+    private PromoMapper promoMapper;
     
     @Autowired
     PurchaseService purchaseService;
@@ -37,8 +37,8 @@ public class PromoServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PromoMapper getDao() {
-        return promoDao;
+    protected PromoMapper getMapper() {
+        return promoMapper;
     }
     
 

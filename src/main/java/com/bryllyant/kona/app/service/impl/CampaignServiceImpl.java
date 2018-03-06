@@ -18,20 +18,20 @@ import java.util.Map;
 
 @Service(CampaignService.SERVICE_PATH)
 public class CampaignServiceImpl 
-		extends KAbstractCampaignService<Campaign,CampaignExample> 
+		extends KAbstractCampaignService<Campaign, CampaignExample, CampaignMapper>
 		implements CampaignService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CampaignServiceImpl.class);
     
     @Autowired
-    private CampaignMapper campaignDao;
+    private CampaignMapper campaignMapper;
 
 
 
 
     @Override @SuppressWarnings("unchecked")
-    protected CampaignMapper getDao() {
-        return campaignDao;
+    protected CampaignMapper getMapper() {
+        return campaignMapper;
     }
     
 

@@ -25,13 +25,13 @@ import java.util.Map;
 
 @Service(AuthRolePrivService.SERVICE_PATH)
 public class AuthRolePrivServiceImpl
-		extends KAbstractAuthRolePrivService<AuthRolePriv,AuthRolePrivExample,AuthRole,AuthPriv>
+		extends KAbstractAuthRolePrivService<AuthRolePriv, AuthRolePrivExample, AuthRolePrivMapper,AuthRole,AuthPriv>
 		implements AuthRolePrivService {
 
 	private static Logger logger = LoggerFactory.getLogger(AuthRolePrivServiceImpl.class);
 
 	@Autowired
-	private AuthRolePrivMapper authRolePrivDao;
+	private AuthRolePrivMapper authRolePrivMapper;
 
     @Autowired
     private AuthRoleService authRoleService;
@@ -42,8 +42,8 @@ public class AuthRolePrivServiceImpl
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected AuthRolePrivMapper getDao() {
-		return authRolePrivDao;
+	protected AuthRolePrivMapper getMapper() {
+		return authRolePrivMapper;
 	}
 
 	@Override

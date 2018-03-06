@@ -20,13 +20,13 @@ import java.util.Map;
 
 @Service(RedirectService.SERVICE_PATH)
 public class RedirectServiceImpl 
-		extends KAbstractRedirectService<Redirect,RedirectExample,ShortUrl> 
+		extends KAbstractRedirectService<Redirect, RedirectExample, RedirectMapper,ShortUrl>
 		implements RedirectService {
 	
 	private static Logger logger = LoggerFactory.getLogger(RedirectServiceImpl.class);
 
 	@Autowired
-	private RedirectMapper redirectDao;
+	private RedirectMapper redirectMapper;
     
 	@Autowired
 	ShortUrlService shortUrlService;
@@ -34,8 +34,8 @@ public class RedirectServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected RedirectMapper getDao() {
-		return redirectDao;
+	protected RedirectMapper getMapper() {
+		return redirectMapper;
 	}
     
 

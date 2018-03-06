@@ -26,13 +26,13 @@ import java.util.Map;
 
 @Service(CartService.SERVICE_PATH)
 public class CartServiceImpl 
-		extends KAbstractCartService<Cart,CartExample,CartItem,User,Token> 
+		extends KAbstractCartService<Cart, CartExample, CartMapper,CartItem,User,Token>
 		implements CartService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
     
     @Autowired
-    private CartMapper cartDao;
+    private CartMapper cartMapper;
     
     @Autowired
     CartItemService cartItemService;
@@ -46,8 +46,8 @@ public class CartServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected CartMapper getDao() {
-        return cartDao;
+    protected CartMapper getMapper() {
+        return cartMapper;
     }
     
 
@@ -87,7 +87,7 @@ public class CartServiceImpl
 
     @Override 
     protected void updateCoords(Long cartId) {
-        getDao().updateCoords(cartId);
+        getMapper().updateCoords(cartId);
     }
 
 
@@ -100,6 +100,6 @@ public class CartServiceImpl
             Date endDate,
             List<Long> objectIdList
     ) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
 }

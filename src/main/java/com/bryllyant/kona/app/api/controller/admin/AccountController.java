@@ -5,7 +5,7 @@ import com.bryllyant.kona.app.api.model.ModelResultSet;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.service.AccountModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
@@ -94,7 +94,7 @@ public class AccountController extends BaseController {
 
         KResultList result = accountService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
 
-        ModelResultSet resultSet = ModelResultSet.from(result, accountModelService.toAccountModelList(result));
+        ModelResultSet resultSet = ModelResultSet.from(result, accountModelService.toModelList(result));
 
         return okList(resultSet);
     }

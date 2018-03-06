@@ -20,13 +20,13 @@ import java.util.Map;
 
 @Service(PaymentAccountService.SERVICE_PATH)
 public class PaymentAccountServiceImpl 
-		extends KAbstractPaymentAccountService<PaymentAccount,PaymentAccountExample,User> 
+		extends KAbstractPaymentAccountService<PaymentAccount, PaymentAccountExample, PaymentAccountMapper,User>
 		implements PaymentAccountService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PaymentAccountServiceImpl.class);
     
     @Autowired
-    private PaymentAccountMapper paymentAccountDao;
+    private PaymentAccountMapper paymentAccountMapper;
     
     @Autowired
     private UserService userService;
@@ -41,8 +41,8 @@ public class PaymentAccountServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PaymentAccountMapper getDao() {
-        return paymentAccountDao;
+    protected PaymentAccountMapper getMapper() {
+        return paymentAccountMapper;
     }
     
 

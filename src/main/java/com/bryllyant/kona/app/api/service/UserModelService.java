@@ -4,10 +4,9 @@ import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
-import com.bryllyant.kona.app.entity.KAuthCodeType;
-import com.bryllyant.kona.app.entity.KUserRole;
+import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserModelService extends BaseModelService {
@@ -269,15 +267,13 @@ public class UserModelService extends BaseModelService {
     
     
 
-    public void sendEmailVerification(Long appId, Long userId) {
-        authCodeService.requestAuthCode(
-                KAuthCodeType.EMAIL_CONFIRMATION.getId(), appId, userId, true);
+    public void sendEmailVerification(Long userId) {
+        authCodeService.requestAuthCode(AuthCode.Type.EMAIL_CONFIRMATION, userId, true);
     }
     
 
-    public void sendMobileVerification(Long appId, Long userId) {
-        authCodeService.requestAuthCode(
-                KAuthCodeType.MOBILE_CONFIRMATION.getId(), appId, userId, true);
+    public void sendMobileVerification(Long userId) {
+        authCodeService.requestAuthCode(AuthCode.Type.MOBILE_CONFIRMATION, userId, true);
     }
     
 
@@ -492,19 +488,16 @@ public class UserModelService extends BaseModelService {
         }
         
         if (updateUser && user.getId() != null) {
-            Long appId = null;
-
             if (verifyEmail || verifyMobile) {
                 user = userService.update(user);
-                appId = apiAuthService.getAppId();
             }
             
             if (verifyMobile) {
-                sendMobileVerification(appId, user.getId());
+                sendMobileVerification(user.getId());
             }
             
             if (verifyEmail) {
-                sendEmailVerification(appId, user.getId());
+                sendEmailVerification(user.getId());
             }
         } 
 

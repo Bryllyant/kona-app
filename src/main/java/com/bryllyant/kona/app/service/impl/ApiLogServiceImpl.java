@@ -18,19 +18,19 @@ import java.util.List;
 
 @Service(ApiLogService.SERVICE_PATH)
 public class ApiLogServiceImpl 
-		extends KAbstractApiLogService<ApiLog,ApiLogExample> 
+		extends KAbstractApiLogService<ApiLog, ApiLogExample, ApiLogMapper>
 		implements ApiLogService {
 	
 	private static Logger logger = LoggerFactory.getLogger(ApiLogServiceImpl.class);
 
 
 	@Autowired
-	private ApiLogMapper apiVersionDao;
+	private ApiLogMapper apiVersionMapper;
 	
 
 	@Override @SuppressWarnings("unchecked")
-	protected ApiLogMapper getDao() {
-		return apiVersionDao;
+	protected ApiLogMapper getMapper() {
+		return apiVersionMapper;
 	}
 
 
@@ -62,7 +62,7 @@ public class ApiLogServiceImpl
 
     @Override
     protected void updateCoords(Long apiLogId) {
-        getDao().updateCoords(apiLogId);
+        getMapper().updateCoords(apiLogId);
     }
 
     @Override 
@@ -74,7 +74,7 @@ public class ApiLogServiceImpl
             Date endDate,
             List<Long> objectIdList
     ) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
 
 }

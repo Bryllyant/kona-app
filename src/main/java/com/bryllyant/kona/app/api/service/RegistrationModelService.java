@@ -4,20 +4,16 @@ import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
-import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
-import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
 import com.bryllyant.kona.app.api.model.user.RegistrationModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.Partner;
-import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.RegistrationService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +51,8 @@ public class RegistrationModelService extends BaseModelService {
     @Autowired
     private PromoModelService promoModelService;
 
-
-
     @Autowired
     private ApiUtil util;
-
 
     public Registration getRegistration(String uid) {
         Registration registration = registrationService.fetchByUid(uid);
@@ -142,15 +135,6 @@ public class RegistrationModelService extends BaseModelService {
             model.setCampaign(CampaignModel.create(campaign.getUid()));
         }
 
-        if (registration.getPartnerId() != null) {
-            Partner partner = partnerModelService.getPartner(registration.getPartnerId());
-            model.setPartner(PartnerModel.create(partner.getUid()));
-        }
-
-        if (registration.getPromoId() != null) {
-            Promo promo = promoModelService.getPromo(registration.getPromoId());
-            model.setPromo(PromoModel.create(promo.getUid()));
-        }
 
         if (registration.getReferredById() != null) {
             User referredBy = userModelService.getUser(registration.getReferredById());
@@ -167,7 +151,7 @@ public class RegistrationModelService extends BaseModelService {
 
 
 
-    public List<RegistrationModel> toRegistrationModelList(List<Registration> registrations, String... includeKeys) {
+    public List<RegistrationModel> toModelList(List<Registration> registrations, String... includeKeys) {
         List<RegistrationModel> modelList = new ArrayList<>();
 
         for (Registration registration : registrations) {
@@ -225,16 +209,6 @@ public class RegistrationModelService extends BaseModelService {
                 case "campaign":
                     Campaign campaign = campaignModelService.getCampaign(model.getCampaign());
                     registration.setCampaignId(campaign.getId());
-                    break;
-
-                case "partner":
-                    Partner partner = partnerModelService.getPartner(model.getPartner());
-                    registration.setPartnerId(partner.getId());
-                    break;
-
-                case "promo":
-                    Promo promo = promoModelService.getPromo(model.getPromo());
-                    registration.setPromoId(promo.getId());
                     break;
             }
 

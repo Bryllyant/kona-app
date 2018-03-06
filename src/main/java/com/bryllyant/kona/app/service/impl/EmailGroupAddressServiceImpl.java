@@ -16,20 +16,19 @@ import org.springframework.stereotype.Service;
 
 @Service(EmailGroupAddressService.SERVICE_PATH)
 public class EmailGroupAddressServiceImpl 
-		extends KAbstractEmailGroupAddressService<EmailGroupAddress,
-                                      EmailGroupAddressExample>
+		extends KAbstractEmailGroupAddressService<EmailGroupAddress, EmailGroupAddressExample, EmailGroupAddressMapper>
 		implements EmailGroupAddressService {
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailGroupAddressServiceImpl.class);
 
 	@Autowired
-	private EmailGroupAddressMapper emailGroupAddressDao;
+	private EmailGroupAddressMapper emailGroupAddressMapper;
     
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected EmailGroupAddressMapper getDao() {
-		return emailGroupAddressDao;
+	protected EmailGroupAddressMapper getMapper() {
+		return emailGroupAddressMapper;
 	}
     
 

@@ -38,7 +38,7 @@ import java.util.Map;
  * Sales Controller.
  */
 @RestController
-@RequestMapping("/api/app/sales/leads")
+@RequestMapping("/api/sales/leads")
 public class LeadsController extends SalesController {
     private static Logger logger = LoggerFactory.getLogger(LeadsController.class);
 
@@ -85,7 +85,7 @@ public class LeadsController extends SalesController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> lead(HttpServletRequest req, @RequestBody Map<String, Object> map) {
 
-        logApiRequest(req, "POST /app/sales/leads");
+        logApiRequest(req, "POST /sales/leads");
 
         String appSlug = (String) map.get("app_slug");
         String channel = (String) map.get("channel");

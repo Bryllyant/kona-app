@@ -6,7 +6,6 @@ package com.bryllyant.kona.app.api.security.client;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppCreds;
-import com.bryllyant.kona.app.entity.KAppType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -24,6 +23,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.bryllyant.kona.app.entity.KApp.Type.INTERNAL;
+import static com.bryllyant.kona.app.entity.KApp.Type.PARTNER;
 
 
 /**
@@ -103,13 +105,12 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
             refresh-token-validity="${oauth.token.refresh.expiresInSeconds}"
             scope="read, write"
 		 */
-		List<String> grants = new ArrayList<String>();
+		List<String> grants = new ArrayList<>();
 		grants.add("authorization_code");
 		grants.add("refresh_token");
         
         // NOTE: Only INTERNAL & PARTNER clients are allowed to log a user in.
-        KAppType type = KAppType.getInstance(app.getTypeId());
-		if (type == KAppType.INTERNAL || type == KAppType.PARTNER) {
+		if (app.getType() == INTERNAL || app.getType() == PARTNER) {
 			grants.add("password");
 		}
 		
@@ -117,7 +118,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 
 		Set<String> redirectUris = null;
         if (creds.getRedirectUri() != null) {
-        	redirectUris = new HashSet<String>();
+        	redirectUris = new HashSet<>();
         	redirectUris.add(creds.getRedirectUri());
         }
         
@@ -135,29 +136,27 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 
 		return details;
 	}
-	
 
 
-	public List<GrantedAuthority> getAuthorities(App app) {
-		List<GrantedAuthority> authorities = 
-				new ArrayList<GrantedAuthority>();
 
-		authorities.add(new SimpleGrantedAuthority("ROLE_APP"));
+    public List<GrantedAuthority> getAuthorities(App app) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
-		KAppType type = KAppType.getInstance(app.getTypeId());
-		switch (type) {
-		case INTERNAL:
-			authorities.add(new SimpleGrantedAuthority("ROLE_APP_INTERNAL"));
-			break;
-		case PARTNER:
-			authorities.add(new SimpleGrantedAuthority("ROLE_APP_PARTNER"));
-			break;
-		case PUBLIC:
-			authorities.add(new SimpleGrantedAuthority("ROLE_APP_PUBLIC"));
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid app type: " + type);
-		}
-		return authorities;
-	}
+        authorities.add(new SimpleGrantedAuthority("ROLE_APP"));
+
+        switch (app.getType()) {
+            case INTERNAL:
+                authorities.add(new SimpleGrantedAuthority("ROLE_APP_INTERNAL"));
+                break;
+            case PARTNER:
+                authorities.add(new SimpleGrantedAuthority("ROLE_APP_PARTNER"));
+                break;
+            case PUBLIC:
+                authorities.add(new SimpleGrantedAuthority("ROLE_APP_PUBLIC"));
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid app type: " + app.getType());
+        }
+        return authorities;
+    }
 }

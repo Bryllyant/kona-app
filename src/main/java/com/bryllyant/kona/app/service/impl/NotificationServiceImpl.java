@@ -13,7 +13,6 @@ import com.bryllyant.kona.app.service.NotificationService;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.util.KInflector;
 import com.bryllyant.kona.util.KJsonUtil;
 import org.apache.commons.configuration.Configuration;
@@ -27,7 +26,7 @@ import java.util.Map;
 
 @Service(NotificationService.SERVICE_PATH)
 public class NotificationServiceImpl 
-		extends KAbstractNotificationService<Notification,NotificationExample,NotificationDelivery,User>
+		extends KAbstractNotificationService<Notification, NotificationExample, NotificationMapper,NotificationDelivery,User>
 		implements NotificationService {
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
@@ -38,7 +37,7 @@ public class NotificationServiceImpl
 	private KConfig config;
 	
 	@Autowired
-	private NotificationMapper notificationDao;
+	private NotificationMapper notificationMapper;
 	
 	@Autowired
 	private NotificationDeliveryService notificationDeliveryService;
@@ -57,8 +56,8 @@ public class NotificationServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected NotificationMapper getDao() {
-		return notificationDao;
+	protected NotificationMapper getMapper() {
+		return notificationMapper;
 	}
 
 

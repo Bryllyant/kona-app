@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service(PushProviderService.SERVICE_PATH)
 public class PushProviderServiceImpl
-		extends KAbstractPushProviderService<PushProvider,PushProviderExample,App>
+		extends KAbstractPushProviderService<PushProvider, PushProviderExample, PushProviderMapper,App>
 		implements PushProviderService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PushProviderServiceImpl.class);
@@ -43,7 +43,7 @@ public class PushProviderServiceImpl
     }
 
 	@Override @SuppressWarnings("unchecked")
-	protected PushProviderMapper getDao() {
+	protected PushProviderMapper getMapper() {
 		return mapper;
 	}
 	

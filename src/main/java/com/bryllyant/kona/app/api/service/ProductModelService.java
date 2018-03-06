@@ -2,13 +2,9 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
-import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
-import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Product;
-import com.bryllyant.kona.app.entity.Partner;
-import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.service.ProductService;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -95,7 +91,7 @@ public class ProductModelService extends BaseModelService {
 
 
 
-    public List<ProductModel> toProductModelList(List<Product> products, String... includeKeys) {
+    public List<ProductModel> toModelList(List<Product> products, String... includeKeys) {
         List<ProductModel> modelList = new ArrayList<>();
 
         for (Product product : products) {

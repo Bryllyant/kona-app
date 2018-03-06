@@ -99,7 +99,7 @@ public class MyPushController extends BaseController {
 
 
         Device device = new Device();
-        device.setAdvertiserIdType(advertiserId);
+        device.setAdvertiserId(advertiserId);
         device.setDeviceUuid(deviceUuid);
         device.setOsName(pushPlatform);
         device.setLimitAdTrackingEnabled(limitAdTrackingEnabled);

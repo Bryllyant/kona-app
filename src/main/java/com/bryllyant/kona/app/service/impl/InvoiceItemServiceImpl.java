@@ -17,19 +17,19 @@ import org.springframework.stereotype.Service;
 
 @Service(InvoiceItemService.SERVICE_PATH)
 public class InvoiceItemServiceImpl 
-		extends KAbstractInvoiceItemService<InvoiceItem,InvoiceItemExample,Invoice,CartItem> 
+		extends KAbstractInvoiceItemService<InvoiceItem, InvoiceItemExample, InvoiceItemMapper,Invoice,CartItem>
 		implements InvoiceItemService {
 	
 	private static Logger logger = LoggerFactory.getLogger(InvoiceItemServiceImpl.class);
     
     @Autowired
-    private InvoiceItemMapper invoiceItemDao;
+    private InvoiceItemMapper invoiceItemMapper;
     
 
 
     @Override @SuppressWarnings("unchecked")
-    protected InvoiceItemMapper getDao() {
-        return invoiceItemDao;
+    protected InvoiceItemMapper getMapper() {
+        return invoiceItemMapper;
     }
     
 

@@ -18,19 +18,19 @@ import java.util.Map;
 
 @Service(EntityNameRuleService.SERVICE_PATH)
 public class EntityNameRuleServiceImpl 
-		extends KAbstractEntityNameRuleService<EntityNameRule,EntityNameRuleExample> 
+		extends KAbstractEntityNameRuleService<EntityNameRule, EntityNameRuleExample, EntityNameRuleMapper>
 		implements EntityNameRuleService {
 	
 	private static Logger logger = LoggerFactory.getLogger(EntityNameRuleServiceImpl.class);
 
 	@Autowired
-	private EntityNameRuleMapper entityNameRuleDao;
+	private EntityNameRuleMapper entityNameRuleMapper;
 	
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected EntityNameRuleMapper getDao() {
-		return entityNameRuleDao;
+	protected EntityNameRuleMapper getMapper() {
+		return entityNameRuleMapper;
 	}
 
 

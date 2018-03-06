@@ -25,9 +25,7 @@ import java.util.Map;
 
 @Service(PositionService.SERVICE_PATH)
 public class PositionServiceImpl 
-		extends KAbstractPositionService<
-		    Position,
-		    PositionExample,
+		extends KAbstractPositionService<Position, PositionExample, PositionMapper,
 		    User,
 		    Device,
 		    UserDevice> 
@@ -38,7 +36,7 @@ public class PositionServiceImpl
 
 
     @Autowired
-    private PositionMapper positionDao;
+    private PositionMapper positionMapper;
 
     @Autowired
     private UserService userService;
@@ -49,8 +47,8 @@ public class PositionServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PositionMapper getDao() {
-        return positionDao;
+    protected PositionMapper getMapper() {
+        return positionMapper;
     }
 
 
@@ -76,7 +74,7 @@ public class PositionServiceImpl
 
     @Override 
     protected void updateCoords(Long positionId) {
-        getDao().updateCoords(positionId);
+        getMapper().updateCoords(positionId);
     }
 
 
@@ -90,6 +88,6 @@ public class PositionServiceImpl
             Date endDate,
             List<Long> objectIdList
     ) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
 }

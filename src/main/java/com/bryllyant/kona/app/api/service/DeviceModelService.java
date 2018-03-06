@@ -3,18 +3,14 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.device.UserDeviceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KBaseDevice;
 import com.bryllyant.kona.app.entity.KDevice;
-import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserDevice;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.UserDeviceService;
-import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
-import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,20 +106,8 @@ public class DeviceModelService extends BaseModelService {
             device.setEnabled(_enabled);
         }
 
-        if (device.getTypeId() == null) {
-            device.setTypeId(KDeviceType.OTHER.getId());
-        }
-
-        if (device.getAdvertiserId() != null && device.getAdvertiserIdType() == null && device.getOsName() != null) {
-            String os = device.getOsName().toLowerCase();
-            switch (os) {
-                case "ios":
-                    device.setAdvertiserIdType(DeviceModel.AdvertiserIdType.IDFA.name());
-                    break;
-                case "android":
-                    device.setAdvertiserIdType(DeviceModel.AdvertiserIdType.AAID.name());
-                    break;
-            }
+        if (device.getType() == null) {
+            device.setType(Device.Type.OTHER);
         }
 
         device = deviceService.save(device);
@@ -231,11 +215,7 @@ public class DeviceModelService extends BaseModelService {
     private <T extends KDevice> void setModel(DeviceModel model, T device) {
         model.fromBean(device);
 
-        KDeviceType type = KDeviceType.getInstance(device.getTypeId());
-
-        model.setType(type);
-
-        model.setAdvertiserIdType(DeviceModel.AdvertiserIdType.from(device.getAdvertiserIdType()));
+        model.setAdvertiserIdType(DeviceModel.AdvertiserIdType.from((Device)device));
 
         if (device.getParentId() != null) {
             Device parent = getDevice(device.getParentId());
@@ -297,51 +277,6 @@ public class DeviceModelService extends BaseModelService {
             logger.debug("mergeEntity: processing initialized key: " + key);
 
             switch (key) {
-                case "advertiserIdType":
-                    String typeName = null;
-
-                    DeviceModel.AdvertiserIdType advertiserIdType = model.getAdvertiserIdType();
-
-                    if (advertiserIdType != null) {
-                        typeName = advertiserIdType.name();
-                    }
-
-                    device.setAdvertiserIdType(typeName);
-
-                    if (device.getOsName() == null && advertiserIdType != null) {
-                        if (advertiserIdType == DeviceModel.AdvertiserIdType.IDFA) {
-                            device.setOsName("ios");
-                        } else if (advertiserIdType == DeviceModel.AdvertiserIdType.AAID) {
-                            device.setOsName("android");
-                        }
-                    }
-
-                    // sanity check
-                    if (device.getOsName() != null && advertiserIdType != null) {
-                        if ((advertiserIdType == DeviceModel.AdvertiserIdType.IDFA
-                                && !device.getOsName().equalsIgnoreCase("ios"))
-                                || (advertiserIdType == DeviceModel.AdvertiserIdType.AAID
-                                && !device.getOsName().equalsIgnoreCase("android"))) {
-                            throw new ValidationException(
-                                    "Device OS and Advertiser ID type mismatch"
-                                    + "\ndevice os: " + device.getOsName()
-                                    + "\nadvertiserIdType: " + advertiserIdType
-                            );
-                        }
-                    }
-
-                    break;
-
-                case "type":
-                    KDeviceType type = model.getType();
-
-                    if (type == null) {
-                        throw new BadRequestException("Invalid type: " + type);
-                    }
-
-                    device.setTypeId(type.getId());
-                    break;
-                    
                 case "parent":
                     DeviceModel deviceModel = model.getParent();
                     Device parent = getDevice(deviceModel);

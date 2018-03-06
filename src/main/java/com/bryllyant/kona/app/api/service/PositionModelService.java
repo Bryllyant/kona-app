@@ -5,11 +5,9 @@ import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.api.util.ApiUtil;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KDevice;
-import com.bryllyant.kona.app.entity.KDeviceType;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.User;
@@ -139,7 +137,7 @@ public class PositionModelService extends BaseModelService {
 
 
 
-    public final List<PositionModel> toPositionModelList(List<Position> positionList, String... includeKeys) {
+    public final List<PositionModel> toModelList(List<Position> positionList, String... includeKeys) {
         List<PositionModel> modelList = new ArrayList<PositionModel>();
 
         for (Position item : positionList) {
@@ -272,15 +270,15 @@ public class PositionModelService extends BaseModelService {
 
         device = deviceModelService.mergeEntity(device, deviceModel);
 
-        if (device.getTypeId() == null) {
+        if (device.getType() == null) {
             // TODO: try to determine device type from user-agent if available
-            KDeviceType deviceType = KDeviceType.PHONE;
+            Device.Type deviceType = Device.Type.PHONE;
 
             if (deviceModel.getUserAgent() != null && deviceModel.getUserAgent().toLowerCase().contains("ipad")) {
-                deviceType = KDeviceType.TABLET;
+                deviceType = Device.Type.TABLET;
             }
 
-            device.setTypeId(deviceType.getId());
+            device.setType(deviceType);
 
 
             if (device.getOsName() == null) {

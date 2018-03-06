@@ -5,8 +5,6 @@ package com.bryllyant.kona.app.api.security.user;
 
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.KAppType;
-import com.bryllyant.kona.app.entity.KUserRole;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.rest.exception.SystemException;
@@ -23,7 +21,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -119,8 +116,7 @@ public class UserSpringAuthService implements UserDetailsService {
 
         authorities.add(new SimpleGrantedAuthority("ROLE_APP"));
 
-    	KAppType type = KAppType.getInstance(app.getTypeId());
-    	switch (type) {
+    	switch (app.getType()) {
     	case INTERNAL:
     		authorities.add(new SimpleGrantedAuthority("ROLE_APP_INTERNAL"));
     		break;
@@ -131,7 +127,7 @@ public class UserSpringAuthService implements UserDetailsService {
     		authorities.add(new SimpleGrantedAuthority("ROLE_APP_PUBLIC"));
     		break;
     	default:
-    		throw new IllegalArgumentException("Invalid app type: " + type);
+    		throw new IllegalArgumentException("Invalid app type: " + app.getType());
     	}
 
     	return authorities;

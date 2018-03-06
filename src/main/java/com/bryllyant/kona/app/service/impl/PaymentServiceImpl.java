@@ -26,13 +26,13 @@ import java.util.Map;
 
 @Service(PaymentService.SERVICE_PATH)
 public class PaymentServiceImpl 
-		extends KAbstractPaymentService<Payment,PaymentExample,PaymentAccount,Invoice,InvoiceItem,Cart,CartItem> 
+		extends KAbstractPaymentService<Payment, PaymentExample, PaymentMapper,PaymentAccount,Invoice,InvoiceItem,Cart,CartItem>
 		implements PaymentService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     
     @Autowired
-    private PaymentMapper paymentDao;
+    private PaymentMapper paymentMapper;
     
     @Autowired
     private InvoiceService invoiceService;
@@ -40,8 +40,8 @@ public class PaymentServiceImpl
 
 
     @Override @SuppressWarnings("unchecked")
-    protected PaymentMapper getDao() {
-        return paymentDao;
+    protected PaymentMapper getMapper() {
+        return paymentMapper;
     }
     
 
@@ -68,7 +68,7 @@ public class PaymentServiceImpl
 
     @Override 
     protected void updateCoords(Long paymentId) {
-        getDao().updateCoords(paymentId);
+        getMapper().updateCoords(paymentId);
     }
 
 
@@ -81,7 +81,7 @@ public class PaymentServiceImpl
             Date endDate,
             List<Long> objectIdList
     ) {
-        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
+        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
     }
 
 }

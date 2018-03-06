@@ -20,8 +20,7 @@ import java.util.Map;
 
 @Service(EmailAttachmentService.SERVICE_PATH)
 public class EmailAttachmentServiceImpl 
-		extends KAbstractEmailAttachmentService<EmailAttachment,
-                                      EmailAttachmentExample,
+		extends KAbstractEmailAttachmentService<EmailAttachment, EmailAttachmentExample, EmailAttachmentMapper,
                                       User,
                                       File>
 		implements EmailAttachmentService {
@@ -29,7 +28,7 @@ public class EmailAttachmentServiceImpl
 	private static Logger logger = LoggerFactory.getLogger(EmailAttachmentServiceImpl.class);
 
 	@Autowired
-	private EmailAttachmentMapper emailAttachmentDao;
+	private EmailAttachmentMapper emailAttachmentMapper;
 	
 	@Autowired
 	private FileService fileService;
@@ -40,8 +39,8 @@ public class EmailAttachmentServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected EmailAttachmentMapper getDao() {
-		return emailAttachmentDao;
+	protected EmailAttachmentMapper getMapper() {
+		return emailAttachmentMapper;
 	}
     
 

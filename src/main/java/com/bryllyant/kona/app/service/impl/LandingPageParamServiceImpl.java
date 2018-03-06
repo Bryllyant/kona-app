@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service(LandingPageParamService.SERVICE_PATH)
 public class LandingPageParamServiceImpl
-		extends KAbstractLandingPageParamService<LandingPageParam,LandingPageParamExample,User,File>
+		extends KAbstractLandingPageParamService<LandingPageParam, LandingPageParamExample, LandingPageParamMapper,User,File>
 		implements LandingPageParamService {
 	
 	private static Logger logger = LoggerFactory.getLogger(LandingPageParamServiceImpl.class);
@@ -54,7 +54,7 @@ public class LandingPageParamServiceImpl
     }
 	
 	@Override @SuppressWarnings("unchecked")
-	protected LandingPageParamMapper getDao() {
+	protected LandingPageParamMapper getMapper() {
 		return mapper;
 	}
 	

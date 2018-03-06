@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
 
 @Service(SettingService.SERVICE_PATH)
 public class SettingServiceImpl 
-		extends KAbstractSettingService<Setting,SettingExample,User> 
+		extends KAbstractSettingService<Setting, SettingExample, SettingMapper,User>
         implements SettingService {
     private static Logger logger = LoggerFactory.getLogger(SettingServiceImpl.class);
 
     @Autowired
-    private SettingMapper settingDao;
+    private SettingMapper settingMapper;
 
 
 
@@ -34,8 +34,8 @@ public class SettingServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected SettingMapper getDao() {
-		return settingDao;
+	protected SettingMapper getMapper() {
+		return settingMapper;
 	}
 	
 

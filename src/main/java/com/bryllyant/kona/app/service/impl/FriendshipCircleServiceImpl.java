@@ -15,19 +15,19 @@ import java.util.Map;
 
 @Service(FriendshipCircleService.SERVICE_PATH)
 public class FriendshipCircleServiceImpl 
-		extends KAbstractFriendshipCircleService<FriendshipCircle,FriendshipCircleExample> 
+		extends KAbstractFriendshipCircleService<FriendshipCircle, FriendshipCircleExample, FriendshipCircleMapper>
 		implements FriendshipCircleService {
 	
 	private static Logger logger = LoggerFactory.getLogger(FriendshipCircleServiceImpl.class);
 
 	@Autowired
-	private FriendshipCircleMapper circleDao;
+	private FriendshipCircleMapper circleMapper;
 	
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected FriendshipCircleMapper getDao() {
-		return circleDao;
+	protected FriendshipCircleMapper getMapper() {
+		return circleMapper;
 	}
 	
 

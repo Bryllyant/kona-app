@@ -2,16 +2,16 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.InvitationMapper;
-import com.bryllyant.kona.app.entity.Contact;
 import com.bryllyant.kona.app.entity.App;
+import com.bryllyant.kona.app.entity.Contact;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.InvitationExample;
 import com.bryllyant.kona.app.entity.KInvitationChannel;
 import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.entity.User;
-import com.bryllyant.kona.app.service.ContactService;
 import com.bryllyant.kona.app.service.AppService;
+import com.bryllyant.kona.app.service.ContactService;
 import com.bryllyant.kona.app.service.FriendshipService;
 import com.bryllyant.kona.app.service.InvitationService;
 import com.bryllyant.kona.app.service.KAbstractInvitationService;
@@ -19,7 +19,6 @@ import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.app.util.KUtil;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.templates.KTemplate;
 import com.bryllyant.kona.templates.KTemplateException;
 import org.slf4j.Logger;
@@ -33,13 +32,13 @@ import java.util.Map;
 
 @Service(InvitationService.SERVICE_PATH)
 public class InvitationServiceImpl 
-		extends KAbstractInvitationService<Invitation,InvitationExample,Contact,Friendship,User>
+		extends KAbstractInvitationService<Invitation, InvitationExample, InvitationMapper,Contact,Friendship,User>
 		implements InvitationService {
 	
 	private static Logger logger = LoggerFactory.getLogger(InvitationServiceImpl.class);
 
 	@Autowired
-	private InvitationMapper invitationDao;
+	private InvitationMapper invitationMapper;
 	
 	@Autowired
 	private KConfig config;
@@ -66,8 +65,8 @@ public class InvitationServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected InvitationMapper getDao() {
-		return invitationDao;
+	protected InvitationMapper getMapper() {
+		return invitationMapper;
 	}
 	
 
@@ -111,7 +110,7 @@ public class InvitationServiceImpl
 		String url = config.getString("urlTemplate.system.invitationCode");
 		url = url.replaceAll("\\{code\\}", code);
 
-		url = shortUrlService.shorten(appService.getSystemApp().getId(), userId, url);
+		url = shortUrlService.shorten(userId, url);
 		return url;
 	}
 	

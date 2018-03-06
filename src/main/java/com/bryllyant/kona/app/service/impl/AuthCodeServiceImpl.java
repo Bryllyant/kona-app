@@ -8,7 +8,6 @@ import com.bryllyant.kona.app.dao.AuthCodeMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.AuthCodeExample;
-import com.bryllyant.kona.app.entity.KAuthCodeType;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
@@ -19,7 +18,6 @@ import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.util.KDateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +30,13 @@ import java.util.Map;
 
 @Service(AuthCodeService.SERVICE_PATH)
 public class AuthCodeServiceImpl 
-		extends KAbstractAuthCodeService<AuthCode,AuthCodeExample,User,Registration> 
+		extends KAbstractAuthCodeService<AuthCode, AuthCodeExample, AuthCodeMapper,User,Registration>
 		implements AuthCodeService {
 	
 	private static Logger logger = LoggerFactory.getLogger(AuthCodeServiceImpl.class);
 
 	@Autowired
-	private AuthCodeMapper authCodeDao;
+	private AuthCodeMapper authCodeMapper;
     
 	@Autowired
 	private KConfig config;
@@ -61,8 +59,8 @@ public class AuthCodeServiceImpl
 
 
 	@Override @SuppressWarnings("unchecked")
-	protected AuthCodeMapper getDao() {
-		return authCodeDao;
+	protected AuthCodeMapper getMapper() {
+		return authCodeMapper;
 	}
     
 
@@ -112,69 +110,66 @@ public class AuthCodeServiceImpl
 		url = url.replaceAll("\\{code\\}", code);
 		return url;
 	}
-    
 
-	
-	@Override
-	protected String getAuthCodeUrl(Long typeId, Long appId, Long userId, String code) {
+
+
+    @Override
+    protected String getAuthCodeUrl(AuthCode.Type type, Long userId, String code) {
         String url = null;
-        
-		KAuthCodeType type = KAuthCodeType.getInstance(typeId);
-        
+
         switch (type) {
-        case EMAIL_CONFIRMATION:
-            url = createEmailConfirmationUrl(code);
-        	break;
-            
-        case MOBILE_CONFIRMATION:
-            url = createMobileConfirmationUrl(code);
-        	break;
-            
-        case PASSWORD_RESET:
-            url = createPasswordResetUrl(code);
-        	break;
-            
-		case PHONE_CONFIRMATION:
-            break;
-            
-		default:
-			break;
+            case EMAIL_CONFIRMATION:
+                url = createEmailConfirmationUrl(code);
+                break;
+
+            case MOBILE_CONFIRMATION:
+                url = createMobileConfirmationUrl(code);
+                break;
+
+            case PASSWORD_RESET:
+                url = createPasswordResetUrl(code);
+                break;
+
+            case PHONE_CONFIRMATION:
+                break;
+
+            default:
+                break;
         }
-        
-        url = shortUrlService.shorten(appId, userId, url);
-		return url;
-	}
+
+        url = shortUrlService.shorten(userId, url);
+        return url;
+    }
+
+
+
+    @Override
+    protected void sendAuthCode(AuthCode.Type type, Long userId, String authCodeUrl) {
+
+        switch (type) {
+            case EMAIL_CONFIRMATION:
+                sendEmailConfirmationEmail(userId, authCodeUrl);
+                break;
+
+            case MOBILE_CONFIRMATION:
+                sendMobileConfirmationSms(userId, authCodeUrl);
+                break;
+
+            case PASSWORD_RESET:
+                sendRequestPasswordEmail(userId, authCodeUrl);
+                break;
+
+            case PHONE_CONFIRMATION:
+                break;
+
+            default:
+                break;
+        }
+    }
     
 
     
-	@Override
-	protected void sendAuthCode(Long typeId, Long appId, Long userId, String authCodeUrl) {
-		KAuthCodeType type = KAuthCodeType.getInstance(typeId);
-
-		switch (type) {
-		case EMAIL_CONFIRMATION:
-			sendEmailConfirmationEmail(appId, userId, authCodeUrl);
-			break;
-            
-		case MOBILE_CONFIRMATION:
-			sendMobileConfirmationSms(appId, userId, authCodeUrl);
-			break;
-
-		case PASSWORD_RESET:
-            sendRequestPasswordEmail(appId, userId, authCodeUrl);
-			break;
-
-		case PHONE_CONFIRMATION:
-			break;
-
-		default:
-			break;
-		}
-	}
-    
-
-    
-	protected void sendRequestPasswordEmail(Long appId, Long userId, String passwordResetUrl) {
+	protected void sendRequestPasswordEmail(Long userId, String passwordResetUrl) {
         User user = userService.fetchById(userId);
         
 		if (user.getEmail() == null) {
@@ -182,12 +177,7 @@ public class AuthCodeServiceImpl
 			return;
 		}
 
-		App app = null;
-		if (appId == null) {
-			app = appService.getSystemApp();
-		} else {
-			app = appService.fetchById(appId);
-		}
+		App	app = appService.getSystemApp();
 
 		String templateName = "email.templates.account.passwordReset";
 
@@ -215,7 +205,7 @@ public class AuthCodeServiceImpl
     
 
     
-	protected void sendEmailConfirmationEmail(Long appId, Long userId, String authCodeUrl) {
+	protected void sendEmailConfirmationEmail(Long userId, String authCodeUrl) {
         User user = userService.fetchById(userId);
         
 		if (user.getEmail() == null) {
@@ -223,13 +213,7 @@ public class AuthCodeServiceImpl
 			return;
 		}
 
-		App app = null;
-		
-		if (appId == null) {
-			app = appService.getSystemApp();
-		} else {
-			app = appService.fetchById(appId);
-		}
+        App app = appService.getSystemApp();
 
 		String templateName = "email.templates.account.verifyEmail";
 
@@ -257,7 +241,7 @@ public class AuthCodeServiceImpl
 	
 
     
-	protected void sendMobileConfirmationSms(Long appId, Long userId, String authCodeUrl) {
+	protected void sendMobileConfirmationSms(Long userId, String authCodeUrl) {
 		User user = userService.fetchById(userId);
         
         logger.debug("sendMobileConfirmationSms: user:\n" + user);
@@ -267,14 +251,8 @@ public class AuthCodeServiceImpl
 			return;
 		}
 
-    	App app = null;
-		if (appId == null) {
-			app = appService.getSystemApp();
-		} else {
-			app = appService.fetchById(appId);
-		}
-        
-        
+        App app = appService.getSystemApp();
+
 		String to = user.getMobileNumber();
         
 		String message = "[" + app.getName() + "]  Your mobile number has been updated. Click to confirm. ";
@@ -296,30 +274,27 @@ public class AuthCodeServiceImpl
 
 
 
-	
-	@Override
-	protected Date getAuthCodeExpirationDate(Long typeId, Long appId, Long userId) {
-		KAuthCodeType type = KAuthCodeType.getInstance(typeId);
-		
-		switch(type) {
-		case EMAIL_CONFIRMATION:
-		case MOBILE_CONFIRMATION:
-			return null;
-			
-		case PASSWORD_RESET:
-			return KDateUtil.addMins(new Date(), 30);
-			
-		default:
-			return null;
-		}
-	}
+
+    @Override
+    protected Date getAuthCodeExpirationDate(AuthCode.Type type, Long userId) {
+
+        switch(type) {
+            case EMAIL_CONFIRMATION:
+            case MOBILE_CONFIRMATION:
+                return null;
+
+            case PASSWORD_RESET:
+                return KDateUtil.addMins(new Date(), 30);
+
+            default:
+                return null;
+        }
+    }
 
 
-	
 	// explicitly set to null to indicate unlimited use
-	
 	@Override
-	protected Integer getAuthCodeMaxUseCount(Long typeId, Long appId, Long userId) {
+	protected Integer getAuthCodeMaxUseCount(AuthCode.Type type, Long userId) {
 	    return null;
 	}
 }

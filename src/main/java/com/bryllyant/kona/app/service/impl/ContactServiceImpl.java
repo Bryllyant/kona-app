@@ -24,9 +24,7 @@ import java.util.Map;
 
 @Service(ContactService.SERVICE_PATH)
 public class ContactServiceImpl
-		extends KAbstractContactService<
-		        Contact,
-		        ContactExample,
+		extends KAbstractContactService<Contact, ContactExample, ContactMapper,
 		        User,
 		        File,
 		        Media,
@@ -36,7 +34,7 @@ public class ContactServiceImpl
 	private static Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
 
 	@Autowired
-	private ContactMapper contactDao;
+	private ContactMapper contactMapper;
 	
 	@Autowired
 	UserService userService;
@@ -48,8 +46,8 @@ public class ContactServiceImpl
     PlaceService placeService;
 
 	@Override @SuppressWarnings("unchecked")
-	protected ContactMapper getDao() {
-		return contactDao;
+	protected ContactMapper getMapper() {
+		return contactMapper;
 	}
 	
 	@Override @SuppressWarnings("unchecked")
@@ -76,7 +74,7 @@ public class ContactServiceImpl
 
 //	@Override
 //	protected void updateCoords(Long contactId) {
-//	    getDao().updateCoords(contactId);
+//	    getMapper().updateCoords(contactId);
 //	}
 	
 
@@ -87,6 +85,6 @@ public class ContactServiceImpl
 
 //    @Override
 //    public List<Contact> fetchProximate(Double latitude, Double longitude, Double radius, Date startDate, Date endDate) {
-//        return getDao().selectProximate(latitude, longitude, radius, startDate, endDate);
+//        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate);
 //    }
 }
