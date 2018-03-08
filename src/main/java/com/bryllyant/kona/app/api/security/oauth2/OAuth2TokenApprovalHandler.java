@@ -8,7 +8,8 @@ import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KStringUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
@@ -26,7 +27,7 @@ import java.util.Set;
  * @version 1.0
  */
 public class OAuth2TokenApprovalHandler extends TokenStoreUserApprovalHandler {
-	private static Logger logger = Logger.getLogger(OAuth2TokenApprovalHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(OAuth2TokenApprovalHandler.class);
     
 	private String approvalParameter = OAuth2Utils.USER_OAUTH_APPROVAL;
 	private String scopeParameter = OAuth2Utils.SCOPE;

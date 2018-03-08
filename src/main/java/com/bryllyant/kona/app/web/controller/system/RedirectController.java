@@ -11,7 +11,8 @@ import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.http.KServletUtil;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,7 @@ import java.util.Date;
 @Controller
 @RequestMapping("/system/redirect")
 public class RedirectController extends BaseController {
-    private static Logger logger = Logger.getLogger(RedirectController.class);
+    private static Logger logger = LoggerFactory.getLogger(RedirectController.class);
     
 
 
@@ -50,7 +51,7 @@ public class RedirectController extends BaseController {
             logger.debug("SystemController:redirect called for: " + shortUrlPath);
         	doRedirect(req, resp, shortUrlPath);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found: " + shortUrlPath);
         }
 	}

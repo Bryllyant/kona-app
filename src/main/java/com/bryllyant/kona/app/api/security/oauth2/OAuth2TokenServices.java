@@ -11,7 +11,8 @@ import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.rest.exception.SystemException;
 import com.bryllyant.kona.util.KClassUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -36,7 +37,7 @@ import java.util.Set;
  *
  */
 public class OAuth2TokenServices extends DefaultTokenServices {
-	private static Logger logger = Logger.getLogger(OAuth2TokenServices.class);
+	private static Logger logger = LoggerFactory.getLogger(OAuth2TokenServices.class);
 
 	@Autowired
 	private TokenStore tokenStore;

@@ -3,9 +3,8 @@
  */
 package com.bryllyant.kona.app.api.model.user;
 
-import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
-import com.bryllyant.kona.app.api.model.social.SocialHandleModel;
 import com.bryllyant.kona.app.entity.KUser;
+import com.bryllyant.kona.app.model.SocialHandle;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
@@ -27,7 +26,7 @@ public class PersonModel extends KJsonModel {
     private String email;
     private String phoneNumber;
     private String mobileNumber;
-    private List<SocialHandleModel> socialHandles;
+    private List<SocialHandle> socialHandles;
 
     public static PersonModel create(String firstName, String lastName, String photoUrl) {
         PersonModel model = new PersonModel();
@@ -44,7 +43,7 @@ public class PersonModel extends KJsonModel {
     public PersonModel(String firstName, String lastName, String displayName, String photoUrl,
                        String thumbnailUrl, KUser.Gender gender, Date birthDate, String locale,
                        String timeZone, String url, String email, String phoneNumber,
-                       String mobileNumber, List<SocialHandleModel> socialHandles) {
+                       String mobileNumber, List<SocialHandle> socialHandles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.displayName = displayName;
@@ -166,11 +165,11 @@ public class PersonModel extends KJsonModel {
         this.set("mobileNumber", mobileNumber);
     }
 
-    public List<SocialHandleModel> getSocialHandles() {
+    public List<SocialHandle> getSocialHandles() {
         return socialHandles;
     }
 
-    public void setSocialHandles(List<SocialHandleModel> socialHandles) {
+    public void setSocialHandles(List<SocialHandle> socialHandles) {
         this.set("socialHandles", socialHandles);
     }
 }

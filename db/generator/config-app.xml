@@ -771,9 +771,12 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseContact"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Contact,ContactExample&gt;" />
+            <property name="fullTextColumns" value="uid,first_name,last_name,display_name,email,mobile_number,social_handles"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="email_verified" javaType="boolean" />
             <columnOverride column="mobile_verified" javaType="boolean" />
+            <columnOverride column="social_handles" javaType="java.util.List"
+                    typeHandler="com.bryllyant.kona.app.util.SocialHandleHandler" />
         </table>
 
         <table schema="kona" 
@@ -784,7 +787,11 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseInvitation"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Invitation,InvitationExample&gt;" />
+            <property name="fullTextColumns" value="uid,type,channel,status,invitation_code,message,email,mobile_number,first_name,last_name,display_name"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KInvitation.Type" />
+            <columnOverride column="channel" javaType="com.bryllyant.kona.app.entity.KInvitation.Channel" />
+            <columnOverride column="status" javaType="com.bryllyant.kona.app.entity.KInvitation.Status" />
         </table>
 
 

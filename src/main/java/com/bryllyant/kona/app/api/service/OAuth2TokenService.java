@@ -12,7 +12,8 @@ import com.bryllyant.kona.app.service.AuthService;
 import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.util.KClassUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AccountStatusException;
@@ -43,7 +44,7 @@ import java.util.Map;
  */
 @Service
 public class OAuth2TokenService implements ResourceServerTokenServices {
-	private static Logger logger = Logger.getLogger(OAuth2TokenService.class);
+	private static Logger logger = LoggerFactory.getLogger(OAuth2TokenService.class);
     
 	@Autowired
 	private OAuth2TokenServices tokenServices;

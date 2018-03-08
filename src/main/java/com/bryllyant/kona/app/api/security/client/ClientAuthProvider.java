@@ -5,7 +5,8 @@ package com.bryllyant.kona.app.api.security.client;
 
 import com.bryllyant.kona.app.api.security.token.AccessToken;
 import com.bryllyant.kona.util.KJsonUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 public class ClientAuthProvider implements AuthenticationProvider, 
 	AuthenticationSuccessHandler, AuthenticationFailureHandler, AuthenticationEventPublisher {
-    private static Logger logger = Logger.getLogger(ClientAuthProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(ClientAuthProvider.class);
 
     @Autowired
     private ClientAuthService clientAuthService;

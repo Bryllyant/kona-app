@@ -1,13 +1,9 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Invitation;
-import com.bryllyant.kona.app.entity.KInvitationChannel;
-import com.bryllyant.kona.app.entity.KInvitationStatus;
-import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.service.InvitationService;
-import com.bryllyant.kona.rest.exception.BadRequestException;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,17 +69,9 @@ public class InvitationModelService extends BaseModelService {
     public final InvitationModel toModel(Invitation invitation, String... includeKeys) {
         if (invitation == null) return null;
 
-        KInvitationType type = KInvitationType.getInstance(invitation.getTypeId());
-        KInvitationChannel channel = KInvitationChannel.getInstance(invitation.getChannelId());
-        KInvitationStatus status = KInvitationStatus.getInstance(invitation.getStatusId());
-
         InvitationModel model = new InvitationModel();
         
         model.fromBean(invitation);
-
-        model.setType(type);
-        model.setChannel(channel);
-        model.setStatus(status);
 
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
@@ -124,33 +112,12 @@ public class InvitationModelService extends BaseModelService {
 
             switch (key) {
                 case "type":
-                    KInvitationType type = model.getType();
-
-                    if (type == null) {
-                        throw new BadRequestException("Invalid type: " + type);
-                    }
-
-                    invitation.setTypeId(type.getId());
                     break;
                     
                 case "channel":
-                    KInvitationChannel channel = model.getChannel();
-
-                    if (channel == null) {
-                        throw new BadRequestException("Invalid channel: " + channel);
-                    }
-
-                    invitation.setChannelId(channel.getId());
                     break;
 
                 case "status":
-                    KInvitationStatus status = model.getStatus();
-
-                    if (status == null) {
-                        throw new BadRequestException("Invalid status: " + status);
-                    }
-
-                    invitation.setStatusId(status.getId());
                     break;
             }
 

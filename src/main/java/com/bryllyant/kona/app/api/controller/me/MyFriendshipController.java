@@ -10,7 +10,6 @@ import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.FriendshipCircle;
 import com.bryllyant.kona.app.entity.Invitation;
-import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FriendshipService;
 import com.bryllyant.kona.app.service.InvitationService;
@@ -278,7 +277,7 @@ public class MyFriendshipController extends BaseController {
 
                 Invitation invitation = invitationService.inviteByMobileNumber(
                         getUser().getId(), 
-                        KInvitationType.FRIEND, 
+                        Invitation.Type.FRIEND,
                         mobileNumber, 
                         firstName, 
                         resend);

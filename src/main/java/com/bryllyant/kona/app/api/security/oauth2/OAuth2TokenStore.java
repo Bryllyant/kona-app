@@ -9,7 +9,8 @@ import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.rest.exception.SystemException;
 import com.bryllyant.kona.util.KClassUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -31,7 +32,7 @@ import java.util.Map;
  * Modified from version created by Iain Porter.
  */
 public class OAuth2TokenStore implements TokenStore {
-	private static Logger logger = Logger.getLogger(OAuth2TokenStore.class);
+	private static Logger logger = LoggerFactory.getLogger(OAuth2TokenStore.class);
 
     @Autowired
     private ApiAuthService apiAuthService;

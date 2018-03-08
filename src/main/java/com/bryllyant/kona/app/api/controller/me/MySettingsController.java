@@ -1,13 +1,12 @@
 package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.SettingService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.util.KInflector;
 import com.bryllyant.kona.util.KJsonUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +36,11 @@ public class MySettingsController extends BaseController {
     private ApiUtil util;
 
 
-	
-	//private Gson gson = new Gson();
-	ObjectMapper mapper = new ObjectMapper();
-
-
-
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> get(HttpServletRequest req) {
 		logApiRequest(req, "GET /me/settings");
 		return ok(getSettings());
 	}
-
 
 
 	@RequestMapping(method=RequestMethod.PUT)

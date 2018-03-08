@@ -5,7 +5,8 @@ package com.bryllyant.kona.app.api.security.client;
 
 import com.bryllyant.kona.app.api.security.token.AccessToken;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,7 @@ import java.io.IOException;
  * {@link AuthenticationFailureHandler} is called.
  */
 public class ClientAuthFilter extends GenericFilterBean {
-	private static Logger logger = Logger.getLogger(ClientAuthFilter.class);
+	private static Logger logger = LoggerFactory.getLogger(ClientAuthFilter.class);
     
 	@Autowired
 	private ApiAuthService apiAuthService;

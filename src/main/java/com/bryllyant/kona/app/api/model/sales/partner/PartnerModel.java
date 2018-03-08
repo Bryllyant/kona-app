@@ -2,8 +2,8 @@ package com.bryllyant.kona.app.api.model.sales.partner;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
-import com.bryllyant.kona.app.api.model.social.SocialHandleModel;
 import com.bryllyant.kona.app.api.model.user.PersonModel;
+import com.bryllyant.kona.app.model.SocialHandle;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -26,7 +26,7 @@ public class PartnerModel extends KJsonModel implements KEntityModel {
     private String url;
     private String email;
     private String phoneNumber;
-    private List<SocialHandleModel> socialHandles;
+    private List<SocialHandle> socialHandles;
 
     @RestdocsNotExpanded
     private PlaceModel place;
@@ -121,11 +121,11 @@ public class PartnerModel extends KJsonModel implements KEntityModel {
         this.set("phoneNumber", phoneNumber);
     }
 
-    public List<SocialHandleModel> getSocialHandles() {
+    public List<SocialHandle> getSocialHandles() {
         return socialHandles;
     }
 
-    public void setSocialHandles(List<SocialHandleModel> socialHandles) {
+    public void setSocialHandles(List<SocialHandle> socialHandles) {
         this.set("socialHandles", socialHandles);
     }
 

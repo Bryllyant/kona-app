@@ -4,7 +4,8 @@
 package com.bryllyant.kona.app.api.security.user;
 
 import com.bryllyant.kona.app.config.KConfig;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class UserAuthEntryPoint extends LoginUrlAuthenticationEntryPoint {
-	private static Logger logger = Logger.getLogger(UserAuthEntryPoint.class);
+	private static Logger logger = LoggerFactory.getLogger(UserAuthEntryPoint.class);
     
 	@Autowired
 	private KConfig config;

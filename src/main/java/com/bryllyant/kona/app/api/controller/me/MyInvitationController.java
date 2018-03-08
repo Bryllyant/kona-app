@@ -4,8 +4,6 @@ import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
 import com.bryllyant.kona.app.api.service.InvitationModelService;
 import com.bryllyant.kona.app.entity.Invitation;
-import com.bryllyant.kona.app.entity.KInvitationStatus;
-import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.service.InvitationService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.locale.KValidator;
@@ -53,9 +51,10 @@ public class MyInvitationController extends BaseController {
 			@RequestParam(value="pending", required=false) Boolean pending) {
 		logApiRequest(req, "GET /me/invitations");
 		
-		KInvitationStatus status = null;
+		Invitation.Status status = null;
+
 		if (pending != null && pending == true) {
-			status = KInvitationStatus.PENDING;
+			status = Invitation.Status.PENDING;
 		}
 		
 		List<Invitation> invitations = 
@@ -96,7 +95,7 @@ public class MyInvitationController extends BaseController {
     	logger.debug("mapToObject called for invitation: " + invitation);
         
     	Boolean resend = false;
-    	KInvitationType type = null;
+    	Invitation.Type type = null;
     	String email = null;
     	String mobileNumber = null;
     	String firstName = null;
@@ -112,7 +111,7 @@ public class MyInvitationController extends BaseController {
                 switch (key) {
                 case "type":
                 	try {
-                		type = KInvitationType.getInstance(value.toString());
+                		type = Invitation.Type.valueOf(value.toString());
             		} catch (Exception e) {
             			throw new BadRequestException("Invalid type: " + type);
             		}

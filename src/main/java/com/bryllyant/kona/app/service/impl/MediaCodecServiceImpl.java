@@ -3,7 +3,8 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.service.KAbstractMediaCodecService;
 import com.bryllyant.kona.app.service.MediaCodecService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ public class MediaCodecServiceImpl
     extends KAbstractMediaCodecService
     implements MediaCodecService {
 
-	private static Logger logger = Logger.getLogger(MediaCodecServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(MediaCodecServiceImpl.class);
 
 
 	

@@ -2,7 +2,6 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
-import com.bryllyant.kona.app.api.model.social.SocialHandleModel;
 import com.bryllyant.kona.app.api.model.user.PersonModel;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Partner;
@@ -87,10 +86,7 @@ public class PartnerModelService extends BaseModelService {
             model.setPlace(PlaceModel.create(place.getUid()));
         }
 
-        if (partner.getSocialHandles() != null) {
-            List<SocialHandleModel> socialHandles = KJsonUtil.fromJson(partner.getSocialHandles(), List.class);
-            model.setSocialHandles(socialHandles);
-        }
+
 
         PersonModel contact = new PersonModel();
 

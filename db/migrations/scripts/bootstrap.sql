@@ -2195,6 +2195,8 @@ CREATE TABLE `kona__contact` (
 
   KEY `ix_kona__contact_photo` (`photo_id`),
 
+  FULLTEXT KEY `ft_kona_contact` (uid,first_name,last_name,display_name,email,mobile_number,social_handles),
+
   CONSTRAINT `fk_kona__contact_photo` FOREIGN KEY (`photo_id`)
     REFERENCES `kona__media` (`id`) ON DELETE SET NULL,
 
@@ -2202,60 +2204,60 @@ CREATE TABLE `kona__contact` (
     REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__contact_owner` FOREIGN KEY (`owner_id`)
-    REFERENCES `kona__owner` (`id`) ON DELETE CASCADE
+    REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__invitation_channel` (
-    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) DEFAULT NULL,
-    `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-    PRIMARY KEY (`id`),
-
-    UNIQUE KEY `ux_kona__invitation_channel_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------------------------
-
-CREATE TABLE `kona__invitation_type` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `ux_kona__invitation_type_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--CREATE TABLE `kona__invitation_channel` (
+--    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--    `name` varchar(255) DEFAULT NULL,
+--    `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--    `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--    PRIMARY KEY (`id`),
+--
+--    UNIQUE KEY `ux_kona__invitation_channel_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__invitation_status` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--CREATE TABLE `kona__invitation_type` (
+--  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--  `name` varchar(255) DEFAULT NULL,
+--  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--
+--  PRIMARY KEY (`id`),
+--
+--  UNIQUE KEY `ux_kona__invitation_type_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-  PRIMARY KEY (`id`),
+-- --------------------------------------------------------------------------
 
-  UNIQUE KEY `ux_kona__invitation_status_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--CREATE TABLE `kona__invitation_status` (
+--  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--  `name` varchar(255) DEFAULT NULL,
+--  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--
+--  PRIMARY KEY (`id`),
+--
+--  UNIQUE KEY `ux_kona__invitation_status_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__invitation` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `type_id` bigint(20) unsigned NOT NULL,
-  `channel_id` bigint(20) unsigned NOT NULL,
-  `status_id` bigint(20) unsigned NOT NULL DEFAULT '100',
+  `type` varchar(255) NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `status`  varchar(255) NOT NULL,
   `owner_id` bigint(20) unsigned NOT NULL,
   `contact_id` bigint(20) unsigned DEFAULT NULL,
   `invitee_user_id` bigint(20) unsigned DEFAULT NULL,
@@ -2287,32 +2289,19 @@ CREATE TABLE `kona__invitation` (
 
   KEY `ix_kona__invitation_mobile_number` (`mobile_number`),
 
-  KEY `ix_kona__invitation_type` (`type_id`),
-
-  KEY `ix_kona__invitation_channel` (`channel_id`),
-
-  KEY `ix_kona__invitation_status` (`status_id`),
-
   KEY `ix_kona__invitation_owner` (`owner_id`),
 
   KEY `ix_kona__invitation_contact` (`contact_id`),
 
   KEY `ix_kona__invitation_invitee_user` (`invitee_user_id`),
 
+  FULLTEXT `ft_kona__invitation` (uid,type,channel,status,invitation_code,message,email,mobile_number,first_name,last_name,display_name),
+
   CONSTRAINT `fk_kona__invitation_contact` FOREIGN KEY (`contact_id`)
         REFERENCES `kona__contact` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__invitation_channel` FOREIGN KEY (`channel_id`) 
-        REFERENCES `kona__invitation_channel` (`id`),
-
-  CONSTRAINT `fk_kona__invitation_invitee_user` FOREIGN KEY (`invitee_user_id`) 
+  CONSTRAINT `fk_kona__invitation_invitee_user` FOREIGN KEY (`invitee_user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__invitation_status` FOREIGN KEY (`status_id`) 
-        REFERENCES `kona__invitation_status` (`id`),
-
-  CONSTRAINT `fk_kona__invitation_type` FOREIGN KEY (`type_id`) 
-        REFERENCES `kona__invitation_type` (`id`),
 
   CONSTRAINT `fk_kona__invitation_owner` FOREIGN KEY (`owner_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
@@ -3482,32 +3471,6 @@ VALUES
     (200,replace(uuid(),'-',''),'ADMIN', 'admin', now(), now()),
     (300,replace(uuid(),'-',''),'USER', 'user', now(), now()),
     (400,replace(uuid(),'-',''),'GUEST', 'guest', now(), now());
-
--- --------------------------------------------------------------------------
-
-INSERT INTO `kona__invitation_type`
-VALUES 
-    (100,'ACCOUNT', now(), now()),
-    (200,'FRIEND', now(), now());
-
--- --------------------------------------------------------------------------
-
-INSERT INTO `kona__invitation_channel` 
-VALUES 
-    (100,'IN_APP', now(), now()),
-    (200,'EMAIL', now(), now()),
-    (300,'SMS', now(), now()),
-    (400,'TWITTER', now(), now()),
-    (500,'FACEBOOK', now(), now());
-
--- --------------------------------------------------------------------------
-
-INSERT INTO `kona__invitation_status` 
-VALUES 
-    (100,'PENDING', now(), now()),
-    (200,'ACCEPTED', now(), now()),
-    (300,'DECLINED', now(), now()),
-    (400,'IGNORED', now(), now());
 
 
 -- --------------------------------------------------------------------------

@@ -7,8 +7,6 @@ import com.bryllyant.kona.app.entity.Contact;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.InvitationExample;
-import com.bryllyant.kona.app.entity.KInvitationChannel;
-import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.ContactService;
@@ -117,9 +115,7 @@ public class InvitationServiceImpl
 
 	
 	protected Invitation sendInvitation(Invitation invitation, Contact contact, String invitationUrl) {
-		KInvitationChannel channel = KInvitationChannel.getInstance(invitation.getChannelId());
-		
-		switch (channel){
+		switch (invitation.getChannel()){
 		case EMAIL:
 			return sendEmail(invitation, contact, invitationUrl);
 		case SMS:
@@ -129,7 +125,7 @@ public class InvitationServiceImpl
 		case FACEBOOK:
 			return sendFacebook(invitation, contact, invitationUrl);
 		default:
-			throw new IllegalArgumentException("Invalid invitation channel: " + channel);
+			throw new IllegalArgumentException("Invalid invitation channel: " + invitation.getChannel());
 		}	
 	}
 	
@@ -155,15 +151,16 @@ public class InvitationServiceImpl
 
 
 	protected Invitation sendSms(Invitation invitation, Contact contact, String invitationUrl) {
-		KInvitationType type = KInvitationType.getInstance(invitation.getTypeId());
 		User user = userService.fetchById(invitation.getOwnerId());
+
 		String to = contact.getMobileNumber();
+
 		App app = appService.getSystemApp();
 
 		String message = null;
 		String templatePath = null;
 
-		switch (type) {
+		switch (invitation.getType()) {
 		case JOIN:
 			templatePath= config.getString("sms.templates.invitation.join");
 			message = getSmsTextString(templatePath, user, contact, invitationUrl);
@@ -175,7 +172,7 @@ public class InvitationServiceImpl
 			break;
 
 		default:
-			throw new IllegalStateException("Invalid invitation type: " + type);
+			throw new IllegalStateException("Invalid invitation type: " + invitation.getType());
 		}
 
 

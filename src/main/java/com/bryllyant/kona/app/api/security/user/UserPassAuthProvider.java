@@ -7,7 +7,8 @@ import com.bryllyant.kona.app.api.security.token.AccessToken;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.service.KAuthException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +23,7 @@ import org.springframework.util.Assert;
  * UserPassAuthProvider
  */
 public class UserPassAuthProvider implements AuthenticationProvider {
-	private static Logger logger = Logger.getLogger(UserPassAuthProvider.class);
+	private static Logger logger = LoggerFactory.getLogger(UserPassAuthProvider.class);
     
 	@Autowired
 	private UserSpringAuthService userSpringAuthService;

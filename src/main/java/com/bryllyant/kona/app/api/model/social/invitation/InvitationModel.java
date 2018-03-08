@@ -1,10 +1,8 @@
 package com.bryllyant.kona.app.api.model.social.invitation;
 
-import com.bryllyant.kona.app.entity.KInvitationChannel;
-import com.bryllyant.kona.app.entity.KInvitationStatus;
-import com.bryllyant.kona.app.entity.KInvitationType;
-import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
 
@@ -15,9 +13,9 @@ public class InvitationModel extends KJsonModel implements KEntityModel {
 
 	
 	private String uid;
-	private KInvitationType type;
-	private KInvitationChannel channel;
-	private KInvitationStatus status;
+	private Invitation.Type type;
+	private Invitation.Channel channel;
+	private Invitation.Status status;
 	private Date createdDate;
 	private String invitationCode;
 	private String firstName;
@@ -51,27 +49,27 @@ public class InvitationModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public KInvitationType getType() {
+    public Invitation.Type getType() {
         return type;
     }
 
-    public void setType(KInvitationType type) {
+    public void setType(Invitation.Type type) {
         this.set("type", type);
     }
 
-    public KInvitationChannel getChannel() {
+    public Invitation.Channel getChannel() {
         return channel;
     }
 
-    public void setChannel(KInvitationChannel channel) {
+    public void setChannel(Invitation.Channel channel) {
         this.set("channel", channel);
     }
 
-    public KInvitationStatus getStatus() {
+    public Invitation.Status getStatus() {
         return status;
     }
 
-    public void setStatus(KInvitationStatus status) {
+    public void setStatus(Invitation.Status status) {
         this.set("status", status);
     }
 

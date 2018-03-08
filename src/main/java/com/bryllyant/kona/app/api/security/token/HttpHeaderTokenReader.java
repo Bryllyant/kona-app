@@ -4,7 +4,8 @@
 package com.bryllyant.kona.app.api.security.token;
 
 import com.bryllyant.kona.app.config.KConfig;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Service
 public class HttpHeaderTokenReader implements TokenReader {
-	private static Logger logger = Logger.getLogger(HttpHeaderTokenReader.class);
+	private static Logger logger = LoggerFactory.getLogger(HttpHeaderTokenReader.class);
 	
     @Autowired
     private KConfig config;

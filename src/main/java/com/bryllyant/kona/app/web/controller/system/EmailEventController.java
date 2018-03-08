@@ -12,7 +12,8 @@ import com.bryllyant.kona.app.service.EmailService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.templates.KTemplateException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ import java.util.Date;
 @Controller
 @RequestMapping("/system/email/events")
 public class EmailEventController extends BaseController {
-    private static Logger logger = Logger.getLogger(EmailEventController.class);
+    private static Logger logger = LoggerFactory.getLogger(EmailEventController.class);
 
 
 

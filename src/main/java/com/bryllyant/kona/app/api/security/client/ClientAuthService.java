@@ -6,7 +6,8 @@ package com.bryllyant.kona.app.api.security.client;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppCreds;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,7 +33,7 @@ import static com.bryllyant.kona.app.entity.KApp.Type.PARTNER;
  * ApiAuthService
  */
 public class ClientAuthService implements UserDetailsService, ClientDetailsService {
-	private static Logger logger = Logger.getLogger(ClientAuthService.class);
+	private static Logger logger = LoggerFactory.getLogger(ClientAuthService.class);
 
 	@Autowired
 	private ApiAuthService apiAuthService;
