@@ -2,7 +2,6 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.NotificationMapper;
-import com.bryllyant.kona.app.entity.KNotificationChannel;
 import com.bryllyant.kona.app.entity.Notification;
 import com.bryllyant.kona.app.entity.NotificationDelivery;
 import com.bryllyant.kona.app.entity.NotificationExample;
@@ -129,7 +128,7 @@ public class NotificationServiceImpl
 
     
 	@Override
-	protected boolean isChannelEnabled(Long userId, String eventJson, KNotificationChannel channel) {
+	protected boolean isChannelEnabled(Long userId, String eventJson, Notification.Channel channel) {
 	    User user = userService.fetchById(userId);
 
 		Configuration config = getUserConfig(user);
@@ -144,7 +143,7 @@ public class NotificationServiceImpl
         
         
         // in_app, email, sms, push
-        String channelName = channel.getName().toLowerCase();
+        String channelName = channel.name().toLowerCase();
         channelName = KInflector.getInstance().camelCase(channelName, false);
         
         // "notification.friendship.email"
@@ -156,7 +155,7 @@ public class NotificationServiceImpl
 
 
 	protected void sendNotification(Notification notification, NotificationDelivery delivery) {
-		KNotificationChannel channel = KNotificationChannel.getInstance(delivery.getChannelId());
+		Notification.Channel channel = delivery.getChannel();
 	}
 
 

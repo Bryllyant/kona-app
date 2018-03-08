@@ -10,6 +10,7 @@ import com.bryllyant.kona.app.entity.SmsExample;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.KAbstractSmsService;
 import com.bryllyant.kona.app.service.SmsService;
+import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,9 @@ public class SmsServiceImpl extends KAbstractSmsService<Sms, SmsExample, SmsMapp
 
     @Autowired
     private UserService userService;
-    
+
+    @Autowired
+    private SystemService system;
 
 
     @Override
@@ -41,8 +44,6 @@ public class SmsServiceImpl extends KAbstractSmsService<Sms, SmsExample, SmsMapp
         return accountSid;
     }
     
-
-    
     @Override
     protected String getAuthToken() {
         String authToken = config.getString("twilio.authToken");
@@ -50,8 +51,6 @@ public class SmsServiceImpl extends KAbstractSmsService<Sms, SmsExample, SmsMapp
         
     }
     
-
-
     @Override
     public String getMessageStatusCallbackUrl() {
         return config.getString("twilio.messageStatusCallbackUrl");

@@ -242,6 +242,7 @@
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="presence" javaType="com.bryllyant.kona.app.entity.KUser.Presence" />
             <columnOverride column="gender" javaType="com.bryllyant.kona.app.entity.KUser.Gender" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KUser.Type" />
         </table>
 
         <table schema="kona"
@@ -251,6 +252,7 @@
                delimitIdentifiers="true">
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthPriv"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;AuthPriv,AuthPrivExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug"/>
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
@@ -262,6 +264,7 @@
                delimitIdentifiers="true">
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAuthRole"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;AuthRole,AuthRoleExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug"/>
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
@@ -307,6 +310,7 @@
                 delimitIdentifiers="true">
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseMedia"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Media,MediaExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug,description,url,folder_path,url_path,thumbnail_url_path"/>
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
@@ -326,6 +330,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEntityNameRule"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EntityNameRule,EntityNameRuleExample&gt;" />
+            <property name="fullTextColumns" value="uid,pattern"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="reserved" javaType="boolean" />
             <columnOverride column="black_listed" javaType="boolean" />
@@ -369,6 +374,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePlace"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Place,PlaceExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug,description"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
 
             <!-- IGNORE coords columns since this is GIS column used by the db -->
@@ -384,6 +390,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePlaceCategory"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PlaceCategory,PlaceCategoryExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
@@ -395,18 +402,22 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePlaceTag"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PlaceTag,PlaceTagExample&gt;" />
+            <property name="fullTextColumns" value="uid,tag,slug"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
         <table schema="kona" 
-                tableName="kona__place_map" 
-                domainObjectName="PlaceMap" 
+                tableName="kona__place_plan"
+                domainObjectName="PlacePlan"
                 delimitAllColumns="true" 
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePlaceMap"/>
-            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PlaceMap,PlaceMapExample&gt;" />
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePlacePlan"/>
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PlacePlan,PlacePlanExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug,plan"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="plan" javaType="java.util.Map"
+                            typeHandler="com.bryllyant.kona.data.mybatis.KMapHandler" />
         </table>
 
 
@@ -514,6 +525,7 @@
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;RemoteServiceUserCreds,RemoteServiceUserCredsExample&gt;" />
             <property name="fullTextColumns" value="uid,name,remote_service_user_id,remote_service_screen_name"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="auth_type" javaType="com.bryllyant.kona.app.entity.KRemoteServiceUserCreds.AuthType" />
         </table>
 
 
@@ -525,6 +537,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseNotification"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Notification,NotificationExample&gt;" />
+            <property name="fullTextColumns" value="uid,event"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
@@ -536,7 +549,9 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseNotificationDelivery"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;NotificationDelivery,NotificationDeliveryExample&gt;" />
+            <property name="fullTextColumns" value="channel,code"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="channel" javaType="com.bryllyant.kona.app.entity.KNotification.Channel" />
         </table>
 
 
@@ -548,6 +563,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSupportMessage"/>
            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;SupportMessage,SupportMessageExample&gt;" />
+           <property name="fullTextColumns" value="uid,first_name,last_name,email,mobile_number,message"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
@@ -560,9 +576,11 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushProvider"/>
-           <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PushProvider,PushProviderExample&gt;" />
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PushProvider,PushProviderExample&gt;" />
+            <property name="fullTextColumns" value="uid,platform,server_key,server_secret,endpoint"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="sandbox" javaType="boolean" />
+           <columnOverride column="platform" javaType="com.bryllyant.kona.app.entity.KPush.Platform" />
         </table>
 
         <table schema="kona" 
@@ -573,9 +591,11 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePushDevice"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;PushDevice,PushDeviceExample&gt;" />
+            <property name="fullTextColumns" value="uid,platform,token,endpoint"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="sandbox" javaType="boolean" />
+            <columnOverride column="platform" javaType="com.bryllyant.kona.app.entity.KPush.Platform" />
         </table>
 
         <table schema="kona" 
@@ -586,12 +606,14 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBasePush"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Push,PushExample&gt;" />
+            <property name="fullTextColumns" value="uid,platform,provider_message_id,title,message,status,error_code,error_message"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="sandbox" javaType="boolean" />
             <columnOverride column="viewed" javaType="boolean" />
             <columnOverride column="failed" javaType="boolean" />
             <columnOverride column="delivered" javaType="boolean" />
             <columnOverride column="opted_out" javaType="boolean" />
+            <columnOverride column="platform" javaType="com.bryllyant.kona.app.entity.KPush.Platform" />
         </table>
 
 
@@ -603,6 +625,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseSms"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Sms,SmsExample&gt;" />
+            <property name="fullTextColumns" value="uid,to_number,from_number,message,media_urls,message_sid,status,error_code,error_message"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="failed" javaType="boolean" />
             <columnOverride column="delivered" javaType="boolean" />
@@ -616,7 +639,8 @@
                 delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmail"/>
-           <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Email,EmailExample&gt;" />
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Email,EmailExample&gt;" />
+            <property name="fullTextColumns" value="uid,ses_id,from_address,to_address,subject"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="failed" javaType="boolean" />
             <columnOverride column="delivered" javaType="boolean" />
@@ -633,7 +657,9 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailEvent"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EmailEvent,EmailEventExample&gt;" />
+            <property name="fullTextColumns" value="uid,type,target,error,user_agent"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KEmailEvent.Type" />
         </table>
 
         <table schema="kona" 
@@ -644,6 +670,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailGroup"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EmailGroup,EmailGroupExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
@@ -655,6 +682,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailAddress"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EmailAddress,EmailAddressExample&gt;" />
+            <property name="fullTextColumns" value="uid,first_name,last_name,email,mobile_number,postal_code"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="scrubbed" javaType="boolean" />
             <columnOverride column="enabled" javaType="boolean" />
@@ -669,6 +697,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseEmailContent"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EmailContent,EmailContentExample&gt;" />
+            <property name="fullTextColumns" value="uid,text,html"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
@@ -705,6 +734,7 @@
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Friendship,FriendshipExample&gt;" />
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="friendship_requested" javaType="boolean" />
+            <columnOverride column="status" javaType="com.bryllyant.kona.app.entity.KFriendship.Status" />
         </table>
 
         <table schema="kona" 
@@ -715,7 +745,9 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseFriendshipEvent"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;FriendshipEvent,FriendshipEventExample&gt;" />
+            <property name="fullTextColumns" value="uid,event"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KFriendshipEvent.Type" />
         </table>
 
         <table schema="kona" 
@@ -726,6 +758,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseFriendshipCircle"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;FriendshipCircle,FriendshipCircleExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="default_circle" javaType="boolean" />
         </table>
@@ -768,14 +801,16 @@
 
 
         <table schema="kona" 
-				tableName="kona__campaign_event" 
-				domainObjectName="CampaignEvent"
+				tableName="kona__analytics_event"
+				domainObjectName="AnalyticsEvent"
 				delimitAllColumns="true" 
 				delimitIdentifiers="true">
             <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignEvent"/>
-            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignEvent,CampaignEventExample&gt;" />
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseAnalyticsEvent"/>
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;AnalyticsEvent,AnalyticsEventExample&gt;" />
+            <property name="fullTextColumns" value="uid,category,action,label,mobile_number,url,hostname,user_agent"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="conversion_event" javaType="boolean" />
 
             <!-- IGNORE coords columns since this is GIS column used by the db -->
             <ignoreColumn column="coords" />
@@ -790,6 +825,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaign"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Campaign,CampaignExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,slug,description"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
         </table>
@@ -803,8 +839,10 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignChannel"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignChannel,CampaignChannelExample&gt;" />
+            <property name="fullTextColumns" value="uid,name,keyword,sms_number,url_path,tracking_id"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.Type" />
         </table>
 
 

@@ -20,11 +20,9 @@ import com.bryllyant.kona.app.api.service.DeviceModelService;
 import com.bryllyant.kona.app.api.service.MediaModelService;
 import com.bryllyant.kona.app.api.service.PositionModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KUserType;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.User;
@@ -33,6 +31,7 @@ import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ForbiddenException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -128,7 +127,7 @@ public class UserController extends BaseController {
         Map<String,Object> filter = toFilterCriteria(query);  // returns keys in camelCase
 
         // exclude system users
-        filter.put("!typeId", KUserType.SYSTEM.getId());
+        filter.put("!type", User.Type.SYSTEM);
 
         if (sortOrder == null) {
             sortOrder = new String[]{

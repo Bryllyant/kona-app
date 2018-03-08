@@ -10,7 +10,6 @@ import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.FriendshipCircle;
 import com.bryllyant.kona.app.entity.Invitation;
-import com.bryllyant.kona.app.entity.KFriendshipStatus;
 import com.bryllyant.kona.app.entity.KInvitationType;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FriendshipService;
@@ -35,6 +34,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.bryllyant.kona.app.entity.KFriendship.Status.FOLLOWED;
+import static com.bryllyant.kona.app.entity.KFriendship.Status.FOLLOWING;
+import static com.bryllyant.kona.app.entity.KFriendship.Status.FRIENDS;
+
 
 /**
  * Friendship Controller.
@@ -96,26 +100,17 @@ public class MyFriendshipController extends BaseController {
 		*/
 
 		if (includeFriends) {
-			List<Friendship> friends = 
-					friendshipService
-					.fetchByUserIdAndStatusId(getUser().getId(), KFriendshipStatus.FRIENDS.getId());
-			
+			List<Friendship> friends = friendshipService.fetchByUserIdAndStatus(getUser().getId(), FRIENDS);
 			all.addAll(friends);
 		}
 		
 		if (includeFollowers) {
-			List<Friendship> followers = 
-					friendshipService
-					.fetchByUserIdAndStatusId(getUser().getId(), KFriendshipStatus.FOLLOWED.getId());
-			
+			List<Friendship> followers = friendshipService.fetchByUserIdAndStatus(getUser().getId(), FOLLOWED);
 			all.addAll(followers);
 		}
 		
 		if (includeFollowings) {
-			List<Friendship> followings = 
-					friendshipService
-					.fetchByUserIdAndStatusId(getUser().getId(), KFriendshipStatus.FOLLOWING.getId());
-			
+			List<Friendship> followings = friendshipService.fetchByUserIdAndStatus(getUser().getId(), FOLLOWING);
 			all.addAll(followings);
 		}
 		
@@ -163,7 +158,7 @@ public class MyFriendshipController extends BaseController {
 
 		if (friendship == null) {
 		    FriendshipModel model = new FriendshipModel();
-		    model.setStatus(KFriendshipStatus.PENDING);
+		    model.setStatus(Friendship.Status.PENDING);
 		    return ok(model);
 		}
 
@@ -212,9 +207,7 @@ public class MyFriendshipController extends BaseController {
 
 		Friendship friendship = getFriendship(uid);
 		
-        KFriendshipStatus status = KFriendshipStatus.getInstance(friendship.getStatusId());
-        
-        if (status == KFriendshipStatus.FRIENDS) {
+        if (friendship.getStatus() == FRIENDS) {
         	friendship = friendshipService.revokeFriendship(friendship.getUserId(), friendship.getFriendId());
         } else {
         	friendship = friendshipService.unfollow(friendship.getUserId(), friendship.getFriendId());

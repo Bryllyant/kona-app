@@ -3,14 +3,12 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.social.friendship.FriendshipCircleModel;
 import com.bryllyant.kona.app.api.model.social.friendship.FriendshipModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.FriendshipCircle;
-import com.bryllyant.kona.app.entity.KFriendshipStatus;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FriendshipCircleService;
 import com.bryllyant.kona.app.service.FriendshipService;
-import com.bryllyant.kona.rest.exception.BadRequestException;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,14 +107,11 @@ public class FriendshipModelService extends BaseModelService {
 
         User friend = userModelService.getUser(friendship.getFriendId());
 
-        KFriendshipStatus status = KFriendshipStatus.getInstance(friendship.getStatusId());
-        
         FriendshipModel model = new FriendshipModel();
         
-
         model.setUid(friendship.getUid());
         model.setFriend(userModelService.toModel(friend));
-        model.setStatus(status);
+        model.setStatus(friendship.getStatus());
         model.setCreatedDate(friendship.getCreatedDate());
         
         if (includeKeys != null && includeKeys.length > 0) {
@@ -161,13 +156,7 @@ public class FriendshipModelService extends BaseModelService {
                     break;
 
                 case "status":
-                    KFriendshipStatus status = model.getStatus();
-
-                    if (status == null) {
-                        throw new BadRequestException("Invalid status: " + status);
-                    }
-
-                    friendship.setStatusId(status.getId());
+                    friendship.setStatus(model.getStatus());
                     break;
 
                 case "friend":

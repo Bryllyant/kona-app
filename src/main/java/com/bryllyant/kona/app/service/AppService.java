@@ -7,6 +7,6 @@ import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.remote.service.KService;
 
 public interface AppService extends KService, KAppService<App> {
-	public static final String SERVICE_PATH = "rpc/AppService";
+	String SERVICE_PATH = "rpc/AppService";
 	
 }

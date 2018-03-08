@@ -2,6 +2,7 @@ package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.Device;
+import com.bryllyant.kona.app.entity.KPush;
 import com.bryllyant.kona.app.entity.PushDevice;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.PushDeviceService;
@@ -32,8 +33,6 @@ import java.util.Map;
 public class MyPushController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(MyPushController.class);
 
-
-
     @Autowired
     private PushProviderService pushProviderService;
 
@@ -59,7 +58,7 @@ public class MyPushController extends BaseController {
         Long appId = getAppId(req);
 
         String pushToken = (String) map.get("push_token");
-        String pushPlatform = (String) map.get("platform");
+        String osName = (String) map.get("os_name");
         String deviceUuid = (String) map.get("device_uuid");
         String advertiserId = (String) map.get("advertiser_id");
         Boolean limitAdTrackingEnabled = (Boolean) map.get("limit_ad_tracking_enabled");
@@ -69,13 +68,13 @@ public class MyPushController extends BaseController {
             throw new BadRequestException("push_token must be set");
         }
 
-        if (pushPlatform == null) {
-            throw new BadRequestException("platform must be set");
+        if (osName == null) {
+            throw new BadRequestException("os_name must be set");
         }
 
         pushToken = pushToken.trim();
 
-        pushPlatform = pushPlatform.trim().toLowerCase();
+        osName = osName.trim().toLowerCase();
 
         if (advertiserId != null) {
             advertiserId = advertiserId.trim().toUpperCase();
@@ -93,19 +92,21 @@ public class MyPushController extends BaseController {
             limitAdTrackingEnabled = false;
         }
 
-        if (pushProviderService.getPushPlatform(pushPlatform, sandbox) == null) {
-            throw new BadRequestException("Invalid platform: " + pushPlatform);
+        KPush.Platform platform = pushProviderService.getPlatform(osName, sandbox);
+
+        if (platform == null) {
+            throw new BadRequestException("Invalid os_name: " + osName);
         }
 
 
         Device device = new Device();
         device.setAdvertiserId(advertiserId);
         device.setDeviceUuid(deviceUuid);
-        device.setOsName(pushPlatform);
+        device.setOsName(osName);
         device.setLimitAdTrackingEnabled(limitAdTrackingEnabled);
 
         try {
-            PushDevice pushDevice = pushDeviceService.save(appId, getUser(), device, pushToken, sandbox);
+            PushDevice pushDevice = pushDeviceService.save(getUser(), device, pushToken, sandbox);
 
             if (pushDevice == null) {
                 throw new SystemException("Error creating push notification device");
@@ -220,8 +221,8 @@ public class MyPushController extends BaseController {
         Map<String,Object> map = new HashMap<>();
 
         map.put("device_uid", device.getUid());
-        map.put("platform_name", pushDevice.getPushPlatform());
-        map.put("push_token", pushDevice.getPushToken());
+        map.put("push_platform", pushDevice.getPlatform());
+        map.put("push_token", pushDevice.getToken());
         map.put("sandbox", pushDevice.isSandbox());
         return map;
     }

@@ -17,11 +17,9 @@ import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.AuthModelService;
 import com.bryllyant.kona.app.api.service.DeviceModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.KUser;
-import com.bryllyant.kona.app.entity.KUserType;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
@@ -34,6 +32,7 @@ import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserAuthService;
 import com.bryllyant.kona.app.service.UserDeviceService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.remote.service.KServiceClient;
@@ -865,7 +864,7 @@ public class AuthController extends BaseController {
         } else {
             user = new User();
 
-            user.setTypeId(KUserType.USER.getId());
+            user.setType(User.Type.USER);
             user.setEnabled(true);
             user.setPresence(KUser.Presence.OFFLINE);
         }

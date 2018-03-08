@@ -2,9 +2,9 @@ package com.bryllyant.kona.app.api.model.social.friendship;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.entity.KFriendshipStatus;
-import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.app.entity.KFriendship.Status;
 import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
 
@@ -17,7 +17,7 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
 	@RestdocsNotExpanded
 	private UserModel friend;
 
-	private KFriendshipStatus status;
+	private Status status;
 
 	private Date createdDate;
 
@@ -47,11 +47,11 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
         this.set("friend", friend);
     }
 
-    public KFriendshipStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(KFriendshipStatus status) {
+    public void setStatus(Status status) {
         this.set("status", status);
     }
 
@@ -62,10 +62,4 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
     public void setCreatedDate(Date createdDate) {
         this.set("createdDate", createdDate);
     }
-
-
-
-
-    
-
 }

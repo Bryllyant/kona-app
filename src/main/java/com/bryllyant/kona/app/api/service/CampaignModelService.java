@@ -1,15 +1,13 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.app.util.ApiUtil;
-import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.service.CampaignService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,12 +88,6 @@ public class CampaignModelService extends BaseModelService {
         
         model.fromBean(campaign);
         
-        // set model references
-        if (campaign.getAppId() != null) {
-            App app = appModelService.getApp(campaign.getAppId());
-            model.setApp(AppModel.create(app.getUid()));
-        }
-
         if (campaign.getPromoId() != null) {
             Promo promo = promoModelService.getPromo(campaign.getPromoId());
             model.setPromo(PromoModel.create(promo.getUid()));
@@ -142,14 +134,7 @@ public class CampaignModelService extends BaseModelService {
         util.copyModelToObject(model, campaign);
 
         for (String key : model.initializedKeys()) {
-
             switch (key) {
-
-                case "app":
-                    App app = appModelService.getApp(model.getApp());
-                    campaign.setAppId(app.getId());
-                    break;
-
                 case "partner":
                     Partner partner = partnerModelService.getPartner(model.getPartner());
                     campaign.setPartnerId(partner.getId());

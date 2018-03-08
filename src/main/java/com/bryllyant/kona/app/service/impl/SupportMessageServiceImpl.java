@@ -75,14 +75,8 @@ public class SupportMessageServiceImpl
 
 
     protected void sendNotification(SupportMessage message) {
-
     	App app = system.getSystemApp();
     	
-    	if (message.getAppId() != null) {
-    	    app = appService.fetchById(message.getAppId());
-    	}
-
-
     	try {
     		String template = "email.templates.support.supportMessage";
             

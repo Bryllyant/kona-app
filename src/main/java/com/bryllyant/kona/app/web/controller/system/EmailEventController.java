@@ -3,12 +3,15 @@
  */
 package com.bryllyant.kona.app.web.controller.system;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.bryllyant.kona.app.api.controller.BaseController;
+import com.bryllyant.kona.app.entity.Email;
+import com.bryllyant.kona.app.entity.EmailAddress;
+import com.bryllyant.kona.app.entity.EmailEvent;
+import com.bryllyant.kona.app.service.EmailAddressService;
+import com.bryllyant.kona.app.service.EmailService;
+import com.bryllyant.kona.app.service.SystemService;
+import com.bryllyant.kona.http.KServletUtil;
+import com.bryllyant.kona.templates.KTemplateException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,17 +23,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.bryllyant.kona.app.entity.KEmailEventType;
-import com.bryllyant.kona.http.KServletUtil;
-import com.bryllyant.kona.templates.KTemplateException;
-
-import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.entity.Email;
-import com.bryllyant.kona.app.entity.EmailAddress;
-import com.bryllyant.kona.app.entity.EmailEvent;
-import com.bryllyant.kona.app.service.EmailAddressService;
-import com.bryllyant.kona.app.service.EmailService;
-import com.bryllyant.kona.app.service.SystemService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 
 
 /**
@@ -70,7 +66,7 @@ public class EmailEventController extends BaseController {
     public void open(HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable final String messageId) {
-        EmailEvent event = createEvent(req, messageId, KEmailEventType.OPENED);
+        EmailEvent event = createEvent(req, messageId, EmailEvent.Type.OPENED);
         if (event != null) {
         	emailService.addEvent(event);
         }
@@ -91,7 +87,7 @@ public class EmailEventController extends BaseController {
     public void forward(HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable final String messageId) {
-        EmailEvent event = createEvent(req, messageId, KEmailEventType.FORWARDED);
+        EmailEvent event = createEvent(req, messageId, EmailEvent.Type.FORWARDED);
         if (event != null) {
         	emailService.addEvent(event);
         }
@@ -112,7 +108,7 @@ public class EmailEventController extends BaseController {
     public void print(HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable final String messageId) {
-        EmailEvent event = createEvent(req, messageId, KEmailEventType.PRINTED);
+        EmailEvent event = createEvent(req, messageId, EmailEvent.Type.PRINTED);
         if (event != null) {
         	emailService.addEvent(event);
         }
@@ -128,14 +124,13 @@ public class EmailEventController extends BaseController {
 
 
     @RequestMapping(value="/click/{messageId}", method=RequestMethod.GET)
-    //@ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public void click(HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable final String messageId,
     		@RequestParam(value="u", required=true) String redirectUrl) {
         
-        EmailEvent event = createEvent(req, messageId, KEmailEventType.CLICKED);
+        EmailEvent event = createEvent(req, messageId, EmailEvent.Type.CLICKED);
         if (event != null) {
         	event.setTarget(redirectUrl);
         	emailService.addEvent(event);
@@ -159,7 +154,7 @@ public class EmailEventController extends BaseController {
             HttpServletResponse resp,
             @PathVariable final String messageId) {
         
-        EmailEvent event = createEvent(req, messageId, KEmailEventType.UNSUBSCRIBED);
+        EmailEvent event = createEvent(req, messageId, EmailEvent.Type.UNSUBSCRIBED);
         if (event != null) {
         	emailService.addEvent(event);
         }
@@ -176,7 +171,7 @@ public class EmailEventController extends BaseController {
     
 
     
-    private EmailEvent createEvent(HttpServletRequest req, String uid, KEmailEventType type) {
+    private EmailEvent createEvent(HttpServletRequest req, String uid, EmailEvent.Type type) {
         Date now = new Date();
         Email email = emailService.fetchByUid(uid);
         if (email == null) {
@@ -186,7 +181,7 @@ public class EmailEventController extends BaseController {
         
         EmailEvent event = new EmailEvent();
         event.setEmailId(email.getId());
-        event.setTypeId(type.getId());
+        event.setType(type);
         event.setHostname(KServletUtil.getClientHostname(req));
         event.setUserAgent(KServletUtil.getClientUserAgent(req));
         event.setEventDate(now);

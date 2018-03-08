@@ -1,7 +1,6 @@
 package com.bryllyant.kona.app.api.model.sales.campaign;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
 import com.bryllyant.kona.data.model.KEntityModel;
@@ -15,9 +14,6 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
     private String uid;
 
     @RestdocsNotExpanded
-    private AppModel app;
-
-    @RestdocsNotExpanded
     private PromoModel promo;
 
     @RestdocsNotExpanded
@@ -27,12 +23,12 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
     private String name;
     private String slug;
     private String description;
+    private Integer conversionCount;
     private boolean enabled;
     private Date startDate;
     private Date endDate;
     private Date createdDate;
     private Date updatedDate;
-    
 
     public static CampaignModel create(String uid) {
         CampaignModel model = new CampaignModel();
@@ -48,14 +44,6 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
     @Override
     public void setUid(String uid) {
         this.set("uid", uid);
-    }
-
-    public AppModel getApp() {
-        return app;
-    }
-
-    public void setApp(AppModel app) {
-        this.set("app", app);
     }
 
     public PromoModel getPromo() {

@@ -14,7 +14,6 @@ import com.bryllyant.kona.app.service.AppCredsService;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.EntityNameRuleService;
 import com.bryllyant.kona.app.service.KAbstractAppService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.util.KInflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Service(AppService.SERVICE_PATH)
@@ -47,15 +45,11 @@ public class AppServiceImpl
     @Autowired
     private ApiVersionService apiVersionService;
 
-
-
     @Override
     @SuppressWarnings("unchecked")
     protected AppMapper getMapper() {
         return appMapper;
     }
-
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -63,14 +57,10 @@ public class AppServiceImpl
         return appCredsService;
     }
 
-
-
     @Override
     protected AppCreds getNewObject() {
         return new AppCreds();
     }
-
-
 
     @Override
     protected Long toApiVersionId(String version) {

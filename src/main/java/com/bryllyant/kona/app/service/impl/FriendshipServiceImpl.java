@@ -5,17 +5,13 @@ import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.app.entity.FriendshipEvent;
 import com.bryllyant.kona.app.entity.FriendshipExample;
 import com.bryllyant.kona.app.entity.KFriendshipEvent;
-import com.bryllyant.kona.app.entity.KFriendshipEventType;
 import com.bryllyant.kona.app.service.FriendshipEventService;
 import com.bryllyant.kona.app.service.FriendshipService;
 import com.bryllyant.kona.app.service.KAbstractFriendshipService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(FriendshipService.SERVICE_PATH)
 public class FriendshipServiceImpl 
@@ -74,9 +70,7 @@ public class FriendshipServiceImpl
 	protected void notifyEvent(Friendship friendship, KFriendshipEvent event) {
 		logger.debug("notifyEvent called: friendship: {}  friendshipEvent: {}", friendship, event);
 		
-		KFriendshipEventType type = KFriendshipEventType.getInstance(event.getTypeId());
-		
-		switch (type) {
+		switch (event.getType()) {
 		case FOLLOW:
 			break;
 			

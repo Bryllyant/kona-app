@@ -133,6 +133,13 @@ public class UserServiceImpl
     }
 
     @Override
+    public User getSystemUser() {
+        String username = config.getString("system.username");
+        logger.debug("system username: {}", username);
+        return fetchByUsername(username);
+    }
+
+    @Override
 	public boolean isUsernameAvailable(String name) {
 	    // usernames cannot be null or be empty string
         if (name == null || name.length() == 0) {
