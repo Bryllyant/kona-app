@@ -3,8 +3,6 @@ package com.bryllyant.kona.app.api.controller;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.util.ApiUtil;
-import com.bryllyant.kona.app.util.FileUtil;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.ApiLog;
 import com.bryllyant.kona.app.entity.App;
@@ -19,7 +17,10 @@ import com.bryllyant.kona.app.service.KAuthException;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
+import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.FileUtil;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KModel;
 import com.bryllyant.kona.http.KServletUtil;
@@ -68,6 +69,9 @@ public abstract class BaseController {
 
     @Autowired
     private AppCredsService appCredsService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Autowired
     private SystemService system;
@@ -462,11 +466,18 @@ public abstract class BaseController {
             }
         }
 
+        if (accessToken != null) {
+            Token token = tokenService.fetchByAccessToken(accessToken);
+
+            if (token != null && !tokenService.isValid(token, false)) {
+                client.setTokenId(token.getId());
+            }
+        }
+
         client.setAppId(appId);
         client.setUserId(userId);
         client.setDeviceId(deviceId);
         client.setAppClientId(apiAuthService.getClientId(req));
-        client.setAccessToken(accessToken);
         client.setHostname(KServletUtil.getClientHostname(req));
         client.setUserAgent(KServletUtil.getClientUserAgent(req));
         client.setLatitude(KServletUtil.getClientLatitude(req));
