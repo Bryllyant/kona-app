@@ -36,10 +36,9 @@ public class PartnerModel extends KJsonModel implements KEntityModel {
 
     private Boolean enabled;
     private Integer population;
-    private Date createdDate;
     private Date deletedDate;
+    private Date createdDate;
     private Date updatedDate;
-    
 
     public static PartnerModel create(String uid) {
         PartnerModel model = new PartnerModel();
@@ -161,20 +160,20 @@ public class PartnerModel extends KJsonModel implements KEntityModel {
         this.set("population", population);
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.set("createdDate", createdDate);
-    }
-
     public Date getDeletedDate() {
         return deletedDate;
     }
 
     public void setDeletedDate(Date deletedDate) {
         this.set("deletedDate", deletedDate);
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.set("createdDate", createdDate);
     }
 
     public Date getUpdatedDate() {

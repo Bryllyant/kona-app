@@ -1,13 +1,9 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.app.AppModel;
-import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.app.util.ApiUtil;
-import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.Product;
 import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.service.PromoService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +19,6 @@ public class PromoModelService extends BaseModelService {
     
     @Autowired
     private PromoService promoService;
-    
-    @Autowired
-    private AppModelService appModelService;
-
-    @Autowired
-    private ProductModelService productModelService;
 
     @Autowired
     private ApiUtil util;
@@ -81,18 +71,6 @@ public class PromoModelService extends BaseModelService {
         
         model.fromBean(promo);
         
-        // set model references
-        if (promo.getAppId() != null) {
-            App app = appModelService.getApp(promo.getAppId());
-            model.setApp(AppModel.create(app.getUid()));
-        }
-
-        // set model references
-        if (promo.getProductId() != null) {
-            Product product = productModelService.getProduct(promo.getProductId());
-            model.setProduct(ProductModel.create(product.getUid()));
-        }
-
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
         }
@@ -132,15 +110,6 @@ public class PromoModelService extends BaseModelService {
 
             switch (key) {
 
-                case "app":
-                    App app = appModelService.getApp(model.getApp());
-                    promo.setAppId(app.getId());
-                    break;
-
-                case "product":
-                    Product product = productModelService.getProduct(model.getProduct());
-                    promo.setProductId(product.getId());
-                    break;
             }
 
         }

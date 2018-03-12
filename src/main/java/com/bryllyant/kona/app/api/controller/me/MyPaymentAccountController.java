@@ -92,14 +92,12 @@ public class MyPaymentAccountController extends BaseController {
         String cardToken = (String) stripeToken.get("id");
         //String cardLast4 = (String) card.get("last4");
         
-        Long appId = getAppId(req);
-
         User user = getUser();
         
         // FIXME: This creates a PaymentAccount object behind the scenes.  Stripe needs to be
         // completely hidden underneath PaymentAccount with all Stripe-specific services accessed via
         // a generic interface.
-        stripeService.updateStripeUid(appId, user.getId(), cardToken);
+        stripeService.updateStripeUid(user.getId(), cardToken);
         
         return created(getResultObject("token", cardToken));
     }

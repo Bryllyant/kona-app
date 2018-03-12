@@ -7,7 +7,7 @@ import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
-import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -21,14 +21,19 @@ public class RegistrationModel extends KJsonModel implements KEntityModel {
 
     @RestdocsNotExpanded
     private AppModel app;
+
     @RestdocsNotExpanded
     private AccountModel account;
+
     @RestdocsNotExpanded
     private UserModel user;
+
     @RestdocsNotExpanded
     private DeviceModel device;
+
     @RestdocsNotExpanded
-    private CampaignModel campaign;
+    private CampaignChannelModel campaignChannel;
+
     @RestdocsNotExpanded
     private UserModel referredBy;
 
@@ -51,6 +56,7 @@ public class RegistrationModel extends KJsonModel implements KEntityModel {
     private Date registeredDate;
     private Date deactivatedDate;
     private Date deletedDate;
+    private Date updatedDate;
     private Date createdDate;
 
 
@@ -115,12 +121,12 @@ public class RegistrationModel extends KJsonModel implements KEntityModel {
         this.set("device", device);
     }
 
-    public CampaignModel getCampaign() {
-        return campaign;
+    public CampaignChannelModel getCampaignChannel() {
+        return campaignChannel;
     }
 
-    public void setCampaign(CampaignModel campaign) {
-        this.set("campaign", campaign);
+    public void setCampaignChannel(CampaignChannelModel campaignChannel) {
+        this.set("campaignChannel", campaignChannel);
     }
 
     public UserModel getReferredBy() {
@@ -281,6 +287,14 @@ public class RegistrationModel extends KJsonModel implements KEntityModel {
 
     public void setDeletedDate(Date deletedDate) {
         this.set("deletedDate", deletedDate);
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.set("updatedDate", updatedDate);
     }
 
     public Date getCreatedDate() {

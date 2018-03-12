@@ -1,8 +1,6 @@
 package com.bryllyant.kona.app.api.model.sales.campaign;
 
-import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
-import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
+import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -12,14 +10,8 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     private String uid;
-
-    @RestdocsNotExpanded
-    private PromoModel promo;
-
-    @RestdocsNotExpanded
-    private PartnerModel partner;
-
-
+    private Long ownerId;
+    private Campaign.Goal goal;
     private String name;
     private String slug;
     private String description;
@@ -46,20 +38,20 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public PromoModel getPromo() {
-        return promo;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setPromo(PromoModel promo) {
-        this.set("promo", promo);
+    public void setOwnerId(Long ownerId) {
+        this.set("ownerId", ownerId);
     }
 
-    public PartnerModel getPartner() {
-        return partner;
+    public Campaign.Goal getGoal() {
+        return goal;
     }
 
-    public void setPartner(PartnerModel partner) {
-        this.set("partner", partner);
+    public void setGoal(Campaign.Goal goal) {
+        this.set("goal", goal);
     }
 
     public String getName() {
@@ -84,6 +76,14 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
 
     public void setDescription(String description) {
         this.set("description", description);
+    }
+
+    public Integer getConversionCount() {
+        return conversionCount;
+    }
+
+    public void setConversionCount(Integer conversionCount) {
+        this.set("conversionCount", conversionCount);
     }
 
     public boolean isEnabled() {

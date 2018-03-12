@@ -13,7 +13,6 @@ import com.bryllyant.kona.app.service.KAbstractSalesLeadService;
 import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.SalesLeadService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,10 @@ import java.util.Map;
 
 @Service(SalesLeadService.SERVICE_PATH)
 public class SalesLeadServiceImpl 
-		extends KAbstractSalesLeadService<SalesLead, SalesLeadExample, SalesLeadMapper>
+		extends KAbstractSalesLeadService<
+        SalesLead,
+        SalesLeadExample,
+        SalesLeadMapper>
 		implements SalesLeadService {
 	
 	private static Logger logger = LoggerFactory.getLogger(SalesLeadServiceImpl.class);
@@ -41,32 +43,17 @@ public class SalesLeadServiceImpl
     @Autowired
     private SystemService system;
 
-
-
-
     @Override @SuppressWarnings("unchecked")
     protected SalesLeadMapper getMapper() {
         return salesLeadMapper;
     }
     
-
-
     @Override
     protected SalesLeadExample getEntityExampleObject() { return new SalesLeadExample(); }
 
-    
-
-
     protected void sendNotification(SalesLead lead) {
 
-    	App app = null;
-
-    	if (lead.getRefAppId() != null) {
-    		app = appService.fetchById(lead.getRefAppId());
-    	} else {
-    		app = system.getSystemApp();
-    	}
-
+        App app = system.getSystemApp();
 
     	try {
     		String templateName = "email.templates.sales.salesLead";

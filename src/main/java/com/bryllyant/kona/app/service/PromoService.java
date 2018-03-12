@@ -3,12 +3,10 @@
  */
 package com.bryllyant.kona.app.service;
 
-import com.bryllyant.kona.app.entity.Account;
-import com.bryllyant.kona.app.entity.Product;
 import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.remote.service.KService;
 
-public interface PromoService extends KService, KPromoService<Promo,Account,Product> {
-	public static final String SERVICE_PATH = "rpc/PromoService";
+public interface PromoService extends KService, KPromoService<Promo> {
+	String SERVICE_PATH = "rpc/PromoService";
 	
 }

@@ -1,7 +1,9 @@
 package com.bryllyant.kona.app.web.service;
 
+import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
+import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageService;
 import com.bryllyant.kona.app.service.LandingPageTemplateService;
@@ -38,6 +40,9 @@ public class LandingPageResourceResolver extends PathResourceResolver{
 
     @Autowired
     LandingPageTemplateService landingPageTemplateService;
+
+    @Autowired
+    CampaignChannelService campaignChannelService;
 
     @Autowired
     FileService fileService;
@@ -112,7 +117,9 @@ public class LandingPageResourceResolver extends PathResourceResolver{
 
                 // TODO: download and unpack template
                 //String html = "<html><head></head><body><h1>TEST</h1></body></html>";
-                LandingPage page = landingPageService.fetchByUrlPath(rootPath);
+                CampaignChannel channel = campaignChannelService.fetchByUid(rootPath);
+
+                LandingPage page = landingPageService.fetchById(channel.getLandingPageId());
 
                 if (page == null || page.getTemplateId() == null) {
                     logger.info("Landing page not found for url path: {}", rootPath);
@@ -205,8 +212,12 @@ public class LandingPageResourceResolver extends PathResourceResolver{
 
             // if we don't get /hello/page-template-name/ then return null
             String pathInfo = request.getPathInfo();
+            String queryString = request.getQueryString();
 
             String[] pathParts = pathInfo.split("/");
+
+
+            // add 2 to the length of [hello] to get to the beginning of [page-template-name]
             String rawRequestPath = pathInfo.substring(2 + pathParts[1].length());
 
             logger.debug("resolveResourceInternal: rawRequestPath: {}", rawRequestPath);
@@ -222,6 +233,10 @@ public class LandingPageResourceResolver extends PathResourceResolver{
                     return null;
                 }
             }
+
+            //if (queryString != null) {
+            //    requestPath += queryString;
+            //}
 
             result = super.resolveResourceInternal(request, requestPath, locations, chain);
         } catch (Throwable t) {

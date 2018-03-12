@@ -21,7 +21,6 @@ import com.bryllyant.kona.app.service.PromoService;
 import com.bryllyant.kona.app.service.PurchaseService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service(PurchaseService.SERVICE_PATH)
-public class PurchaseServiceImpl 
-		extends KAbstractPurchaseService<Purchase, PurchaseExample, PurchaseMapper,Product,Promo,User,Account>
+public class PurchaseServiceImpl
+        extends KAbstractPurchaseService<
+            Purchase,
+            PurchaseExample,
+            PurchaseMapper,
+            Promo,
+            User>
 		implements PurchaseService {
 	
 	private static Logger logger = LoggerFactory.getLogger(PurchaseServiceImpl.class);
@@ -62,48 +66,28 @@ public class PurchaseServiceImpl
     private AccountService accountService;
     
    
-
-
     @Override @SuppressWarnings("unchecked")
     protected PurchaseMapper getMapper() {
         return purchaseMapper;
     }
-    
-
     
     @Override
     protected Purchase getNewObject() {
     	return new Purchase();
     }
     
-
-    
     @Override @SuppressWarnings("unchecked")
     protected PromoService getPromoService() {
         return promoService;
     }
     
-
-
-    @Override @SuppressWarnings("unchecked")
-    protected ProductService getProductService() {
-        return productService;
-    }
-    
-
-
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
-    
-
 
     @Override
     protected PurchaseExample getEntityExampleObject() { return new PurchaseExample(); }
-
-    
-
 
     protected void sendPendingProductExpirationEmail(Purchase purchase, int days) {
         Account account = accountService.fetchById(purchase.getAccountId());
@@ -112,13 +96,7 @@ public class PurchaseServiceImpl
         
     	Product product = productService.fetchById(purchase.getProductId());
         
-    	App app = null;
-
-    	if (purchase.getAppId() != null) {
-    		app = appService.fetchById(purchase.getAppId());
-    	} else {
-    		app = system.getSystemApp();
-    	}
+    	App app = appService.getSystemApp();
 
     	try {
     		String templateName = "email.templates.sales.pendingProductExpiration";

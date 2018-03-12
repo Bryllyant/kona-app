@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.model.sales.campaign;
+package com.bryllyant.kona.app.api.model.sales.landingPage;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
@@ -11,13 +11,10 @@ public class LandingPageTemplateModel extends KJsonModel implements KEntityModel
     private static final long serialVersionUID = 1L;
 
     private String uid;
-
     @RestdocsNotExpanded
-    private UserModel addedBy;
-
+    private UserModel owner;
     private String url;
     private String name;
-    private Integer version;
     private String slug;
     private String description;
     private Date createdDate;
@@ -39,12 +36,12 @@ public class LandingPageTemplateModel extends KJsonModel implements KEntityModel
         this.set("uid", uid);
     }
 
-    public UserModel getAddedBy() {
-        return addedBy;
+    public UserModel getOwner() {
+        return owner;
     }
 
-    public void setAddedBy(UserModel addedBy) {
-        this.set("addedBy", addedBy);
+    public void setOwner(UserModel owner) {
+        this.set("owner", owner);
     }
 
     public String getUrl() {
@@ -61,14 +58,6 @@ public class LandingPageTemplateModel extends KJsonModel implements KEntityModel
 
     public void setName(String name) {
         this.set("name", name);
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.set("version", version);
     }
 
     public String getSlug() {

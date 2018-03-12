@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.api.controller.sales;
 
-import com.bryllyant.kona.app.service.ProductService;
+import com.bryllyant.kona.app.service.ProductSkuService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.util.KJsonUtil;
 import org.slf4j.Logger;
@@ -29,17 +29,13 @@ import java.util.Map;
 public class ProductsController extends SalesController {
 	private static Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
-
-	
     @Autowired
-    private ProductService productService;
+    private ProductSkuService productSkuService;
 	
     @Autowired
     private SystemService system;
 	
 
-
-	   
     @RequestMapping(method=RequestMethod.GET)
     public ResponseEntity<List<Map<String,Object>>> fetchProducts(HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
@@ -73,7 +69,7 @@ public class ProductsController extends SalesController {
             limit = 99999;
         }
 
-        return ok(toProductMapList(
-                productService.fetchByCriteria(offset, limit, sortOrder, filter, distinct)));
+        return ok(toProductSkuMapList(
+                productSkuService.fetchByCriteria(offset, limit, sortOrder, filter, distinct)));
     }
 }

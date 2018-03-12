@@ -1,6 +1,6 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.sales.campaign.LandingPageTemplateModel;
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.File;
@@ -94,9 +94,9 @@ public class LandingPageTemplateModelService extends BaseModelService {
             model.setUrl(util.toAbsoluteUrl(file.getUrlPath()));
         }
 
-        if (template.getAddedById() != null) {
-            User addedBy = userModelService.getUser(template.getAddedById());
-            model.setAddedBy(UserModel.create(addedBy.getUid()));
+        if (template.getOwnerId() != null) {
+            User addedBy = userModelService.getUser(template.getOwnerId());
+            model.setOwner(UserModel.create(addedBy.getUid()));
         }
 
         if (includeKeys != null && includeKeys.length > 0) {
@@ -139,8 +139,8 @@ public class LandingPageTemplateModelService extends BaseModelService {
             switch (key) {
 
                 case "addedBy":
-                    User addedBy = userModelService.getUser(model.getAddedBy());
-                    template.setAddedById(addedBy.getId());
+                    User addedBy = userModelService.getUser(model.getOwner());
+                    template.setOwnerId(addedBy.getId());
                     break;
             }
 

@@ -334,7 +334,9 @@ public class ValidationController extends BaseController {
 			HttpServletRequest req,
 			@PathVariable String promoCode,
 			@RequestParam(required=false) Long accountId,
-			@RequestParam(required=false) Long productId) {
+			@RequestParam(required=false) Long productId,
+            @RequestParam(required=false) Long productCategoryId,
+            @RequestParam(required=false) Long productSkuId) {
 		logApiRequest(req, "GET /system/validations/promo-codes/" + promoCode);
 
 		if (promoCode == null) {
@@ -354,7 +356,13 @@ public class ValidationController extends BaseController {
 		}
 
 		
-		Promo promo = promoService.fetchByPromoCode(promoCode, account, product);
+		Promo promo = promoService.fetchAndValidateByPromoCode(
+		        promoCode,
+                accountId,
+                productCategoryId,
+                productId,
+                productSkuId
+        );
 
 		boolean valid = promo != null;
 		

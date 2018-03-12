@@ -3,12 +3,12 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
-import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
 import com.bryllyant.kona.app.api.model.user.RegistrationModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.Campaign;
+import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
@@ -43,7 +43,7 @@ public class RegistrationModelService extends BaseModelService {
     private DeviceModelService deviceModelService;
 
     @Autowired
-    private CampaignModelService campaignModelService;
+    private CampaignChannelModelService campaignChannelModelService;
 
     @Autowired
     private PartnerModelService partnerModelService;
@@ -130,9 +130,9 @@ public class RegistrationModelService extends BaseModelService {
             model.setDevice(DeviceModel.create(device.getUid()));
         }
 
-        if (registration.getCampaignId() != null) {
-            Campaign campaign = campaignModelService.getCampaign(registration.getCampaignId());
-            model.setCampaign(CampaignModel.create(campaign.getUid()));
+        if (registration.getCampaignChannelId() != null) {
+            CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(registration.getCampaignChannelId());
+            model.setCampaignChannel(CampaignChannelModel.create(campaignChannel.getUid()));
         }
 
 
@@ -206,9 +206,9 @@ public class RegistrationModelService extends BaseModelService {
                     registration.setDeviceId(device.getId());
                     break;
 
-                case "campaign":
-                    Campaign campaign = campaignModelService.getCampaign(model.getCampaign());
-                    registration.setCampaignId(campaign.getId());
+                case "campaignChannel":
+                    CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(model.getCampaignChannel());
+                    registration.setCampaignChannelId(campaignChannel.getId());
                     break;
             }
 

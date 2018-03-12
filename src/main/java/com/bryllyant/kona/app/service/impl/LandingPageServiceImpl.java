@@ -23,17 +23,8 @@ public class LandingPageServiceImpl
 	@Autowired
 	private LandingPageMapper mapper;
 
-	@Override
-    protected LandingPage getNewObject() {
-	    return new LandingPage();
-    }
-
 	@Override @SuppressWarnings("unchecked")
 	protected LandingPageMapper getMapper() {
 		return mapper;
 	}
-	
-
-	 @Override
-    protected LandingPageExample getEntityExampleObject() { return new LandingPageExample(); }
 }

@@ -1,7 +1,6 @@
 package com.bryllyant.kona.app.api.controller.me;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.media.MediaModel;
@@ -12,7 +11,6 @@ import com.bryllyant.kona.app.api.service.DeviceModelService;
 import com.bryllyant.kona.app.api.service.MediaModelService;
 import com.bryllyant.kona.app.api.service.PositionModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Position;
@@ -24,7 +22,6 @@ import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.app.util.KGeoUtil;
-import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;
@@ -192,24 +189,7 @@ public class MeController extends BaseController {
 
 	    User user = getUser();
 
-	    Long appId = getAppId(req);
-
 	    Long deviceId = null;
-	    
-	    AppModel appModel = positionRequest.getApp();
-
-        if (appModel != null) {
-            try {
-                App app = appModelService.getApp(appModel);
-                
-                // sanity check
-                if (!app.getId().equals(appId)) {
-                    throw new BadRequestException("App in request body does not match currently authenticated app.");
-                }
-            } catch (NotFoundException e) {
-                // ignore
-            }
-        }
 	    
 	    Device device = getOrCreateDevice(positionRequest.getDevice());
 
@@ -229,8 +209,6 @@ public class MeController extends BaseController {
             }
 
             Position position = positionModelService.toEntity(positionModel);
-
-            position.setAppId(getAppId(req));
 
             position.setUserId(user.getId());
             

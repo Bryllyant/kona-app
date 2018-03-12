@@ -1,11 +1,7 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
-import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
-import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
 import com.bryllyant.kona.app.entity.Campaign;
-import com.bryllyant.kona.app.entity.Partner;
-import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -88,16 +84,6 @@ public class CampaignModelService extends BaseModelService {
         
         model.fromBean(campaign);
         
-        if (campaign.getPromoId() != null) {
-            Promo promo = promoModelService.getPromo(campaign.getPromoId());
-            model.setPromo(PromoModel.create(promo.getUid()));
-        }
-
-        if (campaign.getPartnerId() != null) {
-            Partner partner = partnerModelService.getPartner(campaign.getPartnerId());
-            model.setPartner(PartnerModel.create(partner.getUid()));
-        }
-
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
         }
@@ -135,15 +121,7 @@ public class CampaignModelService extends BaseModelService {
 
         for (String key : model.initializedKeys()) {
             switch (key) {
-                case "partner":
-                    Partner partner = partnerModelService.getPartner(model.getPartner());
-                    campaign.setPartnerId(partner.getId());
-                    break;
 
-                case "promo":
-                    Promo promo = promoModelService.getPromo(model.getPromo());
-                    campaign.setPromoId(promo.getId());
-                    break;
             }
 
         }

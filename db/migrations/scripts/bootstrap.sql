@@ -565,7 +565,7 @@ CREATE TABLE `kona__registration` (
   `account_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `device_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `referred_by_id` bigint(20) unsigned DEFAULT NULL,
   `app_client_id` varchar(255) default NULL, -- app client_id
   `username` varchar(255) default NULL,
@@ -603,7 +603,7 @@ CREATE TABLE `kona__registration` (
 
   KEY `ix_kona__registration_account` (`account_id`),
 
-  KEY `ix_kona__registration_campaign` (`campaign_id`),
+  KEY `ix_kona__registration_campaign_channel` (`campaign_channel_id`),
 
   KEY `ix_kona__registration_referred_by` (`referred_by_id`),
 
@@ -620,8 +620,8 @@ CREATE TABLE `kona__registration` (
   CONSTRAINT `fk_kona__registration_app` FOREIGN KEY (`app_id`) 
         REFERENCES `kona__app` (`id`),
 
-  CONSTRAINT `fk_kona__registration_campaign` FOREIGN KEY (`campaign_id`) 
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__registration_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__registration_account` FOREIGN KEY (`account_id`)
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
@@ -787,7 +787,7 @@ CREATE TABLE `kona__short_url` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `domain` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
   `short_url` varchar(255) NOT NULL,
@@ -809,14 +809,14 @@ CREATE TABLE `kona__short_url` (
 
   KEY `ix_kona__short_url_user` (`user_id`),
 
-  KEY `ix_kona__short_url_campaign` (`campaign_id`),
+  KEY `ix_kona__short_url_campaign_channel` (`campaign_channel_id`),
 
   KEY `ix_kona__short_url_long_url` (`long_url`(255)),
 
   FULLTEXT `ft_kona__short_url` (`uid`,`domain`,`path`,`short_url`,`long_url`,`description`),
 
-  CONSTRAINT `fk_kona__short_url_campaign` FOREIGN KEY (`campaign_id`)
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__short_url_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__short_url_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -1115,7 +1115,6 @@ CREATE TABLE `kona__media` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `parent_id` bigint(20) unsigned default NULL,
-  `app_id` bigint(20) unsigned DEFAULT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `file_id` bigint(20) unsigned DEFAULT NULL,
@@ -1161,8 +1160,6 @@ CREATE TABLE `kona__media` (
 
   KEY `ux_kona__media_parent` (`parent_id`),
 
-  KEY `ix_kona__media_app` (`app_id`),
-
   KEY `ix_kona__media_user` (`user_id`),
 
   KEY `ix_kona__media_account` (`account_id`),
@@ -1184,9 +1181,6 @@ CREATE TABLE `kona__media` (
 
   CONSTRAINT `fk_kona__media_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-
-  CONSTRAINT `fk_kona__media_app` FOREIGN KEY (`app_id`)
-        REFERENCES `kona__app` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__media_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1270,7 +1264,7 @@ CREATE TABLE `kona__place_category` (
 CREATE TABLE `kona__place` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `added_by_id` bigint(20) unsigned default NULL,
+  `owner_id` bigint(20) unsigned default NULL,
   `category_id` bigint(20) unsigned default NULL,
   `name` varchar(255) DEFAULT NULL,
   `slug` varchar(255) DEFAULT NULL,
@@ -1315,7 +1309,7 @@ CREATE TABLE `kona__place` (
 
   SPATIAL `ix_kona__place_coords` (coords),
 
-  KEY `ix_kona__place_added_by` (`added_by_id`),
+  KEY `ix_kona__place_owner` (`owner_id`),
 
   KEY `ux_kona__place_category` (`category_id`),
 
@@ -1326,7 +1320,7 @@ CREATE TABLE `kona__place` (
   CONSTRAINT `fk_kona__place_category` FOREIGN KEY (`category_id`) 
 		REFERENCES `kona__place_category` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__place_added_by` FOREIGN KEY (`added_by_id`) 
+  CONSTRAINT `fk_kona__place_owner` FOREIGN KEY (`owner_id`)
 		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__place_photo` FOREIGN KEY (`photo_id`) 
@@ -1394,7 +1388,6 @@ CREATE TABLE `kona__place_plan` (
 CREATE TABLE `kona__position` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `device_id` bigint(20) unsigned DEFAULT NULL,
   `place_id` bigint(20) unsigned DEFAULT NULL,
@@ -1435,8 +1428,6 @@ CREATE TABLE `kona__position` (
 
   UNIQUE KEY `ux_kona__position_uid` (`uid`),
 
-  KEY `ix_kona__position_app` (`app_id`),
-
   KEY `ix_kona__position_device` (`device_id`),
 
   KEY `ix_kona__position_place` (`place_id`),
@@ -1451,10 +1442,7 @@ CREATE TABLE `kona__position` (
 
   SPATIAL `ix_kona__position_coords` (coords),
 
-  CONSTRAINT `fk_kona__position_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__position_device` FOREIGN KEY (`device_id`) 
+  CONSTRAINT `fk_kona__position_device` FOREIGN KEY (`device_id`)
         REFERENCES `kona__device` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__position_place` FOREIGN KEY (`place_id`) 
@@ -1574,8 +1562,7 @@ CREATE TABLE `kona__support_message` (
 CREATE TABLE `kona__sms` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
-  `channel_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `to_user_id` bigint(20) unsigned DEFAULT NULL,
   `to_number` varchar(255) NOT NULL,
   `from_number` varchar(255) NOT NULL,
@@ -1602,24 +1589,15 @@ CREATE TABLE `kona__sms` (
 
   UNIQUE KEY `ix_kona__sms_message_sid` (`message_sid`),
 
-  UNIQUE KEY `ix_kona__sms_campaign_channel_to` (`campaign_id`,`channel_id`,`to_number`),
-
-
-
-  KEY `ix_kona__sms_campaign` (`campaign_id`),
+  UNIQUE KEY `ix_kona__sms_campaign_channel_to` (`campaign_channel_id`,`to_number`),
 
   KEY `ix_kona__sms_to_user` (`to_user_id`),
 
   KEY `ix_kona__sms_to_number` (`to_number`),
 
-  KEY `ix_kona__sms_campaign_channel` (`channel_id`),
-
   FULLTEXT KEY `ft_kona_sms` (uid,to_number,from_number,message,media_urls,message_sid,status,error_code,error_message),
 
-  CONSTRAINT `fk_kona__sms_campaign` FOREIGN KEY (`campaign_id`)
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__sms_campaign_channel` FOREIGN KEY (`channel_id`)
+  CONSTRAINT `fk_kona__sms_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__sms_to_user` FOREIGN KEY (`to_user_id`) 
@@ -1632,8 +1610,7 @@ CREATE TABLE `kona__sms` (
 CREATE TABLE `kona__email` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
-  `channel_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `group_id` bigint(20) unsigned DEFAULT NULL,
   `to_address_id` bigint(20) unsigned DEFAULT NULL,
   `content_id` bigint(20) unsigned DEFAULT NULL,
@@ -1662,15 +1639,11 @@ CREATE TABLE `kona__email` (
 
   UNIQUE KEY `ix_kona__email_ses_id` (`ses_id`),
 
-  UNIQUE KEY `ix_kona__email_channel_to` (`channel_id`,`to_address_id`),
-
-  KEY `ix_kona__email_campaign` (`campaign_id`),
+  UNIQUE KEY `ix_kona__email_campaign_channel_to` (`campaign_channel_id`,`to_address_id`),
 
   KEY `ix_kona__email_group` (`group_id`),
 
   KEY `ix_kona__email_to_address` (`to_address_id`),
-
-  KEY `ix_kona__email_campaign_channel` (`channel_id`),
 
   KEY `ix_kona__email_content` (`content_id`),
 
@@ -1679,10 +1652,7 @@ CREATE TABLE `kona__email` (
   CONSTRAINT `fk_kona__email_content` FOREIGN KEY (`content_id`)
         REFERENCES `kona__email_content` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__email_campaign` FOREIGN KEY (`campaign_id`) 
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__email_campaign_channel` FOREIGN KEY (`channel_id`)
+  CONSTRAINT `fk_kona__email_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__email_group` FOREIGN KEY (`group_id`) 
@@ -1961,8 +1931,7 @@ CREATE TABLE `kona__push` (
   `uid` varchar(255) NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `device_id` bigint(20) unsigned NOT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
-  `channel_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `platform` varchar(255) NOT NULL,
   `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `provider_message_id` varchar(255) default NULL, -- unique identifier from provider to track this message
@@ -1990,20 +1959,15 @@ CREATE TABLE `kona__push` (
 
   UNIQUE KEY `ux_kona__push_provider_message_id` (`provider_message_id`),
 
+  UNIQUE KEY `ix_kona__push_campaign_channel_device` (`campaign_channel_id`,`device_id`),
+
   KEY `ix_kona__push_user` (`user_id`),
 
   KEY `ix_kona__push_device` (`device_id`),
 
-  KEY `ix_kona__push_campaign` (`campaign_id`),
-
-  KEY `ix_kona__push_campaign_channel` (`channel_id`),
-
   FULLTEXT KEY `ft_kona_push` (uid,platform,provider_message_id,title,message,status,error_code,error_message),
 
-  CONSTRAINT `fk_kona__push_campaign` FOREIGN KEY (`campaign_id`)
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__push_campaign_channel` FOREIGN KEY (`channel_id`)
+  CONSTRAINT `fk_kona__push_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__push_user` FOREIGN KEY (`user_id`)
@@ -2311,34 +2275,33 @@ CREATE TABLE `kona__invitation` (
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__payment_account_type` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `id` (`id`),
-
-  UNIQUE KEY `ux_kona__payment_account_type_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--CREATE TABLE `kona__payment_account_type` (
+--  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--  `name` varchar(32) NOT NULL,
+--  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--
+--  PRIMARY KEY (`id`),
+--
+--  UNIQUE KEY `id` (`id`),
+--
+--  UNIQUE KEY `ux_kona__payment_account_type_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__payment_account` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `type_id` bigint(20) unsigned NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
-  `added_by_id` bigint(20) unsigned NOT NULL,
+  `owner_id` bigint(20) unsigned NOT NULL,
   `default_account` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `max_transaction_amount` decimal(10,2) DEFAULT NULL,
   `max_transaction_count` int(11) unsigned DEFAULT NULL,
-  `slug` varchar(255) default NULL,
   `name` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) default NULL,
   `provider_name` varchar(255) DEFAULT NULL,
   `provider_customer_id` varchar(255) DEFAULT NULL,
   `card_token` varchar(255) DEFAULT NULL,
@@ -2362,27 +2325,22 @@ CREATE TABLE `kona__payment_account` (
 
   UNIQUE KEY `ux_kona__payment_account_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__payment_account_slug` (`app_id`, `account_id`, `slug`),
+  UNIQUE KEY `ux_kona__payment_account_slug` (`account_id`, `slug`),
 
     -- this should be true but beware of possible conflicts
   UNIQUE KEY `ux_kona__payment_account_provider_customer_id` (`provider_customer_id`),
 
   KEY `ix_kona__payment_account_account` (`account_id`),
 
-  KEY `ix_kona__payment_account_added_by` (`added_by_id`),
+  KEY `ix_kona__payment_account_owner` (`owner_id`),
 
-  KEY `ix_kona__payment_account_type` (`type_id`),
-
-  CONSTRAINT `fk_kona__payment_account_type` FOREIGN KEY (`type_id`)
-        REFERENCES `kona__payment_account_type` (`id`),
-
-  CONSTRAINT `fk_kona__payment_account_app` FOREIGN KEY (`app_id`)
-        REFERENCES `kona__app` (`id`),
+  FULLTEXT `ft_kona__payment_account` (uid,type,name,slug,provider_name,provider_customer_id,card_token,
+    card_last4,card_type,account_holder,account_number,routing_number),
 
   CONSTRAINT `fk_kona__payment_account_account` FOREIGN KEY (`account_id`)
         REFERENCES `kona__account` (`id`),
 
-  CONSTRAINT `fk_kona__payment_account_added_by` FOREIGN KEY (`added_by_id`)
+  CONSTRAINT `fk_kona__payment_account_owner` FOREIGN KEY (`owner_id`)
         REFERENCES `kona__user` (`id`)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -2393,12 +2351,13 @@ CREATE TABLE `kona__campaign` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `owner_id` bigint(20) unsigned NOT NULL,
-  `promo_id` bigint(20) unsigned DEFAULT NULL,
-  `partner_id` bigint(20) unsigned DEFAULT NULL,
+  `goal` varchar(255) DEFAULT NULL,
+  `kpi` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `slug` varchar(255) NOT NULL,
   `description` varchar(4000) DEFAULT NULL,
   `conversion_count` int(11) unsigned NOT NULL default '0',
+  `conversion_target` int(11) unsigned NOT NULL default '0',
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
@@ -2415,20 +2374,46 @@ CREATE TABLE `kona__campaign` (
 
   KEY `ix_kona__campaign_owner` (`owner_id`),
 
-  KEY `ix_kona__campaign_promo` (`promo_id`),
-
-  KEY `ix_kona__campaign_partner` (`partner_id`),
-
   FULLTEXT `ft_kona__campaign` (`uid`,`name`, `slug`, `description`),
-
-  CONSTRAINT `fk_kona__campaign_partner` FOREIGN KEY (`partner_id`)
-        REFERENCES `kona__partner` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__campaign_promo` FOREIGN KEY (`promo_id`) 
-        REFERENCES `kona__promo` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__campaign_owner` FOREIGN KEY (`owner_id`)
         REFERENCES `kona__user` (`id`) ON DELETE RESTRICT
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__campaign_group` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned NOT NULL,
+  `partner_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` varchar(4000) DEFAULT NULL,
+  `conversion_count` int(11) unsigned NOT NULL default '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `start_date` datetime(6) DEFAULT NULL,
+  `end_date` datetime(6) DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__campaign_group_uid` (`uid`),
+
+  KEY `ix_kona__campaign_group_campaign` (`campaign_id`),
+
+  KEY `ix_kona__campaign_group_partner` (`partner_id`),
+
+  FULLTEXT `ft_kona__campaign_group` (uid,name,description),
+
+  CONSTRAINT `fk_kona__campaign_group_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_partner` FOREIGN KEY (`partner_id`)
+        REFERENCES `kona__partner` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2438,12 +2423,25 @@ CREATE TABLE `kona__campaign_channel` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `campaign_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `promo_code` varchar(255) DEFAULT NULL,
   `type` varchar(255) NOT NULL,
+  `target_type` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `keyword` varchar(255) DEFAULT NULL,
+  `adwords_keywords` varchar(2000) DEFAULT NULL,
+
   `sms_number` varchar(255) DEFAULT NULL,
-  `url_path` varchar(255) DEFAULT NULL,
-  `tracking_id` varchar(255) DEFAULT NULL,
+  `sms_keyword` varchar(255) DEFAULT NULL,
+
+  `landing_page_id` bigint(20) unsigned DEFAULT NULL,
+--  `landing_page_url_path` varchar(255) DEFAULT NULL,
+--  `landing_page_url_params` varchar(255) DEFAULT NULL,
+
+    -- target_url should include all final query params to uniquely identify this channel
+  `target_url` varchar(255) DEFAULT NULL,
+  `target_short_url` varchar(255) DEFAULT NULL,
+
+  `analytics_tracking_id` varchar(255) DEFAULT NULL,
   `conversion_pixel` varchar(2000) DEFAULT NULL,
   `conversion_count` int(11) unsigned NOT NULL default '0',
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -2458,16 +2456,37 @@ CREATE TABLE `kona__campaign_channel` (
 
   UNIQUE KEY `ux_kona__campaign_channel_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_sms_number` (`sms_number`, `keyword`),
+  UNIQUE KEY `ux_kona__campaign_channel_sms_number` (`sms_number`, `sms_keyword`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_url_path` (`url_path`),
+  UNIQUE KEY `ux_kona__campaign_channel_promo_code` (`promo_code`),
+
+  UNIQUE KEY `ux_kona__campaign_channel_target_url` (`target_url`),
+
+  UNIQUE KEY `ux_kona__campaign_channel_target_short_url` (`target_short_url`),
+
+  KEY `ix_kona__campaign_channel_landing_page` (`landing_page_id`),
 
   KEY `ix_kona__campaign_channel_campaign` (`campaign_id`),
 
-  FULLTEXT `ft_kona__campaign_channel` (uid,name,keyword,sms_number,url_path,tracking_id),
+  KEY `ix_kona__campaign_channel_group` (`group_id`),
 
-  CONSTRAINT `fk_kona__campaign_channel_campaign` FOREIGN KEY (`campaign_id`) 
-        REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE
+  FULLTEXT `ft_kona__campaign_channel` (uid,name,adwords_keywords,sms_keyword,sms_number,
+        target_url, target_short_url,analytics_tracking_id),
+
+  CONSTRAINT `fk_kona__campaign_channel_campaign` FOREIGN KEY (`campaign_id`)
+    REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_channel_group` FOREIGN KEY (`group_id`)
+    REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_channel_landing_page` FOREIGN KEY (`landing_page_id`)
+    REFERENCES `kona__landing_page` (`id`) ON DELETE RESTRICT,
+
+  CONSTRAINT `fk_kona__campaign_channel_promo_code` FOREIGN KEY (`promo_code`)
+    REFERENCES `kona__promo_code` (`promo_code`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_channel_target_short_url` FOREIGN KEY (`target_short_url`)
+    REFERENCES `kona__short_url` (`short_url`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2476,8 +2495,7 @@ CREATE TABLE `kona__campaign_channel` (
 CREATE TABLE `kona__analytics_event` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `campaign_id` bigint(20) unsigned NOT NULL,
-  `channel_id` bigint(20) unsigned NOT NULL,
+  `campaign_channel_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
@@ -2500,9 +2518,7 @@ CREATE TABLE `kona__analytics_event` (
 
   UNIQUE KEY `ux_kona__analytics_event_uid` (`uid`),
 
-  KEY `ix_kona__analytics_event_campaign` (`campaign_id`),
-
-  KEY `ix_kona__analytics_event_channel` (`channel_id`),
+  KEY `ix_kona__analytics_event_campaign_channel` (`campaign_channel_id`),
 
   KEY `ix_kona__analytics_event_user` (`user_id`),
 
@@ -2510,10 +2526,7 @@ CREATE TABLE `kona__analytics_event` (
 
   SPATIAL `ix_kona__analytics_event_coords` (coords),
 
-  CONSTRAINT `fk_kona__analytics_event_campaign` FOREIGN KEY (`campaign_id`)
-        REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__analytics_event_channel` FOREIGN KEY (`channel_id`)
+  CONSTRAINT `fk_kona__analytics_event_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__analytics_event_user` FOREIGN KEY (`user_id`)
@@ -2543,20 +2556,11 @@ CREATE TABLE `kona__analytics_event` (
 CREATE TABLE `kona__cart` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
   `account_id` bigint(20) unsigned DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `token_id` bigint(20) unsigned DEFAULT NULL,
   `currency_id` bigint(20) unsigned DEFAULT NULL,
   `invoice_id` bigint(20) unsigned DEFAULT NULL,
-  `session_id` varchar(255) DEFAULT NULL,
-  `access_token` varchar(255) DEFAULT NULL,
-  `hostname` varchar(255) DEFAULT NULL,
-  `user_agent` varchar(512) DEFAULT NULL,
-  `latitude` double DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
-  `coords` geometry NOT NULL,
-  `description` varchar(4000) DEFAULT NULL,
-  `notes` varchar(2000) DEFAULT NULL,
   `default_card_last4` varchar(4) DEFAULT NULL,
   `subtotal` decimal(10,2) DEFAULT NULL,
   `discount` decimal(10,2) DEFAULT NULL,
@@ -2578,22 +2582,22 @@ CREATE TABLE `kona__cart` (
 
   UNIQUE KEY `ux_kona__cart_uid` (`uid`),
 
-  KEY `ix_kona__cart_app` (`app_id`),
+  KEY `ix_kona__cart_account` (`account_id`),
 
   KEY `ix_kona__cart_user` (`user_id`),
 
-  KEY `ix_kona__cart_account` (`account_id`),
+  KEY `ix_kona__cart_token` (`token_id`),
 
   KEY `ix_kona__cart_invoice` (`invoice_id`),
 
   KEY `ix_kona__cart_currency` (`currency_id`),
 
-  SPATIAL `ix_kona__cart_coords` (coords),
+  FULLTEXT `ft_kona__cart` (uid),
 
-  CONSTRAINT `fk_kona__cart_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) on DELETE CASCADE,
+  CONSTRAINT `fk_kona__cart_token` FOREIGN KEY (`token_id`)
+        REFERENCES `kona__token` (`id`) on DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__cart_account` FOREIGN KEY (`account_id`) 
+  CONSTRAINT `fk_kona__cart_account` FOREIGN KEY (`account_id`)
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__cart_currency` FOREIGN KEY (`currency_id`) 
@@ -2614,7 +2618,7 @@ CREATE TABLE `kona__cart_item` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `cart_id` bigint(20) unsigned NOT NULL,
-  `product_id` bigint(20) unsigned DEFAULT NULL,
+  `product_sku_id` bigint(20) unsigned DEFAULT NULL,
   `promo_id` bigint(20) unsigned DEFAULT NULL,
   `quantity` int(11) NOT NULL DEFAULT '1',
   `description` varchar(4000) DEFAULT NULL,
@@ -2637,7 +2641,7 @@ CREATE TABLE `kona__cart_item` (
 
   KEY `ix_kona__cart_item_cart` (`cart_id`),
 
-  KEY `ix_kona__cart_item_product` (`product_id`),
+  KEY `ix_kona__cart_item_product_sku` (`product_sku_id`),
 
   KEY `ix_kona__cart_item_promo` (`promo_id`),
 
@@ -2647,8 +2651,8 @@ CREATE TABLE `kona__cart_item` (
   CONSTRAINT `fk_kona__cart_item_promo` FOREIGN KEY (`promo_id`) 
         REFERENCES `kona__promo` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__cart_item_product` FOREIGN KEY (`product_id`) 
-        REFERENCES `kona__product` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_kona__cart_item_product_sku` FOREIGN KEY (`product_sku_id`)
+        REFERENCES `kona__product_sku` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2680,10 +2684,11 @@ CREATE TABLE `kona__currency` (
 CREATE TABLE `kona__invoice` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
-  `user_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
   `currency_id` bigint(20) unsigned DEFAULT NULL,
+  `promo_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `invoice_no` varchar(255) DEFAULT NULL,
   `start_balance` decimal(10,2) DEFAULT NULL,
   `end_balance` decimal(10,2) DEFAULT NULL,
@@ -2720,21 +2725,28 @@ CREATE TABLE `kona__invoice` (
 
   UNIQUE KEY `ux_kona__invoice_invoice_no` (`invoice_no`),
 
-  KEY `ix_kona__invoice_app` (`app_id`),
-
   KEY `ix_kona__invoice_user` (`user_id`),
 
   KEY `ix_kona__invoice_account` (`account_id`),
 
   KEY `ix_kona__invoice_currency` (`currency_id`),
 
+  KEY `ix_kona__invoice_promo` (`promo_id`),
+
+  KEY `ix_kona__invoice_campaign_channel` (`campaign_channel_id`),
+
+  FULLTEXT `ft_kona__invoice` (uid,invoice_no,payment_card_last4, payment_ref,notes),
+
   CONSTRAINT `fk_kona__invoice_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_invoice_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`),
+  CONSTRAINT `fk_kona__invoice_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_invoice_currency` FOREIGN KEY (`currency_id`) 
+  CONSTRAINT `fk_kona__invoice_promo` FOREIGN KEY (`promo_id`)
+        REFERENCES `kona__promo` (`id`),
+
+  CONSTRAINT `fk_invoice_currency` FOREIGN KEY (`currency_id`)
         REFERENCES `kona__currency` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_invoice_user` FOREIGN KEY (`user_id`) 
@@ -2750,8 +2762,9 @@ CREATE TABLE `kona__invoice_item` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `invoice_id` bigint(20) unsigned NOT NULL,
-  `product_id` bigint(20) unsigned DEFAULT NULL,
+  `product_sku_id` bigint(20) unsigned DEFAULT NULL,
   `promo_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `description` varchar(4000) DEFAULT NULL,
   `discount_description` varchar(4000) DEFAULT NULL,
   `unit_price` decimal(10,2) DEFAULT NULL,
@@ -2772,18 +2785,23 @@ CREATE TABLE `kona__invoice_item` (
 
   KEY `ix_kona__invoice_item_invoice` (`invoice_id`),
 
-  KEY `ix_kona__invoice_product` (`product_id`),
+  KEY `ix_kona__invoice_item_product_sku` (`product_sku_id`),
 
-  KEY `fk_kona__invoice_item_promo` (`promo_id`),
+  KEY `ix_kona__invoice_item_promo` (`promo_id`),
+
+  KEY `ix_kona__invoice_item_campaign_channel` (`campaign_channel_id`),
 
   CONSTRAINT `fk_kona__invoice_item_invoice` FOREIGN KEY (`invoice_id`) 
         REFERENCES `kona__invoice` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__invoice_item_promo` FOREIGN KEY (`promo_id`) 
-        REFERENCES `kona__promo` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__invoice_item_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__invoice_item_product` FOREIGN KEY (`product_id`) 
-        REFERENCES `kona__product` (`id`)
+  CONSTRAINT `fk_kona__invoice_item_promo` FOREIGN KEY (`promo_id`)
+        REFERENCES `kona__promo` (`id`),
+
+  CONSTRAINT `fk_kona__invoice_item_product_sku` FOREIGN KEY (`product_sku_id`)
+        REFERENCES `kona__product_sku` (`id`)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2825,6 +2843,9 @@ CREATE TABLE `kona__partner` (
 
   KEY `ix_kona__partner_place` (`place_id`),
 
+  FULLTEXT `ft_kona__partner` (uid,name,description,email,phone_number,social_handles,contact_first_name,
+    contact_last_name,contact_phone_number,contact_mobile_number),
+
   CONSTRAINT `fk_kona__partner_place` FOREIGN KEY (`place_id`) 
         REFERENCES `kona__place` (`id`) ON DELETE SET NULL,
 
@@ -2838,17 +2859,16 @@ CREATE TABLE `kona__partner` (
 CREATE TABLE `kona__payment` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
-  `type_id` bigint(20) unsigned DEFAULT NULL,
-  `status_id` bigint(20) unsigned DEFAULT NULL,
-  `currency_id` bigint(20) unsigned DEFAULT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `account_id` bigint(20) unsigned DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `token_id` bigint(20) unsigned DEFAULT NULL,
+  `payment_account_id` bigint(20) unsigned DEFAULT NULL,
+  `currency_id` bigint(20) unsigned DEFAULT NULL,
   `invoice_id` bigint(20) unsigned DEFAULT NULL,
   `promo_id` bigint(20) unsigned DEFAULT NULL,
-  `payment_account_id` bigint(20) unsigned DEFAULT NULL,
-  `session_id` varchar(255) DEFAULT NULL,
-  `access_token` varchar(255) DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `hostname` varchar(255) DEFAULT NULL,
   `user_agent` varchar(512) DEFAULT NULL,
   `latitude` double DEFAULT NULL,
@@ -2881,51 +2901,48 @@ CREATE TABLE `kona__payment` (
 
   UNIQUE KEY `ux_kona__payment_processor_ref` (`processor_ref`),
 
-  KEY `ix_kona__payment_app` (`app_id`),
-
-  KEY `ix_kona__payment_type` (`type_id`),
-
-  KEY `ix_kona__payment_status` (`status_id`),
-
   KEY `ix_kona__payment_currency` (`currency_id`),
+
+  KEY `ix_kona__payment_account` (`account_id`),
 
   KEY `ix_kona__payment_user` (`user_id`),
 
-  KEY `ix_kona__payment_account` (`account_id`),
+  KEY `ix_kona__payment_token` (`token_id`),
 
   KEY `ix_kona__payment_invoice` (`invoice_id`),
 
   KEY `ix_kona__payment_promo` (`promo_id`),
 
+  KEY `ix_kona__payment_campaign_channel` (`campaign_channel_id`),
+
   KEY `ix_kona__payment_payment_account` (`payment_account_id`),
+
+  FULLTEXT `ft_kona__payment` (uid,type,status,card_token,card_last4,processor_ref,processor_error),
 
   SPATIAL `ix_kona__payment_coords` (coords),
 
   CONSTRAINT `fk_kona__payment_account` FOREIGN KEY (`account_id`) 
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__payment_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) on DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__payment_currency` FOREIGN KEY (`currency_id`) 
+  CONSTRAINT `fk_kona__payment_currency` FOREIGN KEY (`currency_id`)
         REFERENCES `kona__currency` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__payment_invoice` FOREIGN KEY (`invoice_id`) 
         REFERENCES `kona__invoice` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__payment_promo` FOREIGN KEY (`promo_id`) 
-        REFERENCES `kona__promo` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__payment_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE RESTRICT,
+
+  CONSTRAINT `fk_kona__payment_promo` FOREIGN KEY (`promo_id`)
+        REFERENCES `kona__promo` (`id`) ON DELETE RESTRICT,
 
   CONSTRAINT `fk_kona__payment_payment_account` FOREIGN KEY (`payment_account_id`) 
         REFERENCES `kona__payment_account` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__payment_status` FOREIGN KEY (`status_id`) 
-        REFERENCES `kona__payment_status` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_kona__payment_token` FOREIGN KEY (`token_id`)
+        REFERENCES `kona__payment_token` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__payment_type` FOREIGN KEY (`type_id`) 
-        REFERENCES `kona__payment_type` (`id`) ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__payment_user` FOREIGN KEY (`user_id`) 
+  CONSTRAINT `fk_kona__payment_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -2933,35 +2950,35 @@ CREATE TABLE `kona__payment` (
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__payment_status` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `id` (`id`),
-
-  UNIQUE KEY `ux_kona__payment_status_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--CREATE TABLE `kona__payment_status` (
+--  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--  `name` varchar(32) NOT NULL,
+--  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--
+--  PRIMARY KEY (`id`),
+--
+--  UNIQUE KEY `id` (`id`),
+--
+--  UNIQUE KEY `ux_kona__payment_status_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__payment_type` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `id` (`id`),
-
-  UNIQUE KEY `ux_kona__payment_type_name` (`name`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--CREATE TABLE `kona__payment_type` (
+--  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--  `name` varchar(32) NOT NULL,
+--  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+--  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+--
+--  PRIMARY KEY (`id`),
+--
+--  UNIQUE KEY `id` (`id`),
+--
+--  UNIQUE KEY `ux_kona__payment_type_name` (`name`)
+--
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------
@@ -2969,13 +2986,11 @@ CREATE TABLE `kona__payment_type` (
 CREATE TABLE `kona__pre_order` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned DEFAULT NULL,
   `partner_id` bigint(20) unsigned DEFAULT NULL,
-  `product_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `product_sku_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `payment_id` bigint(20) unsigned DEFAULT NULL,
-  `ref_app_id` bigint(20) unsigned DEFAULT NULL,
-  `referred_by_user_id` bigint(20) unsigned DEFAULT NULL,
+  `referred_by_id` bigint(20) unsigned DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `reconciled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `proxy_payment` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -3007,23 +3022,21 @@ CREATE TABLE `kona__pre_order` (
 
   UNIQUE KEY `ux_kona__pre_order_uid` (`uid`),
 
-  KEY `ix_kona__pre_order_referred_by` (`referred_by_user_id`),
-
-  KEY `ix_kona__pre_order_app` (`app_id`),
+  KEY `ix_kona__pre_order_referred_by` (`referred_by_id`),
 
   KEY `ix_kona__pre_order_partner` (`partner_id`),
 
-  KEY `ix_kona__pre_order_ref_app` (`ref_app_id`),
-
   KEY `ix_kona__pre_order_payment` (`payment_id`),
 
-  KEY `ix_kona__pre_order_campaign` (`campaign_id`),
+  KEY `ix_kona__pre_order_campaign_channel` (`campaign_channel_id`),
 
-  CONSTRAINT `fk_kona__pre_order_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  KEY `ix_kona__pre_order_product_sku` (`product_sku_id`),
 
-  CONSTRAINT `fk_kona__pre_order_campaign` FOREIGN KEY (`campaign_id`) 
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  FULLTEXT `ft_kona__pre_order` (uid,payment_card_last4,payment_ref,first_name,last_name,email,mobile_number,
+        shipping_address1,shipping_address2,shipping_city,shipping_postal_code),
+
+  CONSTRAINT `fk_kona__pre_order_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 
   CONSTRAINT `fk_kona__pre_order_partner` FOREIGN KEY (`partner_id`) 
         REFERENCES `kona__partner` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -3031,10 +3044,10 @@ CREATE TABLE `kona__pre_order` (
   CONSTRAINT `fk_kona__pre_order_payment` FOREIGN KEY (`payment_id`) 
         REFERENCES `kona__payment` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 
-  CONSTRAINT `fk_kona__pre_order_ref_app` FOREIGN KEY (`ref_app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_kona__pre_order_product_sku` FOREIGN KEY (`product_sku_id`)
+        REFERENCES `kona__product_sku` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 
-  CONSTRAINT `fk_kona__pre_order_referred_by` FOREIGN KEY (`referred_by_user_id`) 
+  CONSTRAINT `fk_kona__pre_order_referred_by` FOREIGN KEY (`referred_by_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -3045,14 +3058,10 @@ CREATE TABLE `kona__pre_order` (
 CREATE TABLE `kona__promo` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
-  `product_id` bigint(20) unsigned NOT NULL,
-  `promo_code` varchar(255) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `description` varchar(4000) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `visible` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `signup_default` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `use_count` int(11) unsigned DEFAULT NULL,
@@ -3073,94 +3082,100 @@ CREATE TABLE `kona__promo` (
 
   UNIQUE KEY `ux_kona__promo_uid` (`uid`),
 
-  UNIQUE KEY `ix_kona__promo_code` (`promo_code`),
+  UNIQUE KEY `ux_kona__promo_slug` (`slug`),
 
-  KEY `ix_kona__promo_app` (`app_id`),
-
-  KEY `ix_kona__promo_product` (`product_id`),
-
-  CONSTRAINT `fk_kona__promo_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__promo_product` FOREIGN KEY (`product_id`) 
-        REFERENCES `kona__product` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  FULLTEXT `ft_kona_promo` (uid,name,slug,description)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- --------------------------------------------------------------------------
+-- a Promo can have more than one code
+-- Each code must be unique
+-- Each code maps exactly to a single campaign channel
 
--- CREATE TABLE `kona__promo_page` (
---   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
---   `app_id` bigint(20) unsigned DEFAULT NULL,
---   `promo_id` bigint(20) unsigned DEFAULT NULL,
---   `partner_id` bigint(20) unsigned DEFAULT NULL,
---   `campaign_id` bigint(20) unsigned DEFAULT NULL,
---   `name` varchar(255) NOT NULL,
---   `path` varchar(255) DEFAULT NULL,
---   `phone_number` varchar(255) DEFAULT NULL,
---   `title` varchar(255) DEFAULT NULL,
---   `banner_url` varchar(255) DEFAULT NULL,
---   `logo_url` varchar(255) DEFAULT NULL,
---   `intro_message` varchar(2000) DEFAULT NULL,
---   `registered_message` varchar(2000) DEFAULT NULL,
---   `facebook_tracking_id` varchar(255) DEFAULT NULL,
---   `google_tracking_id` varchar(255) DEFAULT NULL,
---   `enabled` tinyint(1) NOT NULL DEFAULT '0',
---   `root` tinyint(1) NOT NULL DEFAULT '0',
---   `expired_date` datetime(6) DEFAULT NULL,
---   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
---   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
--- 
---   PRIMARY KEY (`id`),
--- 
---   UNIQUE KEY `id` (`id`),
--- 
---   UNIQUE KEY `ux_kona__promo_page_phone_number` (`phone_number`),
--- 
---   UNIQUE KEY `ux_kona__promo_page_path_name` (`path`,`name`),
--- 
---   KEY `ix_kona__promo_page_app` (`app_id`),
--- 
---   KEY `ix_kona__promo_page_promo` (`promo_id`),
--- 
---   KEY `ix_kona__promo_page_partner` (`partner_id`),
--- 
---   KEY `ix_kona__promo_page_campaign` (`campaign_id`),
--- 
---   CONSTRAINT `fk_kona__promo_page_app` FOREIGN KEY (`app_id`) 
---         REFERENCES `kona__app` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
--- 
---   CONSTRAINT `fk_kona__promo_page_campaign` FOREIGN KEY (`campaign_id`) 
---         REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
--- 
---   CONSTRAINT `fk_kona__promo_page_partner` FOREIGN KEY (`partner_id`) 
---         REFERENCES `kona__partner` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
--- 
---   CONSTRAINT `fk_kona__promo_page_promo` FOREIGN KEY (`promo_id`) 
---         REFERENCES `kona__promo` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
--- 
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `kona__promo_code` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `promo_id` bigint(20) unsigned NOT NULL,
+  `campaign_channel_id` bigint(20) unsigned NOT NULL,
+  `promo_code` varchar(255) NOT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__promo_code_uid` (`uid`),
+
+  UNIQUE KEY `ix_kona__promo_code_promo_code` (`promo_code`),
+
+  UNIQUE KEY `ux_kona__promo_code_campaign_channel` (`campaign_channel_id`),
+
+  KEY `ix_kona__promo_code_promo` (`promo_id`),
+
+  FULLTEXT `ft_kona_promo_code` (uid,promo_code),
+
+  CONSTRAINT `fk_kona__promo_code_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__promo_code_promo` FOREIGN KEY (`promo_id`)
+        REFERENCES `kona__promo_code_promo` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- promo can apply to one more products or to all products
+
+CREATE TABLE `kona__promo_product` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `promo_id` bigint(20) unsigned NOT NULL,
+  `product_id` bigint(20) unsigned default NULL,
+  `product_category_id` bigint(20) unsigned default NULL,
+  `product_sku_id` bigint(20) unsigned default NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `ux_kona__promo_product_uid` (`uid`),
+
+  KEY `ix_kona__promo_product_promo` (`promo_id`),
+
+  KEY `ix_kona__promo_product_product` (`product_id`),
+
+  KEY `ix_kona__promo_product_product_category` (`product_category_id`),
+
+  KEY `ix_kona__promo_product_product_sku` (`product_sku_id`),
+
+  CONSTRAINT `fk_kona__promo_product_product_category` FOREIGN KEY (`product_category_id`)
+        REFERENCES `kona__product_category` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__promo_product_product` FOREIGN KEY (`product_id`)
+        REFERENCES `kona__product` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__promo_product_product_sku` FOREIGN KEY (`product_sku_id`)
+        REFERENCES `kona__product_sku` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__promo_product_promo` FOREIGN KEY (`promo_id`)
+        REFERENCES `kona__promo_code_promo` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__sales_lead` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned DEFAULT NULL,
-  `ref_app_id` bigint(20) unsigned DEFAULT NULL,
+  `referred_by_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
   `mobile_number` varchar(255) DEFAULT NULL,
-  `comment` varchar(2000) DEFAULT NULL,
-  `twitterUsername` varchar(255) DEFAULT NULL,
-  `facebookUsername` varchar(255) DEFAULT NULL,
-  `referred_by_user_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
-  `channel` enum('website','referral') DEFAULT NULL,
-  `interests` varchar(255) DEFAULT NULL,
+  `social_handles` varchar(2000) DEFAULT NULL,
+  `message` varchar(2000) DEFAULT NULL,
+  `interests` varchar(2000) DEFAULT NULL,
   `hostname` varchar(255) DEFAULT NULL,
   `user_agent` varchar(512) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -3172,47 +3187,95 @@ CREATE TABLE `kona__sales_lead` (
 
   UNIQUE KEY `ux_kona__sales_lead_uid` (`uid`),
 
-  KEY `ix_kona__sales_lead_referred_by` (`referred_by_user_id`),
+  KEY `ix_kona__sales_lead_referred_by` (`referred_by_id`),
 
-  KEY `ix_kona__sales_lead_app` (`app_id`),
+  KEY `ix_kona__sales_lead_campaign_channel` (`campaign_channel_id`),
 
-  KEY `ix_kona__sales_lead_ref_app` (`ref_app_id`),
+  FULLTEXT `ft_kona_sales_lead` (uid,first_name,last_name,email,phone_number,mobile_number,social_handles,message,interests,hostname,user_agent),
 
-  KEY `ix_kona__sales_lead_campaign` (`campaign_id`),
+  CONSTRAINT `fk_kona__sales_lead_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 
-  CONSTRAINT `fk_kona__sales_lead_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-
-  CONSTRAINT `fk_kona__sales_lead_campaign` FOREIGN KEY (`campaign_id`) 
-        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-
-  CONSTRAINT `fk_kona__sales_lead_ref_app` FOREIGN KEY (`ref_app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-
-  CONSTRAINT `fk_kona__sales_lead_referred_by` FOREIGN KEY (`referred_by_user_id`) 
+  CONSTRAINT `fk_kona__sales_lead_referred_by` FOREIGN KEY (`referred_by_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__sales_lead_event` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `sales_lead_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `target` varchar(2000) DEFAULT NULL,
+  `message` varchar(8000) DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__sales_lead_event_uid` (`uid`),
+
+  KEY `ix_kona__sales_lead_event_sales_lead` (`sales_lead_id`),
+
+  KEY `ix_kona__sales_lead_user_id` (`user_id`),
+
+  FULLTEXT `ft_kona_sales_lead_event` (uid,type,target,message),
+
+  CONSTRAINT `fk_kona__sales_lead_event_sales_lead` FOREIGN KEY (`sales_lead_id`)
+        REFERENCES `kona__sales_lead` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__sales_lead_event_user` FOREIGN KEY (`user_id`)
+        REFERENCES `kona__user` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__product_category` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `parent_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` varchar(2000) default NULL,
+  `display_order` int(11) unsigned DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__product_category_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__product_category_slug` (`slug`),
+
+  KEY `ix_kona__product_category_parent` (`parent_id`),
+
+  FULLTEXT `ft_kona_product_category` (uid,name,slug,description),
+
+  CONSTRAINT `fk_kona__product_category_parent` FOREIGN KEY (`parent_id`)
+        REFERENCES `kona__product_category` (`id`) ON DELETE SET NULL
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
 CREATE TABLE `kona__product` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `display_order` int(11) unsigned DEFAULT NULL,
   `description` varchar(4000) DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
-  `setup_fee` decimal(10,2) DEFAULT NULL,
-  `trial_days` int(11) DEFAULT NULL,
+  `display_order` int(11) unsigned DEFAULT NULL,
   `subscription` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `subscription_days` int(11) DEFAULT NULL,
-  `support_type` enum('Email','Priority') DEFAULT NULL,
-  -- `default_plan` tinyint(1) unsigned DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -3223,12 +3286,48 @@ CREATE TABLE `kona__product` (
 
   UNIQUE KEY `ux_kona__product_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__product_app_slug` (`app_id`,`slug`),
+  UNIQUE KEY `ux_kona__product_slug` (`slug`),
 
-  KEY `ix_kona__product_slug` (`slug`),
+  FULLTEXT `ft_kona_product` (uid,name,description)
 
-  CONSTRAINT `fk_kona__product_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------------------------
+-- product should have a different sku for every variant of the product
+-- e.g. product: T-Shirt  variants: color, size
+CREATE TABLE `kona__product_sku` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `product_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL, -- Monthly Subscription
+  `sku` varchar(255) NOT NULL, -- subscription-days-30
+  `variants` varchar(2000) default NULL, -- json object
+  `description` varchar(2000) default NULL,
+  `display_order` int(11) unsigned DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `setup_fee` decimal(10,2) DEFAULT NULL,
+  `trial_days` int(11) DEFAULT NULL,
+  `subscription` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `subscription_days` int(11) DEFAULT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__product_sku_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__product_sku_sku` (`sku`),
+
+  KEY `ix_kona__product_sku_product` (`product_id`),
+
+  FULLTEXT `ft_kona_product_sku` (uid,name,sku,variants,description),
+
+  CONSTRAINT `fk_kona__product_sku_product` FOREIGN KEY (`product_id`)
+        REFERENCES `kona__product` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -3238,16 +3337,17 @@ CREATE TABLE `kona__purchase` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `parent_id` bigint(20) unsigned DEFAULT NULL,
-  `app_id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `product_id` bigint(20) unsigned NOT NULL,
+  `product_sku_id` bigint(20) unsigned NOT NULL,
   `promo_id` bigint(20) unsigned DEFAULT NULL,
   `partner_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_id` bigint(20) unsigned DEFAULT NULL,
-  `payment_type_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
+  `invoice_id` bigint(20) unsigned DEFAULT NULL,
+  `payment_type` varchar(255) DEFAULT NULL, -- Payment.Type
   `kind` varchar(255) DEFAULT NULL, -- field used by google play
-  `invoice_no` varchar(255) DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT '1',
   `auto_renew` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `expiration_date` datetime(6) DEFAULT NULL,
@@ -3256,57 +3356,52 @@ CREATE TABLE `kona__purchase` (
 
   PRIMARY KEY (`id`),
 
-  UNIQUE KEY `ux_kona__purchase_uid` (`account_id`,`product_id`),
-
-  UNIQUE KEY `ux_kona__purchase` (`account_id`,`product_id`),
+  UNIQUE KEY `ux_kona__purchase_uid` (`uid`),
 
   KEY `ix_kona__purchase_parent` (`parent_id`),
+
+  KEY `ix_kona__purchase_account` (`account_id`),
 
   KEY `ix_kona__purchase_user` (`user_id`),
 
   KEY `ix_kona__purchase_product` (`product_id`),
 
-  KEY `ix_kona__purchase_app` (`app_id`),
+  KEY `ix_kona__purchase_product_sku` (`product_sku_id`),
 
   KEY `ix_kona__purchase_promo` (`promo_id`),
 
   KEY `ix_kona__purchase_partner` (`partner_id`),
 
-  KEY `ix_kona__purchase_campaign` (`campaign_id`),
+  KEY `ix_kona__purchase_campaign_channel` (`campaign_channel_id`),
 
-  KEY `ix_kona__purchase_payment_type` (`payment_type_id`),
+  KEY `ix_kona__purchase_invoice` (`invoice_id`),
 
-  KEY `ix_kona__purchase_invoice` (`invoice_no`),
-
-  CONSTRAINT `fk_kona__purchase_account` FOREIGN KEY (`account_id`) 
+  CONSTRAINT `fk_kona__purchase_account` FOREIGN KEY (`account_id`)
         REFERENCES `kona__account` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__purchase_app` FOREIGN KEY (`app_id`) 
-        REFERENCES `kona__app` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_kona__purchase_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__purchase_campaign` FOREIGN KEY (`campaign_id`) 
-        REFERENCES `kona__campaign` (`id`),
-
-  CONSTRAINT `fk_kona__purchase_invoice` FOREIGN KEY (`invoice_no`) 
-        REFERENCES `kona__invoice` (`invoice_no`),
+  CONSTRAINT `fk_kona__purchase_invoice` FOREIGN KEY (`invoice_id`)
+        REFERENCES `kona__invoice` (`id`) ON DELETE RESTRICT,
 
   CONSTRAINT `fk_kona__purchase_parent` FOREIGN KEY (`parent_id`) 
-        REFERENCES `kona__purchase` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+        REFERENCES `kona__purchase` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__purchase_partner` FOREIGN KEY (`partner_id`) 
-        REFERENCES `kona__partner` (`id`),
+        REFERENCES `kona__partner` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__purchase_payment_type` FOREIGN KEY (`payment_type_id`) 
-        REFERENCES `kona__payment_type` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-
-  CONSTRAINT `fk_kona__purchase_promo` FOREIGN KEY (`promo_id`) 
-        REFERENCES `kona__promo` (`id`),
+  CONSTRAINT `fk_kona__purchase_promo` FOREIGN KEY (`promo_id`)
+        REFERENCES `kona__promo` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__purchase_product` FOREIGN KEY (`product_id`) 
-        REFERENCES `kona__product` (`id`) ON DELETE CASCADE,
+        REFERENCES `kona__product` (`id`) ON DELETE RESTRICT,
+
+  CONSTRAINT `fk_kona__purchase_product_sku` FOREIGN KEY (`product_sku_id`)
+        REFERENCES `kona__product_sku` (`id`) ON DELETE RESTRICT,
 
   CONSTRAINT `fk_kona__purchase_user` FOREIGN KEY (`user_id`) 
-        REFERENCES `kona__user` (`id`) ON DELETE CASCADE
+        REFERENCES `kona__user` (`id`) ON DELETE RESTRICT
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -3316,9 +3411,9 @@ CREATE TABLE `kona__purchase` (
 CREATE TABLE `kona__landing_page_template` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `added_by_id` bigint(20) unsigned default NULL,
+  `owner_id` bigint(20) unsigned default NULL,
   `file_id` bigint(20) unsigned NOT NULL,
-  `file_url_path` varchar(255) NOT NULL,
+  `url_path` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `description` varchar(4000) default NULL,
@@ -3331,13 +3426,13 @@ CREATE TABLE `kona__landing_page_template` (
 
   UNIQUE KEY `ux_kona__landing_page_template_slug` (`slug`),
 
-  KEY `ix_kona__landing_page_template_added_by` (`added_by_id`),
+  KEY `ix_kona__landing_page_template_owner` (`owner_id`),
 
   KEY `ix_kona__landing_page_template_file` (`file_id`),
 
   FULLTEXT `ft_kona__landing_page_template` (`uid`,`name`, `slug`, `description`),
 
-  CONSTRAINT `fk_kona__landing_page_template_added_by` FOREIGN KEY (`added_by_id`)
+  CONSTRAINT `fk_kona__landing_page_template_owner` FOREIGN KEY (`owner_id`)
 		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__landing_page_template_file` FOREIGN KEY (`file_id`)
@@ -3351,15 +3446,10 @@ CREATE TABLE `kona__landing_page_template` (
 CREATE TABLE `kona__landing_page` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `app_id` bigint(20) unsigned default NULL,
-  `added_by_id` bigint(20) unsigned default NULL,
   `template_id` bigint(20) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `description` varchar(4000) default NULL,
-  `url_path` varchar(255) NOT NULL,
-  `short_url` varchar(255) default NULL,
-  `facebook_tracking_id` varchar(255) DEFAULT NULL,
-  `google_tracking_id` varchar(255) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -3368,28 +3458,14 @@ CREATE TABLE `kona__landing_page` (
 
   UNIQUE `ux_kona__landing_page_uid` (`uid`),
 
-  UNIQUE `ux_kona__landing_page_url_path` (`url_path`),
-
-  UNIQUE `ix_kona__landing_page_short_url` (`short_url`),
-
-  KEY `ix_kona__landing_page_added_by` (`added_by_id`),
+  UNIQUE `ux_kona__landing_page_slug` (`slug`),
 
   KEY `ix_kona__landing_page_template` (`template_id`),
 
-
-  FULLTEXT `ft_kona__landing_page` (`uid`,`name`, `description`, `url_path`, `facebook_tracking_id`, `google_tracking_id`),
-
-  CONSTRAINT `fk_kona__landing_page_app` FOREIGN KEY (`app_id`)
-        REFERENCES `kona__app` (`id`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__landing_page_added_by` FOREIGN KEY (`added_by_id`)
-		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
+  FULLTEXT `ft_kona__landing_page` (`uid`,`name`, `description`),
 
   CONSTRAINT `fk_kona__landing_page_template` FOREIGN KEY (`template_id`)
-        REFERENCES `kona__landing_page_template` (`id`) ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__landing_page_short_url` FOREIGN KEY (`short_url`)
-        REFERENCES `kona__short_url` (`short_url`) ON DELETE SET NULL
+        REFERENCES `kona__landing_page_template` (`id`) ON DELETE RESTRICT
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -3479,54 +3555,6 @@ INSERT INTO `kona__currency` VALUES (1,'Dirhams',NULL,'AED','United Arab Emirate
 
 -- --------------------------------------------------------------------------
 
-INSERT INTO `kona__payment_status` 
-VALUES 
-    (100,'SUCCESS', now(), now()),
-    (200,'CARD_INVALID_NUMBER', now(), now()),
-    (210,'CARD_INVALID_MONTH', now(), now()),
-    (220,'CARD_INVALID_YEAR', now(), now()),
-    (230,'CARD_INVALID_CVC', now(), now()),
-    (240,'CARD_INVALID_ADDRESS', now(), now()),
-    (250,'CARD_INVALID_ZIP', now(), now()),
-    (260,'CARD_EXPIRED', now(), now()),
-    (270,'CARD_DECLINED', now(), now()),
-    (280,'CARD_MISSING', now(), now()),
-    (300,'ACCOUNT_INVALID', now(), now()),
-    (310,'ACCOUNT_DISABLED', now(), now()),
-    (400,'AMOUNT_INVALID', now(), now()),
-    (900,'PROCESSOR_ERROR', now(), now()),
-    (999,'SYSTEM_ERROR', now(), now());
-
--- --------------------------------------------------------------------------
-
-INSERT INTO `kona__payment_type` 
-VALUES 
-    (100,'CASH', now(), now()),
-    (200,'CHECK', now(), now()),
-    (300,'CARD', now(), now()),
-    (400,'WIRE', now(), now()),
-    (500,'ACH', now(), now()),
-    (600,'PAYPAL', now(), now()),
-    (700,'CREDIT', now(), now()),
-    (800,'PROMO', now(), now()),
-    (900,'EXTERNAL', now(), now()),
-    (901,'APPLE_APPSTORE', now(), now()),
-    (902,'GOOGLE_PLAY', now(), now()),
-    (999,'OTHER', now(), now());
-
--- --------------------------------------------------------------------------
-
-INSERT INTO `kona__payment_account_type`
-VALUES
-    (100,'CREDIT_CARD', now(), now()),
-    (200,'DEBIT_CARD', now(), now()),
-    (300,'PAYPAL', now(), now()),
-    (400,'BANK_PERSONAL_CHECKING', now(), now()),
-    (500,'BANK_PERSONAL_SAVINGS', now(), now()),
-    (600,'BANK_BUSINESS_CHECKING', now(), now()),
-    (700,'BANK_BUSINESS_SAVINGS', now(), now());
-
--- --------------------------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;

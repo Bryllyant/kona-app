@@ -6,18 +6,17 @@ package com.bryllyant.kona.app.api.controller.sales;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.Campaign;
+import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.SalesLead;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
-import com.bryllyant.kona.app.service.CampaignService;
+import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.SalesLeadService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
-import com.bryllyant.kona.util.KInflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class LeadsController extends SalesController {
     private SalesLeadService salesLeadService;
 
     @Autowired
-    private CampaignService campaignService;
+    private CampaignChannelService campaignChannelService;
 
     @Autowired
     UserService userService;
@@ -87,53 +86,34 @@ public class LeadsController extends SalesController {
 
         logApiRequest(req, "POST /sales/leads");
 
-        String appSlug = (String) map.get("app_slug");
-        String channel = (String) map.get("channel");
-        String campaignSlug = (String) map.get("campaign_slug");
-        String referredByUserUid = (String) map.get("referred_by_user_uid");
+        String campaignChannelUid = (String) map.get("campaign_channel_uid");
+        String referredByUid = (String) map.get("referred_by_uid");
         String firstName = (String) map.get("first_name");
         String lastName = (String) map.get("last_name");
         String email = (String) map.get("email");
+        String phoneNumber = (String) map.get("phone_number");
         String mobileNumber = (String) map.get("mobile_number");
-        String comment = (String) map.get("comment");
+        String message = (String) map.get("message");
         String interests = (String) map.get("interests"); // comma separated list 
 
 
-        Long appId = null;
-        Long referredByUserId = null;
-        Long campaignId = null;
+        Long referredById = null;
+        Long campaignChannelId = null;
 
-        if (appSlug != null) {
-            appSlug = KInflector.getInstance().slug(appSlug);
-
-            App app = appService.fetchBySlug(appSlug);
-
-            if (app != null) {
-                appId = app.getId();
-            }
-        }
-
-        if (referredByUserUid != null) {
-            User user = userService.fetchByUid(referredByUserUid);
+        if (referredByUid != null) {
+            User user = userService.fetchByUid(referredByUid);
 
             if (user != null) {
-                referredByUserId = user.getId();
+                referredById = user.getId();
             }
         }
 
-        if (campaignSlug != null) {
-            campaignSlug = KInflector.getInstance().slug(campaignSlug);
+        if (campaignChannelUid != null) {
+            CampaignChannel channel = campaignChannelService.fetchByUid(campaignChannelUid);
 
-            Campaign campaign = campaignService.fetchBySlug(campaignSlug);
-
-            if (campaign != null) {
-                campaignId = campaign.getId();
+            if (channel != null) {
+                campaignChannelId = channel.getId();
             }
-        }
-
-
-        if (channel == null) {
-            channel = "website";
         }
 
         String hostname = KServletUtil.getClientHostname(req);
@@ -141,6 +121,15 @@ public class LeadsController extends SalesController {
 
         if (email == null && mobileNumber == null) {
             throw new BadRequestException("email and/or mobile_number must be set");
+        }
+
+        if (phoneNumber != null) {
+            // Remove whitespace from the number
+            phoneNumber = phoneNumber.replaceAll("\\s+", "");
+
+            if (!system.isTestPhoneNumber(phoneNumber) && !KValidator.isE164PhoneNumber(phoneNumber)) {
+                throw new BadRequestException("Invalid phone number [" + phoneNumber + "]. Phone numbers must be in E.164 format.");
+            }
         }
 
         if (mobileNumber != null) {
@@ -158,16 +147,14 @@ public class LeadsController extends SalesController {
         lead.setFirstName(firstName);
         lead.setLastName(lastName);
         lead.setEmail(email);
+        lead.setPhoneNumber(phoneNumber);
         lead.setMobileNumber(mobileNumber);
-        lead.setComment(comment);
-        lead.setAppId(appId);
-        lead.setRefAppId(refApp.getId());
-        lead.setReferredByUserId(referredByUserId);
-        lead.setCampaignId(campaignId);
+        lead.setMessage(message);
+        lead.setReferredById(referredById);
+        lead.setCampaignChannelId(campaignChannelId);
         lead.setInterests(interests);
         lead.setHostname(hostname);
         lead.setUserAgent(userAgent);
-        lead.setChannel(channel);
         lead.setCreatedDate(new Date());
         lead = salesLeadService.add(lead);
 

@@ -14,7 +14,6 @@ import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.PreOrderService;
 import com.bryllyant.kona.app.service.StripeService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,36 +45,23 @@ public class PreOrderServiceImpl
     private SystemService system;
     
 
-
     @Override @SuppressWarnings("unchecked")
     protected PreOrderMapper getMapper() {
         return preOrderMapper;
     }
-    
 
-    
     @Override @SuppressWarnings("unchecked")
     protected StripeService getStripeService() {
         return stripeService;
     }
-    
-
 
     @Override
     protected PreOrderExample getEntityExampleObject() { return new PreOrderExample(); }
 
-    
 
-    
     protected void sendPreOrderReceipt(PreOrder preOrder) {
-    	App app = null;
+    	App app = system.getSystemApp();
 
-    	if (preOrder.getRefAppId() != null) {
-    		app = appService.fetchById(preOrder.getRefAppId());
-    	} else {
-    		app = system.getSystemApp();
-    	}
-        
     	String supportEmail = system.getConfig(app.getId()).getString("preOrder.support.email");
     	String supportPhoneNumber = system.getConfig(app.getId()).getString("preOrder.support.phoneNumber");
     	String supportPhoneNumberFormatted = system.getConfig(app.getId()).getString("preOrder.support.phoneNumberFormatted");

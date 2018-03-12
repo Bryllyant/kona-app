@@ -1,16 +1,13 @@
 package com.bryllyant.kona.app.api.model.geo.position;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Position;
-import com.bryllyant.kona.data.model.KJsonModel;
 import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class PositionModel extends KJsonModel implements KEntityModel {
@@ -326,9 +323,6 @@ public class PositionModel extends KJsonModel implements KEntityModel {
     private UserModel user;
 
     @RestdocsNotExpanded
-    private AppModel app;
-
-    @RestdocsNotExpanded
     private GeoDeviceModel device;
 
     @RestdocsNotExpanded
@@ -397,14 +391,6 @@ public class PositionModel extends KJsonModel implements KEntityModel {
 
     public void setUser(UserModel user) {
         this.set("user", user);
-    }
-
-    public AppModel getApp() {
-        return app;
-    }
-
-    public void setApp(AppModel app) {
-        this.set("app", app);
     }
 
     public GeoDeviceModel getDevice() {

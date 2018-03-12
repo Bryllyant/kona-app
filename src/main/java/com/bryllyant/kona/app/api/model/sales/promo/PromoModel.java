@@ -1,31 +1,20 @@
 package com.bryllyant.kona.app.api.model.sales.promo;
 
-import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.app.api.model.app.AppModel;
-import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class PromoModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     private String uid;
-
-    @RestdocsNotExpanded
-    private AppModel app;
-
-    @RestdocsNotExpanded
-    ProductModel product;
-
     private String name;
-    private String promoCode;
+    private String slug;
     private String description;
-    private Boolean enabled;
-    private Boolean visible;
-    private Boolean signupDefault;
+    private boolean enabled;
     private Date startDate;
     private Date endDate;
     private Integer useCount;
@@ -37,6 +26,10 @@ public class PromoModel extends KJsonModel implements KEntityModel {
     private Integer trialDays;
     private Integer subscriptionDays;
     private String validationRule;
+
+    private List<PromoCodeModel> codes;
+    private List<PromoProductModel> products;
+
     private Date createdDate;
     private Date updatedDate;
     
@@ -58,22 +51,6 @@ public class PromoModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public AppModel getApp() {
-        return app;
-    }
-
-    public void setApp(AppModel app) {
-        this.set("app", app);
-    }
-
-    public ProductModel getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductModel product) {
-        this.set("product", product);
-    }
-
     public String getName() {
         return name;
     }
@@ -82,12 +59,12 @@ public class PromoModel extends KJsonModel implements KEntityModel {
         this.set("name", name);
     }
 
-    public String getPromoCode() {
-        return promoCode;
+    public String getSlug() {
+        return slug;
     }
 
-    public void setPromoCode(String promoCode) {
-        this.set("promoCode", promoCode);
+    public void setSlug(String slug) {
+        this.set("slug", slug);
     }
 
     public String getDescription() {
@@ -98,28 +75,12 @@ public class PromoModel extends KJsonModel implements KEntityModel {
         this.set("description", description);
     }
 
-    public Boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.set("enabled", enabled);
-    }
-
-    public Boolean getVisible() {
-        return visible;
-    }
-
-    public void setVisible(Boolean visible) {
-        this.set("visible", visible);
-    }
-
-    public Boolean getSignupDefault() {
-        return signupDefault;
-    }
-
-    public void setSignupDefault(Boolean signupDefault) {
-        this.set("signupDefault", signupDefault);
     }
 
     public Date getStartDate() {

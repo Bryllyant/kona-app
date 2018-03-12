@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app;
 
+import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.web.service.LandingPageResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,19 @@ public class App extends WebMvcConfigurerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     @Autowired
+    KConfig config;
+
+    @Autowired
     LandingPageResourceResolver landingPageResourceResolver;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+        String landingPageUrlPath = config.getString("landingPage.urlPath");
+        String landingPageUrlPathPattern = "/" + landingPageUrlPath + "/**";
+
+        logger.debug("addResourceHandlers: setting landingPageUrlPathPattern: " + landingPageUrlPathPattern);
+
         Path tempPath = null;
 
         try {
@@ -40,7 +50,7 @@ public class App extends WebMvcConfigurerAdapter {
         registry
                 // make sure to following to spring-security.xml:  <http pattern="/hello/**" security="none" />
                 //.addResourceHandler("/hello", "/hello/", "/hello/**")
-                .addResourceHandler("/hello/**")
+                .addResourceHandler(landingPageUrlPathPattern)
                 .addResourceLocations(landingPagesFileUrl)
                 .setCachePeriod(3600)
                 .resourceChain(true)

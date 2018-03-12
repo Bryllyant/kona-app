@@ -1,11 +1,9 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
-import com.bryllyant.kona.app.util.ApiUtil;
-import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Product;
 import com.bryllyant.kona.app.service.ProductService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,12 +73,6 @@ public class ProductModelService extends BaseModelService {
         ProductModel model = new ProductModel();
         
         model.fromBean(product);
-        
-        // set model references
-        if (product.getAppId() != null) {
-            App app = appModelService.getApp(product.getAppId());
-            model.setApp(AppModel.create(app.getUid()));
-        }
 
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
@@ -121,10 +113,7 @@ public class ProductModelService extends BaseModelService {
 
             switch (key) {
 
-                case "app":
-                    App app = appModelService.getApp(model.getApp());
-                    product.setAppId(app.getId());
-                    break;
+
             }
 
         }

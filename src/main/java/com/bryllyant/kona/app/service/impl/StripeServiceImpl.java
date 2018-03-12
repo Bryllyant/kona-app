@@ -5,7 +5,7 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.Account;
-import com.bryllyant.kona.app.entity.KAppConfig;
+import com.bryllyant.kona.app.entity.AppConfig;
 import com.bryllyant.kona.app.entity.PaymentAccount;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
@@ -67,21 +67,16 @@ public class StripeServiceImpl extends KAbstractStripeService<User,PaymentAccoun
 
 
 	@Override
-	protected String getStripeApiKey(Long appId) {
-		
-		if (appId == null) {
-			throw new IllegalArgumentException("getStripeApiKey: appId is null");
-		}
-		
+	protected String getStripeApiKey() {
 		// check if there's a global key defined
 		String key = config.getString("stripe.apiKey");
 
 		if (key == null) {
-			key = getConfig(appId).getString("stripe.apiKey");
+			key = getConfig().getString("stripe.apiKey");
 		}
 		
 		if (key == null) {
-			throw new IllegalStateException("Stripe API Key not found for appId: " + appId);
+			throw new IllegalStateException("Stripe API Key not found");
 		}
 
 		return key;
@@ -115,17 +110,18 @@ public class StripeServiceImpl extends KAbstractStripeService<User,PaymentAccoun
 
 	}
 
+	private Configuration getConfig() {
 
-	
-	private Configuration getConfig(Long appId) {
+	    Long appId = system.getSystemApp().getId();
+
 		String _env = System.getProperty("env", "dev");
 
-        KAppConfig.Env  env = KAppConfig.Env.valueOf(_env.toUpperCase());
+        AppConfig.Env  env = AppConfig.Env.valueOf(_env.toUpperCase());
 
 		Map<String,Object> config = appConfigService.getConfig(appId, env);
 
 		if (config == null) {
-			throw new IllegalStateException("Cofiguration not found for appId: " + appId);
+			throw new IllegalStateException("Configuration not found for appId: " + appId);
 		}
 
 		return new MapConfiguration(config);

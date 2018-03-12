@@ -6,7 +6,6 @@ package com.bryllyant.kona.app.api.controller.admin;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.controller.auth.AuthController;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.auth.AuthSessionModel;
 import com.bryllyant.kona.app.api.model.auth.RegistrationRequest;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
@@ -21,7 +20,6 @@ import com.bryllyant.kona.app.api.service.MediaModelService;
 import com.bryllyant.kona.app.api.service.PositionModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.Account;
-import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Position;
@@ -207,20 +205,7 @@ public class UserController extends BaseController {
 	    
 	    User user = userModelService.getUser(username);
 
-	    Long appId = null;
-
 	    Long deviceId = null;
-
-	    AppModel appModel = positionRequest.getApp();
-
-        if (appModel != null) {
-            try {
-                App app = appModelService.getApp(appModel);
-                appId = app.getId();
-            } catch (NotFoundException e) {
-                // ignore
-            }
-        }
 
 	    DeviceModel deviceModel = positionRequest.getDevice();
 
@@ -246,10 +231,6 @@ public class UserController extends BaseController {
 
 	        Position position = positionModelService.toEntity(positionModel);
 	        position.setUserId(user.getId());
-
-	        if (appId != null) {
-	            position.setAppId(appId);
-	        }
 
 	        if (deviceId != null) {
 	            position.setDeviceId(deviceId);

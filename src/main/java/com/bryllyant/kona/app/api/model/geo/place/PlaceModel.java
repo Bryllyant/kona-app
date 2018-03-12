@@ -34,7 +34,7 @@ public class PlaceModel extends KJsonModel implements KEntityModel {
 	private String uid;
 
 	@RestdocsNotExpanded
-	private UserModel addedBy;
+	private UserModel owner;
 
 	private String name;
     private String slug;
@@ -83,12 +83,12 @@ public class PlaceModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public UserModel getAddedBy() {
-        return addedBy;
+    public UserModel getOwner() {
+        return owner;
     }
 
-    public void setAddedBy(UserModel addedBy) {
-        this.set("addedBy", addedBy);
+    public void setOwner(UserModel owner) {
+        this.set("owner", owner);
     }
 
     public String getName() {

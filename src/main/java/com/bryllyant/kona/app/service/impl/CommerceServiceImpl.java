@@ -6,6 +6,8 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
+import com.bryllyant.kona.app.entity.CampaignChannel;
+import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.app.entity.Cart;
 import com.bryllyant.kona.app.entity.CartItem;
 import com.bryllyant.kona.app.entity.File;
@@ -13,12 +15,14 @@ import com.bryllyant.kona.app.entity.Invoice;
 import com.bryllyant.kona.app.entity.InvoiceItem;
 import com.bryllyant.kona.app.entity.Payment;
 import com.bryllyant.kona.app.entity.PaymentAccount;
-import com.bryllyant.kona.app.entity.Product;
+import com.bryllyant.kona.app.entity.ProductSku;
 import com.bryllyant.kona.app.entity.Promo;
+import com.bryllyant.kona.app.entity.PromoCode;
 import com.bryllyant.kona.app.entity.Purchase;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
 import com.bryllyant.kona.app.service.AppService;
+import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.CartItemService;
 import com.bryllyant.kona.app.service.CartService;
 import com.bryllyant.kona.app.service.CommerceService;
@@ -29,7 +33,8 @@ import com.bryllyant.kona.app.service.KAbstractCommerceService;
 import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.PaymentAccountService;
 import com.bryllyant.kona.app.service.PaymentService;
-import com.bryllyant.kona.app.service.ProductService;
+import com.bryllyant.kona.app.service.ProductSkuService;
+import com.bryllyant.kona.app.service.PromoCodeService;
 import com.bryllyant.kona.app.service.PromoService;
 import com.bryllyant.kona.app.service.PurchaseService;
 import com.bryllyant.kona.app.service.StripeService;
@@ -46,19 +51,23 @@ import java.util.Map;
 
 @Service(CommerceService.SERVICE_PATH)
 public class CommerceServiceImpl 
-        extends KAbstractCommerceService<App,
-                                        User,
-                                        File,
-                                        Account,
-                                        Cart,
-                                        CartItem,
-                                        Invoice,
-                                        InvoiceItem,
-                                        Product,
-                                        Promo,
-                                        Payment,
-                                        PaymentAccount,
-                                        Purchase> 
+        extends KAbstractCommerceService<
+        App,
+        User,
+        File,
+        Account,
+        Cart,
+        CartItem,
+        Invoice,
+        InvoiceItem,
+        ProductSku,
+        CampaignChannel,
+        CampaignGroup,
+        Promo,
+        PromoCode,
+        Payment,
+        PaymentAccount,
+        Purchase>
         implements CommerceService {
     
     private static Logger logger = LoggerFactory.getLogger(CommerceServiceImpl.class);
@@ -85,7 +94,7 @@ public class CommerceServiceImpl
     PaymentService paymentService;
     
     @Autowired
-    ProductService productService;
+    ProductSkuService productSkuService;
     
     @Autowired
     CartService cartService;
@@ -111,6 +120,11 @@ public class CommerceServiceImpl
     @Autowired
     PaymentAccountService paymentAccountService;
 
+    @Autowired
+    CampaignChannelService campaignChannelService;
+
+    @Autowired
+    PromoCodeService promoCodeService;
 
 
     @Override
@@ -118,154 +132,117 @@ public class CommerceServiceImpl
         return new Payment();
     }
     
-
-    
     @Override
     protected Purchase getNewPurchaseObject() {
         return new Purchase();
     }
-    
 
-    
     @Override
-    protected String getGooglePlayPackageName(Long appId) {
+    protected String getGooglePlayPackageName() {
+        return null;
+    }
+
+    @Override
+    protected String getAppleVerifyReceiptUrl() {
         return null;
     }
     
-
-    
     @Override
-    protected String getAppleVerifyReceiptUrl(Long appId) {
+    protected String getAppleVerifyReceiptSandboxUrl() {
         return null;
     }
     
-
-    
     @Override
-    protected String getAppleVerifyReceiptSandboxUrl(Long appId) {
+    protected String getAppleAppSharedSecret() {
         return null;
     }
     
-
-    
-    @Override
-    protected String getAppleAppSharedSecret(Long appId) {
-        return null;
-    }
-    
-
-
     @Override @SuppressWarnings("unchecked")
     protected PurchaseService getPurchaseService() {
         return purchaseService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected PromoService getPromoService() {
         return promoService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected PaymentService getPaymentService() {
         return paymentService;
     }
-
-
 
     @Override @SuppressWarnings("unchecked")
     protected PaymentAccountService getPaymentAccountService() {
         return paymentAccountService;
     } 
 
-
-
     @Override @SuppressWarnings("unchecked")
-    protected ProductService getProductService() {
-        return productService;
+    protected ProductSkuService getProductSkuService() {
+        return productSkuService;
     }
-    
 
-    
     @Override @SuppressWarnings("unchecked")
     protected InvoiceItemService getInvoiceItemService() {
         return invoiceItemService;
     }
-    
-
 
     @Override @SuppressWarnings("unchecked")
     protected InvoiceService getInvoiceService() {
         return invoiceService;
     }
-    
-
 
     @Override @SuppressWarnings("unchecked")
     protected CartService getCartService() {
         return cartService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected CartItemService getCartItemService() {
         return cartItemService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
-    
-
 
     @Override @SuppressWarnings("unchecked")
     protected AccountService getAccountService() {
         return accountService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected GooglePlayService getGooglePlayService() {
         return googlePlayService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected StripeService getStripeService() {
         return stripeService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected SystemService getSystemService() {
         return system;
     }
-    
-    
 
-    
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignChannelService getCampaignChannelService() {
+        return campaignChannelService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected PromoCodeService getPromoCodeService() {
+        return promoCodeService;
+    }
+
     @Override
     protected void sendReceiptEmail(Invoice invoice, boolean externalPayment) {
         User user = userService.fetchById(invoice.getUserId());
         
-        App app = null;
+        App app = system.getSystemApp();;
         
-        if (invoice.getAppId() != null) {
-            app = appService.fetchById(invoice.getAppId());
-        } else {
-            app = system.getSystemApp();
-        }
-
         try {
             String templateName = "email.templates.sales.paymentReceipt";
             
@@ -300,13 +277,7 @@ public class CommerceServiceImpl
     protected void sendInvalidCardEmail(Invoice invoice) {
         User user = userService.fetchById(invoice.getUserId());
         
-        App app = null;
-        
-        if (invoice.getAppId() != null) {
-            app = appService.fetchById(invoice.getAppId());
-        } else {
-            app = system.getSystemApp();
-        }
+        App app = system.getSystemApp();
         
         try {
             String templateName = "email.templates.sales.invalidCard";

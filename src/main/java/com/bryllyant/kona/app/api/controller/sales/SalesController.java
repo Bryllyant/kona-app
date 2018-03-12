@@ -5,9 +5,8 @@ package com.bryllyant.kona.app.api.controller.sales;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.Invoice;
-import com.bryllyant.kona.app.entity.KPaymentStatus;
 import com.bryllyant.kona.app.entity.Payment;
-import com.bryllyant.kona.app.entity.Product;
+import com.bryllyant.kona.app.entity.ProductSku;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.service.CommerceService;
 import com.bryllyant.kona.app.service.InvoiceService;
@@ -56,30 +55,30 @@ public class SalesController extends BaseController {
 
 
     
-    protected Map<String,Object> toMap(Product product) {
-        if (product == null) return null;
+    protected Map<String,Object> toMap(ProductSku productSku) {
+        if (productSku == null) return null;
         
-        Map<String,Object> result = new HashMap<String,Object>();
-        result.put("uid", product.getUid());
-        result.put("slug", product.getSlug());
-        result.put("name", product.getName());
-        result.put("display_order", product.getDisplayOrder());
-        result.put("description", product.getDescription());
-        result.put("price", product.getPrice());
-        result.put("setup_fee", product.getSetupFee());
-        result.put("subscription", product.isSubscription());
-        result.put("subscription_days", product.getSubscriptionDays());
+        Map<String,Object> result = new HashMap<>();
+        result.put("uid", productSku.getUid());
+        result.put("sku", productSku.getSku());
+        result.put("name", productSku.getName());
+        result.put("display_order", productSku.getDisplayOrder());
+        result.put("description", productSku.getDescription());
+        result.put("price", productSku.getPrice());
+        result.put("setup_fee", productSku.getSetupFee());
+        result.put("subscription", productSku.isSubscription());
+        result.put("subscription_days", productSku.getSubscriptionDays());
 
         return result;
     }
 
 
     
-    protected List<Map<String,Object>> toProductMapList(List<Product> products) {
+    protected List<Map<String,Object>> toProductSkuMapList(List<ProductSku> productSkus) {
         List<Map<String,Object>> mapList = new ArrayList<>();
         
-        for (Product product : products) {
-            mapList.add(toMap(product));
+        for (ProductSku productSku : productSkus) {
+            mapList.add(toMap(productSku));
         }
         
         return mapList;
@@ -90,8 +89,6 @@ public class SalesController extends BaseController {
     protected Map<String,Object> toMap(Payment payment) {
         if (payment == null) return null;
         
-        KPaymentStatus status = KPaymentStatus.getInstance(payment.getStatusId());
-
         String invoiceNo = null;
 
         Invoice invoice = invoiceService.fetchById(payment.getInvoiceId());
@@ -103,7 +100,7 @@ public class SalesController extends BaseController {
         
         Map<String,Object> result = new HashMap<>();
         result.put("uid", payment.getUid());
-        result.put("status", status.name().toLowerCase());
+        result.put("status", payment.getStatus());
         result.put("invoice_no", invoiceNo);
         result.put("amount", payment.getAmount());
         //result.put("processor_ref", payment.getProcessorRef());

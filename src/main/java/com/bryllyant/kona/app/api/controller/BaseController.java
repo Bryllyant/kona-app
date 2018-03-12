@@ -471,6 +471,7 @@ public abstract class BaseController {
 
             if (token != null && !tokenService.isValid(token, false)) {
                 client.setTokenId(token.getId());
+                client.setAccessToken(accessToken);
             }
         }
 

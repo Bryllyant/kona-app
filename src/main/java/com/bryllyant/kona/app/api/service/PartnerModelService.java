@@ -143,11 +143,6 @@ public class PartnerModelService extends BaseModelService {
                     partner.setPlaceId(place.getId());
                     break;
 
-                case "socialHandles":
-                    String json = KJsonUtil.toJson(model.getSocialHandles());
-                    partner.setSocialHandles(json);
-                    break;
-
                 case "contact":
                     PersonModel person = model.getContact();
                     partner.setContactFirstName(person.getFirstName());

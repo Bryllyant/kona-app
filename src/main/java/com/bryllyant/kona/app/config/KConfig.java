@@ -1,9 +1,13 @@
 package com.bryllyant.kona.app.config;
 
+import com.bryllyant.kona.app.entity.AppConfig;
+import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.service.AppConfigService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.util.KClassUtil;
 import com.bryllyant.kona.util.KDateUtil;
+import com.bryllyant.kona.util.KJsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class KConfig {
@@ -22,15 +27,32 @@ public class KConfig {
     private Environment env;
 
     @Autowired
+    private AppConfigService appConfigService;
+
+    @Autowired
     private SystemService system;
 
+    private Map<String,Object> getConfig() {
 
+        Long appId = system.getSystemApp().getId();
+
+        String _env = System.getProperty("env", "dev");
+
+        AppConfig.Env  env = AppConfig.Env.valueOf(_env.toUpperCase());
+
+        Map<String,Object> config = appConfigService.getConfig(appId, env);
+
+        if (config == null) {
+            throw new IllegalStateException("Configuration not found for appId: " + appId);
+        }
+
+        //return new MapConfiguration(config);
+        return config;
+    }
 
     public String getString(String key) {
         return getString(key, null);
     }
-
-
 
     public String getString(String key, String defaultValue) {
         if (key == null) {
@@ -41,45 +63,45 @@ public class KConfig {
 
         String value = env.getProperty(key);
 
+        if (value == null) {
+            // FIXME: string values in KConfig are not interpolated
+            Object obj = getConfig().get(key);
+            if (obj != null) {
+                if (obj instanceof List || obj instanceof Map) {
+                    value = KJsonUtil.toJson(obj);
+                } else {
+                    value = obj.toString();
+                }
+            }
+        }
+
         if (value == null || value.length() == 0) {
             value = defaultValue;
         }
 
-        return value.trim();
+        if (value != null) {
+            value = value.trim();
+        }
+
+        return value;
     }
 
-
-
-    public String getGender(String key) {
+    public User.Gender getGender(String key) {
         return getGender(key, null);
     }
 
-
-
-    public String getGender(String key, String defaultValue) {
+    public User.Gender getGender(String key, String defaultValue) {
         String value = getString(key, defaultValue);
 
         if (value == null) return null;
 
-        if (value.equalsIgnoreCase("male") || value.equalsIgnoreCase("m")) {
-            return "male";
-        }
-
-        if (value.equalsIgnoreCase("female") || value.equalsIgnoreCase("f")) {
-            return "female";
-        }
-
-        throw new KConfigException("Invalid gender: " + value);
+        return User.Gender.valueOf(value.toUpperCase());
     }
-
-
-
 
     public Double getDouble(String key) {
         return getDouble(key, null);
 
     }
-
 
     public Double getDouble(String key, Double defaultValue) {
         String s = getString(key);
@@ -91,14 +113,10 @@ public class KConfig {
         return Double.valueOf(s);
     }
 
-
-
     public Integer getInteger(String key) {
         return getInteger(key, null);
 
     }
-
-
 
     public Integer getInteger(String key, Integer defaultValue) {
         String s = getString(key);
@@ -110,14 +128,10 @@ public class KConfig {
         return Integer.valueOf(s);
     }
 
-
-
     public Long getLong(String key) {
         return getLong(key, null);
 
     }
-
-
 
     public Long getLong(String key, Long defaultValue) {
         String s = getString(key);
@@ -129,13 +143,10 @@ public class KConfig {
         return Long.valueOf(s);
     }
 
-
-
     public Boolean getBoolean(String key) {
         return getBoolean(key, null);
 
     }
-
 
 
     public Boolean getBoolean(String key, Boolean defaultValue) {
@@ -149,12 +160,9 @@ public class KConfig {
     }
 
 
-
     public Date getDate(String key) {
         return getDate(key, null);
     }
-
-
 
     public Date getDate(String key, Date defaultValue) {
         logger.debug("getDate called for key: " + key);
@@ -180,13 +188,9 @@ public class KConfig {
         }
     }
 
-
-
     public String getPhoneNumber(String key) {
         return getPhoneNumber(key, null);
-
     }
-
 
 
     public String getPhoneNumber(String key, String defaultValue) {
@@ -206,13 +210,9 @@ public class KConfig {
         return s;
     }
 
-
-
     public String getEmailValue(String key) {
         return getEmail(key, null);
     }
-
-
 
     public String getEmail(String key, String defaultValue) {
         String s = getString(key, defaultValue);
@@ -229,13 +229,10 @@ public class KConfig {
     }
 
 
-
     public String getUrl(String key) {
         return getUrl(key, null);
 
     }
-
-
 
     public String getUrl(String key, String defaultValue) {
         String s = getString(key, defaultValue);
@@ -251,18 +248,13 @@ public class KConfig {
         return s;
     }
 
-
-
     public List<String> getList(String key) {
         return getList(key, ",", String.class);
     }
 
-
-
     public <T> List<T> getList(String key, Class<T> clazz) {
         return getList(key, ",", clazz);
     }
-
 
 
     public <T> List<T> getList(String key, String delimiter, Class<T> clazz) {

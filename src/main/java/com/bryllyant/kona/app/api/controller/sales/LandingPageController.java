@@ -1,8 +1,8 @@
 package com.bryllyant.kona.app.api.controller.sales;
 
 import com.bryllyant.kona.app.api.model.ModelResultSet;
-import com.bryllyant.kona.app.api.model.sales.campaign.LandingPageModel;
-import com.bryllyant.kona.app.api.model.sales.campaign.LandingPageParamModel;
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageParamModel;
 import com.bryllyant.kona.app.api.service.LandingPageModelService;
 import com.bryllyant.kona.app.api.service.LandingPageParamModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;

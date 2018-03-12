@@ -33,11 +33,6 @@ public class LandingPageTemplateServiceImpl
     @Autowired
     private FileService fileService;
 
-	@Override
-    protected LandingPageTemplate getNewObject() {
-	    return new LandingPageTemplate();
-    }
-
     @Override
     protected File getNewFileObject() {
 	    return new File();

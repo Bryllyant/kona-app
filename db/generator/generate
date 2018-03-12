@@ -164,7 +164,6 @@ java -cp $CLASSPATH $MAIN -configfile $CONFIG_APP -overwrite
 updateSelectProximate AnalyticsEvent AnalyticsEventMapper.java
 updateSelectProximate ApiLog ApiLogMapper.java
 updateSelectProximate AppUser AppUserMapper.java
-updateSelectProximate Cart CartMapper.java
 updateSelectProximate Media MediaMapper.java
 updateSelectProximate Payment PaymentMapper.java
 updateSelectProximate Position PositionMapper.java
@@ -180,7 +179,6 @@ fetchRandom EmailAddress EmailAddressMapper.java
 updateCoordsMapper coords AnalyticsEventMapper.xml
 updateCoordsMapper coords ApiLogMapper.xml
 updateCoordsMapper coords AppUserMapper.xml
-updateCoordsMapper coords CartMapper.xml
 updateCoordsMapper coords MediaMapper.xml
 updateCoordsMapper coords PaymentMapper.xml
 updateCoordsMapper coords PositionMapper.xml

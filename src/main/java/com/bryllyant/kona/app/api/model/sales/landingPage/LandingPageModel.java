@@ -1,27 +1,28 @@
-package com.bryllyant.kona.app.api.model.sales.campaign;
+package com.bryllyant.kona.app.api.model.sales.landingPage;
 
+import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
 
-public class LandingPageParamModel extends KJsonModel implements KEntityModel {
+public class LandingPageModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     private String uid;
-    private LandingPageModel landingPage;
+    @RestdocsNotExpanded
     private LandingPageTemplateModel template;
     private String name;
-    private String value;
+    private String slug;
+    private String description;
+    private boolean enabled;
     private Date createdDate;
     private Date updatedDate;
 
 
-    public static LandingPageParamModel create(String uid, String name, String value) {
-        LandingPageParamModel model = new LandingPageParamModel();
+    public static LandingPageModel create(String uid) {
+        LandingPageModel model = new LandingPageModel();
         model.setUid(uid);
-        model.setName(name);
-        model.setValue(value);
         return model;
     }
 
@@ -33,14 +34,6 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
     @Override
     public void setUid(String uid) {
         this.set("uid", uid);
-    }
-
-    public LandingPageModel getLandingPage() {
-        return landingPage;
-    }
-
-    public void setLandingPage(LandingPageModel landingPage) {
-        this.set("landingPage", landingPage);
     }
 
     public LandingPageTemplateModel getTemplate() {
@@ -59,12 +52,28 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
         this.set("name", name);
     }
 
-    public String getValue() {
-        return value;
+    public String getSlug() {
+        return slug;
     }
 
-    public void setValue(String value) {
-        this.set("value", value);
+    public void setSlug(String slug) {
+        this.set("slug", slug);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.set("description", description);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.set("enabled", enabled);
     }
 
     public Date getCreatedDate() {

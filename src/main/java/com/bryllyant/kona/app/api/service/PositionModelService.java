@@ -1,18 +1,16 @@
 package com.bryllyant.kona.app.api.service;
 
-import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
-import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.PositionService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;
@@ -94,11 +92,6 @@ public class PositionModelService extends BaseModelService {
         
         model.fromBean(position);
         
-        if (position.getAppId() != null) {
-            App app = appModelService.getApp(position.getAppId());
-            model.setApp(AppModel.create(app.getUid()));
-        }
-        
         if (position.getUserId() != null) {
             User user = userModelService.getUser(position.getUserId());
             model.setUser(UserModel.create(user.getUid()));
@@ -165,15 +158,6 @@ public class PositionModelService extends BaseModelService {
         for (String key : model.initializedKeys()) {
 
             switch (key) {
-
-                // if app is defined, then should have valid uid
-                case "app":
-                    AppModel appModel = model.getApp();
-                    App app = appModelService.getApp(appModel);
-                    position.setAppId(app.getId());
-                    break;
-
-
                 // if user is defined, then should have valid uid
                 case "user":
                     UserModel userModel = model.getUser();

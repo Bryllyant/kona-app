@@ -1,25 +1,25 @@
-package com.bryllyant.kona.app.api.model.sales.campaign;
+package com.bryllyant.kona.app.api.model.sales.product;
 
-import com.bryllyant.kona.app.entity.KLandingPageTemplateParam;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
 
-public class LandingPageTemplateParamModel extends KJsonModel implements KEntityModel {
+public class ProductCategoryModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     private String uid;
-    private LandingPageTemplateModel template;
+    private ProductCategoryModel parent;
     private String name;
-    private KLandingPageTemplateParam.Type type;
-    private Boolean required;
+    private String slug;
+    private String description;
+    private Integer displayOrder;
     private Date createdDate;
     private Date updatedDate;
 
 
-    public static LandingPageTemplateParamModel create(String uid) {
-        LandingPageTemplateParamModel model = new LandingPageTemplateParamModel();
+    public static ProductCategoryModel create(String uid) {
+        ProductCategoryModel model = new ProductCategoryModel();
         model.setUid(uid);
         return model;
     }
@@ -34,12 +34,12 @@ public class LandingPageTemplateParamModel extends KJsonModel implements KEntity
         this.set("uid", uid);
     }
 
-    public LandingPageTemplateModel getTemplate() {
-        return template;
+    public ProductCategoryModel getParent() {
+        return parent;
     }
 
-    public void setTemplate(LandingPageTemplateModel template) {
-        this.set("template", template);
+    public void setParent(ProductCategoryModel parent) {
+        this.set("parent", parent);
     }
 
     public String getName() {
@@ -50,20 +50,28 @@ public class LandingPageTemplateParamModel extends KJsonModel implements KEntity
         this.set("name", name);
     }
 
-    public KLandingPageTemplateParam.Type getType() {
-        return type;
+    public String getSlug() {
+        return slug;
     }
 
-    public void setType(KLandingPageTemplateParam.Type type) {
-        this.set("type", type);
+    public void setSlug(String slug) {
+        this.set("slug", slug);
     }
 
-    public Boolean getRequired() {
-        return required;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRequired(Boolean required) {
-        this.set("required", required);
+    public void setDescription(String description) {
+        this.set("description", description);
+    }
+
+    public Integer getDisplayOrder() {
+        return displayOrder;
+    }
+
+    public void setDisplayOrder(Integer displayOrder) {
+        this.set("displayOrder", displayOrder);
     }
 
     public Date getCreatedDate() {

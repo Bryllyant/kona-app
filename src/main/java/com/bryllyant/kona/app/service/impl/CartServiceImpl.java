@@ -14,15 +14,10 @@ import com.bryllyant.kona.app.service.CartService;
 import com.bryllyant.kona.app.service.KAbstractCartService;
 import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Service(CartService.SERVICE_PATH)
 public class CartServiceImpl 
@@ -44,62 +39,30 @@ public class CartServiceImpl
     TokenService tokenService;
 
 
-
     @Override @SuppressWarnings("unchecked")
     protected CartMapper getMapper() {
         return cartMapper;
     }
     
-
-    
     protected Cart getNewObject() {
     	return new Cart();
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected TokenService getTokenService() {
         return tokenService;
     }
     
-
-
     @Override @SuppressWarnings("unchecked")
     protected CartItemService getCartItemService() {
         return cartItemService;
     }
     
-
-
     @Override
     protected CartExample getEntityExampleObject() { return new CartExample(); }
-
-    
-
-
-    @Override 
-    protected void updateCoords(Long cartId) {
-        getMapper().updateCoords(cartId);
-    }
-
-
-    @Override
-    public List<Cart> fetchProximate(
-            Double latitude,
-            Double longitude,
-            Double radius,
-            Date startDate,
-            Date endDate,
-            List<Long> objectIdList
-    ) {
-        return getMapper().selectProximate(latitude, longitude, radius, startDate, endDate, objectIdList);
-    }
 }

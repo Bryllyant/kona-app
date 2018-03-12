@@ -194,9 +194,7 @@ public class ChargesController extends SalesController {
             user.setEmail(parent.getEmail());
         }
         
-        Long appId = apiAuthService.getAppId();
-
-        PaymentAccount paymentAccount = paymentAccountService.fetchDefault(appId, user.getAccountId());
+        PaymentAccount paymentAccount = paymentAccountService.fetchDefault(user.getAccountId());
         
         Payment payment = commerceService.charge(client, paymentAccount, cardToken, productName);
         

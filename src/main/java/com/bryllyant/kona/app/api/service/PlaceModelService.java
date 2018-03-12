@@ -99,9 +99,9 @@ public class PlaceModelService extends BaseModelService {
         model.setPhotoUrl(photoUrl);
         model.setThumbnailUrl(thumbnailUrl);
 
-        if (place.getAddedById() != null) {
-            User user = userModelService.getUser(place.getAddedById());
-            model.setAddedBy(UserModel.create(user.getUid()));
+        if (place.getOwnerId() != null) {
+            User user = userModelService.getUser(place.getOwnerId());
+            model.setOwner(UserModel.create(user.getUid()));
         }
         
 
@@ -159,10 +159,10 @@ public class PlaceModelService extends BaseModelService {
                     }
                     break;
                     
-                case "added_by":
-                    UserModel userModel = model.getAddedBy();
+                case "owner":
+                    UserModel userModel = model.getOwner();
                     User user = userModelService.getUser(userModel);
-                    place.setAddedById(user.getId());
+                    place.setOwnerId(user.getId());
                     break; 
             }
 
