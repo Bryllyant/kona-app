@@ -11,7 +11,6 @@ import com.bryllyant.kona.app.api.model.auth.RegistrationRequest;
 import com.bryllyant.kona.app.api.model.auth.TokenModel;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
-import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.AuthModelService;
@@ -215,7 +214,7 @@ public class AuthController extends BaseController {
 
     @RequestMapping(value = "/users/{auth_code}", method = RequestMethod.GET)
     @PreAuthorize("hasRole('APP_INTERNAL')")
-    public ResponseEntity<MeModel> getUserByAuthCode(HttpServletRequest req,
+    public ResponseEntity<UserModel> getUserByAuthCode(HttpServletRequest req,
                                                      @PathVariable(value = "auth_code") String code) {
         logApiRequest(req, "GET /auth/users/" + code);
 
@@ -231,7 +230,7 @@ public class AuthController extends BaseController {
 
         User user = userModelService.getUser(authCode.getUserId());
 
-        return ok(userModelService.toMeModel(user));
+        return ok(userModelService.toModel(user));
     }
 
 
@@ -971,7 +970,7 @@ public class AuthController extends BaseController {
 
 
         //AuthSessionModel session = new AuthSessionModel();
-        //session.set("user", userModelService.toMeModel(user));
+        //session.set("user", userModelService.toModel(user));
 
         Token token = null;
 

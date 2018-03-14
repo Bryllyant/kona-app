@@ -5,12 +5,8 @@ import com.bryllyant.kona.data.model.KJsonModel;
 public class AppVersionModel extends KJsonModel {
     private static final long serialVersionUID = 1L;
 
-
-
     private String version;
     private String build;
-
-
 
     public static AppVersionModel create(String version, String build) {
         AppVersionModel model = new AppVersionModel();
@@ -18,9 +14,6 @@ public class AppVersionModel extends KJsonModel {
         model.setBuild(build);
         return model;
     }
-
-
-
 
     public String getVersion() {
         return version;

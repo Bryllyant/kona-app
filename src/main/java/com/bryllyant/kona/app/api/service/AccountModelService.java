@@ -2,10 +2,10 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,12 +122,10 @@ public class AccountModelService extends BaseModelService {
             switch (key) {
                 
                 case "owner":
-                    UserModel userModel = model.getOwner();
-                    User owner = userModelService.getUser(userModel);
-                    account.setOwnerId(owner.getId());
+                    User owner = userModelService.getUser(model.getOwner());
+                    account.setOwnerId(owner == null ? null : owner.getId());
                     break;
             }
-
         }
 
         return account;

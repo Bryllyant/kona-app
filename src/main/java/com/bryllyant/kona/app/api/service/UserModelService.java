@@ -2,9 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
-import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.Position;
@@ -15,6 +13,7 @@ import com.bryllyant.kona.app.service.AuthCodeService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ConflictException;
@@ -125,7 +124,7 @@ public class UserModelService extends BaseModelService {
     }
     
 
-    public List<UserModel> toUserModelList(List<User> users, String... includeKeys) {
+    public List<UserModel> toModelList(List<User> users, String... includeKeys) {
         List<UserModel> modelList = new ArrayList<>();
 
         for (User user : users) {
@@ -135,15 +134,15 @@ public class UserModelService extends BaseModelService {
         return modelList;
     }
 
-    public List<MeModel> toMeModelList(List<User> users, String... includeKeys) {
-        List<MeModel> modelList = new ArrayList<>();
-
-        for (User user : users) {
-            modelList.add(toMeModel(user, includeKeys));
-        }
-
-        return modelList;
-    }
+//    public List<MeModel> toMeModelList(List<User> users, String... includeKeys) {
+//        List<MeModel> modelList = new ArrayList<>();
+//
+//        for (User user : users) {
+//            modelList.add(toMeModel(user, includeKeys));
+//        }
+//
+//        return modelList;
+//    }
 
     /*
     public User mergeEntity(User user, UserModel userModel) {
@@ -201,35 +200,38 @@ public class UserModelService extends BaseModelService {
     */
     
 
-    public MeModel toMeModel(User user, String... includeKeys) {
-        if (user == null) return null;
-
-        MeModel model = new MeModel();
-
-        // create base UserDeviceModel from DeviceModel
-        UserModel userModel = toModel(user);
-        
-        util.copyBean(userModel, model, true);
-        
-        Registration registration = registrationService.fetchByUserId(user.getId());
-
-        List<String> roles = userService.getRoles(user);
-
-        model.setEmailVerified(registration.isEmailVerified());
-        model.setMobileVerified(registration.isMobileVerified());
-        model.setRoles(new HashSet<>(roles));
-
-        if (includeKeys != null && includeKeys.length > 0) {
-            logger.debug("toMeModel: includeKeys: " + KJsonUtil.toJson(includeKeys));
-
-            model.includeKeys(includeKeys);
-        }
-
-        return model;
-    }
-
+//    public MeModel toMeModel(User user, String... includeKeys) {
+//        if (user == null) return null;
+//
+//        MeModel model = new MeModel();
+//
+//        // create base UserDeviceModel from DeviceModel
+//        UserModel userModel = toModel(user);
+//
+//        util.copyBean(userModel, model, true);
+//
+//        Registration registration = registrationService.fetchByUserId(user.getId());
+//
+//        List<String> roles = userService.getRoles(user);
+//
+//        model.setEmailVerified(registration.isEmailVerified());
+//        model.setMobileVerified(registration.isMobileVerified());
+//        model.setRoles(new HashSet<>(roles));
+//
+//        if (includeKeys != null && includeKeys.length > 0) {
+//            logger.debug("toMeModel: includeKeys: " + KJsonUtil.toJson(includeKeys));
+//
+//            model.includeKeys(includeKeys);
+//        }
+//
+//        return model;
+//    }
 
     public UserModel toModel(User user, String... includeKeys) {
+        return toModel(user, true, true, includeKeys);
+    }
+
+    public UserModel toModel(User user, boolean includeAccount, boolean includePosition, String... includeKeys) {
         if (user == null) return null;
 
         UserModel model = new UserModel();
@@ -242,18 +244,31 @@ public class UserModelService extends BaseModelService {
         String thumbnailUrl = util.toAbsoluteUrl(user.getThumbnailUrl());
         model.setThumbnailUrl(thumbnailUrl);
         
-        Account account = accountService.fetchById(user.getAccountId()); 
-        model.setAccount(AccountModel.create(account.getUid()));
-
         if (user.getParentId() != null) {
             User parent = getUser(user.getParentId()); 
             model.setParent(UserModel.create(parent.getUid()));
         }
-        
-        if (user.getPositionId() != null) {
-            Position position = positionModelService.getPosition(user.getPositionId()); 
-            PositionModel positionModel = PositionModel.from(position);
-            model.setPosition(positionModel);
+
+        if (includePosition) {
+
+            if (user.getPositionId() != null) {
+                Position position = positionModelService.getPosition(user.getPositionId());
+                PositionModel positionModel = PositionModel.from(position);
+                model.setPosition(positionModel);
+            }
+        }
+
+        if (includeAccount) {
+            Account account = accountService.fetchById(user.getAccountId());
+            model.setAccount(AccountModel.create(account.getUid()));
+
+            Registration registration = registrationService.fetchByUserId(user.getId());
+
+            List<String> roles = userService.getRoles(user);
+
+            model.setEmailVerified(registration.isEmailVerified());
+            model.setMobileVerified(registration.isMobileVerified());
+            model.setRoles(new HashSet<>(roles));
         }
         
         if (includeKeys != null && includeKeys.length > 0) {
@@ -373,11 +388,6 @@ public class UserModelService extends BaseModelService {
     }
     
    
-    public User toMeEntity(MeModel model, boolean disableValidation, boolean updateUser) {
-        User user = new User();
-        return mergeEntity(user, model, disableValidation, updateUser);
-    }
-    
 
     public User toEntity(UserModel model, boolean disableValidation, boolean updateUser) {
         User user = new User();

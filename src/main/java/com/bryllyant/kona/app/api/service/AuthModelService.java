@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.auth.AuthSessionModel;
 import com.bryllyant.kona.app.api.model.auth.TokenModel;
-import com.bryllyant.kona.app.api.model.user.MeModel;
+import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.model.AuthSession;
@@ -136,10 +136,10 @@ public class AuthModelService extends BaseModelService {
 
         AuthSessionModel model = new AuthSessionModel();
         
-        MeModel meModel = userModelService.toMeModel(authSession.getUser());
+        UserModel userModel = userModelService.toModel(authSession.getUser());
         TokenModel tokenModel = toModel(authSession.getToken());
         
-        model.setUser(meModel);
+        model.setUser(userModel);
         model.setToken(tokenModel);
         
         return model;
@@ -150,8 +150,8 @@ public class AuthModelService extends BaseModelService {
     public AuthSession toEntity(AuthSessionModel model) {
 
         User user = new User();
-        MeModel meModel = model.getUser();
-        user = userModelService.mergeEntity(user, meModel, true, false);
+        UserModel userModel = model.getUser();
+        user = userModelService.mergeEntity(user, userModel, true, false);
 
         Token token = null;
         TokenModel tokenModel = model.getToken();

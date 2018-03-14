@@ -2,8 +2,10 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignGroupModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
+import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.service.CampaignGroupService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -24,6 +26,9 @@ public class CampaignGroupModelService extends BaseModelService {
 
     @Autowired
     private CampaignModelService campaignModelService;
+
+    @Autowired
+    private PartnerModelService partnerModelService;
 
     @Autowired
     private ApiUtil util;
@@ -70,7 +75,12 @@ public class CampaignGroupModelService extends BaseModelService {
 
         if (campaignGroup.getCampaignId() != null) {
             Campaign campaign = campaignModelService.getCampaign(campaignGroup.getCampaignId());
-            model.setCampaign(CampaignModel.create(campaign.getUid()));
+            model.setCampaign(CampaignModel.from(campaign));
+        }
+
+        if (campaignGroup.getPartnerId() != null) {
+            Partner partner = partnerModelService.getPartner(campaignGroup.getPartnerId());
+            model.setPartner(PartnerModel.from(partner));
         }
 
         if (includeKeys != null && includeKeys.length > 0) {
@@ -105,7 +115,12 @@ public class CampaignGroupModelService extends BaseModelService {
             switch (key) {
                 case "campaign":
                     Campaign campaign = campaignModelService.getCampaign(model.getCampaign());
-                    campaignGroup.setCampaignId(campaign.getId());
+                    campaignGroup.setCampaignId(campaign == null ? null : campaign.getId());
+                    break;
+
+                case "partner":
+                    Partner partner = partnerModelService.getPartner(model.getPartner());
+                    campaignGroup.setPartnerId(partner == null ? null : partner.getId());
                     break;
             }
 

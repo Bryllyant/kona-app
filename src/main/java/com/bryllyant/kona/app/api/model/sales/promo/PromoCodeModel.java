@@ -1,6 +1,7 @@
 package com.bryllyant.kona.app.api.model.sales.promo;
 
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
+import com.bryllyant.kona.app.entity.PromoCode;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -15,7 +16,13 @@ public class PromoCodeModel extends KJsonModel implements KEntityModel {
     private String promoCode;
     private Date createdDate;
     private Date updatedDate;
-    
+
+    public static PromoCodeModel from(PromoCode code) {
+        PromoCodeModel model = new PromoCodeModel();
+        model.setUid(code.getUid());
+        model.setPromoCode(code.getPromoCode());
+        return model;
+    }
 
     public static PromoCodeModel create(String uid, String promoCode, String campaignChannelUid) {
         PromoCodeModel model = new PromoCodeModel();

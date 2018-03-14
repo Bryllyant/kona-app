@@ -348,6 +348,7 @@ public class PositionModel extends KJsonModel implements KEntityModel {
         PositionModel model = new PositionModel();
         Coordinates coordinates = new Coordinates();
         coordinates.fromBean(position);
+        model.setUid(position.getUid());
         model.setCoordinates(coordinates);
         model.setPositionDate(position.getPositionDate());
         return model;

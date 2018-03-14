@@ -1,7 +1,9 @@
 package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
+import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Campaign;
+import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -24,16 +26,6 @@ public class CampaignModelService extends BaseModelService {
     private UserModelService userModelService;
 
     @Autowired
-    private AppModelService appModelService;
-
-    @Autowired
-    private PromoModelService promoModelService;
-
-    @Autowired
-    private PartnerModelService partnerModelService;
-
-
-    @Autowired
     private ApiUtil util;
 
 
@@ -49,7 +41,6 @@ public class CampaignModelService extends BaseModelService {
     }
 
 
-
     public Campaign getCampaign(Long campaignId) {
         Campaign campaign = campaignService.fetchById(campaignId);
 
@@ -60,8 +51,6 @@ public class CampaignModelService extends BaseModelService {
         return campaign;
     }
     
-    
-
 
     public Campaign getCampaign(CampaignModel model) {
         if (model == null) return null;
@@ -76,13 +65,17 @@ public class CampaignModelService extends BaseModelService {
     }
    
 
-
     public CampaignModel toModel(Campaign campaign, String... includeKeys) {
         if (campaign == null) return null;
 
         CampaignModel model = new CampaignModel();
         
         model.fromBean(campaign);
+
+        if (campaign.getOwnerId() != null) {
+            User owner = userModelService.getUser(campaign.getOwnerId());
+            model.setOwner(UserModel.from(owner));
+        }
         
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
@@ -90,7 +83,6 @@ public class CampaignModelService extends BaseModelService {
 
         return model;
     }
-
 
 
     public List<CampaignModel> toModelList(List<Campaign> campaigns, String... includeKeys) {
@@ -104,7 +96,6 @@ public class CampaignModelService extends BaseModelService {
     }
 
 
-
     public Campaign toEntity(CampaignModel model) {
         Campaign campaign = new Campaign();
 
@@ -112,8 +103,6 @@ public class CampaignModelService extends BaseModelService {
     }
 
     
-
-
     public Campaign mergeEntity(Campaign campaign, CampaignModel model) {
         logger.debug("toEntity called for model: " + model);
         
@@ -121,14 +110,14 @@ public class CampaignModelService extends BaseModelService {
 
         for (String key : model.initializedKeys()) {
             switch (key) {
-
+                case "owner":
+                    User owner = userModelService.getUser(model.getOwner());
+                    campaign.setOwnerId(owner == null ? null : owner.getId());
+                    break;
             }
 
         }
 
         return campaign;
     }
-    
-
-   
 }

@@ -44,8 +44,13 @@ public class AppModel extends KJsonModel implements KEntityModel {
 
     @NotNull
     private Date createdDate;
-    
 
+    public static AppModel from(App app) {
+        AppModel model = new AppModel();
+        model.setUid(app.getUid());
+        model.setName(app.getName());
+        return model;
+    }
     
     public static AppModel create(String uid) {
         AppModel model = new AppModel();

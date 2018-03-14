@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app.api.model.sales.campaign;
 
+import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -10,17 +11,26 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     private String uid;
-    private Long ownerId;
+    private UserModel owner;
     private Campaign.Goal goal;
+    private Campaign.KPI kpi;
     private String name;
     private String slug;
     private String description;
     private Integer conversionCount;
-    private boolean enabled;
+    private Integer conversionTarget;
+    private Boolean enabled;
     private Date startDate;
     private Date endDate;
     private Date createdDate;
     private Date updatedDate;
+
+    public static CampaignModel from(Campaign campaign) {
+        CampaignModel model = new CampaignModel();
+        model.setUid(campaign.getUid());
+        model.setName(campaign.getName());
+        return model;
+    }
 
     public static CampaignModel create(String uid) {
         CampaignModel model = new CampaignModel();
@@ -38,12 +48,12 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public UserModel getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.set("ownerId", ownerId);
+    public void setOwner(UserModel owner) {
+        this.set("owner", owner);
     }
 
     public Campaign.Goal getGoal() {
@@ -52,6 +62,14 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
 
     public void setGoal(Campaign.Goal goal) {
         this.set("goal", goal);
+    }
+
+    public Campaign.KPI getKpi() {
+        return kpi;
+    }
+
+    public void setKpi(Campaign.KPI kpi) {
+        this.set("kpi", kpi);
     }
 
     public String getName() {
@@ -86,11 +104,19 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
         this.set("conversionCount", conversionCount);
     }
 
-    public boolean isEnabled() {
+    public Integer getConversionTarget() {
+        return conversionTarget;
+    }
+
+    public void setConversionTarget(Integer conversionTarget) {
+        this.set("conversionTarget", conversionTarget);
+    }
+
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.set("enabled", enabled);
     }
 

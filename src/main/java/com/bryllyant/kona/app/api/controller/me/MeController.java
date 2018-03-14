@@ -4,8 +4,8 @@ import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.media.MediaModel;
-import com.bryllyant.kona.app.api.model.user.MeModel;
 import com.bryllyant.kona.app.api.model.user.PositionRequest;
+import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.service.AppModelService;
 import com.bryllyant.kona.app.api.service.DeviceModelService;
 import com.bryllyant.kona.app.api.service.MediaModelService;
@@ -95,18 +95,18 @@ public class MeController extends BaseController {
 
 
     @RequestMapping(method=RequestMethod.GET)
-    public ResponseEntity<MeModel> getMe(HttpServletRequest req) {
+    public ResponseEntity<UserModel> getMe(HttpServletRequest req) {
         logApiRequest(req, "GET /me");
 
 		User user = getUser();
-		return ok(userModelService.toMeModel(user));
+		return ok(userModelService.toModel(user));
 	}
 
 
 
 	@RequestMapping(method=RequestMethod.PUT)
-	public ResponseEntity<MeModel> updateMe(HttpServletRequest req,
-			@RequestBody MeModel model) {
+	public ResponseEntity<UserModel> updateMe(HttpServletRequest req,
+                                              @RequestBody UserModel model) {
 		logApiRequest(req, "PUT /me");
 
 		User user = getUser();
@@ -118,7 +118,7 @@ public class MeController extends BaseController {
 		//user = saveObject(req, user, map);
 		user = userModelService.mergeEntity(user, model, false, true);
 
-		return ok(userModelService.toMeModel(user));
+		return ok(userModelService.toModel(user));
 	}
 
 

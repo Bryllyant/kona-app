@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app.api.model.sales.product;
 
+import com.bryllyant.kona.app.entity.ProductSku;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -25,7 +26,13 @@ public class ProductSkuModel extends KJsonModel implements KEntityModel {
     private boolean enabled;
     private Date createdDate;
     private Date updatedDate;
-    
+
+    public static ProductSkuModel from(ProductSku sku) {
+        ProductSkuModel model = new ProductSkuModel();
+        model.setUid(sku.getUid());
+        model.setName(sku.getName());
+        return model;
+    }
 
     public static ProductSkuModel create(String uid) {
         ProductSkuModel model = new ProductSkuModel();

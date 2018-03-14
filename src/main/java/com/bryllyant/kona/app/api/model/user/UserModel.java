@@ -7,9 +7,11 @@ import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.entity.KUser;
+import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.data.model.KEntityModel;
 
 import java.util.Date;
+import java.util.Set;
 
 public class UserModel extends PersonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
@@ -24,12 +26,18 @@ public class UserModel extends PersonModel implements KEntityModel {
     @RestdocsNotExpanded
     private AccountModel account;
 
+    private Set<String> roles;
+
     private KUser.Presence presence;
 
     @RestdocsNotExpanded
     private PositionModel position;
 
     private Boolean enabled;
+
+    private Boolean emailVerified;
+
+    private Boolean mobileVerified;
 
     private Double distance;
 
@@ -52,6 +60,13 @@ public class UserModel extends PersonModel implements KEntityModel {
         model.setMobileNumber(person.getMobileNumber());
         model.setEmail(person.getEmail());
         model.setSocialHandles(person.getSocialHandles());
+        return model;
+    }
+
+    public static UserModel from(User user) {
+        UserModel model = new UserModel();
+        model.setUid(user.getUid());
+        model.setDisplayName(user.getDisplayName());
         return model;
     }
 
@@ -105,6 +120,14 @@ public class UserModel extends PersonModel implements KEntityModel {
         this.set("account", account);
     }
 
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.set("roles", roles);
+    }
+
     public KUser.Presence getPresence() {
         return presence;
     }
@@ -121,6 +144,30 @@ public class UserModel extends PersonModel implements KEntityModel {
         this.set("position", position);
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.set("enabled", enabled);
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.set("emailVerified", emailVerified);
+    }
+
+    public Boolean getMobileVerified() {
+        return mobileVerified;
+    }
+
+    public void setMobileVerified(Boolean mobileVerified) {
+        this.set("mobileVerified", mobileVerified);
+    }
+
     public Double getDistance() {
         return distance;
     }
@@ -135,14 +182,6 @@ public class UserModel extends PersonModel implements KEntityModel {
 
     public void setCreatedDate(Date createdDate) {
         this.set("createdDate", createdDate);
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.set("enabled", enabled);
     }
 
     public Date getDeletedDate() {

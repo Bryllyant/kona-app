@@ -1,6 +1,7 @@
 package com.bryllyant.kona.app.api.model.sales.landingPage;
 
 import com.bryllyant.kona.app.entity.KLandingPageTemplateParam;
+import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -17,6 +18,14 @@ public class LandingPageTemplateParamModel extends KJsonModel implements KEntity
     private Date createdDate;
     private Date updatedDate;
 
+    public static LandingPageTemplateParamModel from(LandingPageTemplateParam param) {
+        LandingPageTemplateParamModel model = new LandingPageTemplateParamModel();
+        model.setUid(param.getUid());
+        model.setName(param.getName());
+        model.setType(param.getType());
+        model.setRequired(param.isRequired());
+        return model;
+    }
 
     public static LandingPageTemplateParamModel create(String uid) {
         LandingPageTemplateParamModel model = new LandingPageTemplateParamModel();

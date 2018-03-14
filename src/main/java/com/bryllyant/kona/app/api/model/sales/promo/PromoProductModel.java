@@ -3,6 +3,7 @@ package com.bryllyant.kona.app.api.model.sales.promo;
 import com.bryllyant.kona.app.api.model.sales.product.ProductCategoryModel;
 import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
 import com.bryllyant.kona.app.api.model.sales.product.ProductSkuModel;
+import com.bryllyant.kona.app.entity.PromoProduct;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -19,6 +20,11 @@ public class PromoProductModel extends KJsonModel implements KEntityModel {
     private Date createdDate;
     private Date updatedDate;
 
+    public static PromoProductModel from(PromoProduct pp) {
+        PromoProductModel model = new PromoProductModel();
+        model.setUid(pp.getUid());
+        return model;
+    }
 
     public static PromoProductModel create(String uid) {
         PromoProductModel model = new PromoProductModel();

@@ -1,6 +1,7 @@
 package com.bryllyant.kona.app.api.model.sales.campaign;
 
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
+import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -15,11 +16,18 @@ public class CampaignGroupModel extends KJsonModel implements KEntityModel {
     private String name;
     private String description;
     private Integer conversionCount;
-    private boolean enabled;
+    private Boolean enabled;
     private Date startDate;
     private Date endDate;
     private Date createdDate;
     private Date updatedDate;
+
+    public static CampaignGroupModel from(CampaignGroup group) {
+        CampaignGroupModel model = new CampaignGroupModel();
+        model.setUid(group.getUid());
+        model.setName(group.getName());
+        return model;
+    }
 
     public static CampaignGroupModel create(String uid) {
         CampaignGroupModel model = new CampaignGroupModel();
@@ -77,11 +85,11 @@ public class CampaignGroupModel extends KJsonModel implements KEntityModel {
         this.set("conversionCount", conversionCount);
     }
 
-    public boolean isEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.set("enabled", enabled);
     }
 

@@ -192,14 +192,16 @@ public class AccountController extends BaseController {
             key = parts[1];
 
             switch (key) {
-                case "fts":
-                    String fts = util.getStringValue(value);
-                    result.put(prefix + key, fts);
-                    break;
+//                case "fts":
+//                    String fts = util.getStringValue(value);
+//                    result.put(prefix + key, fts);
+//                    break;
 
-                case "owner_uid":
+                case "ownerUid":
+                    Long id = -1L;
                     User owner = userModelService.getUser(util.getStringValue(value));
-                    result.put(prefix + "ownerId", owner.getId());
+                    if (owner != null) id = owner.getId();
+                    result.put(prefix + "ownerId", id);
                     break;
 
                 default:

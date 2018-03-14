@@ -11,7 +11,7 @@ import com.bryllyant.kona.app.api.model.auth.RegistrationRequest;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.app.api.model.media.MediaModel;
-import com.bryllyant.kona.app.api.model.user.MeModel;
+import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.api.model.user.PositionRequest;
 import com.bryllyant.kona.app.api.service.AccountModelService;
 import com.bryllyant.kona.app.api.service.AppModelService;
@@ -110,7 +110,7 @@ public class UserController extends BaseController {
 
 	// filter={'email':'abc@abc.com'}
 	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<ModelResultSet<MeModel>> search(
+	public ResponseEntity<ModelResultSet<UserModel>> search(
 	        HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="sort", required=false) String[] sortOrder,
@@ -149,25 +149,25 @@ public class UserController extends BaseController {
 		
         KResultList result = userService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
 
-        ModelResultSet resultSet = ModelResultSet.from(result, userModelService.toMeModelList(result));
+        ModelResultSet resultSet = ModelResultSet.from(result, userModelService.toModelList(result));
 
         return okList(resultSet);
 	}
 	
 
 	@RequestMapping(value="/{username}", method=RequestMethod.GET)
-	public ResponseEntity<MeModel> get(HttpServletRequest req,
+	public ResponseEntity<UserModel> get(HttpServletRequest req,
 			@PathVariable String username) {
 		logApiRequest(req, "GET /admin/users/" + username);
 
-		return ok(userModelService.toMeModel(userModelService.getUser(username)));
+		return ok(userModelService.toModel(userModelService.getUser(username)));
 	}
 
 
     @RequestMapping(method=RequestMethod.PUT)
-    public ResponseEntity<MeModel> updateUser(HttpServletRequest req,
+    public ResponseEntity<UserModel> updateUser(HttpServletRequest req,
                                             @PathVariable String username,
-                                            @RequestBody MeModel model) {
+                                            @RequestBody UserModel model) {
         logApiRequest(req, "PUT /admin/users/" + username);
 
         User user = userModelService.getUser(username);
@@ -178,7 +178,7 @@ public class UserController extends BaseController {
 
         user = userModelService.mergeEntity(user, model, false, true);
 
-        return ok(userModelService.toMeModel(user));
+        return ok(userModelService.toModel(user));
     }
 
 
@@ -375,8 +375,10 @@ public class UserController extends BaseController {
 
             switch (key) {
                 case "accountUid":
+                    Long id = -1L;
                     Account account = accountModelService.getAccount(util.getStringValue(value));
-                    result.put(prefix + "accountId", account.getId());
+                    if (account != null) id = account.getId();
+                    result.put(prefix + "accountId", id);
                     break;
 
 //                case "uid":

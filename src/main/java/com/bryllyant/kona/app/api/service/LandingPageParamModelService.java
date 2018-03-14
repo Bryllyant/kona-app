@@ -158,12 +158,12 @@ public class LandingPageParamModelService extends BaseModelService {
 
                 case "landingPage":
                     LandingPage page = landingPageModelService.getLandingPage(model.getLandingPage());
-                    param.setLandingPageId(page.getId());
+                    param.setLandingPageId(page == null ? null : page.getId());
                     break;
 
                 case "template":
                     LandingPageTemplate template = landingPageTemplateModelService.getTemplate(model.getTemplate());
-                    param.setTemplateId(template.getId());
+                    param.setTemplateId(template == null ? null : template.getId());
                     break;
             }
 

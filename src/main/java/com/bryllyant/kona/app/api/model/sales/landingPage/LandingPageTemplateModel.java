@@ -2,6 +2,7 @@ package com.bryllyant.kona.app.api.model.sales.landingPage;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
+import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -19,6 +20,13 @@ public class LandingPageTemplateModel extends KJsonModel implements KEntityModel
     private String description;
     private Date createdDate;
     private Date updatedDate;
+
+    public static LandingPageTemplateModel from(LandingPageTemplate template) {
+        LandingPageTemplateModel model = new LandingPageTemplateModel();
+        model.setUid(template.getUid());
+        model.setName(template.getName());
+        return model;
+    }
 
     public static LandingPageTemplateModel create(String uid) {
         LandingPageTemplateModel model = new LandingPageTemplateModel();

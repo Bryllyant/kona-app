@@ -3,6 +3,7 @@ package com.bryllyant.kona.app.api.model.sales.partner;
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.user.PersonModel;
+import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.model.SocialHandle;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -40,9 +41,17 @@ public class PartnerModel extends KJsonModel implements KEntityModel {
     private Date createdDate;
     private Date updatedDate;
 
-    public static PartnerModel create(String uid) {
+    public static PartnerModel from(Partner partner) {
+        PartnerModel model = new PartnerModel();
+        model.setUid(partner.getUid());
+        model.setName(partner.getName());
+        return model;
+    }
+
+    public static PartnerModel create(String uid, String name) {
         PartnerModel model = new PartnerModel();
         model.setUid(uid);
+        model.setName(name);
         return model;
     }
 

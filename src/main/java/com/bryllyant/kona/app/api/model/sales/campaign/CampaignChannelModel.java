@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app.api.model.sales.campaign;
 
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -20,9 +21,7 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private String smsKeyword;
     private String smsNumber;
 
-    private Long landingPageId;
-    private String landingPageUrlPath;
-    private String landingPageUrlParams;
+    private LandingPageModel landingPage;
 
     private String targetUrl;
     private String targetShortUrl;
@@ -31,11 +30,18 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private String analyticsTrackingId;
     private String conversionPixel;
     private Integer conversionCount;
-    private boolean enabled;
+    private Boolean enabled;
     private Date startDate;
     private Date endDate;
     private Date createdDate;
     private Date updatedDate;
+
+    public static CampaignChannelModel from(CampaignChannel channel) {
+        CampaignChannelModel model = new CampaignChannelModel();
+        model.setUid(channel.getUid());
+        model.setName(channel.getName());
+        return model;
+    }
 
     public static CampaignChannelModel create(String uid) {
         CampaignChannelModel model = new CampaignChannelModel();
@@ -117,28 +123,12 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
         this.set("smsNumber", smsNumber);
     }
 
-    public Long getLandingPageId() {
-        return landingPageId;
+    public LandingPageModel getLandingPage() {
+        return landingPage;
     }
 
-    public void setLandingPageId(Long landingPageId) {
-        this.set("landingPageId", landingPageId);
-    }
-
-    public String getLandingPageUrlPath() {
-        return landingPageUrlPath;
-    }
-
-    public void setLandingPageUrlPath(String landingPageUrlPath) {
-        this.set("landingPageUrlPath", landingPageUrlPath);
-    }
-
-    public String getLandingPageUrlParams() {
-        return landingPageUrlParams;
-    }
-
-    public void setLandingPageUrlParams(String landingPageUrlParams) {
-        this.set("landingPageUrlParams", landingPageUrlParams);
+    public void setLandingPage(LandingPageModel landingPage) {
+        this.set("landingPage", landingPage);
     }
 
     public String getTargetUrl() {
@@ -189,11 +179,11 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
         this.set("conversionCount", conversionCount);
     }
 
-    public boolean isEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.set("enabled", enabled);
     }
 

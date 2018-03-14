@@ -3,9 +3,11 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignGroupModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
+import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
-import com.bryllyant.kona.app.entity.Campaign;
+import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -29,6 +31,9 @@ public class CampaignChannelModelService extends BaseModelService {
 
     @Autowired
     private CampaignGroupModelService campaignGroupModelService;
+
+    @Autowired
+    private LandingPageModelService landingPageModelService;
 
     @Autowired
     private ApiUtil util;
@@ -74,12 +79,17 @@ public class CampaignChannelModelService extends BaseModelService {
         
         if (campaignChannel.getCampaignId() != null) {
             Campaign campaign = campaignModelService.getCampaign(campaignChannel.getCampaignId());
-            model.setCampaign(CampaignModel.create(campaign.getUid()));
+            model.setCampaign(CampaignModel.from(campaign));
         }
 
         if (campaignChannel.getGroupId() != null) {
             CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(campaignChannel.getGroupId());
-            model.setGroup(CampaignGroupModel.create(campaignGroup.getUid()));
+            model.setGroup(CampaignGroupModel.from(campaignGroup));
+        }
+
+        if (campaignChannel.getLandingPageId() != null) {
+            LandingPage landingPage = landingPageModelService.getLandingPage(campaignChannel.getLandingPageId());
+            model.setLandingPage(LandingPageModel.from(landingPage));
         }
 
         if (includeKeys != null && includeKeys.length > 0) {
@@ -115,12 +125,17 @@ public class CampaignChannelModelService extends BaseModelService {
             switch (key) {
                 case "group":
                     CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(model.getGroup());
-                    campaignChannel.setGroupId(campaignGroup.getId());
+                    campaignChannel.setGroupId(campaignGroup == null ? null : campaignGroup.getId());
                     break;
 
                 case "campaign":
                     Campaign campaign = campaignModelService.getCampaign(model.getCampaign());
-                    campaignChannel.setCampaignId(campaign.getId());
+                    campaignChannel.setCampaignId(campaign == null ? null : campaign.getId());
+                    break;
+
+                case "landingPage":
+                    LandingPage landingPage = landingPageModelService.getLandingPage(model.getLandingPage());
+                    campaignChannel.setLandingPageId(landingPage == null ? null : landingPage.getId());
                     break;
             }
 

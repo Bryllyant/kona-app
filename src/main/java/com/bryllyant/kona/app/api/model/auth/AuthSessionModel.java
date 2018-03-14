@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.model.auth;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.app.api.model.user.MeModel;
+import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +16,7 @@ public class AuthSessionModel extends KJsonModel {
      */
     @NotNull
     @RestdocsNotExpanded
-    private MeModel user;
+    private UserModel user;
 
     /**
      * Token object
@@ -29,11 +29,11 @@ public class AuthSessionModel extends KJsonModel {
 
 
 
-    public MeModel getUser() {
+    public UserModel getUser() {
         return user;
     }
 
-    public void setUser(MeModel user) {
+    public void setUser(UserModel user) {
         this.set("user", user);
     }
 

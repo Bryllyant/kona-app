@@ -2,6 +2,7 @@ package com.bryllyant.kona.app.api.model.geo.place;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
+import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.model.SocialHandle;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -65,6 +66,13 @@ public class PlaceModel extends KJsonModel implements KEntityModel {
 
 	private Date createdDate;
 
+
+    public static PlaceModel from(Place place) {
+        PlaceModel model = new PlaceModel();
+        model.setUid(place.getUid());
+        model.setName(place.getName());
+        return model;
+    }
 
     public static PlaceModel create(String uid) {
         PlaceModel model = new PlaceModel();

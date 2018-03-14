@@ -181,9 +181,11 @@ public class DeviceController extends BaseController {
             key = parts[1];
 
             switch (key) {
-                case "parentUid": 
+                case "parentUid":
+                    Long id = -1L;
                     Device parent = deviceModelService.getDevice(util.getStringValue(value));
-                    result.put(prefix + "parentId", parent.getId());
+                    if (parent != null) id = parent.getId();
+                    result.put(prefix + "parentId", id);
                     break;
 
                 default:

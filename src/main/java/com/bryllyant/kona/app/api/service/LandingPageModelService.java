@@ -122,7 +122,7 @@ public class LandingPageModelService extends BaseModelService {
             switch (key) {
                 case "template":
                     LandingPageTemplate template = landingPageTemplateModelService.getTemplate(model.getTemplate());
-                    landingPage.setTemplateId(template.getId());
+                    landingPage.setTemplateId(template == null ? null : template.getId());
                     break;
             }
 

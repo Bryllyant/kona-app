@@ -2,8 +2,9 @@ package com.bryllyant.kona.app.api.model.account;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -27,9 +28,15 @@ public class AccountModel extends KJsonModel implements KEntityModel {
     private Boolean verified;
 
     private Date createdDate;
-    
 
-    
+
+    public static AccountModel from(Account account) {
+        AccountModel model = new AccountModel();
+        model.setUid(account.getUid());
+        model.setName(account.getName());
+        return model;
+    }
+
     public static AccountModel create(String uid) {
         AccountModel model = new AccountModel();
         model.setUid(uid);

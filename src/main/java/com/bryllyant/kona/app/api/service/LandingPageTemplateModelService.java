@@ -95,8 +95,8 @@ public class LandingPageTemplateModelService extends BaseModelService {
         }
 
         if (template.getOwnerId() != null) {
-            User addedBy = userModelService.getUser(template.getOwnerId());
-            model.setOwner(UserModel.create(addedBy.getUid()));
+            User owner = userModelService.getUser(template.getOwnerId());
+            model.setOwner(UserModel.create(owner.getUid()));
         }
 
         if (includeKeys != null && includeKeys.length > 0) {
@@ -138,9 +138,9 @@ public class LandingPageTemplateModelService extends BaseModelService {
 
             switch (key) {
 
-                case "addedBy":
-                    User addedBy = userModelService.getUser(model.getOwner());
-                    template.setOwnerId(addedBy.getId());
+                case "owner":
+                    User owner = userModelService.getUser(model.getOwner());
+                    template.setOwnerId(owner == null ? null : owner.getId());
                     break;
             }
 

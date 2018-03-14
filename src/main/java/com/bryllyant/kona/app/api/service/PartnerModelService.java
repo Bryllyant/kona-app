@@ -3,12 +3,11 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.sales.partner.PartnerModel;
 import com.bryllyant.kona.app.api.model.user.PersonModel;
-import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.service.PartnerService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
-import com.bryllyant.kona.util.KJsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +77,7 @@ public class PartnerModelService extends BaseModelService {
         // set
         if (partner.getParentId() != null) {
             Partner parent = getPartner(partner.getParentId());
-            model.setParent(PartnerModel.create(parent.getUid()));
+            model.setParent(PartnerModel.create(parent.getUid(), null));
         }
 
         if (partner.getPlaceId() != null) {
@@ -135,21 +134,23 @@ public class PartnerModelService extends BaseModelService {
 
                 case "parent":
                     Partner parent = getPartner(model.getParent());
-                    partner.setParentId(parent.getId());
+                    partner.setParentId(parent == null ? null : parent.getId());
                     break;
 
                 case "place":
                     Place place = placeModelService.getPlace(model.getPlace());
-                    partner.setPlaceId(place.getId());
+                    partner.setPlaceId(place == null ? null : place.getId());
                     break;
 
                 case "contact":
                     PersonModel person = model.getContact();
-                    partner.setContactFirstName(person.getFirstName());
-                    partner.setContactLastName(person.getLastName());
-                    partner.setContactEmail(person.getEmail());
-                    partner.setContactPhoneNumber(person.getPhoneNumber());
-                    partner.setContactMobileNumber(person.getMobileNumber());
+                    if (person != null) {
+                        partner.setContactFirstName(person.getFirstName());
+                        partner.setContactLastName(person.getLastName());
+                        partner.setContactEmail(person.getEmail());
+                        partner.setContactPhoneNumber(person.getPhoneNumber());
+                        partner.setContactMobileNumber(person.getMobileNumber());
+                    }
                     break;
             }
         }

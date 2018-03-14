@@ -1,6 +1,7 @@
 package com.bryllyant.kona.app.api.model.sales.landingPage;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
+import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -15,10 +16,16 @@ public class LandingPageModel extends KJsonModel implements KEntityModel {
     private String name;
     private String slug;
     private String description;
-    private boolean enabled;
+    private Boolean enabled;
     private Date createdDate;
     private Date updatedDate;
 
+    public static LandingPageModel from(LandingPage page) {
+        LandingPageModel model = new LandingPageModel();
+        model.setUid(page.getUid());
+        model.setName(page.getName());
+        return model;
+    }
 
     public static LandingPageModel create(String uid) {
         LandingPageModel model = new LandingPageModel();
@@ -68,11 +75,11 @@ public class LandingPageModel extends KJsonModel implements KEntityModel {
         this.set("description", description);
     }
 
-    public boolean isEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.set("enabled", enabled);
     }
 
