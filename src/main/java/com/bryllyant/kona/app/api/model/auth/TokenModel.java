@@ -25,7 +25,12 @@ public class TokenModel extends KJsonModel {
     @NotNull
     private Integer expiresIn;
 
-
+    public static TokenModel from(Token token) {
+        TokenModel model = new TokenModel();
+        model.setTokenType(token.getType());
+        model.setAccessToken(token.getAccessToken());
+        return model;
+    }
 
     public Token.Type getTokenType() {
         return tokenType;

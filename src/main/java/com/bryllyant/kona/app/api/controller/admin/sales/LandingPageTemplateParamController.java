@@ -2,15 +2,15 @@ package com.bryllyant.kona.app.api.controller.admin.sales;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
-import com.bryllyant.kona.app.api.model.media.FileModel;
-import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateModel;
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateParamModel;
 import com.bryllyant.kona.app.api.service.FileModelService;
 import com.bryllyant.kona.app.api.service.LandingPageTemplateModelService;
+import com.bryllyant.kona.app.api.service.LandingPageTemplateParamModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
-import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.app.service.FileService;
+import com.bryllyant.kona.app.service.LandingPageTemplateParamService;
 import com.bryllyant.kona.app.service.LandingPageTemplateService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.util.ApiUtil;
@@ -27,24 +27,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/admin/sales/landing-page-templates")
-public class LandingPageTemplateController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(LandingPageTemplateController.class);
+@RequestMapping("/api/admin/sales/landing-page-template-params")
+public class LandingPageTemplateParamController extends BaseController {
+    private static Logger logger = LoggerFactory.getLogger(LandingPageTemplateParamController.class);
 
     @Autowired
     private LandingPageTemplateService templateService;
 
     @Autowired
+    private LandingPageTemplateParamService paramService;
+
+    @Autowired
     private LandingPageTemplateModelService templateModelService;
+
+    @Autowired
+    private LandingPageTemplateParamModelService paramModelService;
 
     @Autowired
     private UserModelService userModelService;
@@ -64,13 +68,13 @@ public class LandingPageTemplateController extends BaseController {
 
 
     @RequestMapping(method=RequestMethod.GET)
-    public ResponseEntity<ModelResultSet<LandingPageTemplateModel>> search(
+    public ResponseEntity<ModelResultSet<LandingPageTemplateParamModel>> search(
             HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="sort", required=false) String[] sortOrder,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /admin/sales/landing-page-templates");
+        logApiRequest(req, "GET /admin/sales/landing-page-template-params");
 
         logger.debug("LandingPageTemplateController: raw query: " + query);
 
@@ -80,7 +84,7 @@ public class LandingPageTemplateController extends BaseController {
 
         if (sortOrder == null) {
             sortOrder = new String[]{
-                "name"
+                    "name"
             };
         }
 
@@ -96,119 +100,93 @@ public class LandingPageTemplateController extends BaseController {
 
         logger.debug("LandingPageTemplateController: filter: " + KJsonUtil.toJson(filter));
 
-        KResultList result = templateService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
+        KResultList result = paramService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
 
-        ModelResultSet resultSet = ModelResultSet.from(result, templateModelService.toModelList(result));
+        ModelResultSet resultSet = ModelResultSet.from(result, paramModelService.toModelList(result));
 
         return okList(resultSet);
     }
 
 
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
-    public ResponseEntity<LandingPageTemplateModel> get(
+    public ResponseEntity<LandingPageTemplateParamModel> get(
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "GET /admin/sales/landing-page-templates/" + uid);
+        logApiRequest(req, "GET /admin/sales/landing-page-template-params/" + uid);
 
-        LandingPageTemplate template = templateModelService.getTemplate(uid);
+        LandingPageTemplateParam param = paramModelService.getParam(uid);
 
-        return ok(templateModelService.toModel(template));
+        return ok(paramModelService.toModel(param));
     }
 
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<LandingPageTemplateModel> create(
+    public ResponseEntity<LandingPageTemplateParamModel> create(
             HttpServletRequest req,
-            @RequestBody LandingPageTemplateModel model
+            @RequestBody LandingPageTemplateParamModel model
     ) {
-        logApiRequest(req, "POST /admin/sales/landing-page-templates");
+        logApiRequest(req, "POST /admin/sales/landing-page-template-params");
 
-        LandingPageTemplate template = new LandingPageTemplate();
+        LandingPageTemplateParam param = new LandingPageTemplateParam();
 
-        template = saveObject(req, template, model);
+        param = saveObject(req, param, model);
 
-        return created(templateModelService.toModel(template));
+        return created(paramModelService.toModel(param));
     }
 
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
-    public ResponseEntity<LandingPageTemplateModel> update(
+    public ResponseEntity<LandingPageTemplateParamModel> update(
             HttpServletRequest req,
             @PathVariable String uid,
-            @RequestBody LandingPageTemplateModel model
+            @RequestBody LandingPageTemplateParamModel model
     ) {
-        logApiRequest(req, "PUT /admin/sales/landing-page-templates/" + uid);
+        logApiRequest(req, "PUT /admin/sales/landing-page-template-params/" + uid);
 
-        LandingPageTemplate template = templateModelService.getTemplate(uid);
+        LandingPageTemplateParam param = paramModelService.getParam(uid);
 
         if (model.getUid() != null && !model.getUid().equals(uid)) {
             throw new ValidationException("Object UID does not match requested UID");
         }
 
-        template = saveObject(req, template, model);
+        param = saveObject(req, param, model);
 
-        return ok(templateModelService.toModel(template));
+        return ok(paramModelService.toModel(param));
     }
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
-    public ResponseEntity<LandingPageTemplateModel> remove(
+    public ResponseEntity<LandingPageTemplateParamModel> remove(
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "DELETE /admin/sales/landing-page-templates/" + uid);
+        logApiRequest(req, "DELETE /admin/sales/landing-page-template-params/" + uid);
 
-        LandingPageTemplate template = templateModelService.getTemplate(uid);
+        LandingPageTemplateParam param = paramModelService.getParam(uid);
 
-        templateService.remove(template);
+        paramService.remove(param);
 
-        //return ok(templateModelService.toModel(template));
-        return ok(LandingPageTemplateModel.create(template.getUid()));
+        //return ok(paramModelService.toModel(param));
+        return ok(LandingPageTemplateParamModel.create(param.getUid()));
     }
 
 
-    public LandingPageTemplate saveObject(
+    public LandingPageTemplateParam saveObject(
             HttpServletRequest req,
-            LandingPageTemplate template,
-            LandingPageTemplateModel model
+            LandingPageTemplateParam param,
+            LandingPageTemplateParamModel model
     ) {
-        logger.debug("mapToObject called for template: " + template);
+        logger.debug("mapToObject called for param: " + param);
 
-        template = templateModelService.mergeEntity(template, model);
+        param = paramModelService.mergeEntity(param, model);
 
-        if (template.getId() == null && model.getOwner() == null) {
-            template.setOwnerId(getUser().getId());
-        }
-
-        return templateService.save(template);
+        return paramService.save(param);
     }
 
-    @RequestMapping(value = "/{uid}/media", method = RequestMethod.POST, consumes="multipart/form-data")
-    public ResponseEntity<FileModel> addMediaRequest(MultipartHttpServletRequest req,
-                                                     @PathVariable String uid,
-                                                     @RequestParam(value="upload_date", required=false) Long uploadDate) {
 
-        logApiRequest(req, "POST /admin/sales/landing-page-templates/" + uid + "/media");
-
-        LandingPageTemplate template = templateModelService.getTemplate(uid);
-
-        Long uploadTime = null;
-
-        if (uploadDate != null) {
-            uploadTime = new Date().getTime() - uploadDate;
-        }
-
-        File file = getUploadedFile(req, getUser(), uploadTime);
-
-        template = templateService.updateFile(template, file);
-
-        file = fileService.fetchById(template.getFileId());
-
-        return created(fileModelService.toModel(file));
-    }
 
     @Override
     public Map<String,Object> toFilterCriteria(String json) {
@@ -228,9 +206,9 @@ public class LandingPageTemplateController extends BaseController {
             key = parts[1];
 
             switch (key) {
-                case "ownerUid":
-                    User owner = userModelService.getUser(util.getStringValue(value));
-                    result.put(prefix + "ownerId", owner == null ? -1L : owner.getId());
+                case "templateUid":
+                    LandingPageTemplate template = templateModelService.getTemplate(util.getStringValue(value));
+                    result.put(prefix + "templateId", template == null ? -1L : template.getId());
                     break;
 
                 default:

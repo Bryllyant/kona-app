@@ -153,7 +153,8 @@ public class CampaignController extends BaseController {
 
         campaignService.remove(campaign);
 
-        return ok(campaignModelService.toModel(campaign));
+        //return ok(campaignModelService.toModel(campaign));
+        return ok(CampaignModel.create(campaign.getUid()));
     }
 
 

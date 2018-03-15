@@ -163,7 +163,8 @@ public class CampaignChannelController extends BaseController {
 
         campaignChannelService.remove(campaignChannel);
 
-        return ok(campaignChannelModelService.toModel(campaignChannel));
+        //return ok(campaignChannelModelService.toModel(campaignChannel));
+        return ok(CampaignChannelModel.create(campaignChannel.getUid()));
     }
 
 

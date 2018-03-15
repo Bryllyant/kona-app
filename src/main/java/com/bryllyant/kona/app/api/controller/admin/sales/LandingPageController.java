@@ -157,7 +157,8 @@ public class LandingPageController extends BaseController {
 
         landingPageService.remove(landingPage);
 
-        return ok(landingPageModelService.toModel(landingPage));
+        //return ok(landingPageModelService.toModel(landingPage));
+        return ok(LandingPageModel.create(landingPage.getUid()));
     }
 
 

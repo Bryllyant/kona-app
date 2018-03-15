@@ -7,5 +7,5 @@ import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.remote.service.KService;
 
 public interface FileService extends KService, KFileService<File> {
-	public static final String SERVICE_PATH = "rpc/FileService";
+	String SERVICE_PATH = "rpc/FileService";
 }

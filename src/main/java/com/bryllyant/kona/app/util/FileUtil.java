@@ -86,7 +86,7 @@ public class FileUtil {
             access = File.Access.PUBLIC;
         }
 
-        List<File> fileList = new ArrayList<File>();
+        List<File> fileList = new ArrayList<>();
 
         Long tokenId = null;
 

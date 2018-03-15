@@ -2,8 +2,9 @@ package com.bryllyant.kona.app.api.model.media;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.data.model.KJsonModel;
+import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.data.model.KEntityModel;
+import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
 
@@ -38,14 +39,20 @@ public class MediaModel extends KJsonModel implements KEntityModel {
 	private Date createdDate;
 
 
+    public static MediaModel from(Media media, String url) {
+        MediaModel model = new MediaModel();
+        model.setUid(media.getUid());
+        model.setName(media.getName());
+        model.setContentType(media.getContentType());
+        model.setUrl(url);
+        return model;
+    }
 
 	public static MediaModel create(String uid) {
 	    MediaModel model = new MediaModel();
 	    model.setUid(uid);
 	    return model;
 	}
-
-
 
 
     @Override

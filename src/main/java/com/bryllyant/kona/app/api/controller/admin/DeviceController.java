@@ -131,7 +131,8 @@ public class DeviceController extends BaseController {
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
-    public ResponseEntity<DeviceModel> remove(HttpServletRequest req,
+    public ResponseEntity<DeviceModel> remove(
+            HttpServletRequest req,
             @PathVariable String uid) {
         logApiRequest(req, "DELETE /admin/devices/" + uid);
 
@@ -139,7 +140,8 @@ public class DeviceController extends BaseController {
 
         deviceService.remove(device);
 
-        return ok(deviceModelService.toModel(device));
+        //return ok(deviceModelService.toModel(device));
+        return ok(DeviceModel.create(device.getUid()));
     }
 
 

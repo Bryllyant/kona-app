@@ -52,8 +52,4 @@ public class LandingPageTemplateServiceImpl
 	protected LandingPageTemplateMapper getMapper() {
 		return mapper;
 	}
-	
-
-	 @Override
-    protected LandingPageTemplateExample getEntityExampleObject() { return new LandingPageTemplateExample(); }
 }

@@ -154,7 +154,8 @@ public class CampaignGroupController extends BaseController {
 
         campaignGroupService.remove(campaignGroup);
 
-        return ok(campaignGroupModelService.toModel(campaignGroup));
+        //return ok(campaignGroupModelService.toModel(campaignGroup));
+        return ok(CampaignGroupModel.create(campaignGroup.getUid()));
     }
 
 

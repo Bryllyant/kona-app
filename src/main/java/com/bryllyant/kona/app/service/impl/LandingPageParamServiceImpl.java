@@ -5,6 +5,7 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.LandingPageParamMapper;
 import com.bryllyant.kona.app.entity.File;
+import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageParam;
 import com.bryllyant.kona.app.entity.LandingPageParamExample;
 import com.bryllyant.kona.app.entity.User;
@@ -19,7 +20,13 @@ import org.springframework.stereotype.Service;
 
 @Service(LandingPageParamService.SERVICE_PATH)
 public class LandingPageParamServiceImpl
-		extends KAbstractLandingPageParamService<LandingPageParam, LandingPageParamExample, LandingPageParamMapper,User,File>
+		extends KAbstractLandingPageParamService<
+        LandingPageParam,
+        LandingPageParamExample,
+        LandingPageParamMapper,
+        LandingPage,
+        User,
+        File>
 		implements LandingPageParamService {
 	
 	private static Logger logger = LoggerFactory.getLogger(LandingPageParamServiceImpl.class);
@@ -57,8 +64,4 @@ public class LandingPageParamServiceImpl
 	protected LandingPageParamMapper getMapper() {
 		return mapper;
 	}
-	
-
-	 @Override
-    protected LandingPageParamExample getEntityExampleObject() { return new LandingPageParamExample(); }
 }

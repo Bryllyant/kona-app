@@ -156,7 +156,8 @@ public class AccountController extends BaseController {
 
         accountService.remove(account);
 
-        return ok(accountModelService.toModel(account));
+        //return ok(accountModelService.toModel(account));
+        return ok(AccountModel.create(account.getUid()));
     }
 
 

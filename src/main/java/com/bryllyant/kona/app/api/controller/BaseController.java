@@ -501,6 +501,10 @@ public abstract class BaseController {
 
 
     protected File getUploadedFile(MultipartHttpServletRequest req, User user) {
+        return getUploadedFile(req, user, null);
+    }
+
+    protected File getUploadedFile(MultipartHttpServletRequest req, User user, Long uploadTime) {
         try {
             File file = null;
 
@@ -508,23 +512,17 @@ public abstract class BaseController {
                 user = getUser();
             } 
 
-            //KForm form = new KForm(req);
             String paramName = "file";
-
-
 
             if (req.getFiles(paramName) == null) {
                 throw new BadRequestException("file parameter is empty");
             }
 
-            // resize original photos
-            //boolean resizeImage = false;
-
-            //List<File> fileList = fileUtil.upload(req, paramName, getUser().getId(), KFileAccess.PUBLIC, resizeImage);
-
             List<File> fileList = fileUtil.upload(req, paramName, user, File.Access.PUBLIC);
 
             file = fileList.get(0);
+
+            file.setUploadTime(uploadTime);
 
             if (file.getType() == IMAGE) {
                 KImage image = KImageUtil.toImage(file.getData());

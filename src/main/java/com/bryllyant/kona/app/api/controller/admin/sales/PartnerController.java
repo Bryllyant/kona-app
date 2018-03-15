@@ -152,7 +152,8 @@ public class PartnerController extends BaseController {
 
         partnerService.remove(partner);
 
-        return ok(partnerModelService.toModel(partner));
+        //return ok(partnerModelService.toModel(partner));
+        return ok(PartnerModel.create(partner.getUid(), null));
     }
 
 

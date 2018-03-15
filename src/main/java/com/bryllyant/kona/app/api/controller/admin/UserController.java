@@ -265,9 +265,10 @@ public class UserController extends BaseController {
 
 
     @RequestMapping(value="/{username}/media/{uid}", method=RequestMethod.DELETE)
-    public ResponseEntity<MediaModel> removeMedia(HttpServletRequest req,
-                                                  @PathVariable String username,
-                                                  @PathVariable String uid) {
+    public ResponseEntity<MediaModel> removeMedia(
+            HttpServletRequest req,
+            @PathVariable String username,
+            @PathVariable String uid) {
         logApiRequest(req, "DELETE /admin/users/ " + username + "/media/" + uid);
 
         User user = userModelService.getUser(username);
@@ -280,7 +281,8 @@ public class UserController extends BaseController {
 
         mediaService.remove(media);
 
-        return ok(mediaModelService.toModel(media));
+        //return ok(mediaModelService.toModel(media));
+        return ok(MediaModel.create(media.getUid()));
     }
 
 
@@ -328,7 +330,8 @@ public class UserController extends BaseController {
 
         user = userService.removePhoto(user);
 
-        return ok(mediaModelService.toModel(media));
+        //return ok(mediaModelService.toModel(media));
+        return ok(MediaModel.create(media.getUid()));
     }
 
     protected Media addMedia(MultipartHttpServletRequest req,
