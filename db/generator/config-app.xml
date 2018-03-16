@@ -379,8 +379,8 @@
 
             <!-- IGNORE coords columns since this is GIS column used by the db -->
             <ignoreColumn column="coords" />
-            <ignoreColumn column="perimeter_coords" />
         </table>
+
 
 		<table schema="kona" 
                 tableName="kona__place_category" 
@@ -418,6 +418,9 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="plan" javaType="java.util.Map"
                             typeHandler="com.bryllyant.kona.data.mybatis.KMapHandler" />
+
+            <!-- IGNORE coords columns since this is GIS column used by the db -->
+            <ignoreColumn column="perimeter_coords" />
         </table>
 
 

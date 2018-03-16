@@ -204,11 +204,11 @@
     </selectKey>
     insert into `kona__place_map` (`uid`, `place_id`, `slug`, 
       `name`, `floor`, `created_date`, 
-      `updated_date`, `map`)
-    values (#{uid,jdbcType=VARCHAR}, #{placeId,jdbcType=BIGINT}, #{slug,jdbcType=VARCHAR}, 
+      `updated_date`, `map`,perimeter_coords,perimeter_coords,perimeter_coords)
+values (#{uid,jdbcType=VARCHAR}, #{placeId,jdbcType=BIGINT}, #{slug,jdbcType=VARCHAR}, 
       #{name,jdbcType=VARCHAR}, #{floor,jdbcType=INTEGER}, #{createdDate,jdbcType=TIMESTAMP}, 
-      #{updatedDate,jdbcType=TIMESTAMP}, #{map,jdbcType=LONGVARCHAR})
-  </insert>
+      #{updatedDate,jdbcType=TIMESTAMP}, #{map,jdbcType=LONGVARCHAR},ST_PointFromText(concat('POINT(',ifnull(null, 0),' ',ifnull(null, 0),')')),ST_PointFromText(concat('POINT(',ifnull(null, 0),' ',ifnull(null, 0),')')),ST_PointFromText(concat('POINT(',ifnull(null, 0),' ',ifnull(null, 0),')')))
+</insert>
   <insert id="insertSelective" parameterType="com.bryllyant.kona.app.entity.PlacePlan">
     <!--
       WARNING - @mbg.generated

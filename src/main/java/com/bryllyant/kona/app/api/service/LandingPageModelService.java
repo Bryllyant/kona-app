@@ -83,7 +83,7 @@ public class LandingPageModelService extends BaseModelService {
         // set model references
         if (landingPage.getTemplateId() != null) {
             LandingPageTemplate template = landingPageTemplateModelService.getTemplate(landingPage.getTemplateId());
-            model.setTemplate(LandingPageTemplateModel.create(template.getUid()));
+            model.setTemplate(LandingPageTemplateModel.from(template));
         }
 
         if (includeKeys != null && includeKeys.length > 0) {

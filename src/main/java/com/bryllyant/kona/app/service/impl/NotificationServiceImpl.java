@@ -62,13 +62,6 @@ public class NotificationServiceImpl
 
 
 	@Override
-	protected boolean entityHasBlobs() {
-		return true;
-	}
-    
-
-	
-	@Override
     protected Notification getNewNotificationObject() {
     	return new Notification();
     }
@@ -119,14 +112,6 @@ public class NotificationServiceImpl
 	}
 	
 
-    
-
-	 @Override
-    protected NotificationExample getEntityExampleObject() { return new NotificationExample(); }
-
-    
-
-    
 	@Override
 	protected boolean isChannelEnabled(Long userId, String eventJson, Notification.Channel channel) {
 	    User user = userService.fetchById(userId);

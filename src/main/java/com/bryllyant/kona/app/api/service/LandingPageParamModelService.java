@@ -2,14 +2,14 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageParamModel;
-import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateModel;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateParamModel;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageParam;
-import com.bryllyant.kona.app.entity.LandingPageTemplate;
+import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageParamService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,10 @@ public class LandingPageParamModelService extends BaseModelService {
 
     @Autowired
     private LandingPageTemplateModelService landingPageTemplateModelService;
-    
+
+    @Autowired
+    private LandingPageTemplateParamModelService landingPageTemplateParamModelService;
+
     @Autowired
     private UserModelService userModelService;
 
@@ -108,9 +111,9 @@ public class LandingPageParamModelService extends BaseModelService {
             model.setLandingPage(LandingPageModel.create(page.getUid()));
         }
 
-        if (param.getTemplateId() != null) {
-            LandingPageTemplate template = landingPageTemplateModelService.getTemplate(param.getTemplateId());
-            model.setTemplate(LandingPageTemplateModel.create(template.getUid()));
+        if (param.getTemplateParamId() != null) {
+            LandingPageTemplateParam templateParam = landingPageTemplateParamModelService.getParam(param.getTemplateParamId());
+            model.setTemplateParam(LandingPageTemplateParamModel.from(templateParam));
         }
 
         if (param.getFileId() != null) {
@@ -161,9 +164,9 @@ public class LandingPageParamModelService extends BaseModelService {
                     param.setLandingPageId(page == null ? null : page.getId());
                     break;
 
-                case "template":
-                    LandingPageTemplate template = landingPageTemplateModelService.getTemplate(model.getTemplate());
-                    param.setTemplateId(template == null ? null : template.getId());
+                case "templateParam":
+                    LandingPageTemplateParam templateParam = landingPageTemplateParamModelService.getParam(model.getTemplateParam());
+                    param.setTemplateParamId(templateParam == null ? null : templateParam.getId());
                     break;
             }
 

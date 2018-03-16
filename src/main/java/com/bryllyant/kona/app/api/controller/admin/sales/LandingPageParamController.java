@@ -8,11 +8,12 @@ import com.bryllyant.kona.app.api.service.FileModelService;
 import com.bryllyant.kona.app.api.service.LandingPageModelService;
 import com.bryllyant.kona.app.api.service.LandingPageParamModelService;
 import com.bryllyant.kona.app.api.service.LandingPageTemplateModelService;
+import com.bryllyant.kona.app.api.service.LandingPageTemplateParamModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageParam;
-import com.bryllyant.kona.app.entity.LandingPageTemplate;
+import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageParamService;
 import com.bryllyant.kona.app.service.SystemService;
@@ -53,6 +54,9 @@ public class LandingPageParamController extends BaseController {
     private LandingPageTemplateModelService templateModelService;
 
     @Autowired
+    private LandingPageTemplateParamModelService templateParamModelService;
+
+    @Autowired
     private LandingPageParamModelService paramModelService;
 
     @Autowired
@@ -87,11 +91,11 @@ public class LandingPageParamController extends BaseController {
 
         logger.debug("filter: " + KJsonUtil.toJson(filter));
 
-        if (sortOrder == null) {
-            sortOrder = new String[]{
-                    "name"
-            };
-        }
+//        if (sortOrder == null) {
+//            sortOrder = new String[]{
+//                    "name"
+//            };
+//        }
 
         boolean distinct = false;
 
@@ -107,7 +111,11 @@ public class LandingPageParamController extends BaseController {
 
         KResultList result = paramService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
 
-        ModelResultSet resultSet = ModelResultSet.from(result, paramModelService.toModelList(result));
+        ModelResultSet<LandingPageParamModel> resultSet = ModelResultSet.from(result, paramModelService.toModelList(result));
+
+        resultSet.getData().sort((LandingPageParamModel a, LandingPageParamModel b) -> {
+            return a.getTemplateParam().getName().compareTo(b.getTemplateParam().getName());
+        });
 
         return okList(resultSet);
     }
@@ -175,9 +183,15 @@ public class LandingPageParamController extends BaseController {
         paramService.remove(param);
 
         //return ok(paramModelService.toModel(param));
-        return ok(LandingPageParamModel.create(param.getUid(), null, null));
+        return ok(LandingPageParamModel.create(param.getUid(),  null));
     }
 
+
+    // NOTE: A landing page param can be a direct value or a file upload.  If it's a file upload,
+    // the value contains the absolute URL of the file.  If a call is made to update this object
+    // and the value didn't change, then due to the way the save() method works, the URL value
+    // will be saved and fileId will be set to null.  That is why we check the templateParam type
+    // set value to null if it equals MEDIA.
 
     public LandingPageParam saveObject(
             HttpServletRequest req,
@@ -188,11 +202,21 @@ public class LandingPageParamController extends BaseController {
 
         param = paramModelService.mergeEntity(param, model);
 
-        return paramService.save(param);
+        LandingPage landingPage = landingPageModelService.getLandingPage(param.getLandingPageId());
+
+        String value = param.getValue();
+
+        LandingPageTemplateParam templateParam = templateParamModelService.getParam(param.getTemplateParamId());
+
+        if (templateParam.getType() == LandingPageTemplateParam.Type.MEDIA) {
+            value = null;
+        }
+
+        return paramService.save(landingPage, templateParam, value);
     }
 
     @RequestMapping(value = "/{uid}/media", method = RequestMethod.POST, consumes="multipart/form-data")
-    public ResponseEntity<FileModel> addMediaRequest(
+    public ResponseEntity<FileModel> updateFile(
             MultipartHttpServletRequest req,
             @PathVariable String uid,
             @RequestParam(value="upload_date", required=false) Long uploadDate) {
@@ -239,9 +263,9 @@ public class LandingPageParamController extends BaseController {
                     result.put(prefix + "landingPageId", landingPage == null ? -1L : landingPage.getId());
                     break;
 
-                case "templateUid":
-                    LandingPageTemplate template = templateModelService.getTemplate(util.getStringValue(value));
-                    result.put(prefix + "templateId", template == null ? -1L : template.getId());
+                case "templateParamUid":
+                    LandingPageTemplateParam templateParam = templateParamModelService.getParam(util.getStringValue(value));
+                    result.put(prefix + "templateParamId", templateParam == null ? -1L : templateParam.getId());
                     break;
 
                 default:

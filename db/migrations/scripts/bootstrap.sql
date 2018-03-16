@@ -49,7 +49,7 @@ CREATE TABLE `kona__account` (
   FULLTEXT `ft_kona__account` (`uid`,`name`,`slug`),
 
   CONSTRAINT `fk_kona__account_owner` FOREIGN KEY (`owner_id`) 
-        REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+        REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -1292,9 +1292,7 @@ CREATE TABLE `kona__place` (
   `longitude` double DEFAULT NULL,
   `indoor_floor` int(11) unsigned DEFAULT NULL,
   `coords` geometry NOT NULL,
-  `perimeter` longtext DEFAULT NULL, -- JSON list of lat/lng tuples defining perimeter of space
-  `encoded_perimeter` varchar(2000) DEFAULT NULL, -- encoded string of the perimeter
-  `perimeter_coords` geometry NOT NULL,
+
   `ref_place_id` varchar(255) DEFAULT NULL,
   `ref_google_url` varchar(255) DEFAULT NULL,
   `rating` double DEFAULT NULL,
@@ -1365,6 +1363,9 @@ CREATE TABLE `kona__place_plan` (
   `slug` varchar(255) DEFAULT NULL,
   `plan` longtext DEFAULT NULL, -- JSON blob describing interior space
   `floor` int(11) unsigned DEFAULT NULL, -- indoor floor associated with map
+  `perimeter` longtext DEFAULT NULL, -- JSON list of lat/lng tuples defining perimeter of space
+  `encoded_perimeter` longtext DEFAULT NULL, -- encoded string of the perimeter
+  `perimeter_coords` geometry NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1375,6 +1376,8 @@ CREATE TABLE `kona__place_plan` (
   UNIQUE KEY `ux_kona__place_plan` (`place_id`, `slug`),
 
   KEY `ix_kona_place_plan_place` (`place_id`),
+
+  SPATIAL `ix_kona__place_plan_perimeter_coords` (perimeter_coords),
 
   FULLTEXT KEY `ft_kona_place_plan` (`uid`,`name`,`slug`,`plan`),
 
@@ -2358,7 +2361,7 @@ CREATE TABLE `kona__campaign` (
   `description` varchar(4000) DEFAULT NULL,
   `conversion_count` int(11) unsigned NOT NULL default '0',
   `conversion_target` int(11) unsigned NOT NULL default '0',
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -2374,7 +2377,7 @@ CREATE TABLE `kona__campaign` (
 
   KEY `ix_kona__campaign_owner` (`owner_id`),
 
-  FULLTEXT `ft_kona__campaign` (`uid`,`name`, `slug`, `description`),
+  FULLTEXT `ft_kona__campaign` (`uid`,`goal`,`kpi`,`name`,`slug`, `description`),
 
   CONSTRAINT `fk_kona__campaign_owner` FOREIGN KEY (`owner_id`)
         REFERENCES `kona__user` (`id`) ON DELETE RESTRICT
@@ -3412,8 +3415,8 @@ CREATE TABLE `kona__landing_page_template` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `owner_id` bigint(20) unsigned default NULL,
-  `file_id` bigint(20) unsigned NOT NULL,
-  `url_path` varchar(255) NOT NULL,
+  `file_id` bigint(20) unsigned default NULL,  -- should be not null but object is created first, then file is uploaded
+  `url_path` varchar(255) default NULL,
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `description` varchar(4000) default NULL,
@@ -3436,7 +3439,7 @@ CREATE TABLE `kona__landing_page_template` (
 		REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__landing_page_template_file` FOREIGN KEY (`file_id`)
-        REFERENCES `kona__file` (`id`) ON DELETE CASCADE
+        REFERENCES `kona__file` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -3471,11 +3474,17 @@ CREATE TABLE `kona__landing_page` (
 
 -- --------------------------------------------------------------------------
 
+-- the reason this does not follow name/slug is because the name parameter may yet need to be turned
+-- into a slug by the app.  For example, the user might create a parameter called API_KEY, the display name
+-- might be called API Key, and the app may need to create a slug called api-key
+
 CREATE TABLE `kona__landing_page_template_param` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `template_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL, -- actual parameter name (i.e. background-color, css.background.color, etc.)
+  `slug` varchar(255) NOT NULL, -- help disambiguate similar param names (e.g. background_color and background-color)
+  `display_name` varchar(255) NOT NULL, -- NOTE: this does not follow the usual name/slug pattern
   `type` varchar(255) NOT NULL,
   `required` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -3485,7 +3494,7 @@ CREATE TABLE `kona__landing_page_template_param` (
 
   UNIQUE KEY `ux_kona__landing_page_template_param_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__landing_page_template_param_name` (`template_id`, `name`),
+  UNIQUE KEY `ux_kona__landing_page_template_param_slug` (`template_id`, `slug`),
 
   KEY `ix_kona__landing_page_template_param_template` (`template_id`),
 
@@ -3500,10 +3509,9 @@ CREATE TABLE `kona__landing_page_param` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
   `landing_page_id` bigint(20) unsigned NOT NULL,
-  `template_id` bigint(20) unsigned NOT NULL,
+  `template_param_id` bigint(20) unsigned NOT NULL,
   `file_id` bigint(20) unsigned default NULL,
-  `name` varchar(255) NOT NULL,
-  `value` longtext NOT NULL,
+  `value` longtext default NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -3511,11 +3519,11 @@ CREATE TABLE `kona__landing_page_param` (
 
   UNIQUE KEY `ux_kona__landing_page_param_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__landing_page_param_name` (`landing_page_id`, `name`),
+  UNIQUE KEY `ux_kona__landing_page_param_page_template_param` (`landing_page_id`, `template_param_id`),
 
   KEY `ix_kona__landing_page_param_page` (`landing_page_id`),
 
-  KEY `ix_kona__landing_page_param_template` (`template_id`),
+  KEY `ix_kona__landing_page_param_template_param` (`template_param_id`),
 
   CONSTRAINT `fk_kona__landing_page_param_file` FOREIGN KEY (`file_id`)
         REFERENCES `kona__file` (`id`) ON DELETE SET NULL,
@@ -3523,11 +3531,8 @@ CREATE TABLE `kona__landing_page_param` (
   CONSTRAINT `fk_kona__landing_page_param_page` FOREIGN KEY (`landing_page_id`)
         REFERENCES `kona__landing_page` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__landing_page_param_template` FOREIGN KEY (`template_id`)
-        REFERENCES `kona__landing_page_template` (`id`) ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__landing_page_param_name` FOREIGN KEY (`template_id`, `name`)
-        REFERENCES `kona__landing_page_template_param` (`template_id`, `name`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_kona__landing_page_param_template_param` FOREIGN KEY (`template_param_id`)
+        REFERENCES `kona__landing_page_template_param` (`id`) ON DELETE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

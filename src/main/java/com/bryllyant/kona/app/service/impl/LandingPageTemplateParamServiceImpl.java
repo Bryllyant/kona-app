@@ -15,26 +15,21 @@ import org.springframework.stereotype.Service;
 
 @Service(LandingPageTemplateParamService.SERVICE_PATH)
 public class LandingPageTemplateParamServiceImpl
-		extends KAbstractLandingPageTemplateParamService<LandingPageTemplateParam, LandingPageTemplateParamExample, LandingPageTemplateParamMapper>
-		implements LandingPageTemplateParamService {
-	
-	private static Logger logger = LoggerFactory.getLogger(LandingPageTemplateParamServiceImpl.class);
+        extends KAbstractLandingPageTemplateParamService<
+        LandingPageTemplateParam,
+        LandingPageTemplateParamExample,
+        LandingPageTemplateParamMapper>
+        implements LandingPageTemplateParamService {
 
-	@Autowired
-	private LandingPageTemplateParamMapper mapper;
+    private static Logger logger = LoggerFactory.getLogger(LandingPageTemplateParamServiceImpl.class);
 
-	
-	@Override @SuppressWarnings("unchecked")
-	protected LandingPageTemplateParamMapper getMapper() {
-		return mapper;
-	}
+    @Autowired
+    private LandingPageTemplateParamMapper mapper;
 
-	@Override
-    protected LandingPageTemplateParam getNewObject() {
-	    return new LandingPageTemplateParam();
+
+    @Override @SuppressWarnings("unchecked")
+    protected LandingPageTemplateParamMapper getMapper() {
+        return mapper;
     }
-	
 
-	 @Override
-    protected LandingPageTemplateParamExample getEntityExampleObject() { return new LandingPageTemplateParamExample(); }
 }

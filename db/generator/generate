@@ -150,6 +150,22 @@ function updateCoordsMapper {
     $SED ':a;N;$!ba;s/)\s*\n\s*<\/insert>/,ST_PointFromText(concat(\x27POINT(\x27,ifnull(longitude, 0),\x27 \x27,ifnull(latitude, 0),\x27)\x27)))\n<\/insert>/g' $FILE
 }
 
+function updatePerimeterCoordsMapper {
+    FIELD_NAME=$1
+    FILE=$2
+
+    echo "updatePerimeterCoordsMapper: Updating $FILE ..."
+
+    FILE="${DAO_DIR}/${FILE}"
+
+    cmd=':a;N;$!ba;s/)\s*\n\s*values/,'${FIELD_NAME}')\nvalues/g'
+
+    #$SED ':a;N;$!ba;s/)\s*\n\s*values/,coords) values/g' $FILE
+    $SED "${cmd}" $FILE
+
+    $SED ':a;N;$!ba;s/)\s*\n\s*<\/insert>/,ST_PointFromText(concat(\x27POINT(\x27,ifnull(null, 0),\x27 \x27,ifnull(null, 0),\x27)\x27)))\n<\/insert>/g' $FILE
+}
+
 
 #
 # Excecute Updates
@@ -184,7 +200,7 @@ updateCoordsMapper coords PaymentMapper.xml
 updateCoordsMapper coords PositionMapper.xml
 updateCoordsMapper coords RegistrationMapper.xml
 updateCoordsMapper coords TokenMapper.xml
-
 updateCoordsMapper coords PlaceMapper.xml
-updateCoordsMapper perimeter_coords PlaceMapper.xml
+
+updatePerimeterCoordsMapper perimeter_coords PlacePlanMapper.xml
 

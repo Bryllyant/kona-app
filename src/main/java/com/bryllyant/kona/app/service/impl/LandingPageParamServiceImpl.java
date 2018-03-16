@@ -8,10 +8,12 @@ import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageParam;
 import com.bryllyant.kona.app.entity.LandingPageParamExample;
+import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.KAbstractLandingPageParamService;
 import com.bryllyant.kona.app.service.LandingPageParamService;
+import com.bryllyant.kona.app.service.LandingPageTemplateParamService;
 import com.bryllyant.kona.app.service.SystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ public class LandingPageParamServiceImpl
         LandingPageParamExample,
         LandingPageParamMapper,
         LandingPage,
+        LandingPageTemplateParam,
         User,
         File>
 		implements LandingPageParamService {
@@ -39,6 +42,9 @@ public class LandingPageParamServiceImpl
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private LandingPageTemplateParamService templateParamService;
 
 	@Override
     protected LandingPageParam getNewObject() {
@@ -59,7 +65,12 @@ public class LandingPageParamServiceImpl
     protected FileService getFileService() {
         return fileService;
     }
-	
+
+    @Override @SuppressWarnings("unchecked")
+    protected LandingPageTemplateParamService getTemplateParamService() {
+        return templateParamService;
+    }
+
 	@Override @SuppressWarnings("unchecked")
 	protected LandingPageParamMapper getMapper() {
 		return mapper;

@@ -59,10 +59,6 @@ public class PushProviderServiceImpl
 
     private AmazonSNSClient client = null;
 
-    @Override
-    protected boolean entityHasBlobs() {
-        return true;
-    }
 
     @Override
     protected AmazonSNSClient getClient() {
@@ -95,9 +91,4 @@ public class PushProviderServiceImpl
 
         return client;
     }
-
-	 @Override
-    protected PushProviderExample getEntityExampleObject() { return new PushProviderExample(); }
-
-
 }

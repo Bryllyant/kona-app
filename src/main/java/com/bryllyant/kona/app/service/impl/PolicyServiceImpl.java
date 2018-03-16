@@ -23,26 +23,8 @@ public class PolicyServiceImpl
 	@Autowired
 	private PolicyMapper policyMapper;
     
-
-
 	@Override @SuppressWarnings("unchecked")
 	protected PolicyMapper getMapper() {
 		return policyMapper;
 	}
-    
-
-
-    @Override
-    protected boolean entityHasBlobs() {
-        return true;
-    }
-    
-
-	
-	 @Override
-    protected PolicyExample getEntityExampleObject() { return new PolicyExample(); }
-
-
-
-
 }

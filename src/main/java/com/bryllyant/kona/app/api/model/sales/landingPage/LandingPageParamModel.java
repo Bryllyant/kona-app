@@ -11,8 +11,7 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
 
     private String uid;
     private LandingPageModel landingPage;
-    private LandingPageTemplateModel template;
-    private String name;
+    private LandingPageTemplateParamModel templateParam;
     private String value;
     private Date createdDate;
     private Date updatedDate;
@@ -20,15 +19,13 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
     public static LandingPageParamModel from(LandingPageParam param) {
         LandingPageParamModel model = new LandingPageParamModel();
         model.setUid(param.getUid());
-        model.setName(param.getName());
         model.setValue(param.getValue());
         return model;
     }
 
-    public static LandingPageParamModel create(String uid, String name, String value) {
+    public static LandingPageParamModel create(String uid, String value) {
         LandingPageParamModel model = new LandingPageParamModel();
         model.setUid(uid);
-        model.setName(name);
         model.setValue(value);
         return model;
     }
@@ -51,20 +48,12 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
         this.set("landingPage", landingPage);
     }
 
-    public LandingPageTemplateModel getTemplate() {
-        return template;
+    public LandingPageTemplateParamModel getTemplateParam() {
+        return templateParam;
     }
 
-    public void setTemplate(LandingPageTemplateModel template) {
-        this.set("template", template);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.set("name", name);
+    public void setTemplateParam(LandingPageTemplateParamModel templateParam) {
+        this.set("templateParam", templateParam);
     }
 
     public String getValue() {

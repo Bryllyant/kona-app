@@ -6,9 +6,11 @@ package com.bryllyant.kona.app.service;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageParam;
+import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.remote.service.KService;
 
-public interface LandingPageParamService extends KService, KLandingPageParamService<LandingPageParam,LandingPage,File> {
+public interface LandingPageParamService
+        extends KService, KLandingPageParamService<LandingPageParam,LandingPage,LandingPageTemplateParam,File> {
 	String SERVICE_PATH = "rpc/LandingPageParamService";
 	
 }

@@ -171,8 +171,14 @@ public class LandingPageController extends BaseController {
 
         landingPage = landingPageModelService.mergeEntity(landingPage, model);
 
-        if (landingPage.getId() == null && model.getEnabled() == null) {
-            landingPage.setEnabled(true);
+        if (landingPage.getId() == null){
+            if (model.getEnabled() == null) {
+                landingPage.setEnabled(true);
+            }
+
+            LandingPageTemplate template = landingPageTemplateModelService.getTemplate(landingPage.getTemplateId());
+
+            return landingPageService.create(template, landingPage.getName());
         }
 
         return landingPageService.save(landingPage);

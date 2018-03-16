@@ -13,6 +13,8 @@ public class LandingPageTemplateParamModel extends KJsonModel implements KEntity
     private String uid;
     private LandingPageTemplateModel template;
     private String name;
+    private String slug;
+    private String displayName;
     private KLandingPageTemplateParam.Type type;
     private Boolean required;
     private Date createdDate;
@@ -22,6 +24,7 @@ public class LandingPageTemplateParamModel extends KJsonModel implements KEntity
         LandingPageTemplateParamModel model = new LandingPageTemplateParamModel();
         model.setUid(param.getUid());
         model.setName(param.getName());
+        model.setDisplayName(param.getDisplayName());
         model.setType(param.getType());
         model.setRequired(param.isRequired());
         return model;
@@ -57,6 +60,22 @@ public class LandingPageTemplateParamModel extends KJsonModel implements KEntity
 
     public void setName(String name) {
         this.set("name", name);
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.set("slug", slug);
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.set("displayName", displayName);
     }
 
     public KLandingPageTemplateParam.Type getType() {
