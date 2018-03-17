@@ -98,12 +98,7 @@ public class LandingPageParamModelService extends BaseModelService {
         LandingPageParamModel model = new LandingPageParamModel();
         
         model.fromBean(param);
-        /*
-    private Long landingPageId;
-    private Long templateId;
-    private Long fileId;
-    private String value;
-         */
+
 
         // set model references
         if (param.getLandingPageId() != null) {
