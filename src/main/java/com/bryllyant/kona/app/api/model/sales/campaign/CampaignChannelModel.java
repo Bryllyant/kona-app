@@ -1,7 +1,7 @@
 package com.bryllyant.kona.app.api.model.sales.campaign;
 
-import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
 import com.bryllyant.kona.app.entity.CampaignChannel;
+import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -14,21 +14,15 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private CampaignModel campaign;
     private CampaignGroupModel group;
     private CampaignChannel.Type type;
-    private CampaignChannel.TargetType targetType;
+    private CampaignTarget.Type targetType;
     private String name;
+    private String slug;
     private String adwordsKeywords;
 
     private String smsKeyword;
     private String smsNumber;
 
-    private LandingPageModel landingPage;
-
-    private String targetUrl;
-    private String targetShortUrl;
-
     private String promoCode;
-    private String analyticsTrackingId;
-    private String conversionPixel;
     private Integer conversionCount;
     private Boolean enabled;
     private Date startDate;
@@ -83,11 +77,11 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
         this.set("type", type);
     }
 
-    public CampaignChannel.TargetType getTargetType() {
+    public CampaignTarget.Type getTargetType() {
         return targetType;
     }
 
-    public void setTargetType(CampaignChannel.TargetType targetType) {
+    public void setTargetType(CampaignTarget.Type targetType) {
         this.set("targetType", targetType);
     }
 
@@ -97,6 +91,14 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
 
     public void setName(String name) {
         this.set("name", name);
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.set("slug", slug);
     }
 
     public String getAdwordsKeywords() {
@@ -123,52 +125,12 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
         this.set("smsNumber", smsNumber);
     }
 
-    public LandingPageModel getLandingPage() {
-        return landingPage;
-    }
-
-    public void setLandingPage(LandingPageModel landingPage) {
-        this.set("landingPage", landingPage);
-    }
-
-    public String getTargetUrl() {
-        return targetUrl;
-    }
-
-    public void setTargetUrl(String targetUrl) {
-        this.set("targetUrl", targetUrl);
-    }
-
-    public String getTargetShortUrl() {
-        return targetShortUrl;
-    }
-
-    public void setTargetShortUrl(String targetShortUrl) {
-        this.set("targetShortUrl", targetShortUrl);
-    }
-
     public String getPromoCode() {
         return promoCode;
     }
 
     public void setPromoCode(String promoCode) {
         this.set("promoCode", promoCode);
-    }
-
-    public String getAnalyticsTrackingId() {
-        return analyticsTrackingId;
-    }
-
-    public void setAnalyticsTrackingId(String analyticsTrackingId) {
-        this.set("analyticsTrackingId", analyticsTrackingId);
-    }
-
-    public String getConversionPixel() {
-        return conversionPixel;
-    }
-
-    public void setConversionPixel(String conversionPixel) {
-        this.set("conversionPixel", conversionPixel);
     }
 
     public Integer getConversionCount() {

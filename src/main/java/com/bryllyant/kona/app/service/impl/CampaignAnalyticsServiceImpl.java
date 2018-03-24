@@ -6,7 +6,7 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.dao.CampaignAnalyticsMapper;
 import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignAnalyticsExample;
-import com.bryllyant.kona.app.service.CampaignCampaignAnalyticsService;
+import com.bryllyant.kona.app.service.CampaignAnalyticsService;
 import com.bryllyant.kona.app.service.KAbstractCampaignAnalyticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-@Service(CampaignCampaignAnalyticsService.SERVICE_PATH)
-public class CampaignCampaignAnalyticsServiceImpl
+@Service(CampaignAnalyticsService.SERVICE_PATH)
+public class CampaignAnalyticsServiceImpl
 		extends KAbstractCampaignAnalyticsService<CampaignAnalytics, CampaignAnalyticsExample, CampaignAnalyticsMapper>
-		implements CampaignCampaignAnalyticsService {
+		implements CampaignAnalyticsService {
 	
-	private static Logger logger = LoggerFactory.getLogger(CampaignCampaignAnalyticsServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(CampaignAnalyticsServiceImpl.class);
     
     @Autowired
     private CampaignAnalyticsMapper campaignAnalyticsMapper;

@@ -884,7 +884,7 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.Type" />
-            <columnOverride column="target_type" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.TargetType" />
+            <columnOverride column="target_type" javaType="com.bryllyant.kona.app.entity.KCampaignTarget.Type" />
         </table>
 
         <table schema="kona"
@@ -898,8 +898,7 @@
             <property name="fullTextColumns" value="uid,name,slug,url,short_url,analytics_tracking_id"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
-            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.Type" />
-            <columnOverride column="target_type" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.TargetType" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignTarget.Type" />
         </table>
 
 

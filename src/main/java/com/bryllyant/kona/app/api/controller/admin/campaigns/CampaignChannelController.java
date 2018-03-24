@@ -1,14 +1,16 @@
-package com.bryllyant.kona.app.api.controller.admin.sales;
+package com.bryllyant.kona.app.api.controller.admin.campaigns;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
-import com.bryllyant.kona.app.api.model.sales.campaign.CampaignGroupModel;
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
+import com.bryllyant.kona.app.api.service.CampaignChannelModelService;
 import com.bryllyant.kona.app.api.service.CampaignGroupModelService;
 import com.bryllyant.kona.app.api.service.CampaignModelService;
-import com.bryllyant.kona.app.api.service.PartnerModelService;
+import com.bryllyant.kona.app.api.service.LandingPageModelService;
 import com.bryllyant.kona.app.entity.Campaign;
+import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
-import com.bryllyant.kona.app.entity.Partner;
+import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.CampaignGroupService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
@@ -31,9 +33,12 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/admin/sales/campaign-groups")
-public class CampaignGroupController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(CampaignGroupController.class);
+@RequestMapping("/api/admin/campaigns/channels")
+public class CampaignChannelController extends BaseController {
+    private static Logger logger = LoggerFactory.getLogger(CampaignChannelController.class);
+
+    @Autowired
+    private CampaignChannelService campaignChannelService;
 
     @Autowired
     private CampaignGroupService campaignGroupService;
@@ -42,10 +47,13 @@ public class CampaignGroupController extends BaseController {
     private CampaignGroupModelService campaignGroupModelService;
 
     @Autowired
+    private CampaignChannelModelService campaignChannelModelService;
+
+    @Autowired
     private CampaignModelService campaignModelService;
 
     @Autowired
-    private PartnerModelService partnerModelService;
+    private LandingPageModelService landingPageModelService;
 
     @Autowired
     private ApiUtil util;
@@ -53,15 +61,15 @@ public class CampaignGroupController extends BaseController {
 
 
     @RequestMapping(method=RequestMethod.GET)
-    public ResponseEntity<ModelResultSet<CampaignGroupModel>> search(
+    public ResponseEntity<ModelResultSet<CampaignChannelModel>> search(
             HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="sort", required=false) String[] sortOrder,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /admin/sales/campaign-groups");
+        logApiRequest(req, "GET /admin/campaigns/channels");
 
-        logger.debug("CampaignGroupController: raw query: " + query);
+        logger.debug("CampaignChannelController: raw query: " + query);
 
         Map<String,Object> filter = toFilterCriteria(query);  // returns keys in camelCase
 
@@ -83,107 +91,107 @@ public class CampaignGroupController extends BaseController {
             limit = 999;
         }
 
-        logger.debug("CampaignGroupController: filter: " + KJsonUtil.toJson(filter));
+        logger.debug("CampaignChannelController: filter: " + KJsonUtil.toJson(filter));
 
-        KResultList result = campaignGroupService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
+        KResultList result = campaignChannelService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
 
-        ModelResultSet resultSet = ModelResultSet.from(result, campaignGroupModelService.toModelList(result));
+        ModelResultSet resultSet = ModelResultSet.from(result, campaignChannelModelService.toModelList(result));
 
         return okList(resultSet);
     }
 
 
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
-    public ResponseEntity<CampaignGroupModel> get(
+    public ResponseEntity<CampaignChannelModel> get(
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "GET /admin/sales/campaign-groups/" + uid);
+        logApiRequest(req, "GET /admin/campaigns/channels/" + uid);
 
-        CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(uid);
+        CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(uid);
 
-        return ok(campaignGroupModelService.toModel(campaignGroup));
+        return ok(campaignChannelModelService.toModel(campaignChannel));
     }
 
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CampaignGroupModel> create(
+    public ResponseEntity<CampaignChannelModel> create(
             HttpServletRequest req,
-            @RequestBody CampaignGroupModel model
+            @RequestBody CampaignChannelModel model
     ) {
-        logApiRequest(req, "POST /admin/sales/campaign-groups");
+        logApiRequest(req, "POST /admin/campaigns/channels");
 
-        CampaignGroup campaignGroup = new CampaignGroup();
+        CampaignChannel campaignChannel = new CampaignChannel();
 
-        campaignGroup = saveObject(req, campaignGroup, model);
+        campaignChannel = saveObject(req, campaignChannel, model);
 
-        return created(campaignGroupModelService.toModel(campaignGroup));
+        return created(campaignChannelModelService.toModel(campaignChannel));
     }
 
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
-    public ResponseEntity<CampaignGroupModel> update(
+    public ResponseEntity<CampaignChannelModel> update(
             HttpServletRequest req,
             @PathVariable String uid,
-            @RequestBody CampaignGroupModel model
+            @RequestBody CampaignChannelModel model
     ) {
-        logApiRequest(req, "PUT /admin/sales/campaign-groups/" + uid);
+        logApiRequest(req, "PUT /admin/campaigns/channels/" + uid);
 
-        CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(uid);
+        CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(uid);
 
         if (model.getUid() != null && !model.getUid().equals(uid)) {
             throw new ValidationException("Object UID does not match requested UID");
         }
 
-        campaignGroup = saveObject(req, campaignGroup, model);
+        campaignChannel = saveObject(req, campaignChannel, model);
 
-        return ok(campaignGroupModelService.toModel(campaignGroup));
+        return ok(campaignChannelModelService.toModel(campaignChannel));
     }
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
-    public ResponseEntity<CampaignGroupModel> remove(
+    public ResponseEntity<CampaignChannelModel> remove(
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "DELETE /admin/sales/campaign-groups/" + uid);
+        logApiRequest(req, "DELETE /admin/campaigns/channels/" + uid);
 
-        CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(uid);
+        CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(uid);
 
-        campaignGroupService.remove(campaignGroup);
+        campaignChannelService.remove(campaignChannel);
 
-        //return ok(campaignGroupModelService.toModel(campaignGroup));
-        return ok(CampaignGroupModel.create(campaignGroup.getUid()));
+        //return ok(campaignChannelModelService.toModel(campaignChannel));
+        return ok(CampaignChannelModel.create(campaignChannel.getUid()));
     }
 
 
-    public CampaignGroup saveObject(
+    public CampaignChannel saveObject(
             HttpServletRequest req,
-            CampaignGroup campaignGroup,
-            CampaignGroupModel model
+            CampaignChannel campaignChannel,
+            CampaignChannelModel model
     ) {
-        logger.debug("mapToObject called for campaignGroup: " + campaignGroup);
+        logger.debug("mapToObject called for campaignChannel: " + campaignChannel);
 
         if (model.getUid() == null && model.getCampaign() == null) {
             throw new ValidationException("campaign property must be set");
         }
 
-        campaignGroup = campaignGroupModelService.mergeEntity(campaignGroup, model);
+        campaignChannel = campaignChannelModelService.mergeEntity(campaignChannel, model);
 
-        if (campaignGroup.getId() == null && model.getEnabled() == null) {
-            campaignGroup.setEnabled(true);
+        if (campaignChannel.getId() == null && model.getEnabled() == null) {
+            campaignChannel.setEnabled(true);
         }
 
-        if (campaignGroup.getId() == null) {
-            Campaign campaign = campaignModelService.getCampaign(campaignGroup.getCampaignId());
-            campaignGroup = campaignGroupService.create(campaign, campaignGroup);
+        if (campaignChannel.getId() == null) {
+            CampaignGroup group = campaignGroupModelService.getCampaignGroup(campaignChannel.getGroupId());
+            campaignChannel = campaignChannelService.create(group, campaignChannel);
         } else {
-            campaignGroup = campaignGroupService.update(campaignGroup);
+            campaignChannel = campaignChannelService.update(campaignChannel);
         }
 
-        return campaignGroup;
+        return campaignChannel;
     }
 
     @Override
@@ -209,9 +217,9 @@ public class CampaignGroupController extends BaseController {
                     result.put(prefix + "campaignId", campaign == null ? -1L : campaign.getId());
                     break;
 
-                case "partnerUid":
-                    Partner partner = partnerModelService.getPartner(util.getStringValue(value));
-                    result.put(prefix + "partnerId", partner == null ? -1L : partner.getId());
+                case "groupUid":
+                    CampaignGroup group = campaignGroupModelService.getCampaignGroup(util.getStringValue(value));
+                    result.put(prefix + "groupId", group == null ? -1L : group.getId());
                     break;
 
                 default:

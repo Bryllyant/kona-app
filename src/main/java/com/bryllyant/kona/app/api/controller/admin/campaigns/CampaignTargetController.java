@@ -1,18 +1,20 @@
-package com.bryllyant.kona.app.api.controller.admin.sales;
+package com.bryllyant.kona.app.api.controller.admin.campaigns;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
-import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignTargetModel;
 import com.bryllyant.kona.app.api.service.CampaignChannelModelService;
 import com.bryllyant.kona.app.api.service.CampaignGroupModelService;
 import com.bryllyant.kona.app.api.service.CampaignModelService;
+import com.bryllyant.kona.app.api.service.CampaignTargetModelService;
 import com.bryllyant.kona.app.api.service.LandingPageModelService;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.service.CampaignChannelService;
-import com.bryllyant.kona.app.service.CampaignGroupService;
+import com.bryllyant.kona.app.service.CampaignTargetService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -34,21 +36,24 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/admin/sales/campaign-channels")
-public class CampaignChannelController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(CampaignChannelController.class);
+@RequestMapping("/api/admin/campaigns/targets")
+public class CampaignTargetController extends BaseController {
+    private static Logger logger = LoggerFactory.getLogger(CampaignTargetController.class);
+
+    @Autowired
+    private CampaignTargetService campaignTargetService;
 
     @Autowired
     private CampaignChannelService campaignChannelService;
-
-    @Autowired
-    private CampaignGroupService campaignGroupService;
 
     @Autowired
     private CampaignGroupModelService campaignGroupModelService;
 
     @Autowired
     private CampaignChannelModelService campaignChannelModelService;
+
+    @Autowired
+    private CampaignTargetModelService campaignTargetModelService;
 
     @Autowired
     private CampaignModelService campaignModelService;
@@ -62,15 +67,15 @@ public class CampaignChannelController extends BaseController {
 
 
     @RequestMapping(method=RequestMethod.GET)
-    public ResponseEntity<ModelResultSet<CampaignChannelModel>> search(
+    public ResponseEntity<ModelResultSet<CampaignTargetModel>> search(
             HttpServletRequest req,
             @RequestParam(value="q", required=false) String query,
             @RequestParam(value="sort", required=false) String[] sortOrder,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /admin/sales/campaign-channels");
+        logApiRequest(req, "GET /admin/campaigns/targets");
 
-        logger.debug("CampaignChannelController: raw query: " + query);
+        logger.debug("CampaignTargetController: raw query: " + query);
 
         Map<String,Object> filter = toFilterCriteria(query);  // returns keys in camelCase
 
@@ -92,107 +97,113 @@ public class CampaignChannelController extends BaseController {
             limit = 999;
         }
 
-        logger.debug("CampaignChannelController: filter: " + KJsonUtil.toJson(filter));
+        logger.debug("CampaignTargetController: filter: " + KJsonUtil.toJson(filter));
 
-        KResultList result = campaignChannelService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
+        KResultList result = campaignTargetService.fetchByCriteria(offset, limit, sortOrder, filter, distinct);
 
-        ModelResultSet resultSet = ModelResultSet.from(result, campaignChannelModelService.toModelList(result));
+        ModelResultSet resultSet = ModelResultSet.from(result, campaignTargetModelService.toModelList(result));
 
         return okList(resultSet);
     }
 
 
     @RequestMapping(value="/{uid}", method=RequestMethod.GET)
-    public ResponseEntity<CampaignChannelModel> get(
+    public ResponseEntity<CampaignTargetModel> get(
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "GET /admin/sales/campaign-channels/" + uid);
+        logApiRequest(req, "GET /admin/campaigns/targets/" + uid);
 
-        CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(uid);
+        CampaignTarget campaignTarget = campaignTargetModelService.getCampaignTarget(uid);
 
-        return ok(campaignChannelModelService.toModel(campaignChannel));
+        return ok(campaignTargetModelService.toModel(campaignTarget));
     }
 
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CampaignChannelModel> create(
+    public ResponseEntity<CampaignTargetModel> create(
             HttpServletRequest req,
-            @RequestBody CampaignChannelModel model
+            @RequestBody CampaignTargetModel model
     ) {
-        logApiRequest(req, "POST /admin/sales/campaign-channels");
+        logApiRequest(req, "POST /admin/campaigns/targets");
 
-        CampaignChannel campaignChannel = new CampaignChannel();
+        CampaignTarget campaignTarget = new CampaignTarget();
 
-        campaignChannel = saveObject(req, campaignChannel, model);
+        campaignTarget = saveObject(req, campaignTarget, model);
 
-        return created(campaignChannelModelService.toModel(campaignChannel));
+        return created(campaignTargetModelService.toModel(campaignTarget));
     }
 
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.PUT)
-    public ResponseEntity<CampaignChannelModel> update(
+    public ResponseEntity<CampaignTargetModel> update(
             HttpServletRequest req,
             @PathVariable String uid,
-            @RequestBody CampaignChannelModel model
+            @RequestBody CampaignTargetModel model
     ) {
-        logApiRequest(req, "PUT /admin/sales/campaign-channels/" + uid);
+        logApiRequest(req, "PUT /admin/campaigns/targets/" + uid);
 
-        CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(uid);
+        CampaignTarget campaignTarget = campaignTargetModelService.getCampaignTarget(uid);
 
         if (model.getUid() != null && !model.getUid().equals(uid)) {
             throw new ValidationException("Object UID does not match requested UID");
         }
 
-        campaignChannel = saveObject(req, campaignChannel, model);
+        campaignTarget = saveObject(req, campaignTarget, model);
 
-        return ok(campaignChannelModelService.toModel(campaignChannel));
+        return ok(campaignTargetModelService.toModel(campaignTarget));
     }
 
 
     @RequestMapping(value = "/{uid}", method=RequestMethod.DELETE)
-    public ResponseEntity<CampaignChannelModel> remove(
+    public ResponseEntity<CampaignTargetModel> remove(
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "DELETE /admin/sales/campaign-channels/" + uid);
+        logApiRequest(req, "DELETE /admin/campaigns/targets/" + uid);
 
-        CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(uid);
+        CampaignTarget campaignTarget = campaignTargetModelService.getCampaignTarget(uid);
 
-        campaignChannelService.remove(campaignChannel);
+        campaignTargetService.remove(campaignTarget);
 
-        //return ok(campaignChannelModelService.toModel(campaignChannel));
-        return ok(CampaignChannelModel.create(campaignChannel.getUid()));
+        return ok(CampaignTargetModel.create(campaignTarget.getUid()));
     }
 
 
-    public CampaignChannel saveObject(
+    public CampaignTarget saveObject(
             HttpServletRequest req,
-            CampaignChannel campaignChannel,
-            CampaignChannelModel model
+            CampaignTarget campaignTarget,
+            CampaignTargetModel model
     ) {
-        logger.debug("mapToObject called for campaignChannel: " + campaignChannel);
+        logger.debug("mapToObject called for campaignTarget: " + campaignTarget);
 
         if (model.getUid() == null && model.getCampaign() == null) {
             throw new ValidationException("campaign property must be set");
         }
 
-        campaignChannel = campaignChannelModelService.mergeEntity(campaignChannel, model);
+        campaignTarget = campaignTargetModelService.mergeEntity(campaignTarget, model);
 
-        if (campaignChannel.getId() == null && model.getEnabled() == null) {
-            campaignChannel.setEnabled(true);
+        if (campaignTarget.getId() == null && model.getEnabled() == null) {
+            campaignTarget.setEnabled(true);
         }
 
-        if (campaignChannel.getId() == null) {
-            CampaignGroup group = campaignGroupModelService.getCampaignGroup(campaignChannel.getGroupId());
-            campaignChannel = campaignChannelService.create(group, campaignChannel);
+        if (campaignTarget.getId() == null) {
+            CampaignChannel channel = campaignChannelModelService.getCampaignChannel(campaignTarget.getChannelId());
+
+            if (channel.getTargetType() != campaignTarget.getType()) {
+                throw new ValidationException("Channel target type and target type must be the same."
+                        + "\nchannel: " + channel
+                        + "\ntarget: " + campaignTarget);
+            }
+
+            campaignTarget = campaignTargetService.create(channel, campaignTarget);
         } else {
-            campaignChannel = campaignChannelService.update(campaignChannel);
+            campaignTarget = campaignTargetService.update(campaignTarget);
         }
 
-        return campaignChannel;
+        return campaignTarget;
     }
 
     @Override
@@ -221,6 +232,11 @@ public class CampaignChannelController extends BaseController {
                 case "groupUid":
                     CampaignGroup group = campaignGroupModelService.getCampaignGroup(util.getStringValue(value));
                     result.put(prefix + "groupId", group == null ? -1L : group.getId());
+                    break;
+
+                case "channelUid":
+                    CampaignChannel channel = campaignChannelModelService.getCampaignChannel(util.getStringValue(value));
+                    result.put(prefix + "channelId", channel == null ? -1L : channel.getId());
                     break;
 
                 case "landingPageUid":

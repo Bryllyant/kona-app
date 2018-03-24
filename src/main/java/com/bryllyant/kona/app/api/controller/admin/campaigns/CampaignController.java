@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.admin.sales;
+package com.bryllyant.kona.app.api.controller.admin.campaigns;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/admin/sales/campaigns")
+@RequestMapping("/api/admin/campaigns")
 public class CampaignController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(CampaignController.class);
 
@@ -58,7 +58,7 @@ public class CampaignController extends BaseController {
             @RequestParam(value="sort", required=false) String[] sortOrder,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /admin/sales/campaigns");
+        logApiRequest(req, "GET /admin/campaigns");
 
         logger.debug("CampaignController: raw query: " + query);
 
@@ -97,7 +97,7 @@ public class CampaignController extends BaseController {
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "GET /admin/sales/campaigns/" + uid);
+        logApiRequest(req, "GET /admin/campaigns/" + uid);
 
         Campaign campaign = campaignModelService.getCampaign(uid);
 
@@ -111,7 +111,7 @@ public class CampaignController extends BaseController {
             HttpServletRequest req,
             @RequestBody CampaignModel model
     ) {
-        logApiRequest(req, "POST /admin/sales/campaigns");
+        logApiRequest(req, "POST /admin/campaigns");
 
         Campaign campaign = new Campaign();
 
@@ -128,7 +128,7 @@ public class CampaignController extends BaseController {
             @PathVariable String uid,
             @RequestBody CampaignModel model
     ) {
-        logApiRequest(req, "PUT /admin/sales/campaigns/" + uid);
+        logApiRequest(req, "PUT /admin/campaigns/" + uid);
 
         Campaign campaign = campaignModelService.getCampaign(uid);
 
@@ -147,7 +147,7 @@ public class CampaignController extends BaseController {
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "DELETE /admin/sales/campaigns/" + uid);
+        logApiRequest(req, "DELETE /admin/campaigns/" + uid);
 
         Campaign campaign = campaignModelService.getCampaign(uid);
 

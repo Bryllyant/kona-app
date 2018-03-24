@@ -3,11 +3,9 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignGroupModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
-import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
-import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -87,11 +85,6 @@ public class CampaignChannelModelService extends BaseModelService {
             model.setGroup(CampaignGroupModel.from(campaignGroup));
         }
 
-        if (campaignChannel.getLandingPageId() != null) {
-            LandingPage landingPage = landingPageModelService.getLandingPage(campaignChannel.getLandingPageId());
-            model.setLandingPage(LandingPageModel.from(landingPage));
-        }
-
         if (includeKeys != null && includeKeys.length > 0) {
             model.includeKeys(includeKeys);
         }
@@ -123,19 +116,14 @@ public class CampaignChannelModelService extends BaseModelService {
 
         for (String key : model.initializedKeys()) {
             switch (key) {
-                case "group":
-                    CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(model.getGroup());
-                    campaignChannel.setGroupId(campaignGroup == null ? null : campaignGroup.getId());
-                    break;
-
                 case "campaign":
                     Campaign campaign = campaignModelService.getCampaign(model.getCampaign());
                     campaignChannel.setCampaignId(campaign == null ? null : campaign.getId());
                     break;
 
-                case "landingPage":
-                    LandingPage landingPage = landingPageModelService.getLandingPage(model.getLandingPage());
-                    campaignChannel.setLandingPageId(landingPage == null ? null : landingPage.getId());
+                case "group":
+                    CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(model.getGroup());
+                    campaignChannel.setGroupId(campaignGroup == null ? null : campaignGroup.getId());
                     break;
             }
 

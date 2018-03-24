@@ -2429,7 +2429,7 @@ CREATE TABLE `kona__campaign_channel` (
   `group_id` bigint(20) unsigned NOT NULL,
   `promo_code` varchar(255) DEFAULT NULL,
   `type` varchar(255) NOT NULL,
-  `target_type` varchar(255) NOT NULL,
+  `target_type` varchar(255) NOT NULL, -- all targets must be of the same type
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `adwords_keywords` varchar(2000) DEFAULT NULL,

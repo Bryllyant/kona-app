@@ -45,34 +45,33 @@ public abstract class LandingPageResolver extends PathResourceResolver{
     private static final Logger logger = LoggerFactory.getLogger(LandingPageResolver.class);
 
     @Autowired
-    KConfig config;
+    private KConfig config;
 
     @Autowired
-    LandingPageService landingPageService;
+    private LandingPageService landingPageService;
 
     @Autowired
-    LandingPageParamService landingPageParamService;
+    private LandingPageParamService landingPageParamService;
 
     @Autowired
-    LandingPageModelService landingPageModelService;
+    private LandingPageModelService landingPageModelService;
 
     @Autowired
-    LandingPageParamModelService landingPageParamModelService;
+    private LandingPageParamModelService landingPageParamModelService;
 
     @Autowired
-    LandingPageTemplateService landingPageTemplateService;
+    private LandingPageTemplateService landingPageTemplateService;
+
+
 
     @Autowired
-    CampaignChannelService campaignChannelService;
+    private FileService fileService;
 
     @Autowired
-    FileService fileService;
+    private AppService appService;
 
     @Autowired
-    AppService appService;
-
-    @Autowired
-    AppCredsService appCredsService;
+    private AppCredsService appCredsService;
 
     private static String appClientId = null;
 

@@ -1,4 +1,4 @@
-package com.bryllyant.kona.app.api.controller.admin.sales;
+package com.bryllyant.kona.app.api.controller.admin.campaigns;
 
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.ModelResultSet;
@@ -40,7 +40,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/admin/sales/landing-page-params")
+@RequestMapping("/api/admin/campaigns/landing-page-params")
 public class LandingPageParamController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(LandingPageParamController.class);
 
@@ -83,7 +83,7 @@ public class LandingPageParamController extends BaseController {
             @RequestParam(value="sort", required=false) String[] sortOrder,
             @RequestParam(value="offset", required=false) Integer offset,
             @RequestParam(value="limit", required=false) Integer limit) {
-        logApiRequest(req, "GET /admin/sales/landing-page-params");
+        logApiRequest(req, "GET /admin/campaigns/landing-page-params");
 
         logger.debug("LandingPageTemplateController: raw query: " + query);
 
@@ -126,7 +126,7 @@ public class LandingPageParamController extends BaseController {
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "GET /admin/sales/landing-page-params/" + uid);
+        logApiRequest(req, "GET /admin/campaigns/landing-page-params/" + uid);
 
         LandingPageParam param = paramModelService.getLandingPageParam(uid);
 
@@ -140,7 +140,7 @@ public class LandingPageParamController extends BaseController {
             HttpServletRequest req,
             @RequestBody LandingPageParamModel model
     ) {
-        logApiRequest(req, "POST /admin/sales/landing-page-params");
+        logApiRequest(req, "POST /admin/campaigns/landing-page-params");
 
         LandingPageParam param = new LandingPageParam();
 
@@ -157,7 +157,7 @@ public class LandingPageParamController extends BaseController {
             @PathVariable String uid,
             @RequestBody LandingPageParamModel model
     ) {
-        logApiRequest(req, "PUT /admin/sales/landing-page-params/" + uid);
+        logApiRequest(req, "PUT /admin/campaigns/landing-page-params/" + uid);
 
         LandingPageParam param = paramModelService.getLandingPageParam(uid);
 
@@ -176,7 +176,7 @@ public class LandingPageParamController extends BaseController {
             HttpServletRequest req,
             @PathVariable String uid
     ) {
-        logApiRequest(req, "DELETE /admin/sales/landing-page-params/" + uid);
+        logApiRequest(req, "DELETE /admin/campaigns/landing-page-params/" + uid);
 
         LandingPageParam param = paramModelService.getLandingPageParam(uid);
 
@@ -221,7 +221,7 @@ public class LandingPageParamController extends BaseController {
             @PathVariable String uid,
             @RequestParam(value="upload_date", required=false) Long uploadDate) {
 
-        logApiRequest(req, "POST /admin/sales/landing-page-params/" + uid + "/media");
+        logApiRequest(req, "POST /admin/campaigns/landing-page-params/" + uid + "/media");
 
         LandingPageParam param = paramModelService.getLandingPageParam(uid);
 
