@@ -2,6 +2,7 @@ package com.bryllyant.kona.app.api.model.media;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.api.model.user.UserModel;
+import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -19,6 +20,7 @@ public class MediaModel extends KJsonModel implements KEntityModel {
 	private UserModel user;
 
 	private String url;
+    private File.Type fileType;
 	private String contentType;
 	private Integer width;
 	private Integer height;
@@ -54,7 +56,6 @@ public class MediaModel extends KJsonModel implements KEntityModel {
 	    return model;
 	}
 
-
     @Override
     public String getUid() {
         return uid;
@@ -79,6 +80,14 @@ public class MediaModel extends KJsonModel implements KEntityModel {
 
     public void setUrl(String url) {
         this.set("url", url);
+    }
+
+    public File.Type getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(File.Type fileType) {
+        this.set("fileType", fileType);
     }
 
     public String getContentType() {

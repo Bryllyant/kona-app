@@ -2,10 +2,12 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.media.MediaModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.MediaService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,9 @@ public class MediaModelService extends BaseModelService {
     
     @Autowired
     private MediaService mediaService;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private UserModelService userModelService;
@@ -84,16 +89,21 @@ public class MediaModelService extends BaseModelService {
             thumbnailUrl = util.toAbsoluteUrl(media.getThumbnailUrlPath());
         }
 
-        User user = userModelService.getUser(media.getUserId()); 
+        User user = userModelService.getUser(media.getUserId());
+
+        File file = fileService.fetchById(media.getFileId());
 
         MediaModel model = new MediaModel();
         
         model.fromBean(media);
         
-
         model.setUser(userModelService.toModel(user, "uid", "account"));
         model.setUrl(url);
         model.setThumbnailUrl(thumbnailUrl);
+
+        if (file != null) {
+            model.setFileType(file.getType());
+        }
 
 
         if (includeKeys != null && includeKeys.length > 0) {

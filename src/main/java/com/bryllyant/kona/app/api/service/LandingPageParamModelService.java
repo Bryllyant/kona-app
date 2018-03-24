@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app.api.service;
 
+import com.bryllyant.kona.app.api.model.media.FileModel;
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageParamModel;
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateParamModel;
@@ -37,6 +38,9 @@ public class LandingPageParamModelService extends BaseModelService {
 
     @Autowired
     private UserModelService userModelService;
+
+    @Autowired
+    private FileModelService fileModelService;
 
     @Autowired
     private AppModelService appModelService;
@@ -113,7 +117,9 @@ public class LandingPageParamModelService extends BaseModelService {
 
         if (param.getFileId() != null) {
             File file = fileService.fetchById(param.getFileId());
-            model.setValue(util.toAbsoluteUrl(file.getUrlPath()));
+            String url = util.toAbsoluteUrl(file.getUrlPath());
+            model.setValue(url);
+            model.setFile(FileModel.from(file, url));
         }
 
         if (includeKeys != null && includeKeys.length > 0) {

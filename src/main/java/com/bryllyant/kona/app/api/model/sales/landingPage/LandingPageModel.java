@@ -16,6 +16,7 @@ public class LandingPageModel extends KJsonModel implements KEntityModel {
     private String name;
     private String slug;
     private String description;
+    private String previewUrl;
     private Boolean enabled;
     private Date createdDate;
     private Date updatedDate;
@@ -73,6 +74,14 @@ public class LandingPageModel extends KJsonModel implements KEntityModel {
 
     public void setDescription(String description) {
         this.set("description", description);
+    }
+
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+
+    public void setPreviewUrl(String previewUrl) {
+        this.set("previewUrl", previewUrl);
     }
 
     public Boolean getEnabled() {

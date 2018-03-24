@@ -2,6 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageModel;
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateModel;
+import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.service.LandingPageService;
@@ -18,6 +19,9 @@ import java.util.List;
 @Service
 public class LandingPageModelService extends BaseModelService {
     private static final Logger logger = LoggerFactory.getLogger(LandingPageModelService.class);
+
+    @Autowired
+    KConfig config;
     
     @Autowired
     private LandingPageService landingPageService;
@@ -79,6 +83,17 @@ public class LandingPageModelService extends BaseModelService {
         LandingPageModel model = new LandingPageModel();
         
         model.fromBean(landingPage);
+
+        // generate the previewUrl
+        String previewUrl = config.getString("landingPage.previewBaseUrl");
+
+        if (!previewUrl.endsWith("/")) {
+            previewUrl += "/";
+        }
+
+        previewUrl += landingPage.getUid() + "/";
+
+        model.setPreviewUrl(previewUrl);
 
         // set model references
         if (landingPage.getTemplateId() != null) {

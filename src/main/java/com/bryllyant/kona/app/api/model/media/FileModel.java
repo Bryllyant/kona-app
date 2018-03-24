@@ -41,7 +41,9 @@ public class FileModel extends KJsonModel implements KEntityModel {
         FileModel model = new FileModel();
         model.setUid(file.getUid());
         model.setName(file.getName());
+        model.setType(file.getType());
         model.setContentType(file.getContentType());
+        model.setSize(file.getSize());
         model.setUrl(url);
         return model;
     }

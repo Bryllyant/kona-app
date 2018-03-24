@@ -1,5 +1,6 @@
 package com.bryllyant.kona.app.api.model.sales.landingPage;
 
+import com.bryllyant.kona.app.api.model.media.FileModel;
 import com.bryllyant.kona.app.entity.LandingPageParam;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -13,6 +14,7 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
     private LandingPageModel landingPage;
     private LandingPageTemplateParamModel templateParam;
     private String value;
+    private FileModel file;
     private Date createdDate;
     private Date updatedDate;
 
@@ -62,6 +64,14 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
 
     public void setValue(String value) {
         this.set("value", value);
+    }
+
+    public FileModel getFile() {
+        return file;
+    }
+
+    public void setFile(FileModel file) {
+        this.set("file", file);
     }
 
     public Date getCreatedDate() {
