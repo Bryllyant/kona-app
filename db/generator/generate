@@ -177,7 +177,7 @@ echo
 
 DAO_DIR="../../src/main/java/com/bryllyant/kona/app/dao"
 java -cp $CLASSPATH $MAIN -configfile $CONFIG_APP -overwrite
-updateSelectProximate AnalyticsEvent AnalyticsEventMapper.java
+updateSelectProximate CampaignAnalytics CampaignAnalyticsMapper.java
 updateSelectProximate ApiLog ApiLogMapper.java
 updateSelectProximate AppUser AppUserMapper.java
 updateSelectProximate Media MediaMapper.java
@@ -192,7 +192,7 @@ fetchRandom EmailAddress EmailAddressMapper.java
 #fetchByUserIds PushDevice PushDeviceMapper.java
 
 
-updateCoordsMapper coords AnalyticsEventMapper.xml
+updateCoordsMapper coords CampaignAnalyticsMapper.xml
 updateCoordsMapper coords ApiLogMapper.xml
 updateCoordsMapper coords AppUserMapper.xml
 updateCoordsMapper coords MediaMapper.xml

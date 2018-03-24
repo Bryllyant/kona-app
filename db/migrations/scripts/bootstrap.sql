@@ -2431,18 +2431,67 @@ CREATE TABLE `kona__campaign_channel` (
   `type` varchar(255) NOT NULL,
   `target_type` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
   `adwords_keywords` varchar(2000) DEFAULT NULL,
 
   `sms_number` varchar(255) DEFAULT NULL,
   `sms_keyword` varchar(255) DEFAULT NULL,
 
-  `landing_page_id` bigint(20) unsigned DEFAULT NULL,
---  `landing_page_url_path` varchar(255) DEFAULT NULL,
---  `landing_page_url_params` varchar(255) DEFAULT NULL,
+  `conversion_count` int(11) unsigned NOT NULL default '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `start_date` datetime(6) DEFAULT NULL,
+  `end_date` datetime(6) DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
-    -- target_url should include all final query params to uniquely identify this channel
-  `target_url` varchar(255) DEFAULT NULL,
-  `target_short_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__campaign_channel_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__campaign_channel_slug` (`group_id`, `slug`),
+
+  UNIQUE KEY `ux_kona__campaign_channel_sms_number` (`sms_number`, `sms_keyword`),
+
+  UNIQUE KEY `ux_kona__campaign_channel_promo_code` (`promo_code`),
+
+  KEY `ix_kona__campaign_channel_campaign` (`campaign_id`),
+
+  KEY `ix_kona__campaign_channel_group` (`group_id`),
+
+  FULLTEXT `ft_kona__campaign_channel` (uid,name,slug,adwords_keywords,sms_keyword,sms_number),
+
+  CONSTRAINT `fk_kona__campaign_channel_campaign` FOREIGN KEY (`campaign_id`)
+    REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_channel_group` FOREIGN KEY (`group_id`)
+    REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_channel_promo_code` FOREIGN KEY (`promo_code`)
+    REFERENCES `kona__promo_code` (`promo_code`) ON DELETE SET NULL
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- all the targets of a channel should be the same type
+-- purpose of multiple targets per channel is to do A/B testing
+
+CREATE TABLE `kona__campaign_target` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `channel_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+
+  `landing_page_id` bigint(20) unsigned DEFAULT NULL,
+
+    -- should include all final query params to uniquely identify this target
+  `url` varchar(255) DEFAULT NULL,
+  `short_url` varchar(255) DEFAULT NULL,
 
   `analytics_tracking_id` varchar(255) DEFAULT NULL,
   `conversion_pixel` varchar(2000) DEFAULT NULL,
@@ -2457,48 +2506,50 @@ CREATE TABLE `kona__campaign_channel` (
 
   UNIQUE KEY `id` (`id`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_uid` (`uid`),
+  UNIQUE KEY `ux_kona__campaign_target_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_sms_number` (`sms_number`, `sms_keyword`),
+  UNIQUE KEY `ux_kona__campaign_target_slug` (`channel_id`, `slug`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_promo_code` (`promo_code`),
+  UNIQUE KEY `ux_kona__campaign_target_url` (`url`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_target_url` (`target_url`),
+  UNIQUE KEY `ux_kona__campaign_target_short_url` (`short_url`),
 
-  UNIQUE KEY `ux_kona__campaign_channel_target_short_url` (`target_short_url`),
+  KEY `ix_kona__campaign_channel_landing_target_page` (`landing_page_id`),
 
-  KEY `ix_kona__campaign_channel_landing_page` (`landing_page_id`),
+  KEY `ix_kona__campaign_target_campaign` (`campaign_id`),
 
-  KEY `ix_kona__campaign_channel_campaign` (`campaign_id`),
+  KEY `ix_kona__campaign_target_group` (`group_id`),
 
-  KEY `ix_kona__campaign_channel_group` (`group_id`),
+  KEY `ix_kona__campaign_target_channel` (`channel_id`),
 
-  FULLTEXT `ft_kona__campaign_channel` (uid,name,adwords_keywords,sms_keyword,sms_number,
-        target_url, target_short_url,analytics_tracking_id),
+  FULLTEXT `ft_kona__campaign_target` (uid,name,slug,url,short_url,analytics_tracking_id),
 
-  CONSTRAINT `fk_kona__campaign_channel_campaign` FOREIGN KEY (`campaign_id`)
+  CONSTRAINT `fk_kona__campaign_target_campaign` FOREIGN KEY (`campaign_id`)
     REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__campaign_channel_group` FOREIGN KEY (`group_id`)
+  CONSTRAINT `fk_kona__campaign_target_group` FOREIGN KEY (`group_id`)
     REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__campaign_channel_landing_page` FOREIGN KEY (`landing_page_id`)
+  CONSTRAINT `fk_kona__campaign_target_channel` FOREIGN KEY (`channel_id`)
+    REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_target_landing_page` FOREIGN KEY (`landing_page_id`)
     REFERENCES `kona__landing_page` (`id`) ON DELETE RESTRICT,
 
-  CONSTRAINT `fk_kona__campaign_channel_promo_code` FOREIGN KEY (`promo_code`)
-    REFERENCES `kona__promo_code` (`promo_code`) ON DELETE SET NULL,
-
-  CONSTRAINT `fk_kona__campaign_channel_target_short_url` FOREIGN KEY (`target_short_url`)
+  CONSTRAINT `fk_kona__campaign_target_short_url` FOREIGN KEY (`short_url`)
     REFERENCES `kona__short_url` (`short_url`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
 
-CREATE TABLE `kona__analytics_event` (
+CREATE TABLE `kona__campaign_analytics` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `campaign_channel_id` bigint(20) unsigned NOT NULL,
+  `campaign_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `channel_id` bigint(20) unsigned NOT NULL,
+  `target_id` bigint(20) unsigned default NULL, -- event can be on the trigger (e.g. email click) and not the target
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
@@ -2519,20 +2570,32 @@ CREATE TABLE `kona__analytics_event` (
 
   UNIQUE KEY `id` (`id`),
 
-  UNIQUE KEY `ux_kona__analytics_event_uid` (`uid`),
+  UNIQUE KEY `ux_kona__campaign_analytics_uid` (`uid`),
 
-  KEY `ix_kona__analytics_event_campaign_channel` (`campaign_channel_id`),
+  KEY `ix_kona__campaign_analytics_campaign` (`channel_id`),
+  KEY `ix_kona__campaign_analytics_group` (`group_id`),
+  KEY `ix_kona__campaign_analytics_channel` (`channel_id`),
+  KEY `ix_kona__campaign_analytics_target` (`target_id`),
 
-  KEY `ix_kona__analytics_event_user` (`user_id`),
+  KEY `ix_kona__campaign_analytics_user` (`user_id`),
 
-  FULLTEXT `ft_kona__analytics_event` (uid,category,action,label,mobile_number,url,hostname,user_agent),
+  FULLTEXT `ft_kona__campaign_analytics` (uid,category,action,label,mobile_number,url,hostname,user_agent),
 
-  SPATIAL `ix_kona__analytics_event_coords` (coords),
+  SPATIAL `ix_kona__campaign_analytics_coords` (coords),
 
-  CONSTRAINT `fk_kona__analytics_event_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+  CONSTRAINT `fk_kona__campaign_analytics_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_analytics_group` FOREIGN KEY (`group_id`)
+        REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_analytics_channel` FOREIGN KEY (`channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__analytics_event_user` FOREIGN KEY (`user_id`)
+  CONSTRAINT `fk_kona__campaign_analytics_target` FOREIGN KEY (`target_id`)
+        REFERENCES `kona__campaign_target` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_analytics_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -3504,6 +3567,17 @@ CREATE TABLE `kona__landing_page_template_param` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
+
+--#
+--# Appears to be a bug with MySQL driver and MyBatis where BLOB columns (specifically LONGTEXT) columns that are null
+--# are not returned when selectByExampleWithBLOBs is called.
+--#
+--# Caught: org.mybatis.spring.MyBatisSystemException:
+--#       nested exception is org.apache.ibatis.executor.result.ResultMapException:
+--#       Error attempting to get column 'param_value' from result set.  Cause: java.lang.ArrayIndexOutOfBoundsException
+--#
+--
+--# mariadb JDBC driver seems to work fine.
 
 CREATE TABLE `kona__landing_page_param` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
