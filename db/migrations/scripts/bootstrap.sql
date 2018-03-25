@@ -1268,6 +1268,7 @@ CREATE TABLE `kona__place` (
   `category_id` bigint(20) unsigned default NULL,
   `name` varchar(255) DEFAULT NULL,
   `slug` varchar(255) DEFAULT NULL,
+  `private_access` tinyint(1) unsigned DEFAULT null,
   `photo_id` bigint(20) unsigned DEFAULT NULL,
   `photo_url` varchar(255) DEFAULT NULL,
   `thumbnail_url` varchar(255) DEFAULT NULL,
@@ -2432,7 +2433,7 @@ CREATE TABLE `kona__campaign_channel` (
   `target_type` varchar(255) NOT NULL, -- all targets must be of the same type
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
-  `adwords_keywords` varchar(2000) DEFAULT NULL,
+  `adwords_keywords` varchar(4000) DEFAULT NULL,
 
   `sms_number` varchar(255) DEFAULT NULL,
   `sms_keyword` varchar(255) DEFAULT NULL,
@@ -2549,17 +2550,23 @@ CREATE TABLE `kona__campaign_analytics` (
   `campaign_id` bigint(20) unsigned NOT NULL,
   `group_id` bigint(20) unsigned NOT NULL,
   `channel_id` bigint(20) unsigned NOT NULL,
-  `target_id` bigint(20) unsigned default NULL, -- event can be on the trigger (e.g. email click) and not the target
+  `target_id` bigint(20) unsigned NOT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
-  `label` varchar(255) DEFAULT NULL,
+  `label` varchar(2000) DEFAULT NULL,
   `value` double DEFAULT NULL,
   `conversion_event` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `mobile_number` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `hostname` varchar(255) DEFAULT NULL,
   `user_agent` varchar(512) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `postal_code` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `time_zone` varchar(255) DEFAULT NULL,
+  `utc_offset` int(11) DEFAULT NULL,
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `coords` geometry NOT NULL,
@@ -3232,18 +3239,30 @@ CREATE TABLE `kona__promo_product` (
 CREATE TABLE `kona__sales_lead` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `channel_id` bigint(20) unsigned NOT NULL,
+  `target_id` bigint(20) unsigned NOT NULL,
+  `analytics_id` bigint(20) unsigned NOT NULL,
+  `campaign_conversion` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `referred_by_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone_number` varchar(255) DEFAULT NULL,
   `mobile_number` varchar(255) DEFAULT NULL,
   `social_handles` varchar(2000) DEFAULT NULL,
+  `street1` varchar(255) DEFAULT NULL,
+  `street2` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `postal_code` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `time_zone` varchar(255) DEFAULT NULL,
+  `utc_offset` int(11) DEFAULT NULL,
+  `formatted_address` varchar(512) DEFAULT NULL,
   `message` varchar(2000) DEFAULT NULL,
   `interests` varchar(2000) DEFAULT NULL,
-  `hostname` varchar(255) DEFAULT NULL,
-  `user_agent` varchar(512) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -3255,12 +3274,27 @@ CREATE TABLE `kona__sales_lead` (
 
   KEY `ix_kona__sales_lead_referred_by` (`referred_by_id`),
 
-  KEY `ix_kona__sales_lead_campaign_channel` (`campaign_channel_id`),
+  KEY `ix_kona__sales_lead_campaign` (`channel_id`),
 
-  FULLTEXT `ft_kona_sales_lead` (uid,first_name,last_name,email,phone_number,mobile_number,social_handles,message,interests,hostname,user_agent),
+  KEY `ix_kona__sales_lead_group` (`group_id`),
 
-  CONSTRAINT `fk_kona__sales_lead_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
-        REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  KEY `ix_kona__sales_lead_channel` (`channel_id`),
+
+  KEY `ix_kona__sales_lead_target` (`target_id`),
+
+  FULLTEXT `ft_kona_sales_lead` (uid,first_name,last_name,email,phone_number,mobile_number,social_handles,message,interests),
+
+  CONSTRAINT `fk_kona__sales_lead_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__sales_lead_group` FOREIGN KEY (`group_id`)
+        REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__sales_lead_channel` FOREIGN KEY (`channel_id`)
+        REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__sales_lead_target` FOREIGN KEY (`target_id`)
+        REFERENCES `kona__campaign_target` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__sales_lead_referred_by` FOREIGN KEY (`referred_by_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE

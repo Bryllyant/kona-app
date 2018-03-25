@@ -11,11 +11,11 @@ import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.service.AppCredsService;
 import com.bryllyant.kona.app.service.AppService;
-import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageParamService;
 import com.bryllyant.kona.app.service.LandingPageService;
 import com.bryllyant.kona.app.service.LandingPageTemplateService;
+import com.bryllyant.kona.app.util.ApiUtil;
 import com.bryllyant.kona.encryption.KEncryptUtil;
 import com.bryllyant.kona.encryption.KZipUtil;
 import com.bryllyant.kona.rest.exception.SystemException;
@@ -61,6 +61,9 @@ public abstract class LandingPageResolver extends PathResourceResolver{
 
     @Autowired
     private LandingPageTemplateService landingPageTemplateService;
+
+    @Autowired
+    private ApiUtil util;
 
 
 
@@ -124,10 +127,13 @@ public abstract class LandingPageResolver extends PathResourceResolver{
             paramMap.put(param.getTemplateParam().getName(), param);
         }
 
+        Map<String, Object> api = new HashMap<>();
+        api.put("baseUrl", apiBaseUrl);
+        api.put("clientId", getAppClientId());
+
         Map<String, Object> config = new HashMap<>();
 
-        config.put("apiBaseUrl", apiBaseUrl);
-        config.put("apiClientId", getAppClientId());
+        config.put("api", api);
         config.put("landingPage", landingPageModel);
         config.put("params", paramMap);
 

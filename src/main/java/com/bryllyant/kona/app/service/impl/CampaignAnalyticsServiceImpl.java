@@ -4,9 +4,17 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.CampaignAnalyticsMapper;
+import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignAnalyticsExample;
+import com.bryllyant.kona.app.entity.CampaignChannel;
+import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.service.CampaignAnalyticsService;
+import com.bryllyant.kona.app.service.CampaignChannelService;
+import com.bryllyant.kona.app.service.CampaignGroupService;
+import com.bryllyant.kona.app.service.CampaignService;
+import com.bryllyant.kona.app.service.CampaignTargetService;
 import com.bryllyant.kona.app.service.KAbstractCampaignAnalyticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +26,14 @@ import java.util.List;
 
 @Service(CampaignAnalyticsService.SERVICE_PATH)
 public class CampaignAnalyticsServiceImpl
-		extends KAbstractCampaignAnalyticsService<CampaignAnalytics, CampaignAnalyticsExample, CampaignAnalyticsMapper>
+		extends KAbstractCampaignAnalyticsService<
+        CampaignAnalytics,
+        CampaignAnalyticsExample,
+        CampaignAnalyticsMapper,
+        Campaign,
+        CampaignGroup,
+        CampaignChannel,
+        CampaignTarget>
 		implements CampaignAnalyticsService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CampaignAnalyticsServiceImpl.class);
@@ -26,12 +41,45 @@ public class CampaignAnalyticsServiceImpl
     @Autowired
     private CampaignAnalyticsMapper campaignAnalyticsMapper;
 
+    @Autowired
+    private CampaignService campaignService;
+
+    @Autowired
+    private CampaignGroupService campaignGroupService;
+
+    @Autowired
+    private CampaignChannelService campaignChannelService;
+
+    @Autowired
+    private CampaignTargetService campaignTargetService;
+
+
 
     @Override @SuppressWarnings("unchecked")
     protected CampaignAnalyticsMapper getMapper() {
         return campaignAnalyticsMapper;
     }
-    
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignService getCampaignService() {
+        return campaignService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignGroupService getCampaignGroupService() {
+        return campaignGroupService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignChannelService getCampaignChannelService() {
+        return campaignChannelService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignTargetService getCampaignTargetService() {
+        return campaignTargetService;
+    }
+
 
     @Override
     protected void updateCoords(Long campaignAnalyticsId) {

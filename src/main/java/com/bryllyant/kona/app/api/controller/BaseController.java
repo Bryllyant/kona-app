@@ -483,6 +483,7 @@ public abstract class BaseController {
         client.setUserAgent(KServletUtil.getClientUserAgent(req));
         client.setLatitude(KServletUtil.getClientLatitude(req));
         client.setLongitude(KServletUtil.getClientLongitude(req));
+        client.setReferrerUrl(KServletUtil.getClientReferer(req));
         client.setRequestUrl(KServletUtil.getFullRequestURL(req));
 
         return client;

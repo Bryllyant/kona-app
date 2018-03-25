@@ -1,5 +1,7 @@
 package com.bryllyant.kona.app.web.service;
 
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignTargetModel;
+import com.bryllyant.kona.app.api.service.CampaignTargetModelService;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.LandingPage;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -25,6 +28,9 @@ public class CampaignLandingPageResolver extends LandingPageResolver {
 
     @Autowired
     private CampaignTargetService campaignTargetService;
+
+    @Autowired
+    private CampaignTargetModelService campaignTargetModelService;
 
 
     @Override
@@ -50,10 +56,18 @@ public class CampaignLandingPageResolver extends LandingPageResolver {
 
         logger.debug("getPageConfig called: ...");
 
+        CampaignTarget target = campaignTargetService.fetchByUid(baseResourcePath);
+        CampaignTargetModel targetModel = campaignTargetModelService.toModel(target);
+
+        Map<String, Object> campaign = new HashMap<>();
+        campaign.put("campaign", targetModel.getCampaign());
+        campaign.put("group", targetModel.getGroup());
+        campaign.put("channel", targetModel.getChannel());
+        campaign.put("target", CampaignTargetModel.from(target));
+
         Map<String, Object> config = super.getPageConfig(page, baseResourcePath);
 
-        CampaignTarget target = campaignTargetService.fetchByUid(baseResourcePath);
-
+        config.put("campaign", campaign);
         config.put("trackingId", target.getAnalyticsTrackingId());
 
         logger.debug("getPageConfig called: campaign config: " + KJsonUtil.toJson(config, 5000));

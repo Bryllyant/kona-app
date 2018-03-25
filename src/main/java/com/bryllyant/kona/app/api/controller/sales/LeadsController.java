@@ -3,19 +3,18 @@
  */
 package com.bryllyant.kona.app.api.controller.sales;
 
+import com.bryllyant.kona.app.api.model.sales.SalesLeadModel;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
+import com.bryllyant.kona.app.api.service.SalesLeadModelService;
 import com.bryllyant.kona.app.config.KConfig;
-import com.bryllyant.kona.app.entity.App;
-import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.SalesLead;
-import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.SalesLeadService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.locale.KValidator;
+import com.bryllyant.kona.remote.service.KServiceClient;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
 
 
 /**
@@ -62,9 +59,12 @@ public class LeadsController extends SalesController {
     @Autowired
     private SystemService system;
 
+    @Autowired
+    SalesLeadModelService salesLeadModelService;
 
 
-    protected void message(HttpServletRequest req, String from, String subject, String body) {
+
+    private void message(HttpServletRequest req, String from, String subject, String body) {
         logger.debug("Support Email:\nfrom: " + from + "\nsubject: " + subject + "\nbody:\n" + body);
 
         String to = config.getString("system.mail.alertTo");
@@ -77,90 +77,54 @@ public class LeadsController extends SalesController {
     }
 
 
-
-
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("hasRole('APP_INTERNAL')")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> lead(HttpServletRequest req, @RequestBody Map<String, Object> map) {
+    public ResponseEntity<SalesLeadModel> lead(HttpServletRequest req, @RequestBody SalesLeadModel model) {
 
         logApiRequest(req, "POST /sales/leads");
 
-        String campaignChannelUid = (String) map.get("campaign_channel_uid");
-        String referredByUid = (String) map.get("referred_by_uid");
-        String firstName = (String) map.get("first_name");
-        String lastName = (String) map.get("last_name");
-        String email = (String) map.get("email");
-        String phoneNumber = (String) map.get("phone_number");
-        String mobileNumber = (String) map.get("mobile_number");
-        String message = (String) map.get("message");
-        String interests = (String) map.get("interests"); // comma separated list 
+        SalesLead lead = new SalesLead();
 
+        lead = salesLeadModelService.mergeEntity(lead, model);
 
-        Long referredById = null;
-        Long campaignChannelId = null;
-
-        if (referredByUid != null) {
-            User user = userService.fetchByUid(referredByUid);
-
-            if (user != null) {
-                referredById = user.getId();
-            }
-        }
-
-        if (campaignChannelUid != null) {
-            CampaignChannel channel = campaignChannelService.fetchByUid(campaignChannelUid);
-
-            if (channel != null) {
-                campaignChannelId = channel.getId();
-            }
-        }
-
-        String hostname = KServletUtil.getClientHostname(req);
-        String userAgent = KServletUtil.getClientUserAgent(req);
-
-        if (email == null && mobileNumber == null) {
+        if (lead.getEmail() == null && lead.getMobileNumber() == null) {
             throw new BadRequestException("email and/or mobile_number must be set");
         }
 
-        if (phoneNumber != null) {
+        if (lead.getEmail() != null) {
+            if (!KValidator.isEmail(lead.getEmail())) {
+                throw new BadRequestException("Invalid email address [" + lead.getEmail() + "].");
+            }
+        }
+
+        if (lead.getPhoneNumber() != null) {
             // Remove whitespace from the number
-            phoneNumber = phoneNumber.replaceAll("\\s+", "");
+            String phoneNumber = lead.getPhoneNumber().replaceAll("\\s+", "");
 
             if (!system.isTestPhoneNumber(phoneNumber) && !KValidator.isE164PhoneNumber(phoneNumber)) {
                 throw new BadRequestException("Invalid phone number [" + phoneNumber + "]. Phone numbers must be in E.164 format.");
             }
+
+            lead.setPhoneNumber(phoneNumber);
         }
 
-        if (mobileNumber != null) {
+        if (lead.getMobileNumber() != null) {
             // Remove whitespace from the number
-            mobileNumber = mobileNumber.replaceAll("\\s+", "");
+            String mobileNumber = lead.getMobileNumber().replaceAll("\\s+", "");
 
             if (!system.isTestPhoneNumber(mobileNumber) && !KValidator.isE164PhoneNumber(mobileNumber)) {
                 throw new BadRequestException("Invalid mobile number [" + mobileNumber + "]. Mobile numbers must be in E.164 format.");
             }
+
+            lead.setMobileNumber(mobileNumber);
         }
 
-        App refApp = apiAuthService.getApp();
+        KServiceClient client = getServiceClient(req);
 
-        SalesLead lead = new SalesLead();
-        lead.setFirstName(firstName);
-        lead.setLastName(lastName);
-        lead.setEmail(email);
-        lead.setPhoneNumber(phoneNumber);
-        lead.setMobileNumber(mobileNumber);
-        lead.setMessage(message);
-        lead.setReferredById(referredById);
-        lead.setCampaignChannelId(campaignChannelId);
-        lead.setInterests(interests);
-        lead.setHostname(hostname);
-        lead.setUserAgent(userAgent);
-        lead.setCreatedDate(new Date());
-        lead = salesLeadService.add(lead);
+        lead = salesLeadService.create(lead, client);
 
 
-        return created(getResultObject("lead_uid", lead.getUid()));
+        return created(SalesLeadModel.from(lead));
     }
-
-
 }

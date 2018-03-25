@@ -6,9 +6,11 @@ package com.bryllyant.kona.app.service.impl;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.SalesLeadMapper;
 import com.bryllyant.kona.app.entity.App;
+import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.SalesLead;
 import com.bryllyant.kona.app.entity.SalesLeadExample;
 import com.bryllyant.kona.app.service.AppService;
+import com.bryllyant.kona.app.service.CampaignAnalyticsService;
 import com.bryllyant.kona.app.service.KAbstractSalesLeadService;
 import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.SalesLeadService;
@@ -26,7 +28,8 @@ public class SalesLeadServiceImpl
 		extends KAbstractSalesLeadService<
         SalesLead,
         SalesLeadExample,
-        SalesLeadMapper>
+        SalesLeadMapper,
+        CampaignAnalytics>
 		implements SalesLeadService {
 	
 	private static Logger logger = LoggerFactory.getLogger(SalesLeadServiceImpl.class);
@@ -43,29 +46,34 @@ public class SalesLeadServiceImpl
     @Autowired
     private SystemService system;
 
+    @Autowired
+    private CampaignAnalyticsService campaignAnalyticsService;
+
     @Override @SuppressWarnings("unchecked")
     protected SalesLeadMapper getMapper() {
         return salesLeadMapper;
     }
-    
-    @Override
-    protected SalesLeadExample getEntityExampleObject() { return new SalesLeadExample(); }
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignAnalyticsService getCampaignAnalyticsService() {
+        return campaignAnalyticsService;
+    }
+
 
     protected void sendNotification(SalesLead lead) {
-
-        App app = system.getSystemApp();
-
     	try {
+            App app = system.getSystemApp();
+
     		String templateName = "email.templates.sales.salesLead";
             
     		String from = config.getString("system.mail.from");
-    		String to = config.getString("sales.lead.to");
+    		String to = config.getString("system.mail.salesTo");
     		String replyTo = from;
 
     		String subject = "Sales Lead";
     		subject = "[" + app.getName() + "] " + subject;
 
-    		Map<String,Object> params = new HashMap<String,Object>();
+    		Map<String,Object> params = new HashMap<>();
     		params.put("app", app);
     		params.put("salesLead", lead);
 

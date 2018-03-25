@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * LandingPage Controller.
  */
-@RestController(value="SystemLandingPageParamController")
+@RestController(value="SystemLandingPageController")
 @RequestMapping("/api/system/landing-pages")
 public class LandingPageController extends SystemController {
     private static Logger logger = LoggerFactory.getLogger(LandingPageController.class);

@@ -7,6 +7,6 @@ import com.bryllyant.kona.app.entity.SalesLead;
 import com.bryllyant.kona.remote.service.KService;
 
 public interface SalesLeadService extends KService, KSalesLeadService<SalesLead> {
-	public static final String SERVICE_PATH = "rpc/SalesLeadService";
+	String SERVICE_PATH = "rpc/SalesLeadService";
 	
 }

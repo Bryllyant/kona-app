@@ -376,7 +376,14 @@ public class ApiUtil {
 
         for (String key : map.keySet()) {
             String camelCaseKey = KInflector.getInstance().camelCase(key.trim().toLowerCase(), false);
-            result.put(camelCaseKey, map.get(key));
+
+            Object value = map.get(key);
+
+            if (value instanceof Map) {
+                value = camelCaseKeys((Map)value);
+            }
+
+            result.put(camelCaseKey, value);
         }
 
         return result;
