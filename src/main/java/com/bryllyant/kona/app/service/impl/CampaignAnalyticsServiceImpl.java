@@ -9,10 +9,13 @@ import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignAnalyticsExample;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.CampaignReply;
+import com.bryllyant.kona.app.entity.CampaignReplyMessage;
 import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.service.CampaignAnalyticsService;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.CampaignGroupService;
+import com.bryllyant.kona.app.service.CampaignReplyService;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.service.CampaignTargetService;
 import com.bryllyant.kona.app.service.KAbstractCampaignAnalyticsService;
@@ -33,7 +36,9 @@ public class CampaignAnalyticsServiceImpl
         Campaign,
         CampaignGroup,
         CampaignChannel,
-        CampaignTarget>
+        CampaignTarget,
+        CampaignReply,
+        CampaignReplyMessage>
 		implements CampaignAnalyticsService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CampaignAnalyticsServiceImpl.class);
@@ -52,6 +57,9 @@ public class CampaignAnalyticsServiceImpl
 
     @Autowired
     private CampaignTargetService campaignTargetService;
+
+    @Autowired
+    private CampaignReplyService campaignReplyService;
 
 
 
@@ -80,6 +88,10 @@ public class CampaignAnalyticsServiceImpl
         return campaignTargetService;
     }
 
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignReplyService getCampaignReplyService() {
+        return campaignReplyService;
+    }
 
     @Override
     protected void updateCoords(Long campaignAnalyticsId) {

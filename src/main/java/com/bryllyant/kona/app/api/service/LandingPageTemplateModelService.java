@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.sales.landingPage.LandingPageTemplateModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.entity.User;
@@ -41,7 +41,7 @@ public class LandingPageTemplateModelService extends BaseModelService {
 
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

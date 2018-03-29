@@ -7,7 +7,7 @@ import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.app.service.CampaignChannelService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class CampaignChannelModelService extends BaseModelService {
     private LandingPageModelService landingPageModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
     public CampaignChannel getCampaignChannel(String uid) {
         CampaignChannel campaignChannel = campaignChannelService.fetchByUid(uid);

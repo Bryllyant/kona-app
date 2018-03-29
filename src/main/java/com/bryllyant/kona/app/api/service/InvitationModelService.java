@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.social.invitation.InvitationModel;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.service.InvitationService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class InvitationModelService extends BaseModelService {
     private InvitationService invitationService;
     
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
     
 
 

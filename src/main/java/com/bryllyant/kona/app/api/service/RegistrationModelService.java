@@ -13,7 +13,7 @@ import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.RegistrationService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class RegistrationModelService extends BaseModelService {
     private PromoModelService promoModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
     public Registration getRegistration(String uid) {
         Registration registration = registrationService.fetchByUid(uid);

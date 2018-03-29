@@ -4,16 +4,20 @@ import com.bryllyant.kona.app.api.model.sales.campaign.CampaignAnalyticsModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignChannelModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignGroupModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignModel;
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignReplyMessageModel;
+import com.bryllyant.kona.app.api.model.sales.campaign.CampaignReplyModel;
 import com.bryllyant.kona.app.api.model.sales.campaign.CampaignTargetModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.CampaignReply;
+import com.bryllyant.kona.app.entity.CampaignReplyMessage;
 import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.CampaignAnalyticsService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +50,16 @@ public class CampaignAnalyticsModelService extends BaseModelService {
     private CampaignTargetModelService campaignTargetModelService;
 
     @Autowired
+    private CampaignReplyModelService campaignReplyModelService;
+
+    @Autowired
+    private CampaignReplyMessageModelService campaignReplyMessageModelService;
+
+    @Autowired
     private CampaignAnalyticsModelService campaignAnalyticsModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 
@@ -95,6 +105,7 @@ public class CampaignAnalyticsModelService extends BaseModelService {
         
         model.fromBean(analytics);
 
+
         if (analytics.getCampaignId() != null) {
             Campaign campaign = campaignModelService.getCampaign(analytics.getCampaignId());
             model.setCampaign(CampaignModel.from(campaign));
@@ -115,10 +126,19 @@ public class CampaignAnalyticsModelService extends BaseModelService {
             model.setTarget(CampaignTargetModel.from(target));
         }
 
+        if (analytics.getReplyId() != null) {
+            CampaignReply reply = campaignReplyModelService.getEntity(analytics.getReplyId());
+            model.setReply(CampaignReplyModel.from(reply));
+        }
 
-        if (analytics.getUserId() != null) {
-            User user = userModelService.getUser(analytics.getUserId());
-            model.setUser(UserModel.from(user));
+        if (analytics.getReplyMessageId() != null) {
+            CampaignReplyMessage message = campaignReplyMessageModelService.getEntity(analytics.getReplyMessageId());
+            model.setReplyMessage(CampaignReplyMessageModel.from(message));
+        }
+
+        if (analytics.getConversionUserId() != null) {
+            User user = userModelService.getUser(analytics.getConversionUserId());
+            model.setConversionUser(UserModel.from(user));
         }
         
         if (includeKeys != null && includeKeys.length > 0) {
@@ -174,9 +194,19 @@ public class CampaignAnalyticsModelService extends BaseModelService {
                     analytics.setTargetId(target == null ? null : target.getId());
                     break;
 
-                case "user":
-                    User user = userModelService.getUser(model.getUser());
-                    analytics.setUserId(user == null ? null : user.getId());
+                case "reply":
+                    CampaignReply reply = campaignReplyModelService.getEntity(model.getReply());
+                    analytics.setReplyId(reply == null ? null : reply.getId());
+                    break;
+
+                case "replyMessage":
+                    CampaignReplyMessage message = campaignReplyMessageModelService.getEntity(model.getReplyMessage());
+                    analytics.setReplyMessageId(message == null ? null : message.getId());
+                    break;
+
+                case "conversionUser":
+                    User user = userModelService.getUser(model.getConversionUser());
+                    analytics.setConversionUserId(user == null ? null : user.getId());
                     break;
             }
 

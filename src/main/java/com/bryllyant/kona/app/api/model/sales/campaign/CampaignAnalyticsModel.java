@@ -15,14 +15,18 @@ public class CampaignAnalyticsModel extends KJsonModel implements KEntityModel {
     private CampaignGroupModel group;
     private CampaignChannelModel channel;
     private CampaignTargetModel target;
-    private UserModel user;
+    private CampaignReplyModel reply;
+    private CampaignReplyMessageModel replyMessage;
     private String category;
     private String action;
     private String label;
     private Double value;
     private Boolean conversionEvent;
-    private String mobileNumber;
-    private String url;
+    private UserModel conversionUser;
+    private String conversionEmail;
+    private String conversionMobileNumber;
+    private String sourceMobileNumber;
+    private String sourceUrl;
     private String hostname;
     private String userAgent;
     private String city;
@@ -95,12 +99,20 @@ public class CampaignAnalyticsModel extends KJsonModel implements KEntityModel {
         this.set("target", target);
     }
 
-    public UserModel getUser() {
-        return user;
+    public CampaignReplyModel getReply() {
+        return reply;
     }
 
-    public void setUser(UserModel user) {
-        this.set("user", user);
+    public void setReply(CampaignReplyModel reply) {
+        this.set("reply", reply);
+    }
+
+    public CampaignReplyMessageModel getReplyMessage() {
+        return replyMessage;
+    }
+
+    public void setReplyMessage(CampaignReplyMessageModel replyMessage) {
+        this.set("replyMessage", replyMessage);
     }
 
     public String getCategory() {
@@ -143,20 +155,44 @@ public class CampaignAnalyticsModel extends KJsonModel implements KEntityModel {
         this.set("conversionEvent", conversionEvent);
     }
 
-    public String getMobileNumber() {
-        return mobileNumber;
+    public UserModel getConversionUser() {
+        return conversionUser;
     }
 
-    public void setMobileNumber(String mobileNumber) {
-        this.set("mobileNumber", mobileNumber);
+    public void setConversionUser(UserModel conversionUser) {
+        this.set("conversionUser", conversionUser);
     }
 
-    public String getUrl() {
-        return url;
+    public String getConversionEmail() {
+        return conversionEmail;
     }
 
-    public void setUrl(String url) {
-        this.set("url", url);
+    public void setConversionEmail(String conversionEmail) {
+        this.set("conversionEmail", conversionEmail);
+    }
+
+    public String getConversionMobileNumber() {
+        return conversionMobileNumber;
+    }
+
+    public void setConversionMobileNumber(String conversionMobileNumber) {
+        this.set("conversionMobileNumber", conversionMobileNumber);
+    }
+
+    public String getSourceMobileNumber() {
+        return sourceMobileNumber;
+    }
+
+    public void setSourceMobileNumber(String sourceMobileNumber) {
+        this.set("sourceMobileNumber", sourceMobileNumber);
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.set("sourceUrl", sourceUrl);
     }
 
     public String getHostname() {

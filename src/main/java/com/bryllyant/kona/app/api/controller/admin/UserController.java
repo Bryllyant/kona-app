@@ -29,7 +29,7 @@ import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ForbiddenException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
@@ -105,7 +105,7 @@ public class UserController extends BaseController {
 
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
     
 
 	// filter={'email':'abc@abc.com'}
@@ -415,7 +415,7 @@ public class UserController extends BaseController {
 
                 case "birthDate":
                     String birthDate = util.getStringValue(value);
-                    SimpleDateFormat df = new SimpleDateFormat(ApiUtil.BIRTH_DATE_FORMAT);
+                    SimpleDateFormat df = new SimpleDateFormat(AppUtil.BIRTH_DATE_FORMAT);
                     try {
                         result.put(prefix + key, df.parse(birthDate));
                     } catch (ParseException e) {

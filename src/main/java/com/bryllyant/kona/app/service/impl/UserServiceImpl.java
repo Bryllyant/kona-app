@@ -9,6 +9,7 @@ import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppUser;
 import com.bryllyant.kona.app.entity.AuthRole;
+import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.entity.Media;
@@ -27,7 +28,6 @@ import com.bryllyant.kona.app.service.EntityNameRuleService;
 import com.bryllyant.kona.app.service.InvitationService;
 import com.bryllyant.kona.app.service.KAbstractUserService;
 import com.bryllyant.kona.app.service.KAuthException;
-import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
@@ -36,6 +36,7 @@ import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserAuthService;
 import com.bryllyant.kona.app.service.UserRoleService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.KCallback;
 import com.bryllyant.kona.app.util.KUtil;
 import com.bryllyant.kona.locale.KValidator;
 import org.slf4j.Logger;
@@ -49,55 +50,55 @@ import java.util.List;
 import java.util.Map;
 
 @Service(UserService.SERVICE_PATH)
-public class UserServiceImpl 
-		extends KAbstractUserService<User, UserExample, UserMapper,
-									 UserAuth,
-                                     AuthRole,
-                                     UserRole,
-									 Media,
-									 Account,
-									 File,
-                                     App,
-									 AppUser,
-									 Registration,
-									 Invitation,
-									 Token,
-									 Position> 
-		implements UserService {
-	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+public class UserServiceImpl
+        extends KAbstractUserService<User, UserExample, UserMapper,
+        UserAuth,
+        AuthRole,
+        UserRole,
+        Media,
+        Account,
+        File,
+        App,
+        AppUser,
+        Registration,
+        Invitation,
+        Token,
+        Position>
+        implements UserService {
+    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-	@Autowired
-	private UserMapper userMapper;
-	
-	@Autowired
-	private KConfig config;
-	
-	@Autowired
-	private AppService appService;
-	
-	@Autowired
-	private TokenService tokenService;
-    
-	@Autowired
-	private UserAuthService userAuthService;
+    @Autowired
+    private UserMapper userMapper;
 
-	@Autowired
-	private MediaService mediaService;
-    
-	@Autowired
-	private RegistrationService registrationService;
-    
-	@Autowired
-	private AccountService accountService;
-	
-	@Autowired
-	private AppUserService appUserService;
-	
-	@Autowired
-	private InvitationService invitationService;
+    @Autowired
+    private KConfig config;
 
-	@Autowired
-	private PositionService positionService;
+    @Autowired
+    private AppService appService;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UserAuthService userAuthService;
+
+    @Autowired
+    private MediaService mediaService;
+
+    @Autowired
+    private RegistrationService registrationService;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private AppUserService appUserService;
+
+    @Autowired
+    private InvitationService invitationService;
+
+    @Autowired
+    private PositionService positionService;
 
     @Autowired
     private UserRoleService userRoleService;
@@ -105,20 +106,20 @@ public class UserServiceImpl
     @Autowired
     private AuthRoleService authRoleService;
 
-	@Autowired
-	EntityNameRuleService entityNameRuleService;
+    @Autowired
+    EntityNameRuleService entityNameRuleService;
 
-	@Autowired
-	SystemService system;
-	
+    @Autowired
+    SystemService system;
 
-	protected Long getDefaultAppId() {
-		return system.getSystemApp().getId();
-	}
+
+    protected Long getDefaultAppId() {
+        return system.getSystemApp().getId();
+    }
 
     @Override
     protected AuthRole getGuestRole() {
-	    return authRoleService.fetchByName("GUEST");
+        return authRoleService.fetchByName("GUEST");
     }
 
     @Override
@@ -140,8 +141,8 @@ public class UserServiceImpl
     }
 
     @Override
-	public boolean isUsernameAvailable(String name) {
-	    // usernames cannot be null or be empty string
+    public boolean isUsernameAvailable(String name) {
+        // usernames cannot be null or be empty string
         if (name == null || name.length() == 0) {
             throw new KAuthException(
                     "Username is null or empty: " + name,
@@ -172,33 +173,33 @@ public class UserServiceImpl
 
         // finally check if username already exists
         boolean isUnique = false;
-        
+
         User user = fetchByUsername(name);
-        
+
         if (user == null) {
             isUnique = true;
         }
-        
+
         return isUnique;
-	}
-	
-
-	@Override
-	protected User getNewObject() {
-		return new User();
-	}
+    }
 
 
-	@Override
-	protected String generateUid() {
+    @Override
+    protected User getNewObject() {
+        return new User();
+    }
+
+
+    @Override
+    protected String generateUid() {
         return KUtil.uuid();
-	}
-	
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected  AccountService getAccountService() {
+
+    @Override @SuppressWarnings("unchecked")
+    protected  AccountService getAccountService() {
         return accountService;
-	}
+    }
 
     @Override @SuppressWarnings("unchecked")
     protected  UserRoleService getUserRoleService() {
@@ -211,17 +212,17 @@ public class UserServiceImpl
     }
 
 
-	@Override @SuppressWarnings("unchecked")
-	protected  TokenService getTokenService() {
+    @Override @SuppressWarnings("unchecked")
+    protected  TokenService getTokenService() {
         return tokenService;
-	}
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected UserAuthService getUserAuthService() {
+    @Override @SuppressWarnings("unchecked")
+    protected UserAuthService getUserAuthService() {
         return userAuthService;
-	}
-	
-	@Override @SuppressWarnings("unchecked")
+    }
+
+    @Override @SuppressWarnings("unchecked")
     protected MediaService getMediaService() {
         return mediaService;
     }
@@ -231,81 +232,75 @@ public class UserServiceImpl
         return appService;
     }
 
-	@Override @SuppressWarnings("unchecked")
-	protected AppUserService getAppUserService() {
+    @Override @SuppressWarnings("unchecked")
+    protected AppUserService getAppUserService() {
         return appUserService;
-	}
+    }
 
-	@Override @SuppressWarnings("unchecked")
-	protected RegistrationService getRegistrationService() {
+    @Override @SuppressWarnings("unchecked")
+    protected RegistrationService getRegistrationService() {
         return registrationService;
-	}
-	
-	@Override @SuppressWarnings("unchecked")
-	protected InvitationService getInvitationService() {
-		return invitationService;
-	}
-	
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected InvitationService getInvitationService() {
+        return invitationService;
+    }
+
 
     @Override @SuppressWarnings("unchecked")
     protected PositionService getPositionService() {
         return positionService;
     }
-    
 
-	@Override
-	protected void sendRegisteredUserEmail(Long appId, User user) {
-		
-		boolean sendWelcomeEmail = config.getBoolean("system.registration.sendWelcomeEmail", true);
-		
-		if (!sendWelcomeEmail) {
-			logger.debug("sendRegisteredUserEmail: system.registration.sendWelcomeEmail set to false");
-			return;
-		}
-		
-		if (user.getEmail() == null) {
-			logger.info("sendRegisteredUserEmail: User email is null: {$user}");
-			return;
-		}
 
-		App app = appService.fetchById(appId);
+    @Override
+    protected void sendRegisteredUserEmail(Long appId, User user) {
 
-		String from = config.getString("system.mail.from");
-		String to = user.getEmail();
-		String replyTo = from;
+        boolean sendWelcomeEmail = config.getBoolean("system.registration.sendWelcomeEmail", true);
+
+        if (!sendWelcomeEmail) {
+            logger.debug("sendRegisteredUserEmail: system.registration.sendWelcomeEmail set to false");
+            return;
+        }
+
+        if (user.getEmail() == null) {
+            logger.info("sendRegisteredUserEmail: User email is null: {$user}");
+            return;
+        }
+
+        App app = appService.fetchById(appId);
+
+        String from = config.getString("system.mail.from");
+        String to = user.getEmail();
+        String replyTo = from;
 
         String subject = "[" + app.getName() + "] ";
         String defaultSubject = "Welcome";
 
         subject += config.getString("email.subject.account.welcomeEmail", defaultSubject);
 
-		String templateName = "email.templates.account.welcomeEmail";
+        String templateName = "email.templates.account.welcomeEmail";
 
-		Map<String,Object> params = new HashMap<>();
-		params.put("user", user);
-		params.put("app", app);
-		
-		try {
-			system.sendEmail(templateName, params, subject, from, replyTo, to, null);
-		} catch (KEmailException e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-	
+        Map<String,Object> params = new HashMap<>();
+        params.put("user", user);
+        params.put("app", app);
 
+        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new KCallback<Email>() {
+            @Override
+            public void success(Email data) {
 
-	@Override @SuppressWarnings("unchecked")
-	protected UserMapper getMapper() {
-		return userMapper;
-	}
-	
+            }
 
+            @Override
+            public void error(Throwable t) {
+                logger.error(t.getMessage(), t);
+            }
+        });
+    }
 
-	 @Override
-    protected UserExample getEntityExampleObject() { return new UserExample(); }
-
-	
-
-
-
+    @Override @SuppressWarnings("unchecked")
+    protected UserMapper getMapper() {
+        return userMapper;
+    }
 }

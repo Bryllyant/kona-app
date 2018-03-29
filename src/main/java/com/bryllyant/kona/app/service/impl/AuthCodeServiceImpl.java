@@ -8,6 +8,7 @@ import com.bryllyant.kona.app.dao.AuthCodeMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.AuthCodeExample;
+import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
@@ -18,6 +19,7 @@ import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.KCallback;
 import com.bryllyant.kona.util.KDateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,87 +31,87 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service(AuthCodeService.SERVICE_PATH)
-public class AuthCodeServiceImpl 
-		extends KAbstractAuthCodeService<AuthCode, AuthCodeExample, AuthCodeMapper,User,Registration>
-		implements AuthCodeService {
-	
-	private static Logger logger = LoggerFactory.getLogger(AuthCodeServiceImpl.class);
+public class AuthCodeServiceImpl
+        extends KAbstractAuthCodeService<AuthCode, AuthCodeExample, AuthCodeMapper,User,Registration>
+        implements AuthCodeService {
 
-	@Autowired
-	private AuthCodeMapper authCodeMapper;
-    
-	@Autowired
-	private KConfig config;
-    
-	@Autowired
+    private static Logger logger = LoggerFactory.getLogger(AuthCodeServiceImpl.class);
+
+    @Autowired
+    private AuthCodeMapper authCodeMapper;
+
+    @Autowired
+    private KConfig config;
+
+    @Autowired
     private UserService userService;
-    
-	@Autowired
+
+    @Autowired
     private AppService appService;
-    
-	@Autowired
+
+    @Autowired
     private ShortUrlService shortUrlService;
-    
-	@Autowired
+
+    @Autowired
     private RegistrationService registrationService;
-    
-	@Autowired
-	SystemService system;
-    
+
+    @Autowired
+    SystemService system;
 
 
-	@Override @SuppressWarnings("unchecked")
-	protected AuthCodeMapper getMapper() {
-		return authCodeMapper;
-	}
-    
 
-    
-	@Override @SuppressWarnings("unchecked")
-	protected UserService getUserService() {
-		return userService;
-	}
-    
-
-    
-	@Override @SuppressWarnings("unchecked")
-	protected RegistrationService getRegistrationService() {
-		return registrationService;
-	}
-    
-
-    
-	@Override
-	protected AuthCode getNewObject() {
-		return new AuthCode();
-	}
-    
+    @Override @SuppressWarnings("unchecked")
+    protected AuthCodeMapper getMapper() {
+        return authCodeMapper;
+    }
 
 
-	//system.passwordReset.urlTemplate = http://example.com/account/passsword/{code}
-	private String createPasswordResetUrl(String code) {
-		String url = config.getString("urlTemplate.system.passwordReset");
-		url = url.replaceAll("\\{code\\}", code);
-		return url;
-	}
-    
 
-    
-	//system.confirmationCode.urlTemplate = http://example.com/system/confirmations/{code}
-	private String createEmailConfirmationUrl(String code) {
-		String url = config.getString("urlTemplate.system.confirmationCode");
-		url = url.replaceAll("\\{code\\}", code);
-		return url;
-	}
-    
+    @Override @SuppressWarnings("unchecked")
+    protected UserService getUserService() {
+        return userService;
+    }
 
-    
-	//system.confirmationCode.urlTemplate = http://example.comm/system/confirmations/{code}
-	private String createMobileConfirmationUrl(String code) {
-		String url = config.getString("urlTemplate.system.confirmationCode");
-		url = url.replaceAll("\\{code\\}", code);
-		return url;
-	}
+
+
+    @Override @SuppressWarnings("unchecked")
+    protected RegistrationService getRegistrationService() {
+        return registrationService;
+    }
+
+
+
+    @Override
+    protected AuthCode getNewObject() {
+        return new AuthCode();
+    }
+
+
+
+    //system.passwordReset.urlTemplate = http://example.com/account/passsword/{code}
+    private String createPasswordResetUrl(String code) {
+        String url = config.getString("urlTemplate.system.passwordReset");
+        url = url.replaceAll("\\{code\\}", code);
+        return url;
+    }
+
+
+
+    //system.confirmationCode.urlTemplate = http://example.com/system/confirmations/{code}
+    private String createEmailConfirmationUrl(String code) {
+        String url = config.getString("urlTemplate.system.confirmationCode");
+        url = url.replaceAll("\\{code\\}", code);
+        return url;
+    }
+
+
+
+    //system.confirmationCode.urlTemplate = http://example.comm/system/confirmations/{code}
+    private String createMobileConfirmationUrl(String code) {
+        String url = config.getString("urlTemplate.system.confirmationCode");
+        url = url.replaceAll("\\{code\\}", code);
+        return url;
+    }
 
 
 
@@ -166,110 +168,124 @@ public class AuthCodeServiceImpl
                 break;
         }
     }
-    
 
-    
-	protected void sendRequestPasswordEmail(Long userId, String passwordResetUrl) {
+
+
+    protected void sendRequestPasswordEmail(Long userId, String passwordResetUrl) {
         User user = userService.fetchById(userId);
-        
-		if (user.getEmail() == null) {
-			logger.info("sendRequestPasswordEmail: User email is null: {$user}");
-			return;
-		}
 
-		App	app = appService.getSystemApp();
+        if (user.getEmail() == null) {
+            logger.info("sendRequestPasswordEmail: User email is null: {$user}");
+            return;
+        }
 
-		String templateName = "email.templates.account.passwordReset";
+        App	app = appService.getSystemApp();
 
-		String subject = "[" + app.getName() + "] ";
-		String defaultSubject = "Your Password Reset Request";
+        String templateName = "email.templates.account.passwordReset";
 
-		subject += config.getString("email.subject.account.requestPassword", defaultSubject);
+        String subject = "[" + app.getName() + "] ";
+        String defaultSubject = "Your Password Reset Request";
 
-		String from = config.getString("system.mail.from");
-		String to = user.getEmail();
-		String replyTo = from;
+        subject += config.getString("email.subject.account.requestPassword", defaultSubject);
 
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("app", app);
-		params.put("user", user);
-		params.put("passwordResetUrl", passwordResetUrl);
-		
-		try {
-			system.sendEmail(templateName, params, subject, from, replyTo, to, null);
-		} catch (KEmailException e) {
-			logger.error(e.getMessage(), e);
-		}
-		
-	}
-    
+        String from = config.getString("system.mail.from");
+        String to = user.getEmail();
+        String replyTo = from;
 
-    
-	protected void sendEmailConfirmationEmail(Long userId, String authCodeUrl) {
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("app", app);
+        params.put("user", user);
+        params.put("passwordResetUrl", passwordResetUrl);
+
+        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new KCallback<Email>() {
+            @Override
+            public void success(Email data) {
+
+            }
+
+            @Override
+            public void error(Throwable t) {
+                logger.error(t.getMessage(), t);
+            }
+        });
+
+
+    }
+
+
+
+    protected void sendEmailConfirmationEmail(Long userId, String authCodeUrl) {
         User user = userService.fetchById(userId);
-        
-		if (user.getEmail() == null) {
-			logger.info("sendEmailConfirmationEmail: User email is null: {$user}");
-			return;
-		}
+
+        if (user.getEmail() == null) {
+            logger.info("sendEmailConfirmationEmail: User email is null: {$user}");
+            return;
+        }
 
         App app = appService.getSystemApp();
 
-		String templateName = "email.templates.account.verifyEmail";
+        String templateName = "email.templates.account.verifyEmail";
 
         String subject = "[" + app.getName() + "] ";
         String defaultSubject = "Account Confirmation";
 
         subject += config.getString("email.subject.account.verifyEmail", defaultSubject);
 
-		String from = config.getString("system.mail.from");
-		String to = user.getEmail();
-		String replyTo = from;
+        String from = config.getString("system.mail.from");
+        String to = user.getEmail();
+        String replyTo = from;
 
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("app", app);
-		params.put("user", user);
-		params.put("authCodeUrl", authCodeUrl);
-		
-		try {
-			system.sendEmail(templateName, params, subject, from, replyTo, to, null);
-		} catch (KEmailException e) {
-			logger.error("Error sending email: " + e.getMessage(), e);
-		}
-		
-	}
-	
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("app", app);
+        params.put("user", user);
+        params.put("authCodeUrl", authCodeUrl);
 
-    
-	protected void sendMobileConfirmationSms(Long userId, String authCodeUrl) {
-		User user = userService.fetchById(userId);
-        
+        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new KCallback<Email>() {
+            @Override
+            public void success(Email data) {
+
+            }
+
+            @Override
+            public void error(Throwable t) {
+                logger.error("Error sending email: " + t.getMessage(), t);
+            }
+        });
+
+
+    }
+
+
+
+    protected void sendMobileConfirmationSms(Long userId, String authCodeUrl) {
+        User user = userService.fetchById(userId);
+
         logger.debug("sendMobileConfirmationSms: user:\n" + user);
-        
-    	if (user.getMobileNumber() == null) {
-			logger.info("sendMobileConfirmationSms: User mobile number is null: {$user}");
-			return;
-		}
+
+        if (user.getMobileNumber() == null) {
+            logger.info("sendMobileConfirmationSms: User mobile number is null: {$user}");
+            return;
+        }
 
         App app = appService.getSystemApp();
 
-		String to = user.getMobileNumber();
-        
-		String message = "[" + app.getName() + "]  Your mobile number has been updated. Click to confirm. ";
-		
-		message += authCodeUrl;
-		
-		try {
-            logger.debug("sendMobileConfirmationSms: [" + userId + "]\nto: " + to + "\nmessage:" + message);
-			system.sendSms(to, message, null);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-    
+        String to = user.getMobileNumber();
 
-	
-	 @Override
+        String message = "[" + app.getName() + "]  Your mobile number has been updated. Click to confirm. ";
+
+        message += authCodeUrl;
+
+        try {
+            logger.debug("sendMobileConfirmationSms: [" + userId + "]\nto: " + to + "\nmessage:" + message);
+            system.sendSms(to, message, null);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+
+
+    @Override
     protected AuthCodeExample getEntityExampleObject() { return new AuthCodeExample(); }
 
 
@@ -292,9 +308,9 @@ public class AuthCodeServiceImpl
     }
 
 
-	// explicitly set to null to indicate unlimited use
-	@Override
-	protected Integer getAuthCodeMaxUseCount(AuthCode.Type type, Long userId) {
-	    return null;
-	}
+    // explicitly set to null to indicate unlimited use
+    @Override
+    protected Integer getAuthCodeMaxUseCount(AuthCode.Type type, Long userId) {
+        return null;
+    }
 }

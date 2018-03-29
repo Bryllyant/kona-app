@@ -7,7 +7,7 @@ import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.MediaService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class MediaModelService extends BaseModelService {
     private UserModelService userModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
    
 

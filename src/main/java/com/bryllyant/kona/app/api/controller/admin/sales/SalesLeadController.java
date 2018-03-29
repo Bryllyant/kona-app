@@ -19,7 +19,7 @@ import com.bryllyant.kona.app.entity.SalesLead;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.SalesLeadService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.remote.service.KServiceClient;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -73,7 +73,7 @@ public class SalesLeadController extends BaseController {
     private SystemService system;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

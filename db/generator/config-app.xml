@@ -452,6 +452,22 @@
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
+        <table schema="kona"
+               tableName="kona__script"
+               domainObjectName="Script"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseScript"/>
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;Script,ScriptExample&gt;" />
+            <property name="fullTextColumns" value="uid,language,return_type,body"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="script" javaType="boolean" />
+            <columnOverride column="language" javaType="com.bryllyant.kona.app.entity.KScript.Language" />
+            <columnOverride column="return_type" javaType="com.bryllyant.kona.app.entity.KScript.ReturnType" />
+        </table>
+
         <table schema="kona" 
                 tableName="kona__short_url" 
                 domainObjectName="ShortUrl" 
@@ -463,7 +479,8 @@
             <property name="fullTextColumns" value="uid,domain,path,short_url,long_url,description"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
-            <columnOverride column="script" javaType="boolean" />
+            <columnOverride column="single_mapped" javaType="boolean" />
+            <columnOverride column="channel_redirect" javaType="boolean" />
         </table>
 
         <table schema="kona" 
@@ -835,7 +852,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignAnalytics"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignAnalytics,CampaignAnalyticsExample&gt;" />
-            <property name="fullTextColumns" value="uid,category,action,label,mobile_number,url,hostname,user_agent"/>
+            <property name="fullTextColumns" value="uid,category,action,label,source_mobile_number,source_url,hostname,user_agent,conversion_email,conversion_mobile_number"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="conversion_event" javaType="boolean" />
 
@@ -881,11 +898,13 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignChannel"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignChannel,CampaignChannelExample&gt;" />
-            <property name="fullTextColumns" value="uid,name,slug,adwords_keywords,sms_keyword,sms_number"/>
+            <property name="fullTextColumns" value="uid,type,target_strategy,reply_strategy,name,slug,adwords_keywords,sms_keyword,sms_number,short_url"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="reply_enabled" javaType="boolean" />
             <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.Type" />
-            <columnOverride column="target_type" javaType="com.bryllyant.kona.app.entity.KCampaignTarget.Type" />
+            <columnOverride column="target_strategy" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.TargetStrategy" />
+            <columnOverride column="reply_strategy" javaType="com.bryllyant.kona.app.entity.KCampaignChannel.ReplyStrategy" />
         </table>
 
         <table schema="kona"
@@ -896,10 +915,36 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignTarget"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignTarget,CampaignTargetExample&gt;" />
-            <property name="fullTextColumns" value="uid,name,slug,url,short_url,analytics_tracking_id"/>
+            <property name="fullTextColumns" value="uid,type,name,slug,url,analytics_tracking_id"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignTarget.Type" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__campaign_reply"
+               domainObjectName="CampaignReply"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignReply"/>
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignReply,CampaignReplyExample&gt;" />
+            <property name="fullTextColumns" value="uid,type,name,slug,subject,content"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
+            <columnOverride column="enabled" javaType="boolean" />
+            <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.KCampaignReply.Type" />
+        </table>
+
+        <table schema="kona"
+               tableName="kona__campaign_reply_message"
+               domainObjectName="CampaignReplyMessage"
+               delimitAllColumns="true"
+               delimitIdentifiers="true">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.bryllyant.kona.app.entity.KBaseCampaignReplyMessage"/>
+            <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignReplyMessage,CampaignReplyMessageExample&gt;" />
+            <property name="fullTextColumns" value="uid,to_email,to_mobile_number"/>
+            <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 
 

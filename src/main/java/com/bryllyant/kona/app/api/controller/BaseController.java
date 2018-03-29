@@ -19,7 +19,7 @@ import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.util.FileUtil;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KModel;
@@ -89,7 +89,7 @@ public abstract class BaseController {
     private ApiLogService apiLogService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
     @Autowired
     private FileUtil fileUtil;

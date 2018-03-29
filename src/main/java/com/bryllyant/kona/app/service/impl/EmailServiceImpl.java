@@ -11,6 +11,10 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.EmailEventMapper;
 import com.bryllyant.kona.app.dao.EmailMapper;
+import com.bryllyant.kona.app.entity.CampaignChannel;
+import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.CampaignReply;
+import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailAddress;
 import com.bryllyant.kona.app.entity.EmailAttachment;
@@ -21,6 +25,7 @@ import com.bryllyant.kona.app.entity.EmailExample;
 import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.EmailGroupAddress;
 import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.EmailAddressService;
 import com.bryllyant.kona.app.service.EmailAttachmentService;
 import com.bryllyant.kona.app.service.EmailContentService;
@@ -30,108 +35,115 @@ import com.bryllyant.kona.app.service.EmailService;
 import com.bryllyant.kona.app.service.KAbstractEmailService;
 import com.bryllyant.kona.app.service.QueueService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 
 @Service(EmailService.SERVICE_PATH)
-public class EmailServiceImpl 
-		extends KAbstractEmailService<Email, EmailExample, EmailMapper,
-                                      EmailEvent,
-                                      EmailEventExample,
-                                      EmailGroup,
-                                      EmailAddress,
-                                      EmailContent,
-                                      EmailAttachment,
-                                      EmailGroupAddress,
-                                      User> 
-		implements EmailService {
-	
-	private static Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
-	
+public class EmailServiceImpl
+        extends KAbstractEmailService<
+        Email,
+        EmailExample,
+        EmailMapper,
+        EmailEvent,
+        EmailEventExample,
+        EmailGroup,
+        EmailAddress,
+        EmailContent,
+        EmailAttachment,
+        EmailGroupAddress,
+        CampaignChannel,
+        CampaignGroup,
+        CampaignTarget,
+        CampaignReply,
+        User>
+        implements EmailService {
 
-
-	@Autowired
-	private EmailMapper emailMapper;
-	
-	@Autowired
-	private EmailEventMapper emailEventMapper;
-    
-	@Autowired
-	private KConfig config;
-    
-	@Autowired
-	private EmailAddressService emailAddressService;
-
-	@Autowired
-	private EmailGroupService emailGroupService;
-
-	@Autowired
-	private EmailGroupAddressService emailGroupAddressService;
-
-	@Autowired
-	private EmailContentService emailContentService;
-
-	@Autowired
-	private EmailAttachmentService emailAttachmentService;
-	
-	@Autowired
-	private QueueService queueService;
-
-	@Autowired
-	private UserService userService;
-	
-
-	
-	private AmazonSimpleEmailServiceClient client = null;
+    private static Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
 
 
-	@Override @SuppressWarnings("unchecked")
-	protected EmailMapper getMapper() {
-		return emailMapper;
-	}
-	
+    @Autowired
+    private EmailMapper emailMapper;
 
-	
-	@Override @SuppressWarnings("unchecked")
-	protected EmailEventMapper getEmailEventDao() {
-		return emailEventMapper;
-	}
-    
+    @Autowired
+    private EmailEventMapper emailEventMapper;
+
+    @Autowired
+    private KConfig config;
+
+    @Autowired
+    private EmailAddressService emailAddressService;
+
+    @Autowired
+    private EmailGroupService emailGroupService;
+
+    @Autowired
+    private EmailGroupAddressService emailGroupAddressService;
+
+    @Autowired
+    private EmailContentService emailContentService;
+
+    @Autowired
+    private EmailAttachmentService emailAttachmentService;
+
+    @Autowired
+    private QueueService queueService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CampaignChannelService campaignChannelService;
 
 
-	@Override @SuppressWarnings("unchecked")
-	protected EmailAddressService getEmailAddressService() {
-		return emailAddressService;
-	}
-    
 
-
-	@Override @SuppressWarnings("unchecked")
-	protected EmailGroupService getEmailGroupService() {
-		return emailGroupService;
-	}
+    private AmazonSimpleEmailServiceClient client = null;
 
 
 
-	@Override @SuppressWarnings("unchecked")
-	protected EmailGroupAddressService getEmailGroupAddressService() {
-		return emailGroupAddressService;
-	}
-	
+    @Override @SuppressWarnings("unchecked")
+    protected EmailMapper getMapper() {
+        return emailMapper;
+    }
+
+
+
+    @Override @SuppressWarnings("unchecked")
+    protected EmailEventMapper getEmailEventDao() {
+        return emailEventMapper;
+    }
+
+
+
+    @Override @SuppressWarnings("unchecked")
+    protected EmailAddressService getEmailAddressService() {
+        return emailAddressService;
+    }
+
+
+
+    @Override @SuppressWarnings("unchecked")
+    protected EmailGroupService getEmailGroupService() {
+        return emailGroupService;
+    }
+
+
+
+    @Override @SuppressWarnings("unchecked")
+    protected EmailGroupAddressService getEmailGroupAddressService() {
+        return emailGroupAddressService;
+    }
+
 
 
     @Override @SuppressWarnings("unchecked")
     protected EmailContentService getEmailContentService() {
         return emailContentService;
     }
-	
+
 
 
     @Override @SuppressWarnings("unchecked")
@@ -141,56 +153,59 @@ public class EmailServiceImpl
 
 
 
-	@Override @SuppressWarnings("unchecked")
-	protected QueueService getQueueService() {
-		return queueService;
-	}
-	
+    @Override @SuppressWarnings("unchecked")
+    protected QueueService getQueueService() {
+        return queueService;
+    }
 
-	@Override @SuppressWarnings("unchecked")
+
+    @Override @SuppressWarnings("unchecked")
     protected UserService getUserService() {
         return userService;
     }
 
-
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignChannelService getCampaignChannelService() {
+        return campaignChannelService;
+    }
 
     @Override
     protected Email getNewEmailObject() {
-    	return new Email();
+        return new Email();
     }
-    
+
 
 
     @Override
     protected EmailEvent getNewEmailEventObject() {
-    	return new EmailEvent();
+        return new EmailEvent();
     }
 
 
 
     @Override
     protected EmailAddress getNewEmailAddressObject() {
-    	return new EmailAddress();
+        return new EmailAddress();
     }
-    
+
 
 
     @Override
     public String getEmailTestDomain() {
-    	return config.getString("email.testDomain");
+        return config.getString("email.testDomain");
     }
-    
 
 
-	 @Override
+
+    @Override
     protected EmailExample getEntityExampleObject() { return new EmailExample(); }
 
 
 
 
-	@Override
-	protected AmazonSimpleEmailServiceClient getAmazonSESClient() {
-		
+    @Override
+    protected AmazonSimpleEmailServiceClient getAmazonSESClient() {
+
         if (client == null) {
             String accessKey = config.getString("aws.ses.accessKey");
             String secretKey = config.getString("aws.ses.secretKey");
@@ -202,9 +217,9 @@ public class EmailServiceImpl
             client = new AmazonSimpleEmailServiceClient(credentials);
 
             Region REGION = null;
-            
+
             region = region.trim().toLowerCase();
-            
+
             switch (region) {
                 case "us-east-1":
                     REGION = Region.getRegion(Regions.US_EAST_1);
@@ -218,85 +233,85 @@ public class EmailServiceImpl
         }
 
         return client;
-	}
-	
+    }
 
 
-	@Override
-	protected String getAmazonSESBounceQueueName() {
-		return config.getString("aws.ses.bounce.queue");
-	}
-	
+
+    @Override
+    protected String getAmazonSESBounceQueueName() {
+        return config.getString("aws.ses.bounce.queue");
+    }
 
 
-	@Override
-	protected String getAmazonSESComplaintQueueName() {
-		return config.getString("aws.ses.complaint.queue");
-	}
-	
+
+    @Override
+    protected String getAmazonSESComplaintQueueName() {
+        return config.getString("aws.ses.complaint.queue");
+    }
 
 
-	@Override
-	protected String getAmazonSESDeliveryQueueName() {
-		return config.getString("aws.ses.delivery.queue");
-	}
-	
+
+    @Override
+    protected String getAmazonSESDeliveryQueueName() {
+        return config.getString("aws.ses.delivery.queue");
+    }
 
 
-	@Override
-	protected String getSystemMailhost() {
-		return config.getString("system.mail.mailhost");
-	}
-	
+
+    @Override
+    protected String getSystemMailhost() {
+        return config.getString("system.mail.mailhost");
+    }
 
 
-	@Override
-	protected String getSystemSenderEmailAddress() {
-		return config.getString("system.mail.from");
-	}
-	
+
+    @Override
+    protected String getSystemSenderEmailAddress() {
+        return config.getString("system.mail.from");
+    }
 
 
-	@Override
-	protected String getSystemFromEmailAddress() {
-		return config.getString("system.mail.from");
-	}
-	
+
+    @Override
+    protected String getSystemFromEmailAddress() {
+        return config.getString("system.mail.from");
+    }
 
 
-	@Override
-	protected String getSystemBaseUrl() {
-		return config.getString("system.app.baseUrl");
-	}
-	
+
+    @Override
+    protected String getSystemBaseUrl() {
+        return config.getString("system.app.baseUrl");
+    }
 
 
-	@Override
-	protected String getEmailEventUrl() {
+
+    @Override
+    protected String getEmailEventUrl() {
         return config.getString("email.event.baseUrl");
-	}
-	
+    }
 
 
-	@Override
-	protected String getEmailFooterHtmlSelector() {
-		return config.getString("email.footer.selector");
-	}
-	
+
+    @Override
+    protected String getEmailFooterHtmlSelector() {
+        return config.getString("email.footer.selector");
+    }
 
 
-	@Override
-	protected String getEmailTextFooterTemplatePath() {
-		return config.getString("email.templates.footer.emailTextFooter");
-	}
-	
+
+    @Override
+    protected String getEmailTextFooterTemplatePath() {
+        return config.getString("email.templates.footer.emailTextFooter");
+    }
 
 
-	@Override
-	protected String getEmailHtmlFooterTemplatePath() {
-		return config.getString("email.templates.footer.emailHtmlFooter");
-	}
-	
 
-    
+    @Override
+    protected String getEmailHtmlFooterTemplatePath() {
+        return config.getString("email.templates.footer.emailHtmlFooter");
+    }
+
+
+
 }

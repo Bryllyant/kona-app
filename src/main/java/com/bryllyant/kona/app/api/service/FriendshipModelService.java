@@ -8,7 +8,7 @@ import com.bryllyant.kona.app.entity.FriendshipCircle;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FriendshipCircleService;
 import com.bryllyant.kona.app.service.FriendshipService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class FriendshipModelService extends BaseModelService {
     private UserModelService userModelService;
     
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
     
 
 

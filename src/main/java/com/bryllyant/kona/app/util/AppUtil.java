@@ -4,12 +4,13 @@
 package com.bryllyant.kona.app.util;
 
 import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.app.model.KEmailFooter;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.SystemService;
+import com.bryllyant.kona.data.model.KJsonModel;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.SystemException;
-import com.bryllyant.kona.data.model.KJsonModel;
 import com.bryllyant.kona.util.KClassUtil;
 import com.bryllyant.kona.util.KDateUtil;
 import com.bryllyant.kona.util.KInflector;
@@ -28,11 +29,11 @@ import java.util.Map;
 
 
 /**
- * ApiUtil
+ * AppUtil
  */
 @Component
-public class ApiUtil {
-    private static Logger logger = LoggerFactory.getLogger(ApiUtil.class);
+public class AppUtil {
+    private static Logger logger = LoggerFactory.getLogger(AppUtil.class);
 
 
 
@@ -407,4 +408,40 @@ public class ApiUtil {
         return result;
     }
 
+
+    public KEmailFooter getEmailFooter() {
+        Integer copyrightYear = KDateUtil.getYear(new Date());
+        String copyrightHolder = config.getString("email.footer.copyrightHolder");
+        String companyName = config.getString("email.footer.companyName");
+        String street1 = config.getString("email.footer.address.street1");
+        String street2 = config.getString("email.footer.address.street2");
+        String city = config.getString("email.footer.address.city");
+        String state = config.getString("email.footer.address.state");
+        String postalCode = config.getString("email.footer.address.postalCode");
+        String country = config.getString("email.footer.address.country");
+
+        String defaultPermissionReminder =
+                "We sent you this email because you signed up with us or requested to receive "
+                        + "information related to one of our services.";
+
+        String permissionReminder = config.getString("email.footer.permissionReminder", defaultPermissionReminder);
+
+        KEmailFooter footer = new KEmailFooter();
+
+        footer.setType(KEmailFooter.Type.TRANSACTIONAL);
+
+        footer.setCopyrightHolder(copyrightHolder);
+        footer.setCopyrightYear(copyrightYear);
+        footer.setCompanyName(companyName);
+        footer.setStreet1(street1);
+        footer.setStreet1(street2);
+        footer.setCity(city);
+        footer.setState(state);
+        footer.setPostalCode(postalCode);
+        footer.setCountry(country);
+
+        footer.setPermissionReminder(permissionReminder);
+
+        return footer;
+    }
 }

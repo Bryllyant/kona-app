@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.sales.promo.PromoModel;
 import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.service.PromoService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class PromoModelService extends BaseModelService {
     private PromoService promoService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

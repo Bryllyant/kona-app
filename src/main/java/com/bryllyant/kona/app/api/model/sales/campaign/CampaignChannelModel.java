@@ -15,6 +15,7 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private CampaignGroupModel group;
     private CampaignChannel.Type type;
     private CampaignTarget.Type targetType;
+    private CampaignChannel.TargetStrategy targetStrategy;
     private String name;
     private String slug;
     private String adwordsKeywords;
@@ -83,6 +84,14 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
 
     public void setTargetType(CampaignTarget.Type targetType) {
         this.set("targetType", targetType);
+    }
+
+    public CampaignChannel.TargetStrategy getTargetStrategy() {
+        return targetStrategy;
+    }
+
+    public void setTargetStrategy(CampaignChannel.TargetStrategy targetStrategy) {
+        this.set("targetStrategy", targetStrategy);
     }
 
     public String getName() {

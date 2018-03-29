@@ -13,7 +13,7 @@ import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageTemplateParamService;
 import com.bryllyant.kona.app.service.LandingPageTemplateService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;
@@ -63,7 +63,7 @@ public class LandingPageTemplateParamController extends BaseController {
     private FileService fileService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

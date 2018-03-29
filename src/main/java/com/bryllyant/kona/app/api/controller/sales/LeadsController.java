@@ -7,12 +7,14 @@ import com.bryllyant.kona.app.api.model.sales.SalesLeadModel;
 import com.bryllyant.kona.app.api.service.ApiAuthService;
 import com.bryllyant.kona.app.api.service.SalesLeadModelService;
 import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.SalesLead;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.SalesLeadService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.app.util.KCallback;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.remote.service.KServiceClient;
 import com.bryllyant.kona.rest.exception.BadRequestException;
@@ -73,7 +75,17 @@ public class LeadsController extends SalesController {
 
         body = apiAuthService.getUserInfo(req, getUser()) + body;
 
-        system.sendEmail(body, subject, from, replyTo, to, html, null);
+        system.sendEmail(body, subject, from, replyTo, to, html, null, new KCallback<Email>() {
+            @Override
+            public void success(Email data) {
+
+            }
+
+            @Override
+            public void error(Throwable t) {
+
+            }
+        });
     }
 
 

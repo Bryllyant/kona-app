@@ -7,7 +7,7 @@ import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.service.CampaignGroupService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class CampaignGroupModelService extends BaseModelService {
     private PartnerModelService partnerModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
     public CampaignGroup getCampaignGroup(String uid) {

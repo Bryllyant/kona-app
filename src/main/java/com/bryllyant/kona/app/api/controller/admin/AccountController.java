@@ -5,7 +5,7 @@ import com.bryllyant.kona.app.api.model.ModelResultSet;
 import com.bryllyant.kona.app.api.model.account.AccountModel;
 import com.bryllyant.kona.app.api.service.AccountModelService;
 import com.bryllyant.kona.app.api.service.UserModelService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;
@@ -52,7 +52,7 @@ public class AccountController extends BaseController {
     private SystemService system;
 
     @Autowired
-    private ApiUtil util; 
+    private AppUtil util;
 
 
 

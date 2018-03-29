@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.service;
 import com.bryllyant.kona.app.api.model.sales.product.ProductModel;
 import com.bryllyant.kona.app.entity.Product;
 import com.bryllyant.kona.app.service.ProductService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class ProductModelService extends BaseModelService {
     private AppModelService appModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

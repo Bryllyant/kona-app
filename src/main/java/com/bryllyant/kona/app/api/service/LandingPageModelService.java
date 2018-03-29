@@ -6,7 +6,7 @@ import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.service.LandingPageService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class LandingPageModelService extends BaseModelService {
     private PartnerModelService partnerModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
     public LandingPage getLandingPage(String uid) {

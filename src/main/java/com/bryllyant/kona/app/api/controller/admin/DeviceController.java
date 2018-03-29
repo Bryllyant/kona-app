@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.controller.admin;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.api.model.device.DeviceModel;
 import com.bryllyant.kona.app.api.service.DeviceModelService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.rest.exception.ValidationException;
@@ -42,7 +42,7 @@ public class DeviceController extends BaseController {
     private DeviceModelService deviceModelService;
     
     @Autowired
-    private ApiUtil util; 
+    private AppUtil util;
 
 
 

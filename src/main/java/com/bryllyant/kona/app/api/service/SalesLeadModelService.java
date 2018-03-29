@@ -15,7 +15,7 @@ import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.SalesLead;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.SalesLeadService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class SalesLeadModelService extends BaseModelService {
     private CampaignAnalyticsModelService campaignAnalyticsModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

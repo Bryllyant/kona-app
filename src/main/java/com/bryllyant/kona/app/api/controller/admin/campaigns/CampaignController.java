@@ -9,7 +9,7 @@ import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;
@@ -47,7 +47,7 @@ public class CampaignController extends BaseController {
     private SystemService system;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

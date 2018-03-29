@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.entity.User;
@@ -30,7 +30,7 @@ public class PlaceModelService extends BaseModelService {
     private MediaModelService mediaModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
    
 

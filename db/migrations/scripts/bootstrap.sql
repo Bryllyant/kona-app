@@ -116,7 +116,7 @@ CREATE TABLE `kona__api_version` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(2000) DEFAULT NULL,
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `published_date` datetime(6) NOT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -219,7 +219,7 @@ CREATE TABLE `kona__app_creds` (
   `client_secret` varchar(255) DEFAULT NULL,
   `redirect_uri` varchar(255) DEFAULT NULL,
   `scope` varchar(255) NOT NULL DEFAULT 'read,write',
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `access_token_timeout` int(11) unsigned DEFAULT NULL, -- seconds / needs to be integer
   `refresh_token_timeout` int(11) unsigned DEFAULT NULL, -- second / needs to be integer
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -297,7 +297,7 @@ CREATE TABLE `kona__app_user` (
   `latitude` double DEFAULT NULL,
   `longitude` double DEFAULT NULL,
   `coords` geometry NOT NULL,
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `revoked_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -341,7 +341,7 @@ CREATE TABLE `kona__app_webhook` (
   `slug` varchar(255) NOT NULL,
   `url` varchar(2000) DEFAULT NULL,
   `events` varchar(4000) DEFAULT NULL,
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -782,44 +782,102 @@ CREATE TABLE `kona__setting` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------------------------
-
-CREATE TABLE `kona__short_url` (
+CREATE TABLE `kona__script` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
-  `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
-  `domain` varchar(255) NOT NULL,
-  `path` varchar(255) NOT NULL,
-  `short_url` varchar(255) NOT NULL,
-  `long_url` varchar(8000) NOT NULL,
-  `description` varchar(2000) DEFAULT NULL,
-  `script` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `language` varchar(255) NOT NULL,
+  `return_type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `body` longtext NOT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `expired_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
   PRIMARY KEY (`id`),
 
-  UNIQUE KEY `ux_kona__short_url_short_url` (`short_url`),
+  UNIQUE KEY `ux_kona__script_uid` (`uid`),
 
-  UNIQUE KEY `ux_kona__short_url_path` (`path`),
+  UNIQUE KEY `ux_kona__script_slug` (`slug`),
+
+  FULLTEXT `ft_kona__script` (`uid`,`name`,`slug`,`body`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------------------------
+
+CREATE TABLE `kona__short_url` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL, -- short url created for this user
+  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `group_id` bigint(20) unsigned DEFAULT NULL,
+  `channel_id` bigint(20) unsigned DEFAULT NULL,
+  `target_id` bigint(20) unsigned DEFAULT NULL,
+  `reply_id` bigint(20) unsigned DEFAULT NULL,
+  `reply_message_id` bigint(20) unsigned DEFAULT NULL,
+  `script_id` bigint(20) unsigned DEFAULT NULL,
+  `domain` varchar(255) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `short_url` varchar(255) NOT NULL,
+  `long_url` varchar(2000) DEFAULT NULL,
+  `description` varchar(2000) DEFAULT NULL,
+  `single_mapped` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `channel_redirect` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `expiration_date` datetime(6) DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
 
   UNIQUE KEY `ux_kona__short_url_uid` (`uid`),
 
+  UNIQUE KEY `ux_kona__short_url_path` (`path`),
+
+  UNIQUE KEY `ux_kona__short_url_short_url` (`short_url`),
+
   KEY `ix_kona__short_url_user` (`user_id`),
 
-  KEY `ix_kona__short_url_campaign_channel` (`campaign_channel_id`),
+  KEY `ix_kona__short_url_campaign` (`campaign_id`),
+
+  KEY `ix_kona__short_url_group` (`group_id`),
+
+  KEY `ix_kona__short_url_channel` (`channel_id`),
+
+  KEY `ix_kona__short_url_target` (`target_id`),
+
+  KEY `ix_kona__short_url_reply` (`reply_id`),
+
+  KEY `ix_kona__short_url_reply_message` (`reply_message_id`),
 
   KEY `ix_kona__short_url_long_url` (`long_url`(255)),
 
   FULLTEXT `ft_kona__short_url` (`uid`,`domain`,`path`,`short_url`,`long_url`,`description`),
 
-  CONSTRAINT `fk_kona__short_url_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
+  CONSTRAINT `fk_kona__short_url_user` FOREIGN KEY (`user_id`)
+        REFERENCES `kona__user` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__short_url_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__short_url_group` FOREIGN KEY (`group_id`)
+        REFERENCES `kona__campaign_group` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__short_url_channel` FOREIGN KEY (`channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__short_url_user` FOREIGN KEY (`user_id`) 
-        REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `fk_kona__short_url_target` FOREIGN KEY (`target_id`)
+        REFERENCES `kona__campaign_target` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__short_url_reply` FOREIGN KEY (`reply_id`)
+        REFERENCES `kona__campaign_reply` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__short_url_reply_message` FOREIGN KEY (`reply_message_id`)
+        REFERENCES `kona__campaign_reply_message` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__short_url_script` FOREIGN KEY (`script_id`)
+        REFERENCES `kona__script` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -1566,6 +1624,8 @@ CREATE TABLE `kona__support_message` (
 CREATE TABLE `kona__sms` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_group_id` bigint(20) unsigned DEFAULT NULL,
   `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `to_user_id` bigint(20) unsigned DEFAULT NULL,
   `to_number` varchar(255) NOT NULL,
@@ -1595,11 +1655,21 @@ CREATE TABLE `kona__sms` (
 
   UNIQUE KEY `ix_kona__sms_campaign_channel_to` (`campaign_channel_id`,`to_number`),
 
+  KEY `ix_kona__sms_campaign` (`campaign_id`),
+
+  KEY `ix_kona__sms_campaign_group` (`campaign_group_id`),
+
   KEY `ix_kona__sms_to_user` (`to_user_id`),
 
   KEY `ix_kona__sms_to_number` (`to_number`),
 
   FULLTEXT KEY `ft_kona_sms` (uid,to_number,from_number,message,media_urls,message_sid,status,error_code,error_message),
+
+  CONSTRAINT `fk_kona__sms_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__sms_campaign_group` FOREIGN KEY (`campaign_group_id`)
+        REFERENCES `kona__campaign_group` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__sms_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
@@ -1614,10 +1684,12 @@ CREATE TABLE `kona__sms` (
 CREATE TABLE `kona__email` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_group_id` bigint(20) unsigned DEFAULT NULL,
   `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
-  `group_id` bigint(20) unsigned DEFAULT NULL,
-  `to_address_id` bigint(20) unsigned DEFAULT NULL,
-  `content_id` bigint(20) unsigned DEFAULT NULL,
+  `email_group_id` bigint(20) unsigned DEFAULT NULL,
+  `email_address_id` bigint(20) unsigned DEFAULT NULL,
+  `email_content_id` bigint(20) unsigned DEFAULT NULL,
   `ses_id` varchar(255) DEFAULT NULL,
   `from_address` varchar(255) NOT NULL,
   `to_address` varchar(255) NOT NULL,
@@ -1643,26 +1715,36 @@ CREATE TABLE `kona__email` (
 
   UNIQUE KEY `ix_kona__email_ses_id` (`ses_id`),
 
-  UNIQUE KEY `ix_kona__email_campaign_channel_to` (`campaign_channel_id`,`to_address_id`),
+  UNIQUE KEY `ix_kona__email_campaign_channel_address` (`campaign_channel_id`,`email_address_id`),
 
-  KEY `ix_kona__email_group` (`group_id`),
+  KEY `ix_kona__email_campaign` (`campaign_id`),
 
-  KEY `ix_kona__email_to_address` (`to_address_id`),
+  KEY `ix_kona__email_campaign_group` (`campaign_group_id`),
 
-  KEY `ix_kona__email_content` (`content_id`),
+  KEY `ix_kona__email_email_group` (`email_group_id`),
+
+  KEY `ix_kona__email_email_address` (`email_address_id`),
+
+  KEY `ix_kona__email_email_content` (`email_content_id`),
 
   FULLTEXT KEY `ft_kona_email` (uid,ses_id,from_address,to_address,subject),
 
-  CONSTRAINT `fk_kona__email_content` FOREIGN KEY (`content_id`)
-        REFERENCES `kona__email_content` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_kona__email_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__email_campaign_group` FOREIGN KEY (`campaign_group_id`)
+        REFERENCES `kona__campaign_group` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__email_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__email_group` FOREIGN KEY (`group_id`) 
+  CONSTRAINT `fk_kona__email_email_content` FOREIGN KEY (`email_content_id`)
+        REFERENCES `kona__email_content` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__email_email_group` FOREIGN KEY (`email_group_id`)
         REFERENCES `kona__email_group` (`id`) ON DELETE SET NULL,
 
-  CONSTRAINT `fk_kona__email_to_address` FOREIGN KEY (`to_address_id`) 
+  CONSTRAINT `fk_kona__email_email_address` FOREIGN KEY (`email_address_id`)
         REFERENCES `kona__email_address` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -1772,8 +1854,8 @@ CREATE TABLE `kona__email_attachment` (
 CREATE TABLE `kona__email_event` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
   `email_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(255) NOT NULL,
   `target` varchar(2000) DEFAULT NULL,
   `error` varchar(2000) DEFAULT NULL,
   `hostname` varchar(255) DEFAULT NULL,
@@ -1935,6 +2017,8 @@ CREATE TABLE `kona__push` (
   `uid` varchar(255) NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `device_id` bigint(20) unsigned NOT NULL,
+  `campaign_id` bigint(20) unsigned DEFAULT NULL,
+  `campaign_group_id` bigint(20) unsigned DEFAULT NULL,
   `campaign_channel_id` bigint(20) unsigned DEFAULT NULL,
   `platform` varchar(255) NOT NULL,
   `sandbox` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -1965,11 +2049,21 @@ CREATE TABLE `kona__push` (
 
   UNIQUE KEY `ix_kona__push_campaign_channel_device` (`campaign_channel_id`,`device_id`),
 
+  KEY `ix_kona__push_campaign` (`campaign_id`),
+
+  KEY `ix_kona__push_campaign_group` (`campaign_group_id`),
+
   KEY `ix_kona__push_user` (`user_id`),
 
   KEY `ix_kona__push_device` (`device_id`),
 
   FULLTEXT KEY `ft_kona_push` (uid,platform,provider_message_id,title,message,status,error_code,error_message),
+
+  CONSTRAINT `fk_kona__push_campaign` FOREIGN KEY (`campaign_id`)
+        REFERENCES `kona__campaign` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__push_campaign_group` FOREIGN KEY (`campaign_group_id`)
+        REFERENCES `kona__campaign_group` (`id`) ON DELETE SET NULL,
 
   CONSTRAINT `fk_kona__push_campaign_channel` FOREIGN KEY (`campaign_channel_id`)
         REFERENCES `kona__campaign_channel` (`id`) ON DELETE SET NULL,
@@ -2430,16 +2524,23 @@ CREATE TABLE `kona__campaign_channel` (
   `group_id` bigint(20) unsigned NOT NULL,
   `promo_code` varchar(255) DEFAULT NULL,
   `type` varchar(255) NOT NULL,
-  `target_type` varchar(255) NOT NULL, -- all targets must be of the same type
+  `target_strategy` varchar(255) NOT NULL, -- all targets must be of the same type
+  `reply_strategy` varchar(255) NOT NULL, -- all targets must be of the same type
+
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
+
   `adwords_keywords` varchar(4000) DEFAULT NULL,
 
   `sms_number` varchar(255) DEFAULT NULL,
   `sms_keyword` varchar(255) DEFAULT NULL,
 
+    -- short url responsible for target_strategy redirect
+  `short_url` varchar(255) DEFAULT NULL,
+
   `conversion_count` int(11) unsigned NOT NULL default '0',
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `reply_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -2457,11 +2558,13 @@ CREATE TABLE `kona__campaign_channel` (
 
   UNIQUE KEY `ux_kona__campaign_channel_promo_code` (`promo_code`),
 
+  UNIQUE KEY `ux_kona__campaign_channel_short_url` (`short_url`),
+
   KEY `ix_kona__campaign_channel_campaign` (`campaign_id`),
 
   KEY `ix_kona__campaign_channel_group` (`group_id`),
 
-  FULLTEXT `ft_kona__campaign_channel` (uid,name,slug,adwords_keywords,sms_keyword,sms_number),
+  FULLTEXT `ft_kona__campaign_channel` (uid,type,target_strategy,reply_strategy,name,slug,adwords_keywords,sms_keyword,sms_number,short_url),
 
   CONSTRAINT `fk_kona__campaign_channel_campaign` FOREIGN KEY (`campaign_id`)
     REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
@@ -2470,13 +2573,18 @@ CREATE TABLE `kona__campaign_channel` (
     REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__campaign_channel_promo_code` FOREIGN KEY (`promo_code`)
-    REFERENCES `kona__promo_code` (`promo_code`) ON DELETE SET NULL
+    REFERENCES `kona__promo_code` (`promo_code`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_target_short_url` FOREIGN KEY (`short_url`)
+    REFERENCES `kona__short_url` (`short_url`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------------------------
 
 -- all the targets of a channel should be the same type
 -- purpose of multiple targets per channel is to do A/B testing
+-- target is dynamically chosen based on channel target_strategy
 
 CREATE TABLE `kona__campaign_target` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -2490,14 +2598,13 @@ CREATE TABLE `kona__campaign_target` (
 
   `landing_page_id` bigint(20) unsigned DEFAULT NULL,
 
-    -- should include all final query params to uniquely identify this target
+  -- include all query params to uniquely identify this target
   `url` varchar(255) DEFAULT NULL,
-  `short_url` varchar(255) DEFAULT NULL,
 
   `analytics_tracking_id` varchar(255) DEFAULT NULL,
   `conversion_pixel` varchar(2000) DEFAULT NULL,
   `conversion_count` int(11) unsigned NOT NULL default '0',
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `start_date` datetime(6) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -2513,8 +2620,6 @@ CREATE TABLE `kona__campaign_target` (
 
   UNIQUE KEY `ux_kona__campaign_target_url` (`url`),
 
-  UNIQUE KEY `ux_kona__campaign_target_short_url` (`short_url`),
-
   KEY `ix_kona__campaign_channel_landing_target_page` (`landing_page_id`),
 
   KEY `ix_kona__campaign_target_campaign` (`campaign_id`),
@@ -2523,7 +2628,7 @@ CREATE TABLE `kona__campaign_target` (
 
   KEY `ix_kona__campaign_target_channel` (`channel_id`),
 
-  FULLTEXT `ft_kona__campaign_target` (uid,name,slug,url,short_url,analytics_tracking_id),
+  FULLTEXT `ft_kona__campaign_target` (uid,type,name,slug,url,analytics_tracking_id),
 
   CONSTRAINT `fk_kona__campaign_target_campaign` FOREIGN KEY (`campaign_id`)
     REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
@@ -2535,10 +2640,147 @@ CREATE TABLE `kona__campaign_target` (
     REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__campaign_target_landing_page` FOREIGN KEY (`landing_page_id`)
-    REFERENCES `kona__landing_page` (`id`) ON DELETE RESTRICT,
+    REFERENCES `kona__landing_page` (`id`) ON DELETE RESTRICT
 
-  CONSTRAINT `fk_kona__campaign_target_short_url` FOREIGN KEY (`short_url`)
-    REFERENCES `kona__short_url` (`short_url`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------------------------
+
+-- a reply is the message sent to a user upon a campaign conversion
+-- a channel can have multiple replies for A/B testing
+-- a reply may be associated with a specific target_id
+-- replies are dynamically selected based on channel reply_strategy
+
+CREATE TABLE `kona__campaign_reply` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `channel_id` bigint(20) unsigned NOT NULL,
+  `target_id` bigint(20) unsigned default NULL,
+
+  `type` varchar(255) NOT NULL, -- email|sms|push
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+
+  `subject` varchar(255) default NULL,
+  `content` longtext NOT NULL, -- template
+
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `start_date` datetime(6) DEFAULT NULL,
+  `end_date` datetime(6) DEFAULT NULL,
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__campaign_reply_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__campaign_reply_slug` (`target_id`, `slug`),
+
+  KEY `ix_kona__campaign_reply_campaign` (`campaign_id`),
+
+  KEY `ix_kona__campaign_reply_group` (`group_id`),
+
+  KEY `ix_kona__campaign_reply_channel` (`channel_id`),
+
+  KEY `ix_kona__campaign_reply_target` (`target_id`),
+
+  FULLTEXT `ft_kona__campaign_reply` (uid,type,name,slug,subject,content),
+
+  CONSTRAINT `fk_kona__campaign_reply_campaign` FOREIGN KEY (`campaign_id`)
+    REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_group` FOREIGN KEY (`group_id`)
+    REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_channel` FOREIGN KEY (`channel_id`)
+    REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_target` FOREIGN KEY (`target_id`)
+    REFERENCES `kona__campaign_target` (`id`) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- a reply is the message sent to a user upon a campaign conversion
+-- a target can have multiple replies for A/B testing
+
+CREATE TABLE `kona__campaign_reply_message` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `campaign_id` bigint(20) unsigned NOT NULL,
+  `group_id` bigint(20) unsigned NOT NULL,
+  `channel_id` bigint(20) unsigned NOT NULL,
+  `target_id` bigint(20) unsigned NOT NULL,
+  `reply_id` bigint(20) unsigned NOT NULL,
+
+  `to_user_id` bigint(20) unsigned default NULL,
+  `to_email` varchar(255) default NULL,
+  `to_mobile_number` varchar(255) default NULL,
+
+  `email_id` bigint(20) unsigned default NULL,
+  `sms_id` bigint(20) unsigned default NULL,
+  `push_id` bigint(20) unsigned default NULL,
+
+  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+  PRIMARY KEY (`id`),
+
+  UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__campaign_reply_message_uid` (`uid`),
+
+  UNIQUE KEY `ux_kona__campaign_reply_message_email` (`email_id`),
+
+  UNIQUE KEY `ux_kona__campaign_reply_message_sms` (`sms_id`),
+
+  UNIQUE KEY `ux_kona__campaign_reply_message_push` (`push_id`),
+
+  KEY `ix_kona__campaign_reply_campaign` (`campaign_id`),
+
+  KEY `ix_kona__campaign_reply_group` (`group_id`),
+
+  KEY `ix_kona__campaign_reply_channel` (`channel_id`),
+
+  KEY `ix_kona__campaign_reply_target` (`target_id`),
+
+  KEY `ix_kona__campaign_reply_to_user` (`to_user_id`),
+
+  KEY `ix_kona__campaign_reply_to_email` (`to_email`),
+
+  KEY `ix_kona__campaign_reply_to_mobile_number` (`to_mobile_number`),
+
+  FULLTEXT `ft_kona__campaign_reply_message` (uid,to_email,to_mobile_number),
+
+  CONSTRAINT `fk_kona__campaign_reply_message_campaign` FOREIGN KEY (`campaign_id`)
+    REFERENCES `kona__campaign` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_group` FOREIGN KEY (`group_id`)
+    REFERENCES `kona__campaign_group` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_channel` FOREIGN KEY (`channel_id`)
+    REFERENCES `kona__campaign_channel` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_target` FOREIGN KEY (`target_id`)
+    REFERENCES `kona__campaign_target` (`id`) ON DELETE CASCADE,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_email` FOREIGN KEY (`email_id`)
+    REFERENCES `kona__email` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_sms` FOREIGN KEY (`sms_id`)
+    REFERENCES `kona__sms` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_push` FOREIGN KEY (`push_id`)
+    REFERENCES `kona__push` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_reply_message_to_user` FOREIGN KEY (`to_user_id`)
+    REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2551,14 +2793,18 @@ CREATE TABLE `kona__campaign_analytics` (
   `group_id` bigint(20) unsigned NOT NULL,
   `channel_id` bigint(20) unsigned NOT NULL,
   `target_id` bigint(20) unsigned NOT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `reply_id` bigint(20) unsigned DEFAULT NULL, -- if set, this is a post conversion event
+  `reply_message_id` bigint(20) unsigned DEFAULT NULL, -- if set, this is a post conversion event
   `category` varchar(255) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
   `label` varchar(2000) DEFAULT NULL,
   `value` double DEFAULT NULL,
   `conversion_event` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `mobile_number` varchar(255) DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
+  `conversion_user_id` bigint(20) unsigned DEFAULT NULL,
+  `conversion_email` varchar(255) DEFAULT NULL,
+  `conversion_mobile_number` varchar(255) DEFAULT NULL,
+  `source_mobile_number` varchar(255) DEFAULT NULL,
+  `source_url` varchar(255) DEFAULT NULL,
   `hostname` varchar(255) DEFAULT NULL,
   `user_agent` varchar(512) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
@@ -2583,10 +2829,12 @@ CREATE TABLE `kona__campaign_analytics` (
   KEY `ix_kona__campaign_analytics_group` (`group_id`),
   KEY `ix_kona__campaign_analytics_channel` (`channel_id`),
   KEY `ix_kona__campaign_analytics_target` (`target_id`),
+  KEY `ix_kona__campaign_analytics_reply` (`reply_id`),
+  KEY `ix_kona__campaign_analytics_reply_message` (`reply_message_id`),
 
-  KEY `ix_kona__campaign_analytics_user` (`user_id`),
+  KEY `ix_kona__campaign_analytics_conversion_user` (`conversion_user_id`),
 
-  FULLTEXT `ft_kona__campaign_analytics` (uid,category,action,label,mobile_number,url,hostname,user_agent),
+  FULLTEXT `ft_kona__campaign_analytics` (uid,category,action,label,source_mobile_number,source_url,hostname,user_agent,conversion_email,conversion_mobile_number),
 
   SPATIAL `ix_kona__campaign_analytics_coords` (coords),
 
@@ -2602,7 +2850,13 @@ CREATE TABLE `kona__campaign_analytics` (
   CONSTRAINT `fk_kona__campaign_analytics_target` FOREIGN KEY (`target_id`)
         REFERENCES `kona__campaign_target` (`id`) ON DELETE CASCADE,
 
-  CONSTRAINT `fk_kona__campaign_analytics_user` FOREIGN KEY (`user_id`)
+  CONSTRAINT `fk_kona__campaign_analytics_reply` FOREIGN KEY (`reply_id`)
+        REFERENCES `kona__campaign_reply` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_analytics_reply_message` FOREIGN KEY (`reply_message_id`)
+        REFERENCES `kona__campaign_reply_message` (`id`) ON DELETE SET NULL,
+
+  CONSTRAINT `fk_kona__campaign_analytics_conversion_user` FOREIGN KEY (`conversion_user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -3246,6 +3500,7 @@ CREATE TABLE `kona__sales_lead` (
   `analytics_id` bigint(20) unsigned NOT NULL,
   `campaign_conversion` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `referred_by_id` bigint(20) unsigned DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL, -- possible email/mobile_number belongs to existing user
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
@@ -3274,6 +3529,8 @@ CREATE TABLE `kona__sales_lead` (
 
   KEY `ix_kona__sales_lead_referred_by` (`referred_by_id`),
 
+  KEY `ix_kona__sales_lead_user` (`user_id`),
+
   KEY `ix_kona__sales_lead_campaign` (`channel_id`),
 
   KEY `ix_kona__sales_lead_group` (`group_id`),
@@ -3281,6 +3538,12 @@ CREATE TABLE `kona__sales_lead` (
   KEY `ix_kona__sales_lead_channel` (`channel_id`),
 
   KEY `ix_kona__sales_lead_target` (`target_id`),
+
+  KEY `ix_kona__sales_lead_email` (`email`),
+
+  KEY `ix_kona__sales_lead_mobile_number` (`mobile_number`),
+
+  KEY `ix_kona__sales_lead_phone_number` (`phone_number`),
 
   FULLTEXT `ft_kona_sales_lead` (uid,first_name,last_name,email,phone_number,mobile_number,social_handles,message,interests),
 
@@ -3297,6 +3560,9 @@ CREATE TABLE `kona__sales_lead` (
         REFERENCES `kona__campaign_target` (`id`) ON DELETE CASCADE,
 
   CONSTRAINT `fk_kona__sales_lead_referred_by` FOREIGN KEY (`referred_by_id`)
+        REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+
+  CONSTRAINT `fk_kona__sales_lead_user` FOREIGN KEY (`user_id`)
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -3550,7 +3816,7 @@ CREATE TABLE `kona__landing_page` (
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `description` varchar(4000) default NULL,
-  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 

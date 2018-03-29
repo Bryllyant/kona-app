@@ -7,6 +7,6 @@ import com.bryllyant.kona.app.entity.SupportMessage;
 import com.bryllyant.kona.remote.service.KService;
 
 public interface SupportMessageService extends KService, KSupportMessageService<SupportMessage> {
-	public static final String SERVICE_PATH = "rpc/SupportMessageService";
+	String SERVICE_PATH = "rpc/SupportMessageService";
 	
 }

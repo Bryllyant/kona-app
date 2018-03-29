@@ -6,7 +6,7 @@ import com.bryllyant.kona.app.api.model.user.PersonModel;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.service.PartnerService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class PartnerModelService extends BaseModelService {
     private PlaceModelService placeModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
     public Partner getPartner(String uid) {

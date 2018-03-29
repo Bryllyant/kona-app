@@ -249,8 +249,8 @@ public class EmailEventController extends BaseController {
     
     private EmailAddress getEmailAddress(Email email) {
         EmailAddress address = null;
-        if (email.getToAddressId() != null) {
-            address = emailAddressService.fetchById(email.getToAddressId());
+        if (email.getEmailAddressId() != null) {
+            address = emailAddressService.fetchById(email.getEmailAddressId());
         } else if (email.getToAddress() != null) {
             address = emailAddressService.fetchByEmail(email.getToAddress());
         }

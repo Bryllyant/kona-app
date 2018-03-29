@@ -31,7 +31,7 @@ import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserAuthService;
 import com.bryllyant.kona.app.service.UserDeviceService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.remote.service.KServiceClient;
@@ -115,7 +115,7 @@ public class AuthController extends BaseController {
     private AuthModelService authModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

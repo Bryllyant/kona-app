@@ -9,24 +9,24 @@ import com.bryllyant.kona.app.entity.EmailAttachment;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailEvent;
 import com.bryllyant.kona.app.entity.File;
-import com.bryllyant.kona.app.entity.KEmailFooter;
+import com.bryllyant.kona.app.entity.Push;
 import com.bryllyant.kona.app.entity.Sms;
 import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.model.KEmailFooter;
 import com.bryllyant.kona.app.service.AccountService;
 import com.bryllyant.kona.app.service.AppConfigService;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.EmailService;
 import com.bryllyant.kona.app.service.KAbstractSystemService;
+import com.bryllyant.kona.app.service.PushService;
 import com.bryllyant.kona.app.service.SmsService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.util.KDateUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 
 @Service(SystemService.SERVICE_PATH)
@@ -37,6 +37,7 @@ public class SystemServiceImpl
             Account,
             User,
             Sms,
+            Push,
             Email,
             EmailEvent,
             EmailContent,
@@ -66,6 +67,12 @@ public class SystemServiceImpl
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PushService pushService;
+
+    @Autowired
+    private AppUtil util;
 
 
     protected File getNewFileObject() {
@@ -129,6 +136,11 @@ public class SystemServiceImpl
     }
 
     @Override @SuppressWarnings("unchecked")
+    protected PushService getPushService() {
+        return pushService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
     protected AppService getAppService() {
         return appService;
     }
@@ -164,38 +176,7 @@ public class SystemServiceImpl
 
     @Override
     protected KEmailFooter getEmailFooter() {
-        Integer copyrightYear = KDateUtil.getYear(new Date());
-        String copyrightHolder = config.getString("email.footer.copyrightHolder");
-        String companyName = config.getString("email.footer.companyName");
-        String street1 = config.getString("email.footer.address.street1");
-        String street2 = config.getString("email.footer.address.street2");
-        String city = config.getString("email.footer.address.city");
-        String state = config.getString("email.footer.address.state");
-        String postalCode = config.getString("email.footer.address.postalCode");
-        String country = config.getString("email.footer.address.country");
-        
-        String defaultPermissionReminder = 
-                "We sent you this email because you signed up with us or requested to receive "
-                + "information related to one of our services.";
-        
-        String permissionReminder = config.getString("email.footer.permissionReminder", defaultPermissionReminder);
+        return util.getEmailFooter();
 
-        KEmailFooter footer = new KEmailFooter();
-
-        footer.setType(KEmailFooter.Type.TRANSACTIONAL);
-
-        footer.setCopyrightHolder(copyrightHolder);
-        footer.setCopyrightYear(copyrightYear);
-        footer.setCompanyName(companyName);
-        footer.setStreet1(street1);
-        footer.setStreet1(street2);
-        footer.setCity(city);
-        footer.setState(state);
-        footer.setPostalCode(postalCode);
-        footer.setCountry(country);
-        
-        footer.setPermissionReminder(permissionReminder);
-
-        return footer;
     }
 }

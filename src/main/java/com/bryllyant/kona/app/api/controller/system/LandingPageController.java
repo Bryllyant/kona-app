@@ -10,7 +10,7 @@ import com.bryllyant.kona.app.entity.LandingPageParam;
 import com.bryllyant.kona.app.service.LandingPageParamService;
 import com.bryllyant.kona.app.service.LandingPageService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.util.KResultList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class LandingPageController extends SystemController {
     private SystemService system;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 //    @RequestMapping(value="/{uid}", method=RequestMethod.GET)

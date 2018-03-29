@@ -5,11 +5,17 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.config.KConfig;
 import com.bryllyant.kona.app.dao.CampaignChannelMapper;
+import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignChannelExample;
 import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.CampaignReply;
+import com.bryllyant.kona.app.entity.CampaignReplyMessage;
+import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.ShortUrl;
 import com.bryllyant.kona.app.service.CampaignChannelService;
+import com.bryllyant.kona.app.service.CampaignReplyService;
+import com.bryllyant.kona.app.service.CampaignTargetService;
 import com.bryllyant.kona.app.service.KAbstractCampaignChannelService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import org.slf4j.Logger;
@@ -24,6 +30,10 @@ public class CampaignChannelServiceImpl
         CampaignChannelExample,
         CampaignChannelMapper,
         CampaignGroup,
+        CampaignTarget,
+        CampaignReply,
+        CampaignReplyMessage,
+        CampaignAnalytics,
         ShortUrl>
 		implements CampaignChannelService {
 	
@@ -38,6 +48,12 @@ public class CampaignChannelServiceImpl
     @Autowired
     private ShortUrlService shortUrlService;
 
+    @Autowired
+    private CampaignTargetService campaignTargetService;
+
+    @Autowired
+    private CampaignReplyService campaignReplyService;
+
     protected String getLandingPageBaseUrl() {
         return config.getString("landingPage.baseUrl");
     }
@@ -50,5 +66,15 @@ public class CampaignChannelServiceImpl
     @Override @SuppressWarnings("unchecked")
     protected ShortUrlService getShortUrlService() {
         return shortUrlService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignTargetService getCampaignTargetService() {
+        return campaignTargetService;
+    }
+
+    @Override @SuppressWarnings("unchecked")
+    protected CampaignReplyService getCampaignReplyService() {
+        return campaignReplyService;
     }
 }

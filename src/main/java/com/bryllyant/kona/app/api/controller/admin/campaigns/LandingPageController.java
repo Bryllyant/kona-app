@@ -10,7 +10,7 @@ import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.service.LandingPageService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;
@@ -51,7 +51,7 @@ public class LandingPageController extends BaseController {
     private SystemService system;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.notification.NotificationModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.entity.Notification;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.NotificationService;
@@ -26,7 +26,7 @@ public class NotificationModelService extends BaseModelService {
     private UserModelService userModelService;
     
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 

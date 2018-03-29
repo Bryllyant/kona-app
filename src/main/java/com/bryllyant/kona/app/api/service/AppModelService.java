@@ -2,7 +2,7 @@ package com.bryllyant.kona.app.api.service;
 
 import com.bryllyant.kona.app.api.model.app.AppModel;
 import com.bryllyant.kona.app.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
@@ -26,7 +26,7 @@ public class AppModelService extends BaseModelService {
     private UserModelService userModelService;
 
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
     
 
 

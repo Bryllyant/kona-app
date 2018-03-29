@@ -3,7 +3,7 @@ package com.bryllyant.kona.app.api.controller.me;
 import com.bryllyant.kona.app.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.SettingService;
-import com.bryllyant.kona.app.util.ApiUtil;
+import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.util.KInflector;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -33,7 +33,7 @@ public class MySettingsController extends BaseController {
     private SettingService settingService;    
     
     @Autowired
-    private ApiUtil util;
+    private AppUtil util;
 
 
 	@RequestMapping(method=RequestMethod.GET)
