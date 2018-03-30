@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KLandingPageTemplateParam.Type;
 import java.io.Serializable;
 
 public class LandingPageTemplateParam extends KBaseLandingPageTemplateParam implements Serializable {

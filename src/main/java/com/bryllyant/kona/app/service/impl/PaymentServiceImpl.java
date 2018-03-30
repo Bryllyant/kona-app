@@ -14,7 +14,6 @@ import com.bryllyant.kona.app.entity.PaymentExample;
 import com.bryllyant.kona.app.service.InvoiceService;
 import com.bryllyant.kona.app.service.KAbstractPaymentService;
 import com.bryllyant.kona.app.service.PaymentService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service(PaymentService.SERVICE_PATH)
 public class PaymentServiceImpl 

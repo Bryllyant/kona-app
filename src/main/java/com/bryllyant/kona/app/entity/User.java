@@ -1,8 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KUser.Gender;
-import com.bryllyant.kona.app.entity.KUser.Presence;
-import com.bryllyant.kona.app.entity.KUser.Type;
 import java.io.Serializable;
 
 public class User extends KBaseUser implements Serializable {

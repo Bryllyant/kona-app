@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.MediaMapper;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.Media;

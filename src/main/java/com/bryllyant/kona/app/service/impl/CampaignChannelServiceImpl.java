@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.CampaignChannelMapper;
 import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignChannel;
@@ -55,7 +55,7 @@ public class CampaignChannelServiceImpl
     private CampaignReplyService campaignReplyService;
 
     protected String getLandingPageBaseUrl() {
-        return config.getString("landingPage.baseUrl");
+        return config.getString("landingpage.baseUrl");
     }
 
     @Override @SuppressWarnings("unchecked")

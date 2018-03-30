@@ -1,6 +1,6 @@
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.NotificationMapper;
 import com.bryllyant.kona.app.entity.Notification;
 import com.bryllyant.kona.app.entity.NotificationDelivery;

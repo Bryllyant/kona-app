@@ -8,13 +8,10 @@ import com.bryllyant.kona.app.entity.RemoteServiceUserCreds;
 import com.bryllyant.kona.app.entity.RemoteServiceUserCredsExample;
 import com.bryllyant.kona.app.service.KAbstractRemoteServiceUserCredsService;
 import com.bryllyant.kona.app.service.RemoteServiceUserCredsService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(RemoteServiceUserCredsService.SERVICE_PATH)
 public class RemoteServiceUserCredsServiceImpl 

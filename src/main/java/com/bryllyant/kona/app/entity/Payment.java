@@ -1,7 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KPayment.Status;
-import com.bryllyant.kona.app.entity.KPayment.Type;
 import java.io.Serializable;
 
 public class Payment extends KBasePayment implements Serializable {

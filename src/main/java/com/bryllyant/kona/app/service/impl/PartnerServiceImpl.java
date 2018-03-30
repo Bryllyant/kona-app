@@ -10,15 +10,10 @@ import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.service.KAbstractPartnerService;
 import com.bryllyant.kona.app.service.PartnerService;
 import com.bryllyant.kona.app.service.PlaceService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Service(PartnerService.SERVICE_PATH)
 public class PartnerServiceImpl 

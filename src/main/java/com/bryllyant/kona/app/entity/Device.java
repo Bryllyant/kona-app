@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KDevice.Type;
 import java.io.Serializable;
 
 public class Device extends KBaseDevice implements Serializable {

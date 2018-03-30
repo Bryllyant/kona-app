@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.CampaignReplyMessageMapper;
 import com.bryllyant.kona.app.entity.CampaignReply;
 import com.bryllyant.kona.app.entity.CampaignReplyMessage;

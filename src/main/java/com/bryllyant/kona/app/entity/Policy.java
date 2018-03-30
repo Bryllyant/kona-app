@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KPolicy.Type;
 import java.io.Serializable;
 
 public class Policy extends KBasePolicy implements Serializable {

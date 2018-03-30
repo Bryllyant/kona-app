@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KApp.Type;
 import java.io.Serializable;
 
 public class App extends KBaseApp implements Serializable {

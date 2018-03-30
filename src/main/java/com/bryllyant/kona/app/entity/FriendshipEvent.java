@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KFriendshipEvent.Type;
 import java.io.Serializable;
 
 public class FriendshipEvent extends KBaseFriendshipEvent implements Serializable {

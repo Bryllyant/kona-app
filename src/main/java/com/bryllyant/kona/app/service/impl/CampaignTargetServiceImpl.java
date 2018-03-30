@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.CampaignTargetMapper;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignTarget;
@@ -39,7 +39,7 @@ public class CampaignTargetServiceImpl
     private ShortUrlService shortUrlService;
 
     protected String getLandingPageBaseUrl() {
-        return config.getString("landingPage.baseUrl");
+        return config.getString("landingpage.baseUrl");
     }
 
     @Override @SuppressWarnings("unchecked")

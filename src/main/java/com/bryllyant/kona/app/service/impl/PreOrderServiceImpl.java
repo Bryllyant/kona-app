@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.PreOrderMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.Email;

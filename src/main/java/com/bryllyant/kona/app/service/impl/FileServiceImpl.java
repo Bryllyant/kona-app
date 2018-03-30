@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.FileMapper;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.FileExample;
@@ -11,7 +11,6 @@ import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.KAbstractFileService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 
 @Service(FileService.SERVICE_PATH)

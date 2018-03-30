@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.remote.service.KBaseServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

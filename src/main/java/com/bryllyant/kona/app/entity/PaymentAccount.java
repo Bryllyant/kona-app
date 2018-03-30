@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KPaymentAccount.Type;
 import java.io.Serializable;
 
 public class PaymentAccount extends KBasePaymentAccount implements Serializable {

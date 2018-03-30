@@ -1,7 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KCampaign.Goal;
-import com.bryllyant.kona.app.entity.KCampaign.KPI;
 import java.io.Serializable;
 
 public class Campaign extends KBaseCampaign implements Serializable {

@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KCampaignReply.Type;
 import java.io.Serializable;
 
 public class CampaignReply extends KBaseCampaignReply implements Serializable {

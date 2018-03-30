@@ -1,7 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KFile.Access;
-import com.bryllyant.kona.app.entity.KFile.Type;
 import java.io.Serializable;
 
 public class File extends KBaseFile implements Serializable {

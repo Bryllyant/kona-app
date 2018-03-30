@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.ShortUrlMapper;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignChannel;
@@ -90,6 +90,6 @@ public class ShortUrlServiceImpl
 
 	@Override
     protected String getLandingPageBaseUrl() {
-        return config.getString("landingPage.baseUrl");
+        return config.getString("landingpage.baseUrl");
     }
 }

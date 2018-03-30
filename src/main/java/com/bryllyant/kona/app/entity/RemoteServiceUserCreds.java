@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KRemoteServiceUserCreds.AuthType;
 import java.io.Serializable;
 
 public class RemoteServiceUserCreds extends KBaseRemoteServiceUserCreds implements Serializable {

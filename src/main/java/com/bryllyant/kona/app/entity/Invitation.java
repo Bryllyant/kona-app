@@ -1,8 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KInvitation.Channel;
-import com.bryllyant.kona.app.entity.KInvitation.Status;
-import com.bryllyant.kona.app.entity.KInvitation.Type;
 import java.io.Serializable;
 
 public class Invitation extends KBaseInvitation implements Serializable {

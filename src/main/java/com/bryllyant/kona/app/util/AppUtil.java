@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.util;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.model.KEmailFooter;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.SystemService;

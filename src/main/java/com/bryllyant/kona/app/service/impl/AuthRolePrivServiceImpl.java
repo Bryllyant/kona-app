@@ -3,25 +3,19 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.dao.AuthRoleMapper;
 import com.bryllyant.kona.app.dao.AuthRolePrivMapper;
 import com.bryllyant.kona.app.entity.AuthPriv;
 import com.bryllyant.kona.app.entity.AuthRole;
-import com.bryllyant.kona.app.entity.AuthRoleExample;
 import com.bryllyant.kona.app.entity.AuthRolePriv;
 import com.bryllyant.kona.app.entity.AuthRolePrivExample;
 import com.bryllyant.kona.app.service.AuthPrivService;
 import com.bryllyant.kona.app.service.AuthRolePrivService;
 import com.bryllyant.kona.app.service.AuthRoleService;
 import com.bryllyant.kona.app.service.KAbstractAuthRolePrivService;
-import com.bryllyant.kona.app.service.KAbstractAuthRoleService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(AuthRolePrivService.SERVICE_PATH)
 public class AuthRolePrivServiceImpl

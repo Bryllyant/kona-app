@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KAppConfig.Env;
 import java.io.Serializable;
 
 public class AppConfig extends KBaseAppConfig implements Serializable {

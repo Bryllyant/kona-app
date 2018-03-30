@@ -4,23 +4,18 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.UserRoleMapper;
-import com.bryllyant.kona.app.entity.AuthPriv;
 import com.bryllyant.kona.app.entity.AuthRole;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserRole;
 import com.bryllyant.kona.app.entity.UserRoleExample;
-import com.bryllyant.kona.app.service.AuthPrivService;
 import com.bryllyant.kona.app.service.UserRoleService;
 import com.bryllyant.kona.app.service.AuthRoleService;
 import com.bryllyant.kona.app.service.KAbstractUserRoleService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(UserRoleService.SERVICE_PATH)
 public class UserRoleServiceImpl

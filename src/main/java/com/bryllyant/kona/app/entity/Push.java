@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KPush.Platform;
 import java.io.Serializable;
 
 public class Push extends KBasePush implements Serializable {

@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KCampaignTarget.Type;
 import java.io.Serializable;
 
 public class CampaignTarget extends KBaseCampaignTarget implements Serializable {

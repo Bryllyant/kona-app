@@ -8,7 +8,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNSClient;
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.PushProviderMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.PushProvider;

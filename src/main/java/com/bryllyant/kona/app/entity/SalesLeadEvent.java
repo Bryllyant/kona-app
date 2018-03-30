@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KSalesLeadEvent.Type;
 import java.io.Serializable;
 
 public class SalesLeadEvent extends KBaseSalesLeadEvent implements Serializable {

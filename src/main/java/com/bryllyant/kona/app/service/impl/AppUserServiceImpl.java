@@ -4,12 +4,10 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.AppUserMapper;
-import com.bryllyant.kona.app.entity.ApiLog;
 import com.bryllyant.kona.app.entity.AppUser;
 import com.bryllyant.kona.app.entity.AppUserExample;
 import com.bryllyant.kona.app.service.AppUserService;
 import com.bryllyant.kona.app.service.KAbstractAppUserService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service(AppUserService.SERVICE_PATH)
 public class AppUserServiceImpl 

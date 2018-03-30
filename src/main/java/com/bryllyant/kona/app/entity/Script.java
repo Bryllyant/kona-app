@@ -1,7 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KScript.Language;
-import com.bryllyant.kona.app.entity.KScript.ReturnType;
 import java.io.Serializable;
 
 public class Script extends KBaseScript implements Serializable {

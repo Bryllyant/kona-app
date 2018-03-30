@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KAuthCode.Type;
 import java.io.Serializable;
 
 public class AuthCode extends KBaseAuthCode implements Serializable {

@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.AppMapper;
 import com.bryllyant.kona.app.entity.ApiVersion;
 import com.bryllyant.kona.app.entity.App;

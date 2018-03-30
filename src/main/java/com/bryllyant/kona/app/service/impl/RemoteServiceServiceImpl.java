@@ -8,13 +8,10 @@ import com.bryllyant.kona.app.entity.RemoteService;
 import com.bryllyant.kona.app.entity.RemoteServiceExample;
 import com.bryllyant.kona.app.service.KAbstractRemoteServiceService;
 import com.bryllyant.kona.app.service.RemoteServiceService;
-import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service(RemoteServiceService.SERVICE_PATH)
 public class RemoteServiceServiceImpl 

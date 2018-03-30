@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KEmailEvent.Type;
 import java.io.Serializable;
 
 public class EmailEvent extends KBaseEmailEvent implements Serializable {

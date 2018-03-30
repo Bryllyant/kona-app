@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KToken.Type;
 import java.io.Serializable;
 
 public class Token extends KBaseToken implements Serializable {

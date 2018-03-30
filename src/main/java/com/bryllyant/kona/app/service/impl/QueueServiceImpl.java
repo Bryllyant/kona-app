@@ -8,7 +8,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQSClient;
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.service.KAbstractQueueService;
 import com.bryllyant.kona.app.service.QueueService;
 import org.slf4j.Logger;

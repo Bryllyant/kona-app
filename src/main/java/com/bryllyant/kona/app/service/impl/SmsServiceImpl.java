@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.SmsMapper;
 import com.bryllyant.kona.app.entity.Sms;
 import com.bryllyant.kona.app.entity.SmsExample;

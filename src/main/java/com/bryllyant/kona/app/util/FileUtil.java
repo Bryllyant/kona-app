@@ -3,8 +3,8 @@
  */
 package com.bryllyant.kona.app.util;
 
-import com.bryllyant.kona.app.api.service.ApiAuthService;
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.api.service.ApiAuthService;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.KMedia;
 import com.bryllyant.kona.app.entity.Token;

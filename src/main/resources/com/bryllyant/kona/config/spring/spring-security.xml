@@ -1,0 +1,150 @@
+<beans:beans
+        xmlns="http://www.springframework.org/schema/security"
+        xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+	<global-method-security pre-post-annotations="enabled">
+	</global-method-security>
+
+    <http pattern="/error" security="none" />
+    <http pattern="/assets/**" security="none" />
+    <http pattern="/system/**" security="none" />
+    <http pattern="/files/**" security="none" />
+    <http pattern="/hello/**" security="none" />  <!-- campaign landing pages -->
+
+    <!-- only allow remote services from localhost -->
+    <!-- a login mechanism must be specified so default to http-basic here -->
+    <http pattern="/rpc/**"  use-expressions="true">
+        <intercept-url pattern="/rpc/**" access="hasIpAddress('127.0.0.1/32')" />
+        <http-basic />
+        <csrf disabled="true" />
+	</http>
+
+    <!--  use default spring session so login redirect can be stored in session. -->
+    <http pattern="^/(login|logout|oauth\/authorize)(\?.*)?$" 
+            authentication-manager-ref="userAuthManager"
+            entry-point-ref="userAuthEntryPoint" 
+            request-matcher="regex">
+        <form-login login-page="/login" authentication-failure-url="/login?error" />
+        <logout logout-url="/logout" />
+        <csrf disabled="true" />
+        <intercept-url pattern="^/(oauth\/authorize)(\?.*)?$" access="hasRole('USER')" />
+    </http>
+
+
+    <!--  This rule is required to enable any app to access the system and web APIs.  Necessary
+        for logging in. Also allows apps to access /users endpoint -->
+
+        <!-- 
+        use this pattern is you want to post directly to /api/auth 
+    <http pattern="^/(api/(auth|(system|auth|app|sales)/.*))" 
+    -->
+
+    <http pattern="^/(api/(auth|system|sales)/.*)" 
+            create-session="stateless" 
+            request-matcher="regex"
+            authentication-manager-ref="clientAuthManager" 
+            entry-point-ref="clientAuthEntryPoint">
+        <csrf disabled="true" />
+        <anonymous enabled="false" />
+
+        <!-- only allow internal apps to create and login a user -->
+        <!-- 
+        include this if you wan to post directly to /api/auth
+        <intercept-url pattern="^/api/auth" access="hasRole('APP_INTERNAL')" />
+         -->
+        <intercept-url pattern="^/api/auth/.*" access="hasRole('APP_INTERNAL')" />
+
+        <!-- only allow internal apps to access sales api -->
+        <!--
+        <intercept-url pattern="^/api/system/sales/.*" access="hasRole('APP_INTERNAL')" />
+        -->
+        <intercept-url pattern="^/api/sales/.*" access="hasRole('APP_INTERNAL')" />
+
+        <!-- allow apps to access app-specific resources on behalf of all users -->
+        <intercept-url pattern="^/api/system/.*" access="hasRole('APP')" />
+
+        <custom-filter ref="clientAuthFilter" before="PRE_AUTH_FILTER" />
+        <custom-filter ref="clientCredentialsTokenEndpointFilter" after="BASIC_AUTH_FILTER" />
+        <access-denied-handler ref="oauthAccessDeniedHandler" />
+    </http>
+
+
+    <http pattern="/api/**" 
+            create-session="stateless"
+		    entry-point-ref="oauthEntryPoint">
+
+		<csrf disabled="true" />
+		<anonymous enabled="false" />
+        
+        <intercept-url pattern="/api/admin/**" access="hasRole('ADMIN')" />
+
+        <intercept-url pattern="/api/**" access="hasRole('USER')" />
+
+		<custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+
+    <!-- make sure auth token access is authenticated -->
+    <http pattern="/oauth/token" 
+            create-session="stateless"
+            authentication-manager-ref="clientAuthManager" 
+            entry-point-ref="clientAuthEntryPoint">
+		<csrf disabled="true" />
+		<anonymous enabled="false" />
+        <intercept-url pattern="/oauth/token" access="isAuthenticated()" />
+		<custom-filter ref="clientAuthFilter" before="PRE_AUTH_FILTER" />
+        <custom-filter ref="clientCredentialsTokenEndpointFilter" after="BASIC_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+
+
+
+    <!-- BEGIN: User Resources -->
+    <authentication-manager alias="userAuthManager">
+        <authentication-provider ref="userPassAuthProvider">
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="userPassAuthProvider" class="com.bryllyant.kona.api.security.user.UserPassAuthProvider">
+    </beans:bean>
+
+
+    <beans:bean id="userSpringAuthService" class="com.bryllyant.kona.api.security.user.UserSpringAuthService">
+    </beans:bean>
+
+    <beans:bean id="userAuthEntryPoint" class="com.bryllyant.kona.api.security.user.UserAuthEntryPoint">
+        <beans:constructor-arg value="/login" />
+    </beans:bean>
+    <!-- END: User Resources -->
+
+    
+
+	<!-- BEGIN: Client Resources -->
+	<authentication-manager id="clientAuthManager">
+		<authentication-provider ref="clientAuthProvider">
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="clientAuthProvider" class="com.bryllyant.kona.api.security.client.ClientAuthProvider">
+	</beans:bean>
+
+	<beans:bean id="clientAuthService" class="com.bryllyant.kona.api.security.client.ClientAuthService">
+	</beans:bean>
+
+	<beans:bean id="clientAuthFilter" class="com.bryllyant.kona.api.security.client.ClientAuthFilter">
+	</beans:bean>
+
+	<beans:bean id="clientAuthEntryPoint" class="com.bryllyant.kona.api.security.client.ClientAuthEntryPoint">
+	</beans:bean>
+	<!-- END: Client Resources -->
+
+	<beans:import resource="spring-security-oauth.xml" />
+
+</beans:beans>

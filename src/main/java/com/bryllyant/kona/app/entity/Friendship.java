@@ -1,6 +1,5 @@
 package com.bryllyant.kona.app.entity;
 
-import com.bryllyant.kona.app.entity.KFriendship.Status;
 import java.io.Serializable;
 
 public class Friendship extends KBaseFriendship implements Serializable {

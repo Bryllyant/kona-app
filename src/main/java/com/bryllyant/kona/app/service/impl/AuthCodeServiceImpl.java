@@ -3,7 +3,7 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.AuthCodeMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AuthCode;
@@ -14,7 +14,6 @@ import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.AuthCodeService;
 import com.bryllyant.kona.app.service.KAbstractAuthCodeService;
-import com.bryllyant.kona.app.service.KEmailException;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.app.service.SystemService;

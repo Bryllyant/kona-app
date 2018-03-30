@@ -8,7 +8,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.bryllyant.kona.app.config.KConfig;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.EmailEventMapper;
 import com.bryllyant.kona.app.dao.EmailMapper;
 import com.bryllyant.kona.app.entity.CampaignChannel;

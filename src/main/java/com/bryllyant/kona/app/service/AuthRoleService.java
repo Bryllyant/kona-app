@@ -3,7 +3,6 @@
  */
 package com.bryllyant.kona.app.service;
 
-import com.bryllyant.kona.app.entity.AuthPriv;
 import com.bryllyant.kona.app.entity.AuthRole;
 import com.bryllyant.kona.remote.service.KService;
 
