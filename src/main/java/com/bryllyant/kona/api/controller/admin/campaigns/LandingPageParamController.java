@@ -7,11 +7,7 @@ import com.bryllyant.kona.api.service.LandingPageTemplateModelService;
 import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.ModelResultSet;
 import com.bryllyant.kona.api.model.media.FileModel;
-import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageParamModel;
 import com.bryllyant.kona.api.service.FileModelService;
-import com.bryllyant.kona.api.service.LandingPageModelService;
-import com.bryllyant.kona.api.service.LandingPageParamModelService;
-import com.bryllyant.kona.api.service.LandingPageTemplateModelService;
 import com.bryllyant.kona.api.service.LandingPageTemplateParamModelService;
 import com.bryllyant.kona.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.File;
@@ -21,7 +17,7 @@ import com.bryllyant.kona.app.entity.LandingPageTemplateParam;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageParamService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;
@@ -195,7 +191,7 @@ public class LandingPageParamController extends BaseController {
     // the value contains the absolute URL of the file.  If a call is made to update this object
     // and the value didn't change, then due to the way the save() method works, the URL value
     // will be saved and fileId will be set to null.  That is why we check the templateParam type
-    // set value to null if it equals MEDIA.
+    // set value to null if it equals Media.
 
     public LandingPageParam saveObject(
             HttpServletRequest req,
@@ -212,7 +208,7 @@ public class LandingPageParamController extends BaseController {
 
         LandingPageTemplateParam templateParam = templateParamModelService.getParam(param.getTemplateParamId());
 
-        if (templateParam.getType() == LandingPageTemplateParam.Type.MEDIA) {
+        if (templateParam.getType() == LandingPageTemplateParam.Type.Media) {
             value = null;
         }
 

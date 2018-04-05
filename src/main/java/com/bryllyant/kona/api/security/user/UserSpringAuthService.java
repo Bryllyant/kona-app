@@ -120,7 +120,7 @@ public class UserSpringAuthService implements UserDetailsService {
     	case INTERNAL:
     		authorities.add(new SimpleGrantedAuthority("ROLE_APP_INTERNAL"));
     		break;
-    	case PARTNER:
+    	case Partner:
     		authorities.add(new SimpleGrantedAuthority("ROLE_APP_PARTNER"));
     		break;
     	case PUBLIC:

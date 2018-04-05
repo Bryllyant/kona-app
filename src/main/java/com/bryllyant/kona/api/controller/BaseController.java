@@ -3,6 +3,7 @@ package com.bryllyant.kona.api.controller;
 import com.bryllyant.kona.api.model.ModelResultSet;
 import com.bryllyant.kona.api.service.ApiAuthService;
 import com.bryllyant.kona.api.service.UserModelService;
+import com.bryllyant.kona.app.service.AuthException;
 import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.entity.ApiLog;
 import com.bryllyant.kona.app.entity.App;
@@ -13,14 +14,13 @@ import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.ApiLogService;
 import com.bryllyant.kona.app.service.AppCredsService;
-import com.bryllyant.kona.app.service.KAuthException;
 import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.SettingService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.AppUtil;
-import com.bryllyant.kona.app.util.FileUtil;
+import com.bryllyant.kona.util.AppUtil;
+import com.bryllyant.kona.util.FileUtil;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KModel;
 import com.bryllyant.kona.http.KServletUtil;
@@ -55,7 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.bryllyant.kona.app.entity.KFile.Type.IMAGE;
 
 public abstract class BaseController {
     private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
@@ -525,7 +524,7 @@ public abstract class BaseController {
 
             file.setUploadTime(uploadTime);
 
-            if (file.getType() == IMAGE) {
+            if (file.getType() == File.Type.IMAGE) {
                 KImage image = KImageUtil.toImage(file.getData());
 
                 Integer width = image.getWidth();
@@ -583,136 +582,6 @@ public abstract class BaseController {
 
 
 
-
-
-
-
-    /*
-    public Map<String,Object> toMap(User user) {
-        return toMap(user, false);
-    }
-
-
-
-    public Map<String,Object> toMap(User user, boolean extra) {
-        if (user == null) return null;
-
-        String photoUrl = toAbsoluteUrl(user.getPhotoUrl());
-        String thumbnailUrl = toAbsoluteUrl(user.getThumbnailUrl());
-
-        //String presence = "offline";
-        KUserPresence presence = KUserPresence.OFFLINE;
-        if (user.getPresenceId() != null) {
-            presence = KUserPresence.getInstance(user.getPresenceId());
-        }
-
-        logger.debug("UserController: user: presence: {}", presence);
-
-        Map<String,Object> result = new HashMap<String,Object>();
-        result.put("uid", user.getUid());
-        result.put("first_name", user.getFirstName());
-        result.put("last_name", user.getLastName());
-        result.put("display_name", user.getDisplayName());
-        result.put("username", user.getUsername());
-        result.put("photo_url", photoUrl);
-        result.put("thumbnail_url", thumbnailUrl);
-        result.put("gender", user.getGender());
-        result.put("birth_date", user.getBirthDate());
-        result.put("locale", user.getLocale());
-        result.put("time_zone", user.getTimeZone());
-        result.put("presence", presence.getName());
-        result.put("email", user.getEmail());
-        result.put("mobile_number", user.getMobileNumber());
-        result.put("created_date", user.getCreatedDate());
-
-
-        if (extra) {
-            //Account account = accountService.fetchById(user.getAccountId());
-
-            Registration registration = registrationService.fetchByUserId(user.getId());
-
-            List<String> roles = KUserRole.toStringList(user.getRoles());
-
-            //result.put("stripe_uid", account.getStripeUid());
-            result.put("email_verified", registration.isEmailVerified());
-            result.put("mobile_verified", registration.isMobileVerified());
-            result.put("roles", roles);
-
-            //result.put("grants", getAppUserGrants(authService.getApp().getId(), user.getId()));
-        }
-
-        return result;
-    }
-    */
-    
-   
-    
-    /*
-    public UserModel toModel(User user, boolean extra) {
-        if (user == null) return null;
-
-        String photoUrl = toAbsoluteUrl(user.getPhotoUrl());
-        String thumbnailUrl = toAbsoluteUrl(user.getThumbnailUrl());
-
-        //String presence = "offline";
-        KUserPresence presence = KUserPresence.OFFLINE;
-        if (user.getPresenceId() != null) {
-            presence = KUserPresence.getInstance(user.getPresenceId());
-        }
-
-        logger.debug("UserController: user: presence: {}", presence);
-        
-        UserModel model = new UserModel();
-        model.uid = user.getUid();
-        model.first_name = user.getFirstName();
-        model.last_name = user.getLastName();
-        model.display_name = user.getDisplayName();
-        model.username = user.getUsername();
-        model.photo_url = photoUrl;
-        model.thumbnail_url = thumbnailUrl;
-        model.gender = user.getGender();
-        model.birth_date = user.getBirthDate();
-        model.locale = user.getLocale();
-        model.time_zone = user.getTimeZone();
-        model.presence = presence.getName();
-        model.email = user.getEmail();
-        model.mobile_number = user.getMobileNumber();
-        model.created_date = user.getCreatedDate();
-
-        if (extra) {
-            Registration registration = registrationService.fetchByUserId(user.getId());
-
-            List<String> roles = KUserRole.toStringList(user.getRoles());
-
-            model.email_verified = registration.isEmailVerified();
-            model.mobile_verified = registration.isMobileVerified();
-            model.roles = roles;
-
-            //result.put("grants", getAppUserGrants(authService.getApp().getId(), user.getId()));
-        }
-
-        return model;
-    }
-    */
-
-
-
-    /*
-    public List<Map<String,Object>> toUserMapList(List<User> users) {
-        List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
-
-        for (User user : users) {
-            mapList.add(toMap(user));
-        }
-
-        return mapList;
-    }
-    */
-    
-
-    
-
-
     protected Object copyBean(Object source, Object target, boolean skipNullValues) {
         return util.copyBean(source, target, skipNullValues);
     }
@@ -750,7 +619,7 @@ public abstract class BaseController {
         return new ResponseEntity< Map<String,Object>>(result, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(KAuthException.class)
+    @ExceptionHandler(AuthException.class)
     public ResponseEntity< Map<String,Object>> authErrorHandler(Exception ex) throws Exception {
         String message = ex.getMessage();
 

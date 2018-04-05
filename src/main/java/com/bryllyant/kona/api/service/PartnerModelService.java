@@ -6,7 +6,7 @@ import com.bryllyant.kona.api.model.user.PersonModel;
 import com.bryllyant.kona.app.entity.Partner;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.service.PartnerService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

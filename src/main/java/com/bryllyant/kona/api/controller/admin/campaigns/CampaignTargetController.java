@@ -15,7 +15,7 @@ import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.CampaignTargetService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;

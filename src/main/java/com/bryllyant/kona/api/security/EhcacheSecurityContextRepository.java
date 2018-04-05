@@ -43,7 +43,7 @@ public class EhcacheSecurityContextRepository implements SecurityContextReposito
 	 * @return The Spring Security authentication token from the request.
 	 */
 	private String getToken(HttpServletRequest request) {
-		String token = request.getHeader("X-API-TOKEN");
+		String token = request.getHeader("X-API-Token");
 		return token;
 	}
 

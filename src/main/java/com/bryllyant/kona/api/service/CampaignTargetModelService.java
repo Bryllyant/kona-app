@@ -11,7 +11,7 @@ import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.service.CampaignTargetService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

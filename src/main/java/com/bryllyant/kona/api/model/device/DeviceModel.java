@@ -2,7 +2,6 @@ package com.bryllyant.kona.api.model.device;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KDevice;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -66,7 +65,7 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
     private String deviceUuid;
     private String hardwareVersion;
     private String firmwareVersion;
-    private List<KDevice.Capability> capabilities;
+    private List<Device.Capability> capabilities;
     private Boolean enabled;
     private Date createdDate;
 
@@ -231,11 +230,11 @@ public class DeviceModel extends KJsonModel implements KEntityModel {
         this.set("firmwareVersion", firmwareVersion);
     }
 
-    public List<KDevice.Capability> getCapabilities() {
+    public List<Device.Capability> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(List<KDevice.Capability> capabilities) {
+    public void setCapabilities(List<Device.Capability> capabilities) {
         this.set("capabilities", capabilities);
     }
 

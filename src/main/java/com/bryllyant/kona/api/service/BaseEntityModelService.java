@@ -1,6 +1,6 @@
 package com.bryllyant.kona.api.service;
 
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.data.entity.KEntityObject;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;

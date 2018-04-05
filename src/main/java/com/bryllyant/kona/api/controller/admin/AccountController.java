@@ -5,7 +5,7 @@ import com.bryllyant.kona.api.model.ModelResultSet;
 import com.bryllyant.kona.api.model.account.AccountModel;
 import com.bryllyant.kona.api.service.AccountModelService;
 import com.bryllyant.kona.api.service.UserModelService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AccountService;

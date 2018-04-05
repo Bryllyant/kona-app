@@ -10,7 +10,7 @@ import com.bryllyant.kona.app.entity.Position;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.PositionService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;

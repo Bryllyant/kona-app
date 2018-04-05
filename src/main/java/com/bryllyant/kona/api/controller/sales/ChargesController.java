@@ -17,7 +17,7 @@ import com.bryllyant.kona.app.service.PaymentAccountService;
 import com.bryllyant.kona.app.service.PaymentService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.KCallback;
+import com.bryllyant.kona.util.Callback;
 import com.bryllyant.kona.remote.service.KServiceClient;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -244,7 +244,7 @@ public class ChargesController extends SalesController {
             system.alert("sendReport: File Fetch Error", e);
         }
 
-        system.sendEmail(template, params, subject, from, replyTo, to, fileList, new KCallback<Email>() {
+        system.sendEmail(template, params, subject, from, replyTo, to, fileList, new Callback<Email>() {
             @Override
             public void success(Email data) {
 

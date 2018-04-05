@@ -6,9 +6,6 @@ package com.bryllyant.kona.api.model.user;
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.api.model.account.AccountModel;
 import com.bryllyant.kona.api.model.geo.position.PositionModel;
-import com.bryllyant.kona.api.model.account.AccountModel;
-import com.bryllyant.kona.api.model.geo.position.PositionModel;
-import com.bryllyant.kona.app.entity.KUser;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.data.model.KEntityModel;
 
@@ -30,7 +27,7 @@ public class UserModel extends PersonModel implements KEntityModel {
 
     private Set<String> roles;
 
-    private KUser.Presence presence;
+    private User.Presence presence;
 
     @RestdocsNotExpanded
     private PositionModel position;
@@ -130,11 +127,11 @@ public class UserModel extends PersonModel implements KEntityModel {
         this.set("roles", roles);
     }
 
-    public KUser.Presence getPresence() {
+    public User.Presence getPresence() {
         return presence;
     }
 
-    public void setPresence(KUser.Presence presence) {
+    public void setPresence(User.Presence presence) {
         this.set("presence", presence);
     }
 

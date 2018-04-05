@@ -1,7 +1,6 @@
 package com.bryllyant.kona.api.controller.me;
 
 import com.bryllyant.kona.api.controller.BaseController;
-import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.device.DeviceModel;
 import com.bryllyant.kona.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.api.model.media.MediaModel;
@@ -22,7 +21,7 @@ import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.KGeoUtil;
+import com.bryllyant.kona.util.GeoUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import org.slf4j.Logger;
@@ -53,10 +52,6 @@ import java.util.Map;
 @RequestMapping("/api/me")
 public class MeController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(MeController.class);
-
-
-
-
 
     @Autowired
     private UserService userService;
@@ -92,9 +87,6 @@ public class MeController extends BaseController {
     private DeviceService deviceService;
 
    
-
-
-
     @RequestMapping(method=RequestMethod.GET)
     public ResponseEntity<UserModel> getMe(HttpServletRequest req) {
         logApiRequest(req, "GET /me");
@@ -102,7 +94,6 @@ public class MeController extends BaseController {
 		User user = getUser();
 		return ok(userModelService.toModel(user));
 	}
-
 
 
 	@RequestMapping(method=RequestMethod.PUT)
@@ -223,7 +214,7 @@ public class MeController extends BaseController {
         positionService.addPositions(positions, true);
 
         Map<String,Object> result = getResultObject("count", positions.size());
-        result.put("encoded_path", KGeoUtil.encode(positions));
+        result.put("encoded_path", GeoUtil.encode(positions));
 
 	    return created(result);
 	}

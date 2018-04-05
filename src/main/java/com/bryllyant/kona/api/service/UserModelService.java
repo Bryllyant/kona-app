@@ -13,7 +13,7 @@ import com.bryllyant.kona.app.service.AuthCodeService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ConflictException;

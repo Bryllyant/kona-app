@@ -2,7 +2,7 @@ package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.geo.place.PlaceModel;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Place;
 import com.bryllyant.kona.app.entity.User;
@@ -39,7 +39,7 @@ public class PlaceModelService extends BaseModelService {
         Place place = placeService.fetchByUid(placeUid);
 
         if (place == null) {
-            throw new NotFoundException("Place not found for uid: " + placeUid);
+            throw new NotFoundException("GooglePlace not found for uid: " + placeUid);
         }
 
         return place;
@@ -51,7 +51,7 @@ public class PlaceModelService extends BaseModelService {
         Place place = placeService.fetchById(placeId);
 
         if (place == null) {
-            throw new NotFoundException("Place not found for id: " + placeId);
+            throw new NotFoundException("GooglePlace not found for id: " + placeId);
         }
 
         return place;
@@ -65,7 +65,7 @@ public class PlaceModelService extends BaseModelService {
         String uid = model.getUid();
 
         if (uid == null) {
-            throw new NotFoundException("Place not found for model: " + model);
+            throw new NotFoundException("GooglePlace not found for model: " + model);
         }
 
         return getPlace(uid);

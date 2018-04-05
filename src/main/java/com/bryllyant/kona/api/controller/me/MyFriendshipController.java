@@ -34,10 +34,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.bryllyant.kona.app.entity.KFriendship.Status.FOLLOWED;
-import static com.bryllyant.kona.app.entity.KFriendship.Status.FOLLOWING;
-import static com.bryllyant.kona.app.entity.KFriendship.Status.FRIENDS;
-
 
 /**
  * Friendship Controller.
@@ -99,17 +95,17 @@ public class MyFriendshipController extends BaseController {
 		*/
 
 		if (includeFriends) {
-			List<Friendship> friends = friendshipService.fetchByUserIdAndStatus(getUser().getId(), FRIENDS);
+			List<Friendship> friends = friendshipService.fetchByUserIdAndStatus(getUser().getId(), Friendship.Status.FRIENDS);
 			all.addAll(friends);
 		}
 		
 		if (includeFollowers) {
-			List<Friendship> followers = friendshipService.fetchByUserIdAndStatus(getUser().getId(), FOLLOWED);
+			List<Friendship> followers = friendshipService.fetchByUserIdAndStatus(getUser().getId(), Friendship.Status.FOLLOWED);
 			all.addAll(followers);
 		}
 		
 		if (includeFollowings) {
-			List<Friendship> followings = friendshipService.fetchByUserIdAndStatus(getUser().getId(), FOLLOWING);
+			List<Friendship> followings = friendshipService.fetchByUserIdAndStatus(getUser().getId(), Friendship.Status.FOLLOWING);
 			all.addAll(followings);
 		}
 		
@@ -206,7 +202,7 @@ public class MyFriendshipController extends BaseController {
 
 		Friendship friendship = getFriendship(uid);
 		
-        if (friendship.getStatus() == FRIENDS) {
+        if (friendship.getStatus() == Friendship.Status.FRIENDS) {
         	friendship = friendshipService.revokeFriendship(friendship.getUserId(), friendship.getFriendId());
         } else {
         	friendship = friendshipService.unfollow(friendship.getUserId(), friendship.getFriendId());

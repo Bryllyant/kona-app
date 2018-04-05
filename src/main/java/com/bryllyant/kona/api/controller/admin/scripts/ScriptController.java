@@ -8,7 +8,7 @@ import com.bryllyant.kona.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.Script;
 import com.bryllyant.kona.app.service.ScriptService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;

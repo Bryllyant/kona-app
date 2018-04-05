@@ -2,12 +2,10 @@ package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.sales.product.ProductModel;
 import com.bryllyant.kona.api.model.sales.product.ProductSkuModel;
-import com.bryllyant.kona.api.model.sales.product.ProductModel;
-import com.bryllyant.kona.api.model.sales.product.ProductSkuModel;
 import com.bryllyant.kona.app.entity.Product;
 import com.bryllyant.kona.app.entity.ProductSku;
 import com.bryllyant.kona.app.service.ProductSkuService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

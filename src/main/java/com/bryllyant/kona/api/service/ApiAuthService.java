@@ -3,13 +3,10 @@
  */
 package com.bryllyant.kona.api.service;
 
-import com.bryllyant.kona.api.security.token.AccessToken;
-import com.bryllyant.kona.api.security.token.HttpHeaderTokenReader;
 import com.bryllyant.kona.api.model.auth.LoginRequest;
 import com.bryllyant.kona.api.model.geo.position.PositionModel;
 import com.bryllyant.kona.api.security.token.AccessToken;
 import com.bryllyant.kona.api.security.token.HttpHeaderTokenReader;
-import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AppCreds;
 import com.bryllyant.kona.app.entity.Device;
@@ -18,13 +15,14 @@ import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserAuth;
 import com.bryllyant.kona.app.service.AppCredsService;
 import com.bryllyant.kona.app.service.AppService;
+import com.bryllyant.kona.app.service.AuthException;
 import com.bryllyant.kona.app.service.AuthService;
-import com.bryllyant.kona.app.service.KAuthException;
 import com.bryllyant.kona.app.service.SmsService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserAuthService;
 import com.bryllyant.kona.app.service.UserService;
+import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.locale.KLocaleUtil;
 import com.bryllyant.kona.remote.service.KServiceClient;
@@ -103,9 +101,9 @@ public class ApiAuthService {
 
 
 
-	// NOTE: this accessToken could either be an APP clientId or a USER accessToken 
+	// NOTE: this accessToken could either be an APP clientId or a User accessToken
 	// depending on the context in which it is called.  If this method returns a
-	// a value it should be checked against both the TOKEN and APP_CREDS
+	// a value it should be checked against both the Token and APP_CREDS
 	public String getAccessToken() {
 		String accessToken = null;
 		Object obj = SecurityContextHolder.getContext().getAuthentication();
@@ -269,7 +267,7 @@ public class ApiAuthService {
 
 			token = authService.login(clientId, username, password);
 
-		} catch (KAuthException e) {
+		} catch (AuthException e) {
             logger.debug(e.getMessage(), e);
 			throw new AuthenticationException("Invalid username and/or password.");
 		}
@@ -293,7 +291,7 @@ public class ApiAuthService {
 
 			token = oauth2TokenService.login(clientId, username, password);
 
-		} catch (KAuthException e) {
+		} catch (AuthException e) {
 			throw new AuthenticationException("Invalid username and/or password.", e);
 		}
 

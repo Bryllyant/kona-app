@@ -8,7 +8,7 @@ import com.bryllyant.kona.app.entity.FriendshipCircle;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FriendshipCircleService;
 import com.bryllyant.kona.app.service.FriendshipService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

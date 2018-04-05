@@ -1,9 +1,8 @@
 package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageTemplateModel;
-import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageTemplateModel;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.entity.User;

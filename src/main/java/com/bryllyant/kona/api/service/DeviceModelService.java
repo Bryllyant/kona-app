@@ -3,9 +3,8 @@ package com.bryllyant.kona.api.service;
 import com.bryllyant.kona.api.model.device.DeviceModel;
 import com.bryllyant.kona.api.model.device.UserDeviceModel;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KDevice;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.entity.UserDevice;
 import com.bryllyant.kona.app.service.DeviceService;
@@ -212,7 +211,7 @@ public class DeviceModelService extends BaseModelService {
 
 
 
-    private <T extends KDevice> void setModel(DeviceModel model, T device) {
+    private <T extends Device> void setModel(DeviceModel model, T device) {
         model.fromBean(device);
 
         model.setAdvertiserIdType(DeviceModel.AdvertiserIdType.from((Device)device));
@@ -223,7 +222,7 @@ public class DeviceModelService extends BaseModelService {
         }
     }
 
-    public <T extends KDevice> DeviceModel toModel(T device, String... includeKeys) {
+    public <T extends Device> DeviceModel toModel(T device, String... includeKeys) {
         DeviceModel model = new DeviceModel();
 
         setModel(model, device);

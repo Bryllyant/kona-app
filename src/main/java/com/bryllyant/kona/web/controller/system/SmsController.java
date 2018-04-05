@@ -64,7 +64,7 @@ public class SmsController extends BaseController {
 			mediaCount = Integer.parseInt(numMedia);
 		}
 
-		logger.debug("SMS Received:"
+		logger.debug("Sms Received:"
 				+ "\nFrom: " + from
 				+ "\nTo: " + to
 				+ "\nBody: " + body

@@ -2,7 +2,7 @@ package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.app.AppModel;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;

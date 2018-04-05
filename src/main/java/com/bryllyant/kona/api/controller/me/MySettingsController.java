@@ -3,7 +3,7 @@ package com.bryllyant.kona.api.controller.me;
 import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.SettingService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.util.KInflector;
 import com.bryllyant.kona.util.KJsonUtil;

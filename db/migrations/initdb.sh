@@ -2,11 +2,13 @@
 
 OUT="./scripts/bootstrap.sql"
 
-SQL="/home/sharif/projects/kona/kona-framework/db/scripts"
+#SQL="/home/sharif/projects/kona/kona-framework/db/scripts"
 
-if [[ `uname` == 'Darwin' ]]; then
-    SQL="/Users/sharif/Projects/kona/kona-framework/db/scripts"
-fi
+#if [[ `uname` == 'Darwin' ]]; then
+#    SQL="/Users/sharif/Projects/kona/kona-framework/db/scripts"
+#fi
+
+SQL="../scripts"
 
 echo "drop database if exists kona;" > $OUT
 echo "create database kona;" >> $OUT

@@ -6,7 +6,7 @@ package com.bryllyant.kona.api.security.user;
 import com.bryllyant.kona.api.security.token.AccessToken;
 import com.bryllyant.kona.api.service.ApiAuthService;
 import com.bryllyant.kona.app.entity.Token;
-import com.bryllyant.kona.app.service.KAuthException;
+import com.bryllyant.kona.app.service.AuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class UserPassAuthProvider implements AuthenticationProvider {
 		
 		try {
 			token = apiAuthService.directLogin(username, password);
-		} catch (KAuthException e) {
+		} catch (AuthException e) {
             logger.debug(e.getMessage(), e);
             throw new com.bryllyant.kona.rest.exception.AuthenticationException("Invalid username and/or password.");
         }

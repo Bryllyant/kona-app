@@ -1,12 +1,11 @@
 package com.bryllyant.kona.server;
 
+import com.bryllyant.kona.servlet.FileManagerServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
-import com.bryllyant.kona.servlet.KFileManagerServlet;
 
 public class KFileManagerServer {
     private static Logger logger = LoggerFactory.getLogger(KFileManagerServer.class);
@@ -19,10 +18,10 @@ public class KFileManagerServer {
         /*
         context = new Context(server, contextPath, Context.SESSIONS);
 
-        ServletHolder servlet = new ServletHolder(KFileManagerServlet.class);
+        ServletHolder servlet = new ServletHolder(FileManagerServlet.class);
         servlet.setInitParameter("fileManagerRef", fileManagerRef);
 
-        //context.addServlet(KFileManagerServlet.class, "/*");
+        //context.addServlet(FileManagerServlet.class, "/*");
         context.addServlet(servlet, "/*");
 
         HashMap<String,String> contextParams = new HashMap<String,String>();
@@ -30,7 +29,7 @@ public class KFileManagerServer {
         context.setInitParams(contextParams);
         */
 
-        ServletHolder servlet = new ServletHolder(KFileManagerServlet.class);
+        ServletHolder servlet = new ServletHolder(FileManagerServlet.class);
         servlet.setInitParameter("fileManagerRef", fileManagerRef);
         
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);

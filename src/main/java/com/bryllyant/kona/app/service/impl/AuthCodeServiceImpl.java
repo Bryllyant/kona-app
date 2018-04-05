@@ -3,7 +3,6 @@
  */
 package com.bryllyant.kona.app.service.impl;
 
-import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.dao.AuthCodeMapper;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AuthCode;
@@ -13,25 +12,29 @@ import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.AppService;
 import com.bryllyant.kona.app.service.AuthCodeService;
-import com.bryllyant.kona.app.service.KAbstractAuthCodeService;
+import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.app.service.SystemService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.KCallback;
+import com.bryllyant.kona.util.Callback;
+import com.bryllyant.kona.config.KConfig;
+import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.util.KDateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service(AuthCodeService.SERVICE_PATH)
 public class AuthCodeServiceImpl
-        extends KAbstractAuthCodeService<AuthCode, AuthCodeExample, AuthCodeMapper,User,Registration>
+        extends KAbstractService<AuthCode, AuthCodeExample, AuthCodeMapper>
         implements AuthCodeService {
 
     private static Logger logger = LoggerFactory.getLogger(AuthCodeServiceImpl.class);
@@ -57,34 +60,10 @@ public class AuthCodeServiceImpl
     @Autowired
     SystemService system;
 
-
-
     @Override @SuppressWarnings("unchecked")
     protected AuthCodeMapper getMapper() {
         return authCodeMapper;
     }
-
-
-
-    @Override @SuppressWarnings("unchecked")
-    protected UserService getUserService() {
-        return userService;
-    }
-
-
-
-    @Override @SuppressWarnings("unchecked")
-    protected RegistrationService getRegistrationService() {
-        return registrationService;
-    }
-
-
-
-    @Override
-    protected AuthCode getNewObject() {
-        return new AuthCode();
-    }
-
 
 
     //system.passwordReset.urlTemplate = http://example.com/account/passsword/{code}
@@ -95,14 +74,12 @@ public class AuthCodeServiceImpl
     }
 
 
-
     //system.confirmationCode.urlTemplate = http://example.com/system/confirmations/{code}
     private String createEmailConfirmationUrl(String code) {
         String url = config.getString("urlTemplate.system.confirmationCode");
         url = url.replaceAll("\\{code\\}", code);
         return url;
     }
-
 
 
     //system.confirmationCode.urlTemplate = http://example.comm/system/confirmations/{code}
@@ -113,8 +90,11 @@ public class AuthCodeServiceImpl
     }
 
 
+    protected String generateAccessCode() {
+        return uuid();
+    }
 
-    @Override
+
     protected String getAuthCodeUrl(AuthCode.Type type, Long userId, String code) {
         String url = null;
 
@@ -143,8 +123,6 @@ public class AuthCodeServiceImpl
     }
 
 
-
-    @Override
     protected void sendAuthCode(AuthCode.Type type, Long userId, String authCodeUrl) {
 
         switch (type) {
@@ -196,7 +174,7 @@ public class AuthCodeServiceImpl
         params.put("user", user);
         params.put("passwordResetUrl", passwordResetUrl);
 
-        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new KCallback<Email>() {
+        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new Callback<Email>() {
             @Override
             public void success(Email data) {
 
@@ -239,7 +217,7 @@ public class AuthCodeServiceImpl
         params.put("user", user);
         params.put("authCodeUrl", authCodeUrl);
 
-        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new KCallback<Email>() {
+        system.sendEmail(templateName, params, subject, from, replyTo, to, null, new Callback<Email>() {
             @Override
             public void success(Email data) {
 
@@ -283,14 +261,6 @@ public class AuthCodeServiceImpl
     }
 
 
-
-    @Override
-    protected AuthCodeExample getEntityExampleObject() { return new AuthCodeExample(); }
-
-
-
-
-    @Override
     protected Date getAuthCodeExpirationDate(AuthCode.Type type, Long userId) {
 
         switch(type) {
@@ -308,8 +278,244 @@ public class AuthCodeServiceImpl
 
 
     // explicitly set to null to indicate unlimited use
-    @Override
     protected Integer getAuthCodeMaxUseCount(AuthCode.Type type, Long userId) {
         return null;
+    }
+
+
+    @Override
+    public void validate(AuthCode authCode) {
+        if (authCode.getCreatedDate() == null) {
+            authCode.setCreatedDate(new Date());
+        }
+
+        authCode.setUpdatedDate(new Date());
+
+        if (authCode.getUseCount() == null) {
+            authCode.setUseCount(0);
+        }
+    }
+
+
+    @Override
+    public AuthCode fetchByCode(String code) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("code", code);
+        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+    }
+
+
+    @Override
+    public List<AuthCode> expireByUserId(Long userId) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
+        filter.put("confirmedDate", null);
+
+        List<AuthCode> result = fetchByCriteria(0, 99999, null, filter, false);
+
+        List<AuthCode> expiredList = new ArrayList<>();
+
+        for (AuthCode authCode : result) {
+            authCode.setValid(false);
+
+            authCode.setExpirationDate(new Date());
+
+            authCode = update(authCode);
+
+            expiredList.add(authCode);
+        }
+
+        return expiredList;
+    }
+
+
+    private List<AuthCode> fetchByUserIdAndType(Long userId, AuthCode.Type type) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
+
+        if (type != null) {
+            filter.put("type", type);
+        }
+
+        return fetchByCriteria(0, 99999, null, filter, false);
+    }
+
+
+    @Override
+    public AuthCode accessCode(String code) {
+        if (code == null) return null;
+
+        AuthCode authCode = fetchByCode(code);
+
+        if (authCode == null || !isActive(authCode)) return null;
+
+        Integer useCount = authCode.getUseCount() + 1;
+
+        authCode.setUseCount(useCount);
+
+        authCode.setLastAccessedDate(new Date());
+
+        if (authCode.getConfirmedDate() == null) {
+            authCode.setConfirmedDate(new Date());
+        }
+
+        // check type
+        //String type = getAuthCodeType(authCode.getTypeId());
+
+        Registration registration = null;
+
+        if (authCode.getType() == AuthCode.Type.EMAIL_CONFIRMATION) {
+            registration = registrationService.fetchByUserId(authCode.getUserId());
+            registration.setEmailPending(false);
+            registration.setEmailVerified(true);
+            registrationService.update(registration);
+        } else if (authCode.getType() == AuthCode.Type.MOBILE_CONFIRMATION) {
+            registration = registrationService.fetchByUserId(authCode.getUserId());
+            registration.setMobilePending(false);
+            registration.setMobileVerified(true);
+            registrationService.update(registration);
+        } else if (authCode.getType() == AuthCode.Type.PASSWORD_RESET) {
+
+        }
+
+        return update(authCode);
+    }
+
+
+    // check to see if a (valid) authCode code has already been sent to this user
+    // if so and resend flag is set, invalidate existing authCodes and return true.
+    private boolean canSendAuthCode(AuthCode.Type type, Long userId, boolean resend) {
+        List<AuthCode> authCodes = fetchByUserIdAndType(userId, type);
+
+        if (authCodes == null || authCodes.size()==0) return true;
+
+        boolean haveActive = false;
+
+        for (AuthCode authCode : authCodes) {
+            if (isActive(authCode)) {
+                haveActive = true;
+                if (resend) {
+                    authCode.setValid(false);
+                    update(authCode);
+                }
+            }
+        }
+
+        if (!haveActive) return true;
+
+        if (haveActive && resend) return true;
+
+        return false;
+    }
+
+
+
+    @Override
+    public void requestAuthCode(AuthCode.Type type, Long userId, boolean resend) {
+
+        logger.debug("requestAuthCode: userId:\n" + userId);
+
+        if (!canSendAuthCode(type, userId, resend)) return;
+
+        String authCodeUrl = generateAuthCodeUrl(type, userId);
+
+        sendAuthCode(type, userId, authCodeUrl);
+    }
+
+    @Override
+    public String generateAuthCodeUrl(AuthCode.Type type, Long userId) {
+        String code = generateAuthCode(type, userId);
+
+        String authCodeUrl = getAuthCodeUrl(type, userId, code);
+
+        Registration registration = null;
+
+        if (type == AuthCode.Type.EMAIL_CONFIRMATION) {
+            registration = registrationService.fetchByUserId(userId);
+            registration.setEmailPending(true);
+            registration.setEmailVerified(false);
+            registrationService.update(registration);
+        } else if (type == AuthCode.Type.MOBILE_CONFIRMATION) {
+            registration = registrationService.fetchByUserId(userId);
+            registration.setMobilePending(true);
+            registration.setMobileVerified(false);
+            registrationService.update(registration);
+        } else if (type == AuthCode.Type.PASSWORD_RESET) {
+        }
+
+        return authCodeUrl;
+    }
+
+
+
+    @Override
+    public void requestAuthCodes(List<AuthCode.Type> types, Long userId, boolean resend) {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for (AuthCode.Type type : types) {
+                        logger.debug("calling requestAuthCode for type: " + type);
+                        requestAuthCode(type, userId, resend);
+                    }
+                } catch (Exception e) {
+                    logger.error("Error processing verification requests for userId: " + userId, e);
+                }
+            }
+        };
+        t.start();
+
+    }
+
+
+
+    protected String generateAuthCode(AuthCode.Type type, Long userId) {
+        String code = generateAccessCode();
+
+        Date now = new Date();
+
+        AuthCode authCode = new AuthCode();
+        authCode.setType(type);
+        authCode.setUserId(userId);
+        authCode.setCode(code);
+        authCode.setUseCount(0);
+        authCode.setCreatedDate(now);
+        authCode.setValid(true);
+
+        Integer maxUseCount = getAuthCodeMaxUseCount(type, userId);
+        authCode.setMaxUseCount(maxUseCount);
+
+        Date expirationDate = getAuthCodeExpirationDate(type, userId);
+        //authCode.setExpirationDate(KDateUtil.addMins(now, 30)); // expire in 30 mins
+
+        authCode.setExpirationDate(expirationDate);
+
+        add(authCode);
+        return code;
+    }
+
+
+
+    protected boolean isActive(AuthCode authCode) {
+        if (!authCode.isValid()) {
+            logger.debug("authCode is not valid: " + authCode);
+            return false;
+        }
+
+        Integer useCount = authCode.getUseCount();
+
+        if (authCode.getMaxUseCount() != null && useCount >= authCode.getMaxUseCount()) {
+            logger.debug("authCode useCount exceeds maxUseCount: " + useCount);
+            return false;
+        }
+
+        Date expirationDate = authCode.getExpirationDate();
+
+        Date now = new Date();
+        if (expirationDate != null && now.getTime() > expirationDate.getTime()) {
+            logger.debug("authCode expired: " + expirationDate);
+            return false;
+        }
+
+        logger.debug("authCode: {}  isActive: {}", authCode, true);
+
+        return true;
     }
 }

@@ -7,7 +7,7 @@ import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.MediaService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

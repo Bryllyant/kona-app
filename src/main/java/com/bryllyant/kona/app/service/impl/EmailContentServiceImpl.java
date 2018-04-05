@@ -1,23 +1,25 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.EmailContentMapper;
-import com.bryllyant.kona.app.entity.EmailAttachment;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailContentExample;
+import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.service.EmailAttachmentService;
 import com.bryllyant.kona.app.service.EmailContentService;
-import com.bryllyant.kona.app.service.KAbstractEmailContentService;
+import com.bryllyant.kona.data.service.KAbstractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
 
 @Service(EmailContentService.SERVICE_PATH)
 public class EmailContentServiceImpl 
-		extends KAbstractEmailContentService<
-        EmailContent, EmailContentExample, EmailContentMapper,
-        EmailAttachment>
+		extends KAbstractService<EmailContent, EmailContentExample, EmailContentMapper>
 		implements EmailContentService {
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailContentServiceImpl.class);
@@ -34,14 +36,43 @@ public class EmailContentServiceImpl
 		return emailContentMapper;
 	}
     
+    @Override
+    protected boolean entityHasBlobs() {
+        return true;
+    }
+
 
     @Override
-    protected EmailContent getNewObject() {
-    	return new EmailContent();
+    public void validate(EmailContent content) {
+        if (content.getCreatedDate() == null) {
+            content.setCreatedDate(new Date());
+        }
+
+        content.setUpdatedDate(new Date());
+
+        if (content.getUid() == null) {
+            content.setUid(uuid());
+        }
     }
-    
-    @Override @SuppressWarnings("unchecked")
-    protected EmailAttachmentService getEmailAttachmentService() {
-        return emailAttachmentService;
+
+
+    @Override
+    public EmailContent create(Long ownerId, String html, String text, List<File> attachments) throws IOException {
+        EmailContent content = new EmailContent();
+
+        content.setOwnerId(ownerId);
+        content.setHtml(html);
+        content.setText(text);
+
+        content = add(content);
+
+        if (attachments != null) {
+            for (File attachment : attachments) {
+                emailAttachmentService.create(content.getId(), attachment);
+            }
+        }
+
+        return content;
     }
+
 }

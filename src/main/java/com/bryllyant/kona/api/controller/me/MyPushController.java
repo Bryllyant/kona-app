@@ -2,7 +2,7 @@ package com.bryllyant.kona.api.controller.me;
 
 import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KPush;
+import com.bryllyant.kona.app.entity.Push;
 import com.bryllyant.kona.app.entity.PushDevice;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.app.service.PushDeviceService;
@@ -92,7 +92,7 @@ public class MyPushController extends BaseController {
             limitAdTrackingEnabled = false;
         }
 
-        KPush.Platform platform = pushProviderService.getPlatform(osName, sandbox);
+        Push.Platform platform = pushProviderService.getPlatform(osName, sandbox);
 
         if (platform == null) {
             throw new BadRequestException("Invalid os_name: " + osName);

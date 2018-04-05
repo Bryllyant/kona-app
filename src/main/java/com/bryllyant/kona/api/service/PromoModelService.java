@@ -1,10 +1,9 @@
 package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.sales.promo.PromoModel;
-import com.bryllyant.kona.api.model.sales.promo.PromoModel;
 import com.bryllyant.kona.app.entity.Promo;
 import com.bryllyant.kona.app.service.PromoService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

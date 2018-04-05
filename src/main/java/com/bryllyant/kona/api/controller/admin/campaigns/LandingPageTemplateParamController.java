@@ -4,9 +4,7 @@ import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageTemplatePar
 import com.bryllyant.kona.api.service.LandingPageTemplateModelService;
 import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.ModelResultSet;
-import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageTemplateParamModel;
 import com.bryllyant.kona.api.service.FileModelService;
-import com.bryllyant.kona.api.service.LandingPageTemplateModelService;
 import com.bryllyant.kona.api.service.LandingPageTemplateParamModelService;
 import com.bryllyant.kona.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
@@ -15,7 +13,7 @@ import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageTemplateParamService;
 import com.bryllyant.kona.app.service.LandingPageTemplateService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KResultList;

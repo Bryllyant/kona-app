@@ -25,9 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.bryllyant.kona.app.entity.KApp.Type.INTERNAL;
-import static com.bryllyant.kona.app.entity.KApp.Type.PARTNER;
-
 
 /**
  * ApiAuthService
@@ -110,8 +107,8 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 		grants.add("authorization_code");
 		grants.add("refresh_token");
         
-        // NOTE: Only INTERNAL & PARTNER clients are allowed to log a user in.
-		if (app.getType() == INTERNAL || app.getType() == PARTNER) {
+        // NOTE: Only INTERNAL & Partner clients are allowed to log a user in.
+		if (app.getType() == App.Type.INTERNAL || app.getType() == App.Type.Partner) {
 			grants.add("password");
 		}
 		
@@ -149,7 +146,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
             case INTERNAL:
                 authorities.add(new SimpleGrantedAuthority("ROLE_APP_INTERNAL"));
                 break;
-            case PARTNER:
+            case Partner:
                 authorities.add(new SimpleGrantedAuthority("ROLE_APP_PARTNER"));
                 break;
             case PUBLIC:

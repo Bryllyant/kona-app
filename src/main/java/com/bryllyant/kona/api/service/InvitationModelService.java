@@ -1,10 +1,9 @@
 package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.social.invitation.InvitationModel;
-import com.bryllyant.kona.api.model.social.invitation.InvitationModel;
 import com.bryllyant.kona.app.entity.Invitation;
 import com.bryllyant.kona.app.service.InvitationService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

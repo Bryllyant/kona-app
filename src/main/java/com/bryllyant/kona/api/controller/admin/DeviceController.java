@@ -3,7 +3,7 @@ package com.bryllyant.kona.api.controller.admin;
 import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.device.DeviceModel;
 import com.bryllyant.kona.api.service.DeviceModelService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.service.DeviceService;
 import com.bryllyant.kona.rest.exception.ValidationException;

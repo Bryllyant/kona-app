@@ -2,13 +2,11 @@ package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageModel;
 import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageTemplateModel;
-import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageModel;
-import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageTemplateModel;
 import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.app.entity.LandingPage;
 import com.bryllyant.kona.app.entity.LandingPageTemplate;
 import com.bryllyant.kona.app.service.LandingPageService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

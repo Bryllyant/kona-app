@@ -15,7 +15,7 @@ import com.bryllyant.kona.app.service.FileService;
 import com.bryllyant.kona.app.service.LandingPageParamService;
 import com.bryllyant.kona.app.service.LandingPageService;
 import com.bryllyant.kona.app.service.LandingPageTemplateService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.encryption.KEncryptUtil;
 import com.bryllyant.kona.encryption.KZipUtil;
 import com.bryllyant.kona.rest.exception.SystemException;

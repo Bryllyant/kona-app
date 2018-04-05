@@ -2,7 +2,7 @@ package com.bryllyant.kona.api.model.social.friendship;
 
 import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.app.entity.KFriendship.Status;
+import com.bryllyant.kona.app.entity.Friendship;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
@@ -17,7 +17,7 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
 	@RestdocsNotExpanded
 	private UserModel friend;
 
-	private Status status;
+	private Friendship.Status status;
 
 	private Date createdDate;
 
@@ -47,11 +47,11 @@ public class FriendshipModel extends KJsonModel implements KEntityModel {
         this.set("friend", friend);
     }
 
-    public Status getStatus() {
+    public Friendship.Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(Friendship.Status status) {
         this.set("status", status);
     }
 

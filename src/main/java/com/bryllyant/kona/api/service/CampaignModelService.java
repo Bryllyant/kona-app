@@ -5,7 +5,7 @@ import com.bryllyant.kona.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.CampaignService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

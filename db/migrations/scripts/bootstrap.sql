@@ -114,6 +114,7 @@ CREATE TABLE `kona__api_log` (
 
 CREATE TABLE `kona__api_version` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(2000) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -124,6 +125,8 @@ CREATE TABLE `kona__api_version` (
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `ux_kona__api_version_name` (`name`),
+
+  UNIQUE KEY `ux_kona__api_version_uid` (`uid`),
 
   FULLTEXT `ft_kona__api_version` (`name`,`description`)
 
@@ -212,6 +215,7 @@ CREATE TABLE `kona__app_config` (
 
 CREATE TABLE `kona__app_creds` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
   `api_version_id` bigint(20) unsigned NOT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -228,6 +232,8 @@ CREATE TABLE `kona__app_creds` (
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__app_creds_uid` (`uid`),
 
   UNIQUE KEY `ux_kona__app_creds_name` (`app_id`,`name`),
 
@@ -886,6 +892,7 @@ CREATE TABLE `kona__short_url` (
 
 CREATE TABLE `kona__token` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `user_id` bigint(20) unsigned DEFAULT NULL,
   `app_id` bigint(20) unsigned NOT NULL,
@@ -918,6 +925,8 @@ CREATE TABLE `kona__token` (
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__token_uid` (`uid`),
 
   UNIQUE KEY `ux_kona__token_access_token` (`access_token`),
 
@@ -1062,6 +1071,7 @@ CREATE TABLE `kona__user` (
   `presence` varchar(255) DEFAULT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `deleted_date` datetime(6) DEFAULT NULL,
+  `last_login_date` datetime(6) DEFAULT NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
 
@@ -1128,6 +1138,7 @@ CREATE TABLE `kona__user_role` (
 
 CREATE TABLE `kona__user_auth` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `user_id` bigint(20) unsigned NOT NULL,
   `voice_sample_id` bigint(20) unsigned default NULL,
   `fingerprint_id` bigint(20) unsigned default NULL,
@@ -1144,6 +1155,8 @@ CREATE TABLE `kona__user_auth` (
   PRIMARY KEY (`id`),
 
   UNIQUE KEY `id` (`id`),
+
+  UNIQUE KEY `ux_kona__user_auth_uid` (`uid`),
 
   UNIQUE KEY `ux_kona__user_auth_user` (`user_id`),
 
@@ -1413,7 +1426,7 @@ CREATE TABLE `kona__place_tag` (
 
 -- --------------------------------------------------------------------------
 
--- a place can have multiple plans
+-- a googlePlace can have multiple plans
 CREATE TABLE `kona__place_plan` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uid` varchar(255) NOT NULL,
@@ -1458,7 +1471,7 @@ CREATE TABLE `kona__position` (
   `battery` double DEFAULT NULL,
   `charging` tinyint(1) unsigned DEFAULT null,
   `network` varchar(255) DEFAULT NULL, -- wifi|cell
-  `source` varchar(255) default NULL, -- gps|access-point|ip-address|beacon|mixed (location_method)
+  `source` varchar(255) default NULL, -- gps|access-point|ip-location|beacon|mixed (location_method)
   `background` tinyint(1) unsigned DEFAULT null,
   `carrier` varchar(255) default NULL,
   `latitude` double DEFAULT NULL,
@@ -1563,10 +1576,11 @@ CREATE TABLE `kona__notification` (
 
 CREATE TABLE `kona__notification_delivery` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
   `notification_id` bigint(20) unsigned NOT NULL,
   `channel` varchar(255) NOT NULL,
-  `code` varchar(255) NOT NULL,
-  `delivered_date` datetime(6) default NULL,
+  `view_count` int(11) NOT NULL DEFAULT '0',
+  `sent_date` datetime(6) default NULL,
   `viewed_date` datetime(6) default NULL,
   `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -1575,11 +1589,11 @@ CREATE TABLE `kona__notification_delivery` (
 
   UNIQUE KEY `id` (`id`),
 
-  UNIQUE `ux_kona__notification_delivery_code` (`code`),
+  UNIQUE `ux_kona__notification_delivery_uid` (`uid`),
 
   KEY `ux_kona__notification_delivery_notification` (`notification_id`),
 
-  FULLTEXT KEY `ft_kona_notification_delivery` (`channel`,`code`),
+  FULLTEXT KEY `ft_kona_notification_delivery` (`channel`,`uid`),
 
   CONSTRAINT `fk_kona__notification_delivery_notification` FOREIGN KEY (`notification_id`)
         REFERENCES `kona__notification` (`id`) ON DELETE CASCADE
@@ -3567,39 +3581,6 @@ CREATE TABLE `kona__sales_lead` (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- --------------------------------------------------------------------------
-
-CREATE TABLE `kona__sales_lead_event` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `uid` varchar(255) NOT NULL,
-  `user_id` bigint(20) unsigned NOT NULL,
-  `sales_lead_id` bigint(20) unsigned NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `target` varchar(2000) DEFAULT NULL,
-  `message` varchar(8000) DEFAULT NULL,
-  `created_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-
-  PRIMARY KEY (`id`),
-
-  UNIQUE KEY `id` (`id`),
-
-  UNIQUE KEY `ux_kona__sales_lead_event_uid` (`uid`),
-
-  KEY `ix_kona__sales_lead_event_sales_lead` (`sales_lead_id`),
-
-  KEY `ix_kona__sales_lead_user_id` (`user_id`),
-
-  FULLTEXT `ft_kona_sales_lead_event` (uid,type,target,message),
-
-  CONSTRAINT `fk_kona__sales_lead_event_sales_lead` FOREIGN KEY (`sales_lead_id`)
-        REFERENCES `kona__sales_lead` (`id`) ON DELETE CASCADE,
-
-  CONSTRAINT `fk_kona__sales_lead_event_user` FOREIGN KEY (`user_id`)
-        REFERENCES `kona__user` (`id`) ON DELETE CASCADE
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------------------------

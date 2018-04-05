@@ -1,9 +1,8 @@
 package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.notification.NotificationModel;
-import com.bryllyant.kona.api.model.notification.NotificationModel;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.app.entity.Notification;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.NotificationService;

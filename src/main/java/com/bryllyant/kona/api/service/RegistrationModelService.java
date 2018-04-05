@@ -13,7 +13,7 @@ import com.bryllyant.kona.app.entity.Device;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.RegistrationService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

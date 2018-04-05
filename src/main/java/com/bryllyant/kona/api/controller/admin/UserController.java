@@ -29,7 +29,7 @@ import com.bryllyant.kona.app.service.MediaService;
 import com.bryllyant.kona.app.service.PositionService;
 import com.bryllyant.kona.app.service.RegistrationService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ForbiddenException;
 import com.bryllyant.kona.rest.exception.NotFoundException;

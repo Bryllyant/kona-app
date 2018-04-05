@@ -2,7 +2,6 @@ package com.bryllyant.kona.api.controller.system;
 
 import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageParamModel;
 import com.bryllyant.kona.api.model.ModelResultSet;
-import com.bryllyant.kona.api.model.marketing.landingpage.LandingPageParamModel;
 import com.bryllyant.kona.api.service.LandingPageModelService;
 import com.bryllyant.kona.api.service.LandingPageParamModelService;
 import com.bryllyant.kona.api.service.UserModelService;
@@ -11,7 +10,7 @@ import com.bryllyant.kona.app.entity.LandingPageParam;
 import com.bryllyant.kona.app.service.LandingPageParamService;
 import com.bryllyant.kona.app.service.LandingPageService;
 import com.bryllyant.kona.app.service.SystemService;
-import com.bryllyant.kona.app.util.AppUtil;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KResultList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +71,7 @@ public class LandingPageController extends SystemController {
 
         LandingPage landingPage = landingPageModelService.getLandingPage(uid);
 
-        KResultList<LandingPageParam> params = landingPageParamService.fetchByLandingPageId(landingPage.getId());
+        KResultList<LandingPageParam> params = (KResultList<LandingPageParam>)landingPageParamService.fetchByLandingPageId(landingPage.getId());
 
         ModelResultSet resultSet = ModelResultSet.from(params, landingPageParamModelService.toModelList(params));
 

@@ -4,8 +4,6 @@
 package com.bryllyant.kona.api.controller.auth;
 
 import com.bryllyant.kona.api.controller.BaseController;
-import com.bryllyant.kona.api.model.auth.RegistrationMeta;
-import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.auth.AuthSessionModel;
 import com.bryllyant.kona.api.model.auth.LoginRequest;
 import com.bryllyant.kona.api.model.auth.RegistrationMeta;
@@ -20,7 +18,6 @@ import com.bryllyant.kona.api.service.DeviceModelService;
 import com.bryllyant.kona.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.AuthCode;
 import com.bryllyant.kona.app.entity.Device;
-import com.bryllyant.kona.app.entity.KUser;
 import com.bryllyant.kona.app.entity.Registration;
 import com.bryllyant.kona.app.entity.Token;
 import com.bryllyant.kona.app.entity.User;
@@ -33,7 +30,6 @@ import com.bryllyant.kona.app.service.TokenService;
 import com.bryllyant.kona.app.service.UserAuthService;
 import com.bryllyant.kona.app.service.UserDeviceService;
 import com.bryllyant.kona.app.service.UserService;
-import com.bryllyant.kona.app.util.AppUtil;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.remote.service.KServiceClient;
@@ -42,6 +38,7 @@ import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ForbiddenException;
 import com.bryllyant.kona.rest.exception.NotFoundException;
 import com.bryllyant.kona.rest.exception.ValidationException;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KClassUtil;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KPassGen;
@@ -63,10 +60,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.bryllyant.kona.app.entity.KAuthCode.Type.EMAIL_CONFIRMATION;
-import static com.bryllyant.kona.app.entity.KAuthCode.Type.MOBILE_CONFIRMATION;
-
 
 /**
  * Auth Controller.
@@ -563,11 +556,11 @@ public class AuthController extends BaseController {
 
         Map<String, Object> result = getResultObject();
 
-        if (authCode.getType() == EMAIL_CONFIRMATION) {
+        if (authCode.getType() == AuthCode.Type.EMAIL_CONFIRMATION) {
             result.put("channel", "email");
         }
 
-        if (authCode.getType() == MOBILE_CONFIRMATION) {
+        if (authCode.getType() == AuthCode.Type.MOBILE_CONFIRMATION) {
             result.put("channel", "mobile");
         }
 
@@ -865,9 +858,9 @@ public class AuthController extends BaseController {
         } else {
             user = new User();
 
-            user.setType(User.Type.USER);
+            user.setType(User.Type.User);
             user.setEnabled(true);
-            user.setPresence(KUser.Presence.OFFLINE);
+            user.setPresence(User.Presence.OFFLINE);
         }
 
         DeviceModel deviceModel = registrationRequest.getMeta().getDevice();
