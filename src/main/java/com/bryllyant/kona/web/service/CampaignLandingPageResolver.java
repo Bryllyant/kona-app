@@ -35,7 +35,7 @@ public class CampaignLandingPageResolver extends LandingPageResolver {
 
     @Override
     protected String getBaseUrlPath() {
-        return config.getString("landingpage.urlPath");
+        return config.getString("landingPage.urlPath");
     }
 
     @Override

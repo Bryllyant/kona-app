@@ -237,7 +237,7 @@ public class UserServiceImpl
     }
 
     protected User.Type getDefaultType() {
-        return User.Type.User;
+        return User.Type.USER;
     }
 
     protected User.Presence getDefaultPresence() {
@@ -720,7 +720,7 @@ public class UserServiceImpl
 
         //List<Registration> registrations = registrationService.fetchAll
 
-        filter.put("type", User.Type.User);
+        filter.put("type", User.Type.USER);
 
         //FIXME: fetch users containing specified roles
         //filter.put("roles", UserRole.User.getId());

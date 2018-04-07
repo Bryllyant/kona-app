@@ -1,50 +1,28 @@
 package com.bryllyant.kona.api.model.app;
 
-import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
-import com.bryllyant.kona.api.model.user.UserModel;
 import com.bryllyant.kona.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class AppModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
-
-
-    @NotNull
     private String uid;
-
-    @NotNull
     private App.Type type;
-
-    @NotNull
-    @RestdocsNotExpanded
     private UserModel user;
-
-    @NotNull
     private String name;
-
     private String description;
-
     private String logoUrl;
-
     private String appUrl;
-
     private String companyName;
-
     private String companyUrl;
-
     private String privacyUrl;
-
-    @NotNull
     private Boolean enabled;
-
-    @NotNull
     private Date createdDate;
+
 
     public static AppModel from(App app) {
         AppModel model = new AppModel();

@@ -1,11 +1,13 @@
 package com.bryllyant.kona.api.model.message;
 
+import com.bryllyant.kona.api.model.media.FileModel;
 import com.bryllyant.kona.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
+import java.util.List;
 
 public class EmailContentModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
@@ -16,6 +18,7 @@ public class EmailContentModel extends KJsonModel implements KEntityModel {
     private String text;
     private Date createdDate;
     private Date updatedDate;
+    private List<FileModel> attachments;
 
 
     public static EmailContentModel from(EmailContent content) {
@@ -78,5 +81,13 @@ public class EmailContentModel extends KJsonModel implements KEntityModel {
 
     public void setUpdatedDate(Date updatedDate) {
         this.set("updatedDate", updatedDate);
+    }
+
+    public List<FileModel> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<FileModel> attachments) {
+        this.set("attachments", attachments);
     }
 }

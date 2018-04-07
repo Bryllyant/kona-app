@@ -20,7 +20,7 @@ public class PreviewLandingPageResolver extends LandingPageResolver{
 
     @Override
     protected String getBaseUrlPath() {
-        return config.getString("landingpage.previewUrlPath");
+        return config.getString("landingPage.previewUrlPath");
     }
 
     @Override

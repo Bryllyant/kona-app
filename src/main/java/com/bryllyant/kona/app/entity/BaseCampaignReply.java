@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 public class BaseCampaignReply extends KBaseEntity implements Serializable {
     public enum Type {
-        Email,
-        Sms,
-        Push
+        EMAIL,
+        SMS,
+        PUSH
     }
 }

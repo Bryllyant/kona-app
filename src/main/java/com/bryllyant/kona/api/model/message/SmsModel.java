@@ -10,6 +10,7 @@ import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
+import java.util.List;
 
 public class SmsModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
@@ -22,7 +23,7 @@ public class SmsModel extends KJsonModel implements KEntityModel {
     private String toNumber;
     private String fromNumber;
     private String message;
-    private String mediaUrls;
+    private List<String> mediaUrls;
     private String status;
     private String errorCode;
     private String errorMessage;
@@ -116,7 +117,7 @@ public class SmsModel extends KJsonModel implements KEntityModel {
         this.set("message", message);
     }
 
-    public String getMediaUrls() {
+    public List<String> getMediaUrls() {
         return mediaUrls;
     }
 

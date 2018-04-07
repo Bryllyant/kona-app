@@ -208,7 +208,7 @@ public class LandingPageParamController extends BaseController {
 
         LandingPageTemplateParam templateParam = templateParamModelService.getParam(param.getTemplateParamId());
 
-        if (templateParam.getType() == LandingPageTemplateParam.Type.Media) {
+        if (templateParam.getType() == LandingPageTemplateParam.Type.MEDIA) {
             value = null;
         }
 

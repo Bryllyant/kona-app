@@ -21,7 +21,6 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
     private LandingPageModel landingPage;
 
     private String url;
-    private String shortUrl;
 
     private String analyticsTrackingId;
     private String conversionPixel;
@@ -31,6 +30,8 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
     private Date endDate;
     private Date createdDate;
     private Date updatedDate;
+
+
 
     public static CampaignTargetModel from(CampaignTarget target) {
         CampaignTargetModel model = new CampaignTargetModel();
@@ -119,13 +120,6 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
         this.set("url", url);
     }
 
-    public String getShortUrl() {
-        return shortUrl;
-    }
-
-    public void setShortUrl(String shortUrl) {
-        this.set("shortUrl", shortUrl);
-    }
 
     public String getAnalyticsTrackingId() {
         return analyticsTrackingId;

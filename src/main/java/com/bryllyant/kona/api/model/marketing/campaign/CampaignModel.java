@@ -25,6 +25,8 @@ public class CampaignModel extends KJsonModel implements KEntityModel {
     private Date createdDate;
     private Date updatedDate;
 
+
+
     public static CampaignModel from(Campaign campaign) {
         CampaignModel model = new CampaignModel();
         model.setUid(campaign.getUid());

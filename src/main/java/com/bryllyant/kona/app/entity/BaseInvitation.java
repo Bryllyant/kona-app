@@ -19,8 +19,8 @@ public class BaseInvitation extends KBaseEntity implements Serializable {
 
     public enum Channel {
         IN_APP,
-        Email,
-        Sms,
+        EMAIL,
+        SMS,
         TWITTER,
         FACEBOOK
     }

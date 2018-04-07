@@ -858,7 +858,7 @@ public class AuthController extends BaseController {
         } else {
             user = new User();
 
-            user.setType(User.Type.User);
+            user.setType(User.Type.USER);
             user.setEnabled(true);
             user.setPresence(User.Presence.OFFLINE);
         }

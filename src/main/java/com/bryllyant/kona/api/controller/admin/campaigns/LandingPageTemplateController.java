@@ -187,9 +187,10 @@ public class LandingPageTemplateController extends BaseController {
     }
 
     @RequestMapping(value = "/{uid}/media", method = RequestMethod.POST, consumes="multipart/form-data")
-    public ResponseEntity<FileModel> addMediaRequest(MultipartHttpServletRequest req,
-                                                     @PathVariable String uid,
-                                                     @RequestParam(value="upload_date", required=false) Long uploadDate) {
+    public ResponseEntity<FileModel> addMediaRequest(
+            MultipartHttpServletRequest req,
+            @PathVariable String uid,
+            @RequestParam(value="upload_date", required=false) Long uploadDate) {
 
         logApiRequest(req, "POST /admin/campaigns/landing-page-templates/" + uid + "/media");
 

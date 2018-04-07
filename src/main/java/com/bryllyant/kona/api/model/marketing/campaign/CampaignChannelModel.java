@@ -30,6 +30,7 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private Date createdDate;
     private Date updatedDate;
 
+
     public static CampaignChannelModel from(CampaignChannel channel) {
         CampaignChannelModel model = new CampaignChannelModel();
         model.setUid(channel.getUid());

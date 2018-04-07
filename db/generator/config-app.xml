@@ -1142,6 +1142,8 @@
             <columnOverride column="failed" javaType="boolean" />
             <columnOverride column="delivered" javaType="boolean" />
             <columnOverride column="opted_out" javaType="boolean" />
+            <columnOverride column="media_urls" javaType="java.util.List"
+                            typeHandler="com.bryllyant.kona.data.mybatis.KListHandler" />
         </table>
 
 

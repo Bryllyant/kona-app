@@ -33,17 +33,17 @@ public class App extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        String landingPageUrlPath = config.getString("landingpage.urlPath");
+        String landingPageUrlPath = config.getString("landingPage.urlPath");
         String landingPageUrlPathPattern = landingPageUrlPath + "/**";
 
-        String previewLandingPageUrlPath = config.getString("landingpage.previewUrlPath");
+        String previewLandingPageUrlPath = config.getString("landingPage.previewUrlPath");
         String previewLandingPageUrlPathPattern = previewLandingPageUrlPath + "/**";
 
         logger.debug("addResourceHandlers: setting landingPageUrlPathPattern: " + landingPageUrlPathPattern);
 
 
         try {
-            String prefix = config.getString("landingpage.tmpDirPrefix");
+            String prefix = config.getString("landingPage.tmpDirPrefix");
             Path tempPath = Files.createTempDirectory(prefix);
 
             // make sure to end temp directory with '/'
@@ -51,7 +51,7 @@ public class App extends WebMvcConfigurerAdapter {
 
             logger.debug("App: landingPagesFileUrl: {}", landingPagesFileUrl);
 
-            prefix = config.getString("landingpage.previewTmpDirPrefix");
+            prefix = config.getString("landingPage.previewTmpDirPrefix");
             tempPath = Files.createTempDirectory(prefix);
 
             String previewLandingPagesFileUrl = "file://" + tempPath.toAbsolutePath().toString() + "/";

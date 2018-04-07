@@ -1,16 +1,22 @@
 package com.bryllyant.kona.api.service;
 
+import com.bryllyant.kona.api.model.media.FileModel;
 import com.bryllyant.kona.api.model.message.EmailContentModel;
 import com.bryllyant.kona.api.model.user.UserModel;
-import com.bryllyant.kona.api.model.message.EmailContentModel;
-import com.bryllyant.kona.api.model.user.UserModel;
+import com.bryllyant.kona.app.entity.EmailAttachment;
 import com.bryllyant.kona.app.entity.EmailContent;
+import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.User;
+import com.bryllyant.kona.app.service.EmailAttachmentService;
 import com.bryllyant.kona.app.service.EmailContentService;
+import com.bryllyant.kona.app.service.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EmailContentModelService extends BaseEntityModelService<EmailContentModel,EmailContent> {
@@ -20,7 +26,16 @@ public class EmailContentModelService extends BaseEntityModelService<EmailConten
     private EmailContentService entityService;
 
     @Autowired
+    private EmailAttachmentService emailAttachmentService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
     private UserModelService userModelService;
+
+    @Autowired
+    private FileModelService fileModelService;
 
     protected EmailContentService getEntityService() {
         return entityService;
@@ -32,6 +47,20 @@ public class EmailContentModelService extends BaseEntityModelService<EmailConten
             User owner = userModelService.getUser(entity.getOwnerId());
             model.setOwner(UserModel.from(owner));
         }
+
+        List<EmailAttachment> attachmentList = emailAttachmentService.fetchByContentId(entity.getId());
+
+        List<FileModel> files = new ArrayList<>();
+
+        for (EmailAttachment attachment : attachmentList) {
+            File file = fileService.fetchById(attachment.getFileId());
+
+            if (file != null) {
+                files.add(fileModelService.toModel(file));
+            }
+        }
+
+        model.setAttachments(files);
     }
 
     protected void setEntityProperty(String key, EmailContentModel model, EmailContent entity) {

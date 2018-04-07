@@ -40,7 +40,7 @@ public class CampaignTargetServiceImpl
     private ShortUrlService shortUrlService;
 
     protected String getLandingPageBaseUrl() {
-        return config.getString("landingpage.baseUrl");
+        return config.getString("landingPage.baseUrl");
     }
 
     @Override @SuppressWarnings("unchecked")

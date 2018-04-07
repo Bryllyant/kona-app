@@ -13,11 +13,11 @@ public class BasePayment extends KBaseEntity implements Serializable {
         ACH,
         PAYPAL,
         CREDIT,
-        Promo,
+        PROMO,
         EXTERNAL,
         APPLE_APPSTORE,
         GOOGLE_PLAY,
-        Partner,
+        PARTNER,
         OTHER
     }
 

@@ -289,12 +289,7 @@ public class SmsServiceImpl extends KAbstractService<Sms,SmsExample,SmsMapper>
         sms.setMessage(body);
         sms.setMessageSid(message.getSid());
         sms.setSentDate(new Date());
-
-        if (mediaUrls != null && mediaUrls.size() > 0) {
-            String urls = KJsonUtil.toJson(mediaUrls);
-            sms.setMediaUrls(urls);
-        }
-
+        sms.setMediaUrls(mediaUrls);
 
         User u = userService.fetchByMobileNumber(to);
 

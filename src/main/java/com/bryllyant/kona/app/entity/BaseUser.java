@@ -5,7 +5,7 @@ import com.bryllyant.kona.data.entity.KBaseEntity;
 public class BaseUser extends KBaseEntity {
     public enum Type {
         SYSTEM,
-        User,
+        USER,
         TEST,
     }
 

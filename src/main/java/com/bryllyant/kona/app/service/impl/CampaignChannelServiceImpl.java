@@ -56,7 +56,7 @@ public class CampaignChannelServiceImpl
     private CampaignReplyService campaignReplyService;
 
     protected String getLandingPageBaseUrl() {
-        return config.getString("landingpage.baseUrl");
+        return config.getString("landingPage.baseUrl");
     }
 
     @Override @SuppressWarnings("unchecked")

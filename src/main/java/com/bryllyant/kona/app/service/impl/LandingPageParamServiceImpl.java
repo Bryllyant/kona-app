@@ -119,7 +119,7 @@ public class LandingPageParamServiceImpl
             param.setFileId(null);
         }
 
-        if (value != null && templateParam.getType() == LandingPageTemplateParam.Type.Media) {
+        if (value != null && templateParam.getType() == LandingPageTemplateParam.Type.MEDIA) {
             throw new KServiceException("save: value is not null and template param type is 'Media'");
         }
 
@@ -131,7 +131,7 @@ public class LandingPageParamServiceImpl
     @Override @Transactional
     public LandingPageParam save(LandingPage landingPage, LandingPageTemplateParam templateParam, byte[] data, String contentType) {
         // sanity check
-        if (templateParam.getType() != LandingPageTemplateParam.Type.Media) {
+        if (templateParam.getType() != LandingPageTemplateParam.Type.MEDIA) {
             throw new KServiceException("save: trying to save file but template param type equals: " + templateParam.getType());
         }
 

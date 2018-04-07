@@ -17,7 +17,7 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
     private String email;
     private String mobileNumber;
     private String gender;
-    private String birthYear;
+    private Integer birthYear;
     private String company;
     private String title;
     private String extra;
@@ -113,11 +113,11 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
         this.set("gender", gender);
     }
 
-    public String getBirthYear() {
+    public Integer getBirthYear() {
         return birthYear;
     }
 
-    public void setBirthYear(String birthYear) {
+    public void setBirthYear(Integer birthYear) {
         this.set("birthYear", birthYear);
     }
 

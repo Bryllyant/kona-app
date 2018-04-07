@@ -409,7 +409,7 @@ public class CommerceServiceImpl implements CommerceService {
             payment = new Payment();
             payment.setCampaignChannelId(campaignChannelId);
             payment.setPromoId(promoId);
-            payment.setType(Payment.Type.Promo);
+            payment.setType(Payment.Type.PROMO);
             payment.setStatus(Payment.Status.SUCCESS);
             payment.setCurrencyId(invoice.getCurrencyId());
             payment.setUserId(invoice.getUserId());
@@ -448,7 +448,7 @@ public class CommerceServiceImpl implements CommerceService {
             for (InvoiceItem item : invoiceItemList) {
                 boolean autoRenew = false;
 
-                Payment.Type paymentType = Payment.Type.Promo;
+                Payment.Type paymentType = Payment.Type.PROMO;
 
                 if (paymentRequired) {
                     autoRenew = true;

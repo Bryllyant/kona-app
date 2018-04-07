@@ -108,7 +108,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
 		grants.add("refresh_token");
         
         // NOTE: Only INTERNAL & Partner clients are allowed to log a user in.
-		if (app.getType() == App.Type.INTERNAL || app.getType() == App.Type.Partner) {
+		if (app.getType() == App.Type.INTERNAL || app.getType() == App.Type.PARTNER) {
 			grants.add("password");
 		}
 		
@@ -146,7 +146,7 @@ public class ClientAuthService implements UserDetailsService, ClientDetailsServi
             case INTERNAL:
                 authorities.add(new SimpleGrantedAuthority("ROLE_APP_INTERNAL"));
                 break;
-            case Partner:
+            case PARTNER:
                 authorities.add(new SimpleGrantedAuthority("ROLE_APP_PARTNER"));
                 break;
             case PUBLIC:

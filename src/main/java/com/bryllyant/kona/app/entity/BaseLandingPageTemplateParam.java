@@ -7,7 +7,7 @@ public class BaseLandingPageTemplateParam extends KBaseEntity {
         HTML,
         TEXT,
         URL,
-        Media
+        MEDIA
     }
 
 }

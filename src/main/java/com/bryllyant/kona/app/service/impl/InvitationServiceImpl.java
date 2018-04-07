@@ -79,9 +79,9 @@ public class InvitationServiceImpl
 
 	protected Invitation sendInvitation(Invitation invitation, Contact contact, String invitationUrl) {
 		switch (invitation.getChannel()){
-		case Email:
+		case EMAIL:
 			return sendEmail(invitation, contact, invitationUrl);
-		case Sms:
+		case SMS:
 			return sendSms(invitation, contact, invitationUrl);
 		case TWITTER:
 			return sendTwitter(invitation, contact, invitationUrl);
@@ -333,7 +333,7 @@ public class InvitationServiceImpl
             contact = list.get(0);
         }
 
-        return invite(contact.getId(), type, Invitation.Channel.Sms, resend);
+        return invite(contact.getId(), type, Invitation.Channel.SMS, resend);
     }
 
 
@@ -350,7 +350,7 @@ public class InvitationServiceImpl
             contact = list.get(0);
         }
 
-        return invite(contact.getId(), type, Invitation.Channel.Email, resend);
+        return invite(contact.getId(), type, Invitation.Channel.EMAIL, resend);
     }
 
 
@@ -497,14 +497,14 @@ public class InvitationServiceImpl
         Contact contact = contactService.fetchById(invitation.getContactId());
 
         switch (invitation.getChannel()) {
-            case  Email:
+            case  EMAIL:
                 if (contact != null) {
                     contact.setEmailVerified(true);
                     contactService.update(contact);
                 }
                 break;
 
-            case  Sms:
+            case  SMS:
                 if (contact != null) {
                     contact.setMobileVerified(true);
                     contactService.update(contact);
@@ -561,12 +561,12 @@ public class InvitationServiceImpl
 
         if (user.getMobileNumber() != null) {
             invitationList = fetchByMobileNumber(user.getMobileNumber(),
-                    Invitation.Status.PENDING, null, Invitation.Channel.Sms);
+                    Invitation.Status.PENDING, null, Invitation.Channel.SMS);
         }
 
         if (invitationList == null && user.getEmail() != null) {
             invitationList = fetchByEmail(user.getEmail(),
-                    Invitation.Status.PENDING, null, Invitation.Channel.Email);
+                    Invitation.Status.PENDING, null, Invitation.Channel.EMAIL);
         }
 
         if (invitationList == null) {

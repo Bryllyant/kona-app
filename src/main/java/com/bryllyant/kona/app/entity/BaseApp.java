@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class BaseApp extends KBaseEntity implements Serializable {
     public enum Type {
         INTERNAL,
-        Partner,
+        PARTNER,
         PUBLIC
     }
 }

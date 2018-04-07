@@ -47,7 +47,7 @@ public class LandingPageParamModel extends KJsonModel implements KEntityModel {
     }
 
     public void setLandingPage(LandingPageModel landingPage) {
-        this.set("landingpage", landingPage);
+        this.set("landingPage", landingPage);
     }
 
     public LandingPageTemplateParamModel getTemplateParam() {

@@ -85,15 +85,17 @@ public class LandingPageModelService extends BaseModelService {
         model.fromBean(landingPage);
 
         // generate the previewUrl
-        String previewUrl = config.getString("landingpage.previewBaseUrl");
+        String previewUrl = config.getString("landingPage.previewBaseUrl");
 
-        if (!previewUrl.endsWith("/")) {
-            previewUrl += "/";
+        if (previewUrl != null) {
+            if (!previewUrl.endsWith("/")) {
+                previewUrl += "/";
+            }
+
+            previewUrl += landingPage.getUid() + "/";
+
+            model.setPreviewUrl(previewUrl);
         }
-
-        previewUrl += landingPage.getUid() + "/";
-
-        model.setPreviewUrl(previewUrl);
 
         // set model references
         if (landingPage.getTemplateId() != null) {

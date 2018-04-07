@@ -179,13 +179,13 @@ public class CampaignReplyServiceImpl
     @Override @Transactional
     public CampaignReplyMessage execute(CampaignReply reply, CampaignAnalytics analytics) {
         switch (reply.getType()) {
-            case Email:
+            case EMAIL:
                 return sendEmail(reply, analytics);
 
-            case Sms:
+            case SMS:
                 return sendSms(reply, analytics);
 
-            case Push:
+            case PUSH:
                 return sendPush(reply, analytics);
 
             default:

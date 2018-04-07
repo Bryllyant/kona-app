@@ -71,7 +71,7 @@ public class ShortUrlServiceImpl
 	}
 
     protected String getLandingPageBaseUrl() {
-        return config.getString("landingpage.baseUrl");
+        return config.getString("landingPage.baseUrl");
     }
     
     

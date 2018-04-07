@@ -1,34 +1,23 @@
 package com.bryllyant.kona.api.model.account;
 
-import capital.scalable.restdocs.jackson.RestdocsNotExpanded;
 import com.bryllyant.kona.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class AccountModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
-    @NotNull
     private String uid;
-
-    @NotNull
-    @RestdocsNotExpanded
     private UserModel owner;
-
-    @NotNull
     private String name;
     private String slug;
-
     private Boolean enabled;
     private Boolean active;
     private Boolean verified;
-
     private Date createdDate;
-
 
     public static AccountModel from(Account account) {
         AccountModel model = new AccountModel();
