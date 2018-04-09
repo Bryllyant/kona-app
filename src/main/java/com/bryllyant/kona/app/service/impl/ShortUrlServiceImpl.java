@@ -137,9 +137,7 @@ public class ShortUrlServiceImpl
 
 
     @Override
-    public String getChannelRedirectShortUrl(Long campaignId,
-                                             Long groupId,
-                                             Long channelId) {
+    public String createChannelRedirectShortUrl(Long campaignId, Long groupId, Long channelId) {
         return shorten(
                 null,
                 campaignId,

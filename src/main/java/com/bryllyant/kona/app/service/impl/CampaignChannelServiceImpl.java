@@ -12,10 +12,10 @@ import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.CampaignReplyService;
 import com.bryllyant.kona.app.service.CampaignTargetService;
-import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.util.KInflector;
 import com.bryllyant.kona.util.KRandomUtil;
 import org.slf4j.Logger;
@@ -84,17 +84,15 @@ public class CampaignChannelServiceImpl
             campaignChannel.setConversionCount(0);
         }
 
-        if (campaignChannel.getShortUrl() == null) {
+        if (campaignChannel.getReplyStrategy() == null) {
+            campaignChannel.setReplyStrategy(CampaignChannel.ReplyStrategy.RANDOM);
+        }
 
-            String shortUrl = shortUrlService.getChannelRedirectShortUrl(
-                    campaignChannel.getCampaignId(),
-                    campaignChannel.getGroupId(),
-                    campaignChannel.getId()
-            );
-
-            campaignChannel.setShortUrl(shortUrl);
+        if (campaignChannel.getTargetStrategy() == null) {
+            campaignChannel.setTargetStrategy(CampaignChannel.TargetStrategy.RANDOM);
         }
     }
+
 
     @Override
     public CampaignChannel fetchByGroupIdAndSlug(Long groupId, String slug) {
@@ -146,7 +144,18 @@ public class CampaignChannelServiceImpl
             channel.setEndDate(group.getEndDate());
         }
 
-        return add(channel);
+        channel = add(channel);
+
+
+        String shortUrl = shortUrlService.createChannelRedirectShortUrl(
+                channel.getCampaignId(),
+                channel.getGroupId(),
+                channel.getId()
+        );
+
+        channel.setShortUrl(shortUrl);
+
+        return update(channel);
     }
 
     @Override @Transactional

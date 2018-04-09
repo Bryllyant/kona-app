@@ -109,7 +109,7 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
     }
 
     public void setLandingPage(LandingPageModel landingPage) {
-        this.set("landingpage", landingPage);
+        this.set("landingPage", landingPage);
     }
 
     public String getUrl() {

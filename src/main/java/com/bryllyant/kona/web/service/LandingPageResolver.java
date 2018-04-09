@@ -134,7 +134,7 @@ public abstract class LandingPageResolver extends PathResourceResolver{
         Map<String, Object> config = new HashMap<>();
 
         config.put("api", api);
-        config.put("landingpage", landingPageModel);
+        config.put("landingPage", landingPageModel);
         config.put("params", paramMap);
 
         return config;

@@ -149,7 +149,7 @@ public class CampaignTargetModelService extends BaseModelService {
                     campaignTarget.setChannelId(campaignChannel == null ? null : campaignChannel.getId());
                     break;
 
-                case "landingpage":
+                case "landingPage":
                     LandingPage landingPage = landingPageModelService.getLandingPage(model.getLandingPage());
                     campaignTarget.setLandingPageId(landingPage == null ? null : landingPage.getId());
                     break;

@@ -59,9 +59,9 @@ public class LandingPageController extends SystemController {
 //                                                @PathVariable String uid) {
 //        logApiRequest(req, "GET /system/landing-pages/" + uid);
 //
-//        LandingPage landingpage = landingPageModelService.getLandingPage(uid);
+//        LandingPage landingPage = landingPageModelService.getLandingPage(uid);
 //
-//        return ok(landingPageModelService.toModel(landingpage));
+//        return ok(landingPageModelService.toModel(landingPage));
 //    }
 
     @RequestMapping(value="/{uid}/params", method=RequestMethod.GET)

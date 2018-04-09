@@ -160,7 +160,7 @@ public class LandingPageParamModelService extends BaseModelService {
 
             switch (key) {
 
-                case "landingpage":
+                case "landingPage":
                     LandingPage page = landingPageModelService.getLandingPage(model.getLandingPage());
                     param.setLandingPageId(page == null ? null : page.getId());
                     break;

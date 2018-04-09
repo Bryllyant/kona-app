@@ -167,7 +167,7 @@ public class LandingPageController extends BaseController {
             LandingPage landingPage,
             LandingPageModel model
     ) {
-        logger.debug("mapToObject called for landingpage: " + landingPage);
+        logger.debug("mapToObject called for landingPage: " + landingPage);
 
         landingPage = landingPageModelService.mergeEntity(landingPage, model);
 

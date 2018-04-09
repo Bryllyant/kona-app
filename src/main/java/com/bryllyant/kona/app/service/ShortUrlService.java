@@ -23,9 +23,7 @@ public interface ShortUrlService extends KService, KEntityService<ShortUrl> {
     List<ShortUrl> fetchByUserId(Long userId);
 
 
-    String getChannelRedirectShortUrl(Long campaignId,
-                                      Long groupId,
-                                      Long channelId);
+    String createChannelRedirectShortUrl(Long campaignId, Long groupId, Long channelId);
 
     String shorten(String url);
 
