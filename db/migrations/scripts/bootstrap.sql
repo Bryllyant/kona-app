@@ -2414,6 +2414,7 @@ CREATE TABLE `kona__payment_account` (
   `name` varchar(255) DEFAULT NULL,
   `slug` varchar(255) default NULL,
   `provider_name` varchar(255) DEFAULT NULL,
+  `provider_slug` varchar(255) DEFAULT NULL,
   `provider_customer_id` varchar(255) DEFAULT NULL,
   `card_token` varchar(255) DEFAULT NULL,
   `card_last4` varchar(255) DEFAULT NULL,
@@ -2439,7 +2440,10 @@ CREATE TABLE `kona__payment_account` (
   UNIQUE KEY `ux_kona__payment_account_slug` (`account_id`, `slug`),
 
     -- this should be true but beware of possible conflicts
-  UNIQUE KEY `ux_kona__payment_account_provider_customer_id` (`provider_customer_id`),
+  UNIQUE KEY `ux_kona__payment_account_provider_customer_id` (`provider_slug`, `provider_customer_id`),
+
+    -- this should be true but beware of possible conflicts
+  UNIQUE KEY `ux_kona__payment_account_account_number` (`provider_slug`, `account_number`),
 
   KEY `ix_kona__payment_account_account` (`account_id`),
 

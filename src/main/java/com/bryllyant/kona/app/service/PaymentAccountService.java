@@ -4,6 +4,7 @@
 package com.bryllyant.kona.app.service;
 
 import com.bryllyant.kona.app.entity.PaymentAccount;
+import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.data.service.KEntityService;
 import com.bryllyant.kona.remote.service.KService;
 
@@ -18,13 +19,16 @@ public interface PaymentAccountService extends KService, KEntityService<PaymentA
 
     List<PaymentAccount> fetchByAccountId(Long accountId);
 
-    PaymentAccount fetchByProviderCustomerId(String providerCustomerId);
+    PaymentAccount fetchByProviderCustomerId(String providerSlug, String providerCustomerId);
+
+    PaymentAccount fetchByProviderAccountNumber(String providerSlug, String accountNumber);
 
     PaymentAccount addStripeAccount(
-            Long userId,
+            User user,
             String stripeUid,
             String cardLast4,
             boolean defaultAccount
     );
-	
+
+    PaymentAccount create(User user, PaymentAccount.Type type, String providerName, String accountNumber);
 }

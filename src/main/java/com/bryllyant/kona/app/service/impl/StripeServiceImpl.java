@@ -201,7 +201,7 @@ public class StripeServiceImpl extends com.bryllyant.kona.stripe.service.KAbstra
 
             KCard card = customer.getDefaultCard();
 
-            paymentAccountService.addStripeAccount(user.getAccountId(), stripeUid, card.getLast4(), true);
+            paymentAccountService.addStripeAccount(user, stripeUid, card.getLast4(), true);
 
         } else {
             addPrimaryCard(userId, cardToken);

@@ -12,6 +12,7 @@ public class BasePaymentAccount extends KBaseEntity implements Serializable {
         BANK_PERSONAL_CHECKING,
         BANK_PERSONAL_SAVINGS,
         BANK_BUSINESS_CHECKING,
-        BANK_BUSINESS_SAVINGS
+        BANK_BUSINESS_SAVINGS,
+        CRYPTOCURRENCY,
     }
 }

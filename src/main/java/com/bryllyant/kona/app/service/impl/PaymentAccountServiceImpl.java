@@ -59,8 +59,12 @@ public class PaymentAccountServiceImpl
             String slug = KInflector.getInstance().slug(paymentAccount.getName());
             paymentAccount.setSlug(slug);
         }
-    }
 
+        if (paymentAccount.getProviderName() != null) {
+            String slug = KInflector.getInstance().slug(paymentAccount.getProviderName());
+            paymentAccount.setProviderSlug(slug);
+        }
+    }
 
 
     private void unsetDefaultAccount(PaymentAccount current) {
@@ -74,8 +78,6 @@ public class PaymentAccountServiceImpl
         }
     }
 
-
-
     @Override
     public PaymentAccount fetchBySlug(Long accountId, String slug) {
         Map<String, Object> filter = KMyBatisUtil.createFilter();
@@ -83,7 +85,6 @@ public class PaymentAccountServiceImpl
         filter.put("slug", slug);
         return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
     }
-
 
 
     @Override
@@ -95,7 +96,6 @@ public class PaymentAccountServiceImpl
     }
 
 
-
     @Override
     public List<PaymentAccount> fetchByAccountId(Long accountId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
@@ -104,18 +104,26 @@ public class PaymentAccountServiceImpl
 
 
     @Override
-    public PaymentAccount fetchByProviderCustomerId(String providerCustomerId) {
+    public PaymentAccount fetchByProviderCustomerId(String providerName, String providerCustomerId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("providerCustomerId", providerCustomerId);
+        filter.put("providerName", providerName);
+        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+    }
+
+    @Override
+    public PaymentAccount fetchByProviderAccountNumber(String providerName, String accountNumber) {
+        Map<String, Object> filter = KMyBatisUtil.createFilter("accountNumber", accountNumber);
+        filter.put("providerName", providerName);
         return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
     }
 
 
-
     @Override
-    public PaymentAccount addStripeAccount(Long userId, String stripeUid, String cardLast4, boolean defaultAccount) {
-        PaymentAccount paymentAccount = fetchByProviderCustomerId(stripeUid);
+    public PaymentAccount addStripeAccount(User user, String stripeUid, String cardLast4, boolean defaultAccount) {
+        String providerName = "Stripe";
+        String providerSlug = KInflector.getInstance().slug("Stripe");
 
-        User user = userService.fetchById(userId);
+        PaymentAccount paymentAccount = fetchByProviderCustomerId(providerSlug, stripeUid);
 
         // if we have an existing account for this stripeUid then just update the cardInfo
 
@@ -135,13 +143,26 @@ public class PaymentAccountServiceImpl
             paymentAccount = new PaymentAccount();
             paymentAccount.setAccountId(user.getAccountId());
             paymentAccount.setType(PaymentAccount.Type.CREDIT_CARD);
-            paymentAccount.setProviderName("stripe");
+            paymentAccount.setProviderName(providerName);
+            paymentAccount.setProviderSlug(providerSlug);
         }
 
-        paymentAccount.setOwnerId(userId);
+        paymentAccount.setOwnerId(user.getId());
         paymentAccount.setProviderCustomerId(stripeUid);
         paymentAccount.setCardLast4(cardLast4);
         paymentAccount.setDefaultAccount(defaultAccount);
+
+        return save(paymentAccount);
+    }
+
+    @Override
+    public PaymentAccount create(User user, PaymentAccount.Type type, String providerName, String accountNumber) {
+        PaymentAccount paymentAccount = new PaymentAccount();
+        paymentAccount.setOwnerId(user.getId());
+        paymentAccount.setAccountId(user.getAccountId());
+        paymentAccount.setType(type);
+        paymentAccount.setProviderName(providerName);
+        paymentAccount.setAccountNumber(accountNumber);
 
         return save(paymentAccount);
     }
