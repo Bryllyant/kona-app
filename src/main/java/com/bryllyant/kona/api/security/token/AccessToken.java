@@ -38,7 +38,7 @@ public class AccessToken extends AbstractAuthenticationToken implements OAuth2Ac
     private Date accessExpirationDate; // seconds before access_token expires
     private Date refreshExpirationDate; // seconds before access_token expires
     private Set<String> scope;
-    private Map<String,Object> info = new HashMap<String,Object>();
+    private Map<String,Object> info = new HashMap<>();
 
     /** The username */
     private UserDetails principal;

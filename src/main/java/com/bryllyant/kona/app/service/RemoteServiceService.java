@@ -3,6 +3,7 @@
  */
 package com.bryllyant.kona.app.service;
 
+import com.bryllyant.kona.api.model.auth.TokenModel;
 import com.bryllyant.kona.app.entity.RemoteService;
 import com.bryllyant.kona.data.service.KEntityService;
 import com.bryllyant.kona.remote.service.KService;
@@ -11,4 +12,6 @@ public interface RemoteServiceService extends KService, KEntityService<RemoteSer
 	String SERVICE_PATH = "rpc/RemoteServiceService";
 
     RemoteService fetchBySlug(String slug);
+
+    TokenModel exchangeToken(RemoteService service, String code);
 }

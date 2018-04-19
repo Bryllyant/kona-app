@@ -642,9 +642,9 @@ CREATE TABLE `kona__remote_service` (
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `authorize_uri` varchar(1024) DEFAULT NULL,
-  `token_uri` varchar(1024) DEFAULT NULL,
+  `token_uri` varchar(1024) DEFAULT NULL,  -- endpoint to exchange code for access token
   `scope` varchar(1024) DEFAULT NULL,
-  `client_key` varchar(1024) DEFAULT NULL,
+  `client_id` varchar(1024) DEFAULT NULL,
   `client_secret` varchar(1024) DEFAULT NULL,
   `redirect_uri` varchar(1024) DEFAULT NULL,
   `namespace` varchar(255) DEFAULT NULL,
@@ -658,7 +658,7 @@ CREATE TABLE `kona__remote_service` (
 
   UNIQUE KEY `ux_kona__remote_service_slug` (`slug`),
 
-  FULLTEXT `ft_kona__remote_service` (uid,name,client_key,client_secret)
+  FULLTEXT `ft_kona__remote_service` (uid,name,client_id,client_secret)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
