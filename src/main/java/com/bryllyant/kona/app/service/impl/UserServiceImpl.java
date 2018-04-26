@@ -7,6 +7,7 @@ import com.bryllyant.kona.app.dao.UserMapper;
 import com.bryllyant.kona.app.entity.Account;
 import com.bryllyant.kona.app.entity.App;
 import com.bryllyant.kona.app.entity.AuthRole;
+import com.bryllyant.kona.app.entity.BaseUser;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.Media;
 import com.bryllyant.kona.app.entity.Position;
@@ -271,11 +272,14 @@ public class UserServiceImpl
         }
     }
 
+    @Override @Transactional
+    public User createGuestUser(User user, KServiceClient client) {
+        if (user == null) {
+            user = new User();
+        }
 
-    @Override
-    @Transactional
-    public User createGuestUser(KServiceClient client) {
-        User user = new User();
+        // force type to USER
+        user.setType(User.Type.USER);
 
         List<String> roles = new ArrayList<>();
 

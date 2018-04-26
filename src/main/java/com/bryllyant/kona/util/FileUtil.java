@@ -92,7 +92,11 @@ public class FileUtil {
 
         try {
             Token token = apiAuthService.getToken();
-            tokenId = token.getId();
+
+            // token may be null if called from a non-authenticated endpoint (e.g. /system)
+            if (token != null) {
+                tokenId = token.getId();
+            }
         } catch (AuthenticationException e) {
             // if we have a valid user and token is invalid, then
             // throw exception. otherwise this is an anonymous user.

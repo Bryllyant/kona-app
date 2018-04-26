@@ -28,7 +28,7 @@ public interface UserService extends KService, KEntityService<User> {
      * @param client
      * @return user object
      */
-    User createGuestUser(KServiceClient client);
+    User createGuestUser(User user, KServiceClient client);
 
     User updatePhoto(User user, Long photoId, String urlPath, String thumbnailUrlPath);
 

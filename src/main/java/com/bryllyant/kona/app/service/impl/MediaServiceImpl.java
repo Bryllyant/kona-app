@@ -63,6 +63,10 @@ public class MediaServiceImpl
 	    return config.getInteger("image.thumbnailHeight", null);
 	}
 
+    protected Boolean getThumbnailCrop() {
+        return config.getBoolean("image.thumbnailCrop", true);
+    }
+
 
 	protected boolean autoGenerateThumbnail() {
 	    return config.getBoolean("image.createThumbnail", false);
@@ -122,8 +126,11 @@ public class MediaServiceImpl
     }
 
 
-
     public Media add(Media media, File file) {
+	    return add(media, file, autoGenerateThumbnail());
+    }
+
+    public Media add(Media media, File file, boolean thumbnail) {
         try {
 
             if (file == null) {
@@ -140,8 +147,8 @@ public class MediaServiceImpl
 
             updateCoords(media.getId());
 
-            if (autoGenerateThumbnail() && getThumbnailWidth() != null && getThumbnailHeight() != null && file.getType() == File.Type.IMAGE) {
-                media = createThumbnail(media, getThumbnailWidth(), getThumbnailHeight(), true);
+            if (thumbnail && getThumbnailWidth() != null && getThumbnailHeight() != null && file.getType() == File.Type.IMAGE) {
+                media = createThumbnail(media, getThumbnailWidth(), getThumbnailHeight(), getThumbnailCrop(), true);
             }
 
         } catch (Throwable t) {
@@ -152,14 +159,10 @@ public class MediaServiceImpl
     }
 
 
-
-
-
     @Override @Transactional
     public Media add(User user, String name, byte[] data, String contentType) throws IOException {
         return add(user, null, name, null, data, contentType);
     }
-
 
 
     @Override @Transactional
@@ -434,7 +437,7 @@ public class MediaServiceImpl
 
 
     @Override @Transactional
-    public Media createThumbnail(Media media, Integer width, Integer height, boolean force) throws IOException {
+    public Media createThumbnail(Media media, Integer width, Integer height, boolean crop, boolean force) throws IOException {
 
         // check if we have a thumbnail for this media file 
         if (media.getThumbnailId() != null) {
@@ -483,13 +486,16 @@ public class MediaServiceImpl
         logger.debug("createThumbnail: targetWidth: [{}]  targetHeight: [{}]", width, height);
 
         KImage thumbnailResult = KImageUtil.resize(file.getData(), width, height);
+        //KImage image = KImageUtil.resizeToMaxWidthAndHeight(src, maxWidth, maxHeight);
 
         logger.debug("createThumbnail: resized image: [{}]", thumbnailResult);
 
-        if (width.equals(height)) {
-            thumbnailResult = KImageUtil.centerSquareCrop(thumbnailResult, width);
-        } else {
-            thumbnailResult = KImageUtil.centerCrop(thumbnailResult, width, height);
+        if (crop) {
+            if (width.equals(height)) {
+                thumbnailResult = KImageUtil.centerSquareCrop(thumbnailResult, width);
+            } else {
+                thumbnailResult = KImageUtil.centerCrop(thumbnailResult, width, height);
+            }
         }
 
 

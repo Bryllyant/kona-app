@@ -36,6 +36,7 @@ public interface MediaService extends KService, KEntityService<Media> {
             Media mediaObject,
             Integer width,
             Integer height,
+            boolean crop,
             boolean force
     ) throws IOException;
 

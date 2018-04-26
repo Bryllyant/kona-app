@@ -32,7 +32,6 @@ public class SystemController extends BaseController {
 	private static Logger logger = LoggerFactory.getLogger(SystemController.class);
 
 
-	
 	@Autowired
 	private PolicyService policyService;
 
@@ -72,9 +71,9 @@ public class SystemController extends BaseController {
 
 
 
-	@RequestMapping(value="/legal/terms", method = RequestMethod.GET)
+	@RequestMapping(value="/policies/terms", method = RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> getTerms(HttpServletRequest req) {
-	    logApiRequest(req, "/system/legal/terms");
+	    logApiRequest(req, "/system/policies/terms");
 
 	    Policy terms = policyService.fetchActive(Policy.Type.TERMS);
 
@@ -89,9 +88,9 @@ public class SystemController extends BaseController {
 
 
 
-	@RequestMapping(value="/legal/privacy", method = RequestMethod.GET)
+	@RequestMapping(value="/policies/privacy", method = RequestMethod.GET)
 	public ResponseEntity<Map<String,Object>> getPrivacy(HttpServletRequest req) {
-	    logApiRequest(req, "/system/legal/privacy");
+	    logApiRequest(req, "/system/policies/privacy");
 
 	    Policy privacy = policyService.fetchActive(Policy.Type.PRIVACY);
 
@@ -104,16 +103,16 @@ public class SystemController extends BaseController {
 
 	   
 
-    protected Map<String,Object> toMap(Policy appLegal) {
-        if (appLegal == null) return null;
+    protected Map<String,Object> toMap(Policy policy) {
+        if (policy == null) return null;
 
         Map<String,Object> result = new HashMap<String,Object>();
-        result.put("uid", appLegal.getUid());
-        result.put("type", appLegal.getType());
-        result.put("content", appLegal.getContent());
-        result.put("version", appLegal.getVersion());
-        result.put("active", appLegal.isActive());
-        result.put("published_date", appLegal.getPublishedDate());
+        result.put("uid", policy.getUid());
+        result.put("type", policy.getType());
+        result.put("content", policy.getContent());
+        result.put("version", policy.getVersion());
+        result.put("active", policy.isActive());
+        result.put("published_date", policy.getPublishedDate());
         return result;
     }
 }
