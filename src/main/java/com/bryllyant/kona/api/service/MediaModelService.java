@@ -97,7 +97,9 @@ public class MediaModelService extends BaseModelService {
         
         model.fromBean(media);
         
-        model.setUser(userModelService.toModel(user, "uid", "account"));
+        //model.setUser(userModelService.toModel(user, "uid", "account"));
+
+        model.setUser(UserModel.from(user));
         model.setUrl(url);
         model.setThumbnailUrl(thumbnailUrl);
 

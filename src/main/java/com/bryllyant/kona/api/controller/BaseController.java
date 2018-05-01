@@ -310,7 +310,6 @@ public abstract class BaseController {
     }
 
 
-
     protected ApiLog logApiRequest(HttpServletRequest req, String endPoint, String... scopes) {
         StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
         String methodName = null;

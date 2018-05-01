@@ -343,6 +343,10 @@ public class MediaServiceImpl
     }
 
 
+    @Override @Transactional(readOnly=true)
+    public Media fetchBySlug(User user, String folder, String slug) {
+        return fetchBySlug(user.getAccountId(), folder, slug);
+    }
 
     protected void resizeImage(Media media, Integer maxWidth, Integer maxHeight) throws IOException {
         if (!media.isResizeable()) {
@@ -523,10 +527,6 @@ public class MediaServiceImpl
 
 
 
-    @Override @Transactional(readOnly=true)
-    public Media fetchBySlug(User user, String folder, String slug) {
-        return fetchBySlug(user.getAccountId(), folder, slug);
-    }
 
 
 }
