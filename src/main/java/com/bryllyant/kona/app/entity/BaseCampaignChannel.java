@@ -9,6 +9,7 @@ public class BaseCampaignChannel extends KBaseEntity implements Serializable {
         ORGANIC,
         AFFILIATE,
         BLOG_POST,
+        PRESS_RELEASE,
         EMAIL,
         SMS,
         GOOGLE_ADWORDS,
@@ -20,6 +21,7 @@ public class BaseCampaignChannel extends KBaseEntity implements Serializable {
         PINTEREST,
         BANNER_AD,
         SOCIAL_DEAL,
+        VIDEO,
         OTHER
     }
 

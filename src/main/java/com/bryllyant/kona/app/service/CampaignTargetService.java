@@ -25,7 +25,7 @@ public interface CampaignTargetService
 
     List<CampaignTarget> fetchByChannelId(Long channelId);
 
-    CampaignTarget fetchByUrl(String url);
+    List<CampaignTarget> fetchByUrl(String url);
 
     CampaignTarget fetchByShortUrl(String shortUrl);
 
@@ -40,6 +40,16 @@ public interface CampaignTargetService
             String name,
             CampaignTarget.Type type,
             Long landingPageId,
+            Date startDate,
+            Date endDate
+    );
+
+    @Transactional
+    CampaignTarget create(
+            CampaignChannel channel,
+            String name,
+            CampaignTarget.Type type,
+            String url,
             Date startDate,
             Date endDate
     );

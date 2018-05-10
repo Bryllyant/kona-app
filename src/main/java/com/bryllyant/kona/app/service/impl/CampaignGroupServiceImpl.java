@@ -8,8 +8,9 @@ import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.app.entity.CampaignGroupExample;
 import com.bryllyant.kona.app.service.CampaignGroupService;
-import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.data.service.KAbstractService;
+import com.bryllyant.kona.util.KInflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class CampaignGroupServiceImpl
         if (campaignGroup.getUid() == null) {
             campaignGroup.setUid(uuid());
         }
+
+        String slug = KInflector.getInstance().slug(campaignGroup.getName());
+        campaignGroup.setSlug(slug);
 
         if (campaignGroup.getConversionCount() == null) {
             campaignGroup.setConversionCount(0);

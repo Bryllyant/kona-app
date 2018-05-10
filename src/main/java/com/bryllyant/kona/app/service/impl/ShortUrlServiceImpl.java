@@ -4,19 +4,25 @@
 package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.ShortUrlMapper;
+import com.bryllyant.kona.app.entity.Campaign;
+import com.bryllyant.kona.app.entity.CampaignAnalytics;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignTarget;
 import com.bryllyant.kona.app.entity.Script;
 import com.bryllyant.kona.app.entity.ShortUrl;
 import com.bryllyant.kona.app.entity.ShortUrlExample;
+import com.bryllyant.kona.app.service.CampaignAnalyticsService;
 import com.bryllyant.kona.app.service.CampaignChannelService;
+import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.service.CampaignTargetService;
-import com.bryllyant.kona.data.service.KAbstractService;
-import com.bryllyant.kona.data.service.KServiceException;
 import com.bryllyant.kona.app.service.ScriptService;
 import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.data.service.KAbstractService;
+import com.bryllyant.kona.data.service.KServiceException;
+import com.bryllyant.kona.http.KServletUtil;
+import com.bryllyant.kona.remote.service.KServiceClient;
 import com.bryllyant.kona.sequence.flake.KFlake;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KPassGen;
@@ -36,17 +42,20 @@ import java.util.Map;
 
 
 @Service(ShortUrlService.SERVICE_PATH)
-public class ShortUrlServiceImpl 
-		extends KAbstractService<ShortUrl,ShortUrlExample,ShortUrlMapper>
-		implements ShortUrlService {
-	
-	private static Logger logger = LoggerFactory.getLogger(ShortUrlServiceImpl.class);
+public class ShortUrlServiceImpl
+        extends KAbstractService<ShortUrl,ShortUrlExample,ShortUrlMapper>
+        implements ShortUrlService {
 
-	@Autowired
-	private ShortUrlMapper shortUrlMapper;
-    
-	@Autowired
-	private KConfig config;
+    private static Logger logger = LoggerFactory.getLogger(ShortUrlServiceImpl.class);
+
+    @Autowired
+    private ShortUrlMapper shortUrlMapper;
+
+    @Autowired
+    private KConfig config;
+
+    @Autowired
+    private CampaignService campaignService;
 
     @Autowired
     private CampaignChannelService campaignChannelService;
@@ -55,20 +64,23 @@ public class ShortUrlServiceImpl
     private CampaignTargetService campaignTargetService;
 
     @Autowired
+    private CampaignAnalyticsService campaignAnalyticsService;
+
+    @Autowired
     private ScriptService scriptService;
 
-	@Override @SuppressWarnings("unchecked")
-	protected ShortUrlMapper getMapper() {
-		return shortUrlMapper;
-	}
+    @Override @SuppressWarnings("unchecked")
+    protected ShortUrlMapper getMapper() {
+        return shortUrlMapper;
+    }
 
-	protected String getDefaultVanityDomain() {
-		return config.getString("shortUrl.domain");
-	}
-    
-	protected boolean useHttps() {
+    protected String getDefaultVanityDomain() {
+        return config.getString("shortUrl.domain");
+    }
+
+    protected boolean useHttps() {
         return config.getBoolean("shortUrl.https", false);
-	}
+    }
 
     protected String getLandingPageBaseUrl() {
         return config.getString("landingPage.baseUrl");
@@ -321,12 +333,25 @@ public class ShortUrlServiceImpl
     }
 
 
+    protected KServiceClient getServiceClient(HttpServletRequest req) {
+        KServiceClient client = new KServiceClient();
+        client.setHostname(KServletUtil.getClientHostname(req));
+        client.setUserAgent(KServletUtil.getClientUserAgent(req));
+        client.setLatitude(KServletUtil.getClientLatitude(req));
+        client.setLongitude(KServletUtil.getClientLongitude(req));
+        client.setReferrerUrl(KServletUtil.getClientReferer(req));
+        client.setRequestUrl(KServletUtil.getFullRequestURL(req));
+
+        return client;
+    }
+
     protected String getChannelRedirectUrl(HttpServletRequest req, ShortUrl shortUrl) {
         if (!shortUrl.isChannelRedirect()) {
             logger.info("ShortUrl is not a campaign channel redirect");
             return null;
         }
 
+        Campaign campaign = campaignService.fetchById(shortUrl.getCampaignId());
         CampaignChannel channel = campaignChannelService.fetchById(shortUrl.getChannelId());
 
         CampaignTarget campaignTarget = campaignChannelService.nextCampaignTarget(channel);
@@ -335,6 +360,29 @@ public class ShortUrlServiceImpl
             logger.info("No campaign targets for channel redirect");
             return null;
         }
+
+        KServiceClient client = getServiceClient(req);
+
+        boolean conversionEvent = false;
+
+        if (campaign.getKpi() == Campaign.KPI.WEBSITE_VISIT
+                && campaignTarget.getType() == CampaignTarget.Type.WEBSITE) {
+            conversionEvent = true;
+        }
+
+        // FIXME: this should be encapsulated in CampaignAnalyticsService. don't hardcode values here.
+        CampaignAnalytics analytics = campaignAnalyticsService.create(
+                client,
+                campaignTarget.getId(),
+                "screen-view",
+                "engagement",
+                campaignTarget.getUrl(),
+                null,
+                conversionEvent,
+                null,
+                null,
+                null
+        );
 
         return campaignTarget.getUrl();
 

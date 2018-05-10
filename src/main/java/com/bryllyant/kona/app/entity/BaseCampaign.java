@@ -16,12 +16,12 @@ public class BaseCampaign extends KBaseEntity implements Serializable {
 
     public enum KPI {
         WEBSITE_VISIT,
-        LINK_CLICK,
+        CONTENT_VIEW,
         PRODUCT_PURCHASE,
         APP_DOWNLOAD,
         USER_REGISTRATION,
         USER_ACTIVATION,
-        EMAIL_SUBMISSION,
+        CONTACT_SUBMISSION,
         VIDEO_VIEWED_5,
         VIDEO_VIEWED_10,
         VIDEO_VIEWED_15,
