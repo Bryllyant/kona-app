@@ -1,5 +1,20 @@
 package com.bryllyant.kona.util;
 
+import com.bryllyant.kona.locale.KValidator;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.naming.CommunicationException;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,21 +26,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.naming.CommunicationException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.bryllyant.kona.locale.KValidator;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 // Basically taken and modified from rgagnon: 
@@ -36,9 +38,13 @@ import com.bryllyant.kona.locale.KValidator;
 public class MailboxValidator {
 	private static Logger logger = LoggerFactory.getLogger(MailboxValidator.class);
 
-
 	private String fromDomain;
 	private String fromEmail;
+
+    private Cache<String, Optional<List<String>>> mxCache = Caffeine.newBuilder()
+            .expireAfterWrite(6, TimeUnit.HOURS)
+            .maximumSize(100_000)
+            .build();
 
 	public MailboxValidator(String fromEmail) {
 		this.fromEmail = fromEmail;
@@ -55,10 +61,12 @@ public class MailboxValidator {
 		};
 
 		MailboxValidator validator = new MailboxValidator(args[0]);
+
 		for (int ctr = 0; ctr < testData.length; ctr++) {
 			System.out.println(testData[ctr] + " is valid? "
-					+ validator.mayMailboxExist(testData[ctr]));
+					+ validator.mayMailboxExist(testData[ctr], false));
 		}
+
 		return;
 	}
 
@@ -79,114 +87,149 @@ public class MailboxValidator {
 
 	public boolean doesHostExist(String email) {
 		String host = email.substring(email.indexOf("@")+1);
+
 		try {
 			Inet4Address.getByName(host);
 		} catch (UnknownHostException e) {
-			logger.info("[mail validation] host of mail does not exist email="+email +" - "+ e.getMessage());
+			logger.info("[mail validation] host of mail does not exist email=" + email + " - " + e.getMessage());
 			return false;
 		}
+
 		return true;
 	}   
 
-	private ArrayList<String> getMX(String hostName) throws NamingException {
-		// Perform a DNS lookup for MX records in the domain
-		Hashtable<String, String> env = new Hashtable<String, String>();
-		env.put("java.naming.factory.initial",
-				"com.sun.jndi.dns.DnsContextFactory");
-		DirContext ictx = new InitialDirContext(env);
-		Attributes attrs = ictx.getAttributes(hostName, new String[] { "MX" });
-		Attribute attr = attrs.get("MX");
+	private List<String> getMX(String hostName) throws NamingException {
+	    Optional<List<String>> result = mxCache.getIfPresent(hostName);
 
-		// if we don't have an MX record, try the machine itself
-		if ((attr == null) || (attr.size() == 0)) {
-			attrs = ictx.getAttributes(hostName, new String[] { "A" });
-			attr = attrs.get("A");
-			if (attr == null)
-				throw new NamingException("No match for name '" + hostName
-						+ "'");
-		}
-		// Huzzah! we have machines to try. Return them as an array list
-		// NOTE: We SHOULD take the preference into account to be absolutely
-		// correct. This is left as an exercise for anyone who cares.
-		ArrayList<String> res = new ArrayList<String>();
-		NamingEnumeration<?> en = attr.getAll();
+	    // we don't have a value yet for this key
+	    if (result == null) {
+            // Perform a DNS lookup for MX records in the domain
+            Hashtable<String, String> env = new Hashtable<>();
 
-		while (en.hasMore()) {
-			String mailhost;
-			String x = (String) en.next();
-			String f[] = x.split(" ");
-			// THE fix *************
-			if (f.length == 1)
-				mailhost = f[0];
-			else if (f[1].endsWith("."))
-				mailhost = f[1].substring(0, (f[1].length() - 1));
-			else
-				mailhost = f[1];
-			// THE fix *************
-			res.add(mailhost);
-		}
+            env.put("java.naming.factory.initial",
+                    "com.sun.jndi.dns.DnsContextFactory");
 
-		logger.debug("MX hosts:\n" + KStringUtil.join(res, "\n"));
-		return res;
+            DirContext ictx = new InitialDirContext(env);
+            Attributes attrs = ictx.getAttributes(hostName, new String[]{"MX"});
+            Attribute attr = attrs.get("MX");
+
+            // if we don't have an MX record, try the machine itself
+            if ((attr == null) || (attr.size() == 0)) {
+                attrs = ictx.getAttributes(hostName, new String[]{"A"});
+
+                attr = attrs.get("A");
+
+                if (attr == null) {
+                    // add empty value to know we've processed this domain
+                    mxCache.put(hostName, Optional.empty());
+                    throw new NamingException("No match for name '" + hostName + "'");
+                }
+            }
+
+            // Huzzah! we have machines to try. Return them as an array list
+            // NOTE: We SHOULD take the preference into account to be absolutely
+            // correct. This is left as an exercise for anyone who cares.
+            List<String> records = new ArrayList<>();
+
+            NamingEnumeration<?> en = attr.getAll();
+
+            while (en.hasMore()) {
+                String mailhost;
+                String x = (String) en.next();
+                String f[] = x.split(" ");
+                // THE fix *************
+                if (f.length == 1)
+                    mailhost = f[0];
+                else if (f[1].endsWith("."))
+                    mailhost = f[1].substring(0, (f[1].length() - 1));
+                else
+                    mailhost = f[1];
+                // THE fix *************
+                records.add(mailhost);
+            }
+
+            logger.debug("MX hosts:\n" + KStringUtil.join(records, "\n"));
+
+            // cannot set null value using Optional.of().  user Optional.ofNullable() if the value can be null.
+            result = Optional.of(records);
+
+            mxCache.put(hostName, result);
+        }
+
+		return result.get();
 	}
 
-	public boolean mayMailboxExist( String address ) {
+	public boolean mayMailboxExist(String address, boolean tryConnectMX) {
 		if (!KValidator.isEmail(address) || !isValidEmailAddress(address)) {
 			return false;
 		}
 
 		// Find the separator for the domain name
-		int pos = address.indexOf( '@' );
+		int pos = address.indexOf('@');
 
 		// If the address does not contain an '@', it's not valid
 		if ( pos == -1 ) return false;
 
 		// Isolate the domain/machine name and get a list of mail exchangers
 		String domain = address.substring( ++pos );
-		ArrayList<String> mxList = null;
+
+		List<String> mxList = null;
+
 		try {
-			mxList = getMX( domain );
+			mxList = getMX(domain);
 		}
 		catch (CommunicationException ce) {
-			logger.info("[mail validation] got dns problems email="+address, ce);
+			logger.info("[mail validation] got dns problems email=" + address, ce);
 			return true;
 		} catch (NamingException ex) {
-			logger.info("[mail validation] got host naming exception for email="+address +" - "+ ex);
+			logger.info("[mail validation] got host naming exception for email=" + address +" - "+ ex);
 			return false;
 		}
 
-		// if we do not find an mx, we beleve the adress anyway
-		//if ( mxList.size() == 0 ) return true;
+		// if we do not find an mx, we believe the address anyway
+		// if ( mxList.size() == 0 ) return true;
         
-		if ( mxList.size() == 0 ) return false;
-        return true;
-        //return connectMX(address, mxList);
+		if (mxList.size() == 0) {
+		    return false;
+        }
 
+        if (tryConnectMX) {
+		    return connectMX(address, mxList);
+        }
+
+        return true;
 	}
     
 	public boolean connectMX(String address, List<String> mxList) {
 		// modification, SMa: mx only use the first mx
 		int mx = 0;
+
 		try {
 			int res;
 			//
 			String mxHost = mxList.get(mx);
+
 			logger.debug("Connecting to " + mxHost + " ...");
 
 			Socket skt = new Socket(mxHost, 25);
+
 			BufferedReader rdr = new BufferedReader
 					( new InputStreamReader( skt.getInputStream() ) );
+
 			BufferedWriter wtr = new BufferedWriter
 					( new OutputStreamWriter( skt.getOutputStream() ) );
 
 			res = hear( rdr );
+
 			if ( res != 220 ) {
 				skt.close();
 				throw new Exception( "Invalid header" );
 			}
+
 			say( wtr, "EHLO "+ this.fromDomain );
 
 			res = hear( rdr );
+
 			if ( res != 250 ) {
 				skt.close();
 				throw new Exception( "Not ESMTP" );
@@ -194,13 +237,16 @@ public class MailboxValidator {
 
 			// validate the sender address              
 			say( wtr, "MAIL FROM: <"+this.fromEmail+">" );
+
 			res = hear( rdr );
+
 			if ( res != 250 ) {
 				skt.close();
 				throw new Exception( "Sender rejected" );
 			}
 
 			say( wtr, "RCPT TO: <" + address + ">" );
+
 			res = hear( rdr );
 
 			// be polite
@@ -212,13 +258,14 @@ public class MailboxValidator {
 			skt.close();
 
 			if ( res == 550 ) {
-				logger.info("[mail validation] got response SMTP 550 for email="+address);
+				logger.info("[mail validation] got response SMTP 550 for email=" + address);
 				return false;
 			}
 
 		} catch (Exception e) {
-			logger.info("[mail validation] remote mail validation error. Accepting email anyway: email="+address +" - "+ e.getMessage());
+			logger.info("[mail validation] remote mail validation error. Accepting email anyway: email=" + address + " - " + e.getMessage());
 		}
+
 		return true;
 	}
 

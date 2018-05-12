@@ -808,7 +808,7 @@ public class EmailServiceImpl
         for (EmailGroupAddress ega : addressList) {
             EmailAddress address = emailAddressService.fetchById(ega.getAddressId());
 
-            if (!emailAddressService.isValid(address)) {
+            if (!emailAddressService.isValid(address, false)) {
                 logger.debug("deliver: emailAddress is invalid: " + address.getEmail());
                 continue;
             }
@@ -882,7 +882,7 @@ public class EmailServiceImpl
             address = emailAddressService.save(address);
         }
 
-        if (!emailAddressService.isValid(address)) {
+        if (!emailAddressService.isValid(address, false)) {
             throw new EmailException("deliver: emailAddress is invalid: " + address.getEmail());
         }
 

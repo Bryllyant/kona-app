@@ -77,13 +77,13 @@ public class EmailGroupServiceImpl
 
 
     @Override
-    public EmailGroupAddress addGroupAddress(String slug, String email) {
+    public EmailGroupAddress addGroupAddress(String slug, String email, boolean forceScrub) {
         EmailGroup group = fetchBySlug(slug);
-        return addGroupAddress(group.getId(), email);
+        return addGroupAddress(group.getId(), email, forceScrub);
     }
 
 
-    private EmailGroupAddress addGroupAddress(Long groupId, String email) {
+    private EmailGroupAddress addGroupAddress(Long groupId, String email, boolean forceScrub) {
         EmailAddress address = emailAddressService.fetchByEmail(email);
 
         if (address == null) {
@@ -94,7 +94,7 @@ public class EmailGroupServiceImpl
             address = emailAddressService.add(address);
         }
 
-        if (!emailAddressService.isValid(address)) {
+        if (!emailAddressService.isValid(address, forceScrub)) {
             throw new EmailException("Invalid email address: " + email);
         }
 
@@ -119,35 +119,38 @@ public class EmailGroupServiceImpl
 
 
     @Override
-    public void addGroupAddressList(String slug, List<EmailAddress> emailAddressList) {
+    public void addGroupAddressList(String slug, List<EmailAddress> emailAddressList, boolean forceScrub) {
         EmailGroup group = fetchBySlug(slug);
 
         Date now = new Date();
         for (EmailAddress address : emailAddressList) {
-            EmailGroupAddress ga = new EmailGroupAddress();
-            ga.setAddressId(address.getId());
-            ga.setGroupId(group.getId());
-            ga.setCreatedDate(now);
-            emailGroupAddressService.add(ga);
+            boolean valid = emailAddressService.isValid(address, forceScrub);
+
+            if (valid) {
+                EmailGroupAddress ga = new EmailGroupAddress();
+                ga.setAddressId(address.getId());
+                ga.setGroupId(group.getId());
+                ga.setCreatedDate(now);
+                emailGroupAddressService.add(ga);
+            }
         }
     }
 
 
-
     @Override
-    public EmailGroup create(String groupName, List<String> emailList) {
+    public EmailGroup create(String groupName, List<String> emailList, boolean forceScrub) {
         EmailGroup group = create(groupName);
+
         for (String email : emailList) {
             try {
-                addGroupAddress(group.getId(), email);
+                addGroupAddress(group.getId(), email, forceScrub);
             } catch (EmailException e) {
                 logger.warn("Cound not add email [{}] to group [{}]", email, groupName);
             }
         }
+
         return group;
     }
-
-
 
     @Override
     public EmailGroup create(String groupName) {
@@ -167,21 +170,20 @@ public class EmailGroupServiceImpl
      * @param excludeGroupList (optional) don't include emails contained in the listed groups
      */
     @Override
-    public EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList) {
+    public EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList, boolean forceScrub) {
         EmailGroup group = create(groupName);
 
         if (maxCount != null) {
+
             List<EmailAddress> emailAddressList = emailAddressService.fetchRandom(maxCount, sourceList, excludeGroupList);
 
             if (emailAddressList.size() == 0) {
                 logger.warn("EmailAddress fetchRandom yielded no results");
             }
 
-            addGroupAddressList(groupName, emailAddressList);
+            addGroupAddressList(groupName, emailAddressList, forceScrub);
         }
 
         return group;
     }
-	
-    
 }

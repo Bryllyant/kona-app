@@ -82,19 +82,7 @@ public class CampaignTargetServiceImpl
         String slug = KInflector.getInstance().slug(campaignTarget.getName());
         campaignTarget.setSlug(slug);
 
-        if (campaignTarget.getLandingPageId() != null && campaignTarget.getUrl() == null) {
-            String uid = campaignTarget.getUid();
 
-            String targetUrl = getLandingPageBaseUrl();
-
-            if (!targetUrl.endsWith("/")) {
-                targetUrl += "/";
-            }
-
-            targetUrl += uid + "/";
-
-            campaignTarget.setUrl(targetUrl);
-        }
 
 
 
@@ -155,6 +143,11 @@ public class CampaignTargetServiceImpl
 
     @Override @Transactional
     public CampaignTarget create(CampaignChannel channel, CampaignTarget target) {
+        if (target.getUid() != null) {
+            throw new KServiceException("CampaignTarget object has non-null 'uid' field");
+        }
+
+        target.setUid(uuid());
         target.setCampaignId(channel.getCampaignId());
         target.setGroupId(channel.getGroupId());
         target.setChannelId(channel.getId());
@@ -168,49 +161,54 @@ public class CampaignTargetServiceImpl
             target.setEndDate(channel.getEndDate());
         }
 
+        if (target.getLandingPageId() != null && target.getUrl() == null) {
+            String uid = target.getUid();
 
+            String targetUrl = getLandingPageBaseUrl();
+
+            if (!targetUrl.endsWith("/")) {
+                targetUrl += "/";
+            }
+
+            targetUrl += uid + "/";
+
+            target.setUrl(targetUrl);
+        }
+
+        if (target.getUrl() != null) {
+            String url = getDecoratedUrl(channel, target.getType(), target.getUrl());
+            target.setUrl(url);
+        }
 
         return add(target);
     }
 
-    @Override @Transactional
-    public CampaignTarget create(
+//    @Override @Transactional
+//    public CampaignTarget create(
+//            CampaignChannel channel,
+//            String name,
+//            CampaignTarget.Type type,
+//            Long landingPageId,
+//            Date startDate,
+//            Date endDate
+//    ) {
+//        CampaignTarget target = getEntityObject();
+//
+//        target.setName(name);
+//        target.setType(type);
+//        target.setLandingPageId(landingPageId);
+//        target.setEnabled(true);
+//        target.setStartDate(startDate);
+//        target.setEndDate(endDate);
+//
+//        return create(channel, target);
+//    }
+
+    protected String getDecoratedUrl(
             CampaignChannel channel,
-            String name,
             CampaignTarget.Type type,
-            Long landingPageId,
-            Date startDate,
-            Date endDate
+            String url
     ) {
-        CampaignTarget target = getEntityObject();
-
-        target.setName(name);
-        target.setType(type);
-        target.setLandingPageId(landingPageId);
-        target.setEnabled(true);
-        target.setStartDate(startDate);
-        target.setEndDate(endDate);
-
-        return create(channel, target);
-    }
-
-    @Override @Transactional
-    public CampaignTarget create(
-            CampaignChannel channel,
-            String name,
-            CampaignTarget.Type type,
-            String url,
-            Date startDate,
-            Date endDate
-    ) {
-        CampaignTarget target = getEntityObject();
-
-        target.setName(name);
-        target.setType(type);
-        target.setEnabled(true);
-        target.setStartDate(startDate);
-        target.setEndDate(endDate);
-
 
         if (url == null) {
             throw new KServiceException("CampaignTarget: create: url must be set");
@@ -310,9 +308,8 @@ public class CampaignTargetServiceImpl
         // https://blog.attributionapp.com/lets-solve-ios-attribution-methods
 
 
-        target.setUrl(url);
 
 
-        return create(channel, target);
+        return url;
     }
 }

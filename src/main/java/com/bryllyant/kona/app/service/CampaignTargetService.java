@@ -9,7 +9,6 @@ import com.bryllyant.kona.data.service.KEntityService;
 import com.bryllyant.kona.remote.service.KService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 public interface CampaignTargetService
@@ -34,23 +33,23 @@ public interface CampaignTargetService
     @Transactional
     CampaignTarget create(CampaignChannel channel, CampaignTarget target);
 
-    @Transactional
-    CampaignTarget create(
-            CampaignChannel channel,
-            String name,
-            CampaignTarget.Type type,
-            Long landingPageId,
-            Date startDate,
-            Date endDate
-    );
-
-    @Transactional
-    CampaignTarget create(
-            CampaignChannel channel,
-            String name,
-            CampaignTarget.Type type,
-            String url,
-            Date startDate,
-            Date endDate
-    );
+//    @Transactional
+//    CampaignTarget create(
+//            CampaignChannel channel,
+//            String name,
+//            CampaignTarget.Type type,
+//            Long landingPageId,
+//            Date startDate,
+//            Date endDate
+//    );
+//
+//    @Transactional
+//    CampaignTarget create(
+//            CampaignChannel channel,
+//            String name,
+//            CampaignTarget.Type type,
+//            String url,
+//            Date startDate,
+//            Date endDate
+//    );
 }

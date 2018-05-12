@@ -134,6 +134,23 @@ echo
 echo
 }
 
+function fetchSources {
+    FILE=$1
+
+    x=$(cat <<EOF
+
+    List<Map<String,Object>> fetchSources();
+}
+EOF
+)
+
+echo "updateSelectByUserId: Updating $FILE ..."
+$SED 's/}//g' $DAO_DIR/$FILE
+echo "$x" >> $DAO_DIR/$FILE
+echo
+echo
+}
+
 #  ----------------------------------------------------------------------------
 
 function updateCoordsMapper {
@@ -191,6 +208,7 @@ updateSelectProximate Token TokenMapper.java
 
 updatePresence User UserMapper.java
 fetchRandom EmailAddress EmailAddressMapper.java
+fetchSources EmailAddressMapper.java
 #fetchByUserIds PushDevice PushDeviceMapper.java
 
 

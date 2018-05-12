@@ -410,7 +410,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.data.entity.KBaseEntity"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EmailAddress,EmailAddressExample&gt;" />
-            <property name="fullTextColumns" value="uid,first_name,last_name,email,mobile_number,postal_code"/>
+            <property name="fullTextColumns" value="uid,first_name,last_name,email,mobile_number,source,postal_code"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="scrubbed" javaType="boolean" />
             <columnOverride column="enabled" javaType="boolean" />

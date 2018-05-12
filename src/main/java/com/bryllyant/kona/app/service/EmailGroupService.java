@@ -17,15 +17,15 @@ public interface EmailGroupService extends KService, KEntityService<EmailGroup> 
 
     EmailGroup create(String groupName);
 
-    EmailGroup create(String groupName, List<String> emailList);
+    EmailGroup create(String groupName, List<String> emailList, boolean forceScrub);
 
-    EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList);
+    EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList, boolean forceScrub);
 
     EmailGroup fetchBySlug(String slug);
 
-    EmailGroupAddress addGroupAddress(String slug, String email);
+    EmailGroupAddress addGroupAddress(String slug, String email, boolean forceScrub);
 
-    void addGroupAddressList(String slug, List<EmailAddress> address);
+    void addGroupAddressList(String slug, List<EmailAddress> address, boolean forceScrub);
 
     EmailGroupAddress removeGroupAddress(String slug, String email);
 

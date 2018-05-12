@@ -258,33 +258,29 @@ public abstract class BaseController {
     }
 
 
-
     protected <T extends KModel> ResponseEntity<T> ok(T model, HttpHeaders httpHeaders) {
         return new ResponseEntity<T>(model, httpHeaders, HttpStatus.OK);
     }
-
-
 
     protected ResponseEntity<Map<String,Object>> ok(Map<String,Object> map) {
         return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
     }
 
-
-
     protected <T extends KModel> ResponseEntity<T> ok(T model) {
         return new ResponseEntity<T>(model, HttpStatus.OK);
     }
     
-
-
     protected ResponseEntity<List<Map<String,Object>>> ok(List<Map<String,Object>> list) {
         return new ResponseEntity<List<Map<String,Object>>>(list, HttpStatus.OK);
     }
 
 
-
     protected <T extends KModel> ResponseEntity<List<T>> okList(List<T> list) {
         return new ResponseEntity<List<T>>(list, HttpStatus.OK);
+    }
+
+    protected <T extends KModel> ResponseEntity<List<T>> okList(List<T> list, HttpHeaders httpHeaders) {
+        return new ResponseEntity<List<T>>(list, httpHeaders, HttpStatus.OK);
     }
 
     protected <T extends KModel> ResponseEntity<ModelResultSet<T>> okList(ModelResultSet<T> result) {
@@ -292,18 +288,9 @@ public abstract class BaseController {
     }
 
 
-
     protected ResponseEntity<List<Map<String,Object>>> ok(List<Map<String,Object>> list, HttpHeaders httpHeaders) {
         return new ResponseEntity<List<Map<String,Object>>>(list, httpHeaders, HttpStatus.OK);
     }
-
-
-
-    protected <T extends KModel> ResponseEntity<List<T>> okList(List<T> list, HttpHeaders httpHeaders) {
-        return new ResponseEntity<List<T>>(list, httpHeaders, HttpStatus.OK);
-    }
-    
-
 
     protected ApiLog logApiRequest(HttpServletRequest req, String endPoint) {
         return logApiRequest(req, endPoint, (String[]) null);

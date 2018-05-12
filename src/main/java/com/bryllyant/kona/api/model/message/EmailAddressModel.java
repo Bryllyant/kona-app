@@ -12,12 +12,14 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
 
     private String uid;
     private UserModel user;
+    private String advertiserId;
+    private String platform;
     private String firstName;
     private String lastName;
     private String email;
     private String mobileNumber;
     private String gender;
-    private Integer birthYear;
+    private Date birthDate;
     private String company;
     private String title;
     private String extra;
@@ -73,6 +75,22 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
         this.set("user", user);
     }
 
+    public String getAdvertiserId() {
+        return advertiserId;
+    }
+
+    public void setAdvertiserId(String advertiserId) {
+        this.set("advertiserId", advertiserId);
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.set("platform", platform);
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -113,12 +131,12 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
         this.set("gender", gender);
     }
 
-    public Integer getBirthYear() {
-        return birthYear;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthYear(Integer birthYear) {
-        this.set("birthYear", birthYear);
+    public void setBirthDate(Date birthDate) {
+        this.set("birthDate", birthDate);
     }
 
     public String getCompany() {

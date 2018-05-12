@@ -369,6 +369,29 @@ public class AppUtil {
         }
     }
 
+    public List<Map<String,Object>> camelCaseKeys(List<Map<String,Object>> mapList) {
+        if (mapList == null) return null;
+
+        List<Map<String,Object>> result = new ArrayList<>();
+
+        for (Map<String, Object> map : mapList) {
+            result.add(camelCaseKeys(map));
+        }
+
+        return result;
+    }
+
+    public List<Map<String,Object>> snakeCaseKeys(List<Map<String,Object>> mapList) {
+        if (mapList == null) return null;
+
+        List<Map<String,Object>> result = new ArrayList<>();
+
+        for (Map<String, Object> map : mapList) {
+            result.add(snakeCaseKeys(map));
+        }
+
+        return result;
+    }
 
 
     public Map<String, Object> camelCaseKeys(Map<String, Object> map) {
@@ -377,7 +400,7 @@ public class AppUtil {
             return null;
         }
 
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
 
         for (String key : map.keySet()) {
             String camelCaseKey = KInflector.getInstance().camelCase(key.trim().toLowerCase(), false);

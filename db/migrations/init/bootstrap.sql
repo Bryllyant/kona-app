@@ -1800,7 +1800,7 @@ CREATE TABLE `kona__email_address` (
 
   KEY `ix_kona__email_address_user` (`user_id`),
 
-  FULLTEXT KEY `ft_kona_email_address` (uid,first_name,last_name,email,mobile_number,postal_code),
+  FULLTEXT KEY `ft_kona_email_address` (uid,first_name,last_name,email,mobile_number,source,postal_code),
 
   CONSTRAINT `fk_kona__email_address_user` FOREIGN KEY (`user_id`) 
         REFERENCES `kona__user` (`id`) ON DELETE SET NULL
