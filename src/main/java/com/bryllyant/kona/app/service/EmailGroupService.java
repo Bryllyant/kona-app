@@ -8,6 +8,7 @@ import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.EmailGroupAddress;
 import com.bryllyant.kona.data.service.KEntityService;
 import com.bryllyant.kona.remote.service.KService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,12 +24,15 @@ public interface EmailGroupService extends KService, KEntityService<EmailGroup> 
 
     EmailGroup fetchBySlug(String slug);
 
-    EmailGroupAddress addGroupAddress(String slug, String email, boolean forceScrub);
+    EmailGroupAddress addGroupAddress(EmailGroup group, String email, boolean forceScrub);
 
-    void addGroupAddressList(String slug, List<EmailAddress> address, boolean forceScrub);
+    void addGroupAddressList(EmailGroup group, List<EmailAddress> address, boolean forceScrub);
 
-    EmailGroupAddress removeGroupAddress(String slug, String email);
+    @Transactional
+    EmailGroupAddress addGroupAddress(EmailGroup group, EmailAddress address, boolean forceScrub);
 
-    List<EmailGroupAddress> fetchGroupAddressList(String slug);
+    EmailGroupAddress removeGroupAddress(EmailGroup group, EmailAddress address);
+
+    List<EmailGroupAddress> fetchGroupAddressList(EmailGroup group);
 	
 }

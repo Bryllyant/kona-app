@@ -16,6 +16,8 @@ import java.util.Map;
 public interface EmailAddressService extends KService, KEntityService<EmailAddress> {
 	String SERVICE_PATH = "rpc/EmailAddressService";
 
+    EmailAddress create(EmailAddress address);
+
     EmailAddress fetchByEmail(String email);
 
     List<Map<String,Object>> fetchSources(boolean nocache);

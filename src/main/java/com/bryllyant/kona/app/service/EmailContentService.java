@@ -15,5 +15,5 @@ import java.util.List;
 public interface EmailContentService extends KService, KEntityService<EmailContent> {
 	String SERVICE_PATH = "rpc/EmailContentService";
 
-    EmailContent create(Long ownerId, String html, String text, List<File> attachments) throws IOException;
+    EmailContent create(Long ownerId, String name, String html, String text, List<File> attachments) throws IOException;
 }

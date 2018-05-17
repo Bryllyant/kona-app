@@ -65,8 +65,7 @@ public class EmailGroupController extends BaseController {
 
 //        if (sortOrder == null) {
 //            sortOrder = new String[]{
-//                "source",
-//                "createdDate DESC"
+//                "createdDate"
 //            };
 //        }
 
@@ -111,11 +110,20 @@ public class EmailGroupController extends BaseController {
     ) {
         logApiRequest(req, "POST /admin/messages/emails/groups");
 
+
         Map<String,Object> options = super.toFilterCriteria(opts); // returns keys in camelCase
+
+        logger.debug("create called: options: " + KJsonUtil.toJson(options));
+
         Long maxCount = util.getLongValue(options.get("maxCount"));
         List<String> sourceList = (List<String>)(options.get("sources"));
         List<String> excludeGroupList = (List<String>)(options.get("excludeGroups"));
         Boolean forceScrub = util.getBooleanValue(options.get("forceScrub"), true);
+
+        logger.debug("create called: maxCount: {}", maxCount);
+        logger.debug("create called: sourceList: {}", KJsonUtil.toJson(sourceList));
+        logger.debug("create called: excludeGroupList: {}", KJsonUtil.toJson(excludeGroupList));
+        logger.debug("create called: forceScrub: {}", forceScrub);
 
         EmailGroup emailGroup = emailGroupService.create(model.getName(), maxCount, sourceList, excludeGroupList, forceScrub);
 

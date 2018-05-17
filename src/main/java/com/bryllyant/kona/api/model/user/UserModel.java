@@ -65,6 +65,7 @@ public class UserModel extends PersonModel implements KEntityModel {
     public static UserModel from(User user) {
         UserModel model = new UserModel();
         model.setUid(user.getUid());
+        model.setUsername(user.getUsername());
         model.setDisplayName(user.getDisplayName());
         return model;
     }

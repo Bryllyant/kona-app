@@ -1,9 +1,6 @@
 package com.bryllyant.kona.api.model.message;
 
 
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignChannelModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignGroupModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignModel;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
@@ -14,10 +11,7 @@ public class EmailModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
 
     private String uid;
-    private CampaignModel campaign;
-    private CampaignGroupModel campaignGroup;
-    private CampaignChannelModel campaignChannel;
-    private EmailGroupModel emailGroup;
+    private EmailCampaignModel emailCampaign;
     private EmailAddressModel emailAddress;
     private EmailContentModel emailContent;
     private String sesId;
@@ -61,36 +55,12 @@ public class EmailModel extends KJsonModel implements KEntityModel {
         this.set("uid", uid);
     }
 
-    public CampaignModel getCampaign() {
-        return campaign;
+    public EmailCampaignModel getEmailCampaign() {
+        return emailCampaign;
     }
 
-    public void setCampaign(CampaignModel campaign) {
-        this.set("campaign", campaign);
-    }
-
-    public CampaignGroupModel getCampaignGroup() {
-        return campaignGroup;
-    }
-
-    public void setCampaignGroup(CampaignGroupModel campaignGroup) {
-        this.set("campaignGroup", campaignGroup);
-    }
-
-    public CampaignChannelModel getCampaignChannel() {
-        return campaignChannel;
-    }
-
-    public void setCampaignChannel(CampaignChannelModel campaignChannel) {
-        this.set("campaignChannel", campaignChannel);
-    }
-
-    public EmailGroupModel getEmailGroup() {
-        return emailGroup;
-    }
-
-    public void setEmailGroup(EmailGroupModel emailGroup) {
-        this.set("emailGroup", emailGroup);
+    public void setEmailCampaign(EmailCampaignModel emailCampaign) {
+        this.set("emailCampaign", emailCampaign);
     }
 
     public EmailAddressModel getEmailAddress() {

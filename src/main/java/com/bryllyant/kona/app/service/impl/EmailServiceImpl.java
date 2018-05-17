@@ -14,38 +14,40 @@ import com.amazonaws.services.simpleemail.model.SendRawEmailResult;
 import com.amazonaws.services.sqs.model.Message;
 import com.bryllyant.kona.app.dao.EmailEventMapper;
 import com.bryllyant.kona.app.dao.EmailMapper;
-import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailAddress;
 import com.bryllyant.kona.app.entity.EmailAttachment;
+import com.bryllyant.kona.app.entity.EmailCampaign;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailEvent;
 import com.bryllyant.kona.app.entity.EmailExample;
-import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.EmailGroupAddress;
+import com.bryllyant.kona.app.entity.EmailTemplate;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.model.EmailFooter;
 import com.bryllyant.kona.app.model.EmailStats;
-import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.EmailAddressService;
 import com.bryllyant.kona.app.service.EmailAttachmentService;
+import com.bryllyant.kona.app.service.EmailCampaignService;
 import com.bryllyant.kona.app.service.EmailContentService;
+import com.bryllyant.kona.app.service.EmailException;
 import com.bryllyant.kona.app.service.EmailGroupAddressService;
 import com.bryllyant.kona.app.service.EmailGroupService;
 import com.bryllyant.kona.app.service.EmailService;
+import com.bryllyant.kona.app.service.EmailTemplateService;
 import com.bryllyant.kona.app.service.FileService;
-import com.bryllyant.kona.data.service.KAbstractService;
-import com.bryllyant.kona.app.service.EmailException;
 import com.bryllyant.kona.app.service.QueueService;
 import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.mailer.KMailer;
 import com.bryllyant.kona.mailer.KMailerException;
 import com.bryllyant.kona.templates.KTemplate;
 import com.bryllyant.kona.templates.KTemplateException;
+import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KDateUtil;
 import com.bryllyant.kona.util.KJsonUtil;
 import com.bryllyant.kona.util.KUtil;
@@ -59,6 +61,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
@@ -113,6 +117,9 @@ public class EmailServiceImpl
     private EmailContentService emailContentService;
 
     @Autowired
+    private EmailTemplateService emailTemplateService;
+
+    @Autowired
     private EmailAttachmentService emailAttachmentService;
 
     @Autowired
@@ -125,7 +132,10 @@ public class EmailServiceImpl
     private FileService fileService;
 
     @Autowired
-    private CampaignChannelService campaignChannelService;
+    private AppUtil util;
+
+    @Autowired
+    private EmailCampaignService emailCampaignService;
 
     private AmazonSimpleEmailServiceClient client = null;
 
@@ -138,6 +148,30 @@ public class EmailServiceImpl
     @Override
     public String getEmailTestDomain() {
         return config.getString("email.testDomain");
+    }
+
+    // called once when service is initialized
+    @PostConstruct
+    public void init() {
+        String env = System.getProperty("env");
+
+        logger.debug("[init] env: {}", env);
+
+        if (env != null && env.equalsIgnoreCase("prod")) {
+            new Thread(() -> {
+                processSESNotifications();
+                util.sleep(5 * 60 * 1000L );
+            }).start();
+        }
+    }
+
+
+
+    // called once before service is shutdown
+    @PreDestroy
+    public void destroy() {
+        logger.debug("[destroy] called ...");
+
     }
 
 
@@ -608,64 +642,23 @@ public class EmailServiceImpl
     }
 
     @Override
-    public List<Email> fetchByCampaignId(Long campaignId) {
-        Map<String,Object> filter = KMyBatisUtil.createFilter("campaignId", campaignId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+    public List<Email> fetchByEmailCampaignId(Long emailCampaignId) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("emailCampaignId", emailCampaignId);
+        return fetchByCriteria(0, 9999999, null, filter, false);
     }
 
 
     @Override
-    public List<Email> fetchByCampaignGroupId(Long campaignGroupId) {
-        Map<String,Object> filter = KMyBatisUtil.createFilter("campaignGroupId", campaignGroupId);
-        return fetchByCriteria(0, 99999, null, filter, false);
-    }
-
-    @Override
-    public List<Email> fetchByCampaignChannelId(Long campaignChannelId) {
-        Map<String,Object> filter = KMyBatisUtil.createFilter("campaignChannelId", campaignChannelId);
-        return fetchByCriteria(0, 99999, null, filter, false);
-    }
-
-    @Override
-    public Email fetchByCampaignChannelIdAndToId(Long campaignChannelId, Long emailAddressId) {
-        Map<String,Object> filter = KMyBatisUtil.createFilter("campaignChannelId", campaignChannelId);
+    public Email fetchByEmailCampaignIdAndToId(Long emailCampaignId, Long emailAddressId) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("emailCampaignId", emailCampaignId);
         filter.put("emailAddressId", emailAddressId);
         return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
     }
 
-    @Override
-    public List<Email> fetchByEmailGroupId(Long emailGroupId) {
-        Map<String,Object> filter = KMyBatisUtil.createFilter("emailGroupId", emailGroupId);
-        return fetchByCriteria(0, 99999, null, filter, false);
-    }
 
     @Override
-    public List<Email> fetchByEmailGroupSlug(String emailGroupSlug) {
-        EmailGroup group = emailGroupService.fetchBySlug(emailGroupSlug);
-        return fetchByEmailGroupId(group.getId());
-    }
-
-    @Override
-    public EmailStats calcStatsByGroupSlug(String groupSlug) {
-        List<Email> emailList = fetchByEmailGroupSlug(groupSlug);
-        return calcStats(emailList);
-    }
-
-    @Override
-    public EmailStats calcStatsByCampaignId(Long campaignId) {
-        List<Email> emailList = fetchByCampaignId(campaignId);
-        return calcStats(emailList);
-    }
-
-    @Override
-    public EmailStats calcStatsByCampaignGroupId(Long campaignGroupId) {
-        List<Email> emailList = fetchByCampaignGroupId(campaignGroupId);
-        return calcStats(emailList);
-    }
-
-    @Override
-    public EmailStats calcStatsByCampaignChannelId(Long campaignChannelId) {
-        List<Email> emailList = fetchByCampaignChannelId(campaignChannelId);
+    public EmailStats calcStatsByEmailCampaignId(Long emailCampaignId) {
+        List<Email> emailList = fetchByEmailCampaignId(emailCampaignId);
         return calcStats(emailList);
     }
 
@@ -706,29 +699,35 @@ public class EmailServiceImpl
             if (email.getForwardCount() > 0) 	forwarded += 1.0;
         }
 
-        failedRate = failed / emailCount;
-        deliveredRate = delivered / emailCount;
-        bouncedRate = bounced / emailCount;
-        complainedRate = complained / emailCount;
-        optedOutRate = optedOut / emailCount;
 
-        openedAllRate = opened / emailCount;
-        openedDeliveredRate = opened / delivered;
+        if (emailCount > 0) {
+            failedRate = failed / emailCount;
+            deliveredRate = delivered / emailCount;
+            bouncedRate = bounced / emailCount;
+            complainedRate = complained / emailCount;
+            optedOutRate = optedOut / emailCount;
 
-        clickedAllRate = clicked / emailCount;
-        clickedDeliveredRate = clicked / delivered;
-        clickedOpenedRate = clicked / opened;
+            openedAllRate = opened / emailCount;
+            clickedAllRate = clicked / emailCount;
+            printedAllRate = printed / emailCount;
+            forwardedAllRate = forwarded / emailCount;
+        }
 
-        printedAllRate = printed / emailCount;
-        printedDeliveredRate = printed / delivered;
-        printedOpenedRate = printed / opened;
+        if (delivered > 0) {
+            openedDeliveredRate = opened / delivered;
+            clickedDeliveredRate = clicked / delivered;
+            printedDeliveredRate = printed / delivered;
+            forwardedDeliveredRate = forwarded / delivered;
+        }
 
-        forwardedAllRate = forwarded / emailCount;
-        forwardedDeliveredRate = forwarded / delivered;
-        forwardedOpenedRate = forwarded / opened;
-
+        if (opened > 0) {
+            clickedOpenedRate = clicked / opened;
+            printedOpenedRate = printed / opened;
+            forwardedOpenedRate = forwarded / opened;
+        }
 
         EmailStats stats = new EmailStats();
+
         stats.setEmailCount(emailCount);
         stats.setFailed(failed);
         stats.setDelivered(delivered);
@@ -768,8 +767,7 @@ public class EmailServiceImpl
 
     @Override
     public void deliver(
-            Long campaignChannelId,
-            Long emailGroupId,
+            EmailCampaign emailCampaign,
             String fromAddress,
             String replyTo,
             String subject,
@@ -782,8 +780,8 @@ public class EmailServiceImpl
 
         try {
             User systemUser = userService.getSystemUser();
-            EmailContent content = emailContentService.create(systemUser.getId(), html, text, attachmentList);
-            deliver(campaignChannelId, emailGroupId, fromAddress, replyTo, subject, content, footer, throttleTime);
+            EmailContent content = emailContentService.create(systemUser.getId(), null, html, text, attachmentList);
+            deliver(emailCampaign, fromAddress, replyTo, subject, content, footer, throttleTime);
         } catch (Exception e) {
             throw new EmailException(e);
         }
@@ -793,8 +791,7 @@ public class EmailServiceImpl
 
     @Override
     public void deliver(
-            Long campaignChannelId,
-            Long emailGroupId,
+            EmailCampaign emailCampaign,
             String fromAddress,
             String replyTo,
             String subject,
@@ -803,7 +800,20 @@ public class EmailServiceImpl
             Long throttleTime
     ) throws EmailException {
 
-        List<EmailGroupAddress> addressList = emailGroupAddressService.fetchByGroupId(emailGroupId);
+        List<File> attachments = null;
+
+        try {
+            List<EmailAttachment> _attachments = emailAttachmentService.fetchByContentId(content.getId());
+
+            for (EmailAttachment _attachment : _attachments) {
+                File file = fileService.fetchById(_attachment.getFileId(), true);
+                attachments.add(file);
+            }
+        } catch (IOException e) {
+            throw new EmailException(e);
+        }
+
+        List<EmailGroupAddress> addressList = emailGroupAddressService.fetchByGroupId(emailCampaign.getEmailGroupId());
 
         for (EmailGroupAddress ega : addressList) {
             EmailAddress address = emailAddressService.fetchById(ega.getAddressId());
@@ -813,13 +823,11 @@ public class EmailServiceImpl
                 continue;
             }
 
-            deliver(campaignChannelId, emailGroupId, address, fromAddress, replyTo, subject, content, footer);
+            deliver(emailCampaign, address, fromAddress, replyTo, subject, content, attachments, footer);
 
             throttle(throttleTime);
         }
     }
-
-
 
     @Override
     public Email deliver(
@@ -834,7 +842,7 @@ public class EmailServiceImpl
 
         try {
             User systemUser = userService.getSystemUser();
-            EmailContent content = emailContentService.create(systemUser.getId(), html, text, attachmentList);
+            EmailContent content = emailContentService.create(systemUser.getId(), null, html, text, attachmentList);
 
             return deliver(from, replyTo, to, subject, content, footer);
         } catch (Exception e) {
@@ -882,68 +890,9 @@ public class EmailServiceImpl
             address = emailAddressService.save(address);
         }
 
-        if (!emailAddressService.isValid(address, false)) {
+        if (!emailAddressService.isValid(address, true)) {
             throw new EmailException("deliver: emailAddress is invalid: " + address.getEmail());
         }
-
-        //logger.debug("deliver: address: " + KJsonUtil.toJson(address));
-
-        return deliver(null, null, address, from, replyTo, subject, content, footer);
-    }
-
-
-
-
-    /**
-     * Send and track email messages.
-     *
-     * NOTE: processSESNotifications() needs to be called manually after this method completes.
-     *
-     * @param campaignChannelId
-     * @param emailGroupId
-     * @param address
-     * @param fromAddress
-     * @param replyTo
-     * @param subject
-     * @param content
-     * @param footer
-     * @throws EmailException
-     */
-    private Email deliver(
-            Long campaignChannelId,
-            Long emailGroupId,
-            EmailAddress address,
-            String fromAddress,
-            String replyTo,
-            String subject,
-            EmailContent content,
-            EmailFooter footer
-    ) throws EmailException {
-
-        String toAddress = formatAddress(address);
-
-        // make sure we haven't already sent an email to this user
-        Email email = null;
-
-        CampaignChannel campaignChannel = null;
-
-        if (campaignChannelId != null) {
-            email = fetchByCampaignChannelIdAndToId(campaignChannelId, address.getId());
-
-            if (email != null) {
-                logger.warn("EmailService.deliver: Skipping:  Email already delivered for campaignChannelId: "
-                        + campaignChannelId);
-                return null;
-            }
-
-            campaignChannel = campaignChannelService.fetchById(campaignChannelId);
-        }
-
-        String uid = uuid();
-
-        String text1 = processContent(content.getText(), uid, address, footer, false);
-
-        String html1 = processContent(content.getHtml(), uid, address, footer, true);
 
         List<File> attachments = null;
 
@@ -958,12 +907,74 @@ public class EmailServiceImpl
             throw new EmailException(e);
         }
 
+        //logger.debug("deliver: address: " + KJsonUtil.toJson(address));
+
+        return deliver(null, address, from, replyTo, subject, content, attachments, footer);
+    }
+
+
+
+
+    /**
+     * Send and track email messages.
+     *
+     * NOTE: processSESNotifications() needs to be called manually after this method completes.
+     *
+     * @param emailCampaign
+     * @param address
+     * @param fromAddress
+     * @param replyTo
+     * @param subject
+     * @param content
+     * @param footer
+     * @throws EmailException
+     */
+    private Email deliver(
+            EmailCampaign emailCampaign,
+            EmailAddress address,
+            String fromAddress,
+            String replyTo,
+            String subject,
+            EmailContent content,
+            List<File> attachments,
+            EmailFooter footer
+    ) throws EmailException {
+
+        String toAddress = formatAddress(address);
+
+        // make sure we haven't already sent an email to this user
+        Email email = null;
+
+        Long emailCampaignId = null;
+
+        if (emailCampaign != null) {
+            email = fetchByEmailCampaignIdAndToId(emailCampaign.getId(), address.getId());
+
+            if (email != null) {
+                logger.warn("EmailService.deliver: Skipping:  Email already delivered to {} for emailCampaign:{}",
+                        address,
+                        emailCampaign
+                );
+
+                return null;
+            }
+
+            emailCampaignId = emailCampaign.getId();
+        }
+
+        String uid = uuid();
+
+        String text1 = processContent(getTextContent(content), uid, address, footer, false);
+
+        String html1 = processContent(getHtmlContent(content), uid, address, footer, true);
+
+
+
         Date now = new Date();
 
         email = new Email();
         email.setUid(uid);
-        email.setCampaignChannelId(campaignChannelId);
-        email.setEmailGroupId(emailGroupId);
+        email.setEmailCampaignId(emailCampaignId);
         email.setFromAddress(fromAddress);
         email.setToAddress(toAddress);
         email.setEmailAddressId(address.getId());
@@ -975,11 +986,6 @@ public class EmailServiceImpl
         email.setPrintCount(0);
         email.setForwardCount(0);
         email.setClickCount(0);
-
-        if (campaignChannel != null) {
-            email.setCampaignId(campaignChannel.getCampaignId());
-            email.setCampaignGroupId(campaignChannel.getGroupId());
-        }
 
         EmailEvent event = new EmailEvent();
         event.setEventDate(now);
@@ -993,8 +999,6 @@ public class EmailServiceImpl
         }
 
         try {
-
-
             String sesId = sendRawAWS(fromAddress, replyTo, toAddress, subject, text1, html1, attachments);
             email.setSesId(sesId);
             email = add(email);
@@ -1085,6 +1089,57 @@ public class EmailServiceImpl
         return sb.toString();
     }
 
+    protected String getHtmlContent(EmailContent content) {
+        if (content == null || content.getHtml() == null) {
+            return null;
+        }
+
+        if (content.getTemplateId() == null) {
+            return content.getHtml();
+        }
+
+        EmailTemplate template = emailTemplateService.fetchById(content.getTemplateId());
+
+        String result = "";
+
+        if (template.getHtmlHeader() != null) {
+            result += template.getHtmlHeader();
+        }
+
+        result += content.getHtml();
+
+        if (template.getHtmlFooter() != null) {
+            result += template.getHtmlFooter();
+        }
+
+        return result;
+    }
+
+    protected String getTextContent(EmailContent content) {
+        if (content == null || content.getText() == null) {
+            return null;
+        }
+
+        if (content.getTemplateId() == null) {
+            return content.getText();
+        }
+
+        EmailTemplate template = emailTemplateService.fetchById(content.getTemplateId());
+
+        String result = "";
+
+        if (template.getTextHeader() != null) {
+            result += template.getTextHeader();
+        }
+
+        result += content.getText();
+
+        if (template.getTextFooter() != null) {
+            result += template.getTextFooter();
+        }
+
+        return result;
+    }
 
 
     private String processContent(String content, String messageId, EmailAddress address, EmailFooter footer, boolean html) {
@@ -1153,6 +1208,7 @@ public class EmailServiceImpl
 
         if (selector != null) {
             Element element = doc.select(selector).first();
+
             if (element != null) {
                 element.append(generateEmailFooter(footer, html));
             }
@@ -1172,7 +1228,8 @@ public class EmailServiceImpl
 
 
     private String generateEmailFooter(EmailFooter footer, boolean html) {
-        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,Object> map = new HashMap<>();
+
         map.put("footer", footer);
 
         String footerTmpl = getEmailTextFooterTemplatePath();
@@ -1213,7 +1270,16 @@ public class EmailServiceImpl
 
 
     @Override
+    // FIXME: only process queue for messages we're interested in so we don't pull
+    // messages from other services or possibly other environments.
     public void processSESNotifications() {
+
+        String env = System.getProperty("env");
+
+        if (env == null || !env.equalsIgnoreCase("prod")) {
+            logger.warn("WARNING: Running processSESNotifications in non-PROD environment");
+        }
+
         boolean processing = processingSESNotifications.getAndSet(true);
 
         // if already true, then it's already running
@@ -1234,6 +1300,8 @@ public class EmailServiceImpl
     private void processBounceQueue() {
         String bounceQueue = getAmazonSESBounceQueueName();
 
+        if (bounceQueue == null) return;
+
         List<Message> messageList = queueService.fetchMessages(bounceQueue, -1);
 
         for (Message message : messageList) {
@@ -1242,13 +1310,13 @@ public class EmailServiceImpl
             String notificationType = (String) notification.get("notificationType");
 
             if (notificationType.equalsIgnoreCase("AmazonSnsSubscriptionSucceeded")) {
-                queueService.deleteMessage(bounceQueue, message);
+                // queueService.deleteMessage(bounceQueue, message);
                 continue;
             }
 
             if (!notificationType.equalsIgnoreCase("bounce")) {
                 logger.warn("bounce queue: found notification type: " + notificationType);
-                queueService.deleteMessage(bounceQueue, message);
+                // queueService.deleteMessage(bounceQueue, message);
                 continue;
             }
 
@@ -1264,7 +1332,12 @@ public class EmailServiceImpl
 
             Email email = fetchBySesId(sesId);
 
-            if (email != null && email.isBounced() == false) {
+            if (email == null) {
+                logger.info("[processBounceQueue] Email not found for sesId: " + sesId);
+                return;
+            }
+
+            if (email.isBounced() == false) {
                 email.setBounced(true);
 
                 update(email);
@@ -1282,8 +1355,6 @@ public class EmailServiceImpl
                 addEvent(event);
 
                 disableEmailAddress(email, EmailEvent.Type.BOUNCED);
-            } else {
-                logger.warn("Email not found for sesId: " + sesId);
             }
 
             queueService.deleteMessage(bounceQueue, message);
@@ -1292,9 +1363,11 @@ public class EmailServiceImpl
 
 
 
-    @SuppressWarnings("unchecked")
+    // @SuppressWarnings("unchecked")
     private void processComplaintQueue() {
         String complaintQueue = getAmazonSESComplaintQueueName();
+
+        if (complaintQueue == null) return;
 
         List<Message> messageList = queueService.fetchMessages(complaintQueue, -1);
 
@@ -1304,13 +1377,13 @@ public class EmailServiceImpl
             String notificationType = (String) notification.get("notificationType");
 
             if (notificationType.equalsIgnoreCase("AmazonSnsSubscriptionSucceeded")) {
-                queueService.deleteMessage(complaintQueue, message);
+                // queueService.deleteMessage(complaintQueue, message);
                 continue;
             }
 
             if (!notificationType.equalsIgnoreCase("Complaint")) {
                 logger.warn("Complaint queue: found notification type: " + notificationType);
-                queueService.deleteMessage(complaintQueue, message);
+                // queueService.deleteMessage(complaintQueue, message);
                 continue;
             }
 
@@ -1326,7 +1399,12 @@ public class EmailServiceImpl
 
             Email email = fetchBySesId(sesId);
 
-            if (email != null && email.isComplained() == false) {
+            if (email == null) {
+                logger.info("[processComplaintQueue] Email not found for sesId: " + sesId);
+                return;
+            }
+
+            if (email.isComplained() == false) {
                 email.setComplained(true);
 
                 update(email);
@@ -1344,8 +1422,6 @@ public class EmailServiceImpl
                 addEvent(event);
 
                 disableEmailAddress(email, EmailEvent.Type.COMPLAINED);
-            } else {
-                logger.warn("Email not found for sesId: " + sesId);
             }
 
             queueService.deleteMessage(complaintQueue, message);
@@ -1358,6 +1434,8 @@ public class EmailServiceImpl
     private void processDeliveryQueue() {
         String deliveryQueue = getAmazonSESDeliveryQueueName();
 
+        if (deliveryQueue == null) return;
+
         List<Message> messageList = queueService.fetchMessages(deliveryQueue, -1);
 
         for (Message message : messageList) {
@@ -1366,13 +1444,13 @@ public class EmailServiceImpl
             String notificationType = (String) notification.get("notificationType");
 
             if (notificationType.equalsIgnoreCase("AmazonSnsSubscriptionSucceeded")) {
-                queueService.deleteMessage(deliveryQueue, message);
+                // queueService.deleteMessage(deliveryQueue, message);
                 continue;
             }
 
             if (!notificationType.equalsIgnoreCase("Delivery")) {
                 logger.warn("Delivery queue: found notification type: " + notificationType);
-                queueService.deleteMessage(deliveryQueue, message);
+                // queueService.deleteMessage(deliveryQueue, message);
                 continue;
             }
 
@@ -1388,7 +1466,12 @@ public class EmailServiceImpl
 
             Email email = fetchBySesId(sesId);
 
-            if (email != null && email.isDelivered() == false) {
+            if (email == null) {
+                logger.info("[processDeliveryQueue] Email not found for sesId: " + sesId);
+                return;
+            }
+
+            if (email.isDelivered() == false) {
                 email.setDelivered(true);
 
                 update(email);
@@ -1404,8 +1487,6 @@ public class EmailServiceImpl
                 event.setCreatedDate(new Date());
 
                 addEvent(event);
-            } else {
-                logger.warn("Email not found for sesId: " + sesId);
             }
 
             queueService.deleteMessage(deliveryQueue, message);

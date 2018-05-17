@@ -365,8 +365,7 @@ public class ShortUrlServiceImpl
 
         boolean conversionEvent = false;
 
-        if (campaign.getKpi() == Campaign.KPI.WEBSITE_VISIT
-                && campaignTarget.getType() == CampaignTarget.Type.WEBSITE) {
+        if (campaign.getKpi() == Campaign.KPI.WEBSITE_VISIT) {
             conversionEvent = true;
         }
 

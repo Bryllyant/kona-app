@@ -4,10 +4,16 @@ import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.ModelResultSet;
 import com.bryllyant.kona.api.model.message.EmailAddressModel;
 import com.bryllyant.kona.api.service.EmailAddressModelService;
+import com.bryllyant.kona.api.service.EmailGroupModelService;
 import com.bryllyant.kona.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.EmailAddress;
+import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.EmailAddressService;
+import com.bryllyant.kona.app.service.EmailException;
+import com.bryllyant.kona.app.service.EmailGroupAddressService;
+import com.bryllyant.kona.app.service.EmailGroupService;
+import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -39,7 +45,16 @@ public class EmailAddressController extends BaseController {
     private EmailAddressService emailAddressService;
 
     @Autowired
+    private EmailGroupAddressService emailGroupAddressService;
+
+    @Autowired
+    private EmailGroupService emailGroupService;
+
+    @Autowired
     private EmailAddressModelService emailAddressModelService;
+
+    @Autowired
+    private EmailGroupModelService emailGroupModelService;
 
     @Autowired
     private UserModelService userModelService;
@@ -91,6 +106,46 @@ public class EmailAddressController extends BaseController {
     }
 
 
+    @RequestMapping(value="/groups/{uid}", method=RequestMethod.GET)
+    public ResponseEntity<ModelResultSet<EmailAddressModel>> fetchGroupAddresses(
+            HttpServletRequest req,
+            @PathVariable String uid,
+            @RequestParam(value="q", required=false) String query,
+            @RequestParam(value="sort", required=false) String[] sortOrder,
+            @RequestParam(value="offset", required=false) Integer offset,
+            @RequestParam(value="limit", required=false) Integer limit) {
+        logApiRequest(req, "GET /admin/messages/emails/addresses/groups/" + uid);
+
+        EmailGroup group = emailGroupModelService.getEntity(uid);
+
+        logger.debug("EmailAddressController: raw query: " + query);
+
+        Map<String,Object> filter = toFilterCriteria(query);  // returns keys in camelCase
+
+        logger.debug("filter: " + KJsonUtil.toJson(filter));
+
+        boolean distinct = false;
+
+        if (offset == null) {
+            offset = 0;
+        }
+
+        if (limit == null) {
+            limit = 999;
+        }
+
+        logger.debug("EmailAddressController: filter: " + KJsonUtil.toJson(filter));
+
+        KResultList result =
+                (KResultList<EmailAddress>) emailGroupAddressService
+                .fetchByGroupId(group.getId(), offset, limit, sortOrder, filter, distinct);
+
+        ModelResultSet resultSet = ModelResultSet.from(result, emailAddressModelService.toModelList(result));
+
+        return okList(resultSet);
+    }
+
+
     @RequestMapping(value="/sources", method=RequestMethod.GET)
     public ResponseEntity<List<Map<String,Object>>> getSources(
             HttpServletRequest req,
@@ -119,6 +174,51 @@ public class EmailAddressController extends BaseController {
         return ok(emailAddressModelService.toModel(emailAddress));
     }
 
+
+    @RequestMapping(value="/groups/{uid}", method = RequestMethod.POST)
+    public ResponseEntity<EmailAddressModel> addGroupAddress(
+            HttpServletRequest req,
+            @PathVariable String uid,
+            @RequestParam(value="force_scrub", required=false) Boolean forceScrub,
+            @RequestBody EmailAddressModel model
+    ) {
+        logApiRequest(req, "POST /admin/messages/emails/addresses/groups/" + uid);
+
+        EmailGroup group = emailGroupModelService.getEntity(uid);
+
+        EmailAddress emailAddress = new EmailAddress();
+
+        emailAddress = saveObject(req, emailAddress, model);
+
+        if (forceScrub == null) {
+            forceScrub = true;
+        }
+
+        try {
+            emailGroupService.addGroupAddress(group, emailAddress, forceScrub);
+        } catch (EmailException e) {
+            throw new BadRequestException("Invalid email address: " + emailAddress);
+        }
+
+        return created(emailAddressModelService.toModel(emailAddress));
+    }
+
+    @RequestMapping(value="/groups/{groupUid}/{addressUid}", method = RequestMethod.DELETE)
+    public ResponseEntity<EmailAddressModel> removeGroupAddress(
+            HttpServletRequest req,
+            @PathVariable String groupUid,
+            @PathVariable String addressUid
+    ) {
+        logApiRequest(req, "POST /admin/messages/emails/addresses/groups/" + groupUid + "/" + addressUid);
+
+        EmailGroup group = emailGroupModelService.getEntity(groupUid);
+
+        EmailAddress address = emailAddressModelService.getEntity(addressUid);
+
+            emailGroupService.removeGroupAddress(group, address);
+
+        return ok(EmailAddressModel.create(address.getUid()));
+    }
 
 
     @RequestMapping(method = RequestMethod.POST)
@@ -178,7 +278,7 @@ public class EmailAddressController extends BaseController {
             EmailAddress emailAddress,
             EmailAddressModel model
     ) {
-        logger.debug("mapToObject called for emailAddress: " + emailAddress);
+        logger.debug("saveObject called for emailAddress: " + emailAddress);
 
         if (model.getEmail() == null) {
             throw new ValidationException("email property must be set");
@@ -188,9 +288,16 @@ public class EmailAddressController extends BaseController {
 
         if (emailAddress.getId() == null && model.getEnabled() == null) {
             emailAddress.setEnabled(true);
+
         }
 
-        return emailAddressService.save(emailAddress);
+        if (emailAddress.getId() == null) {
+            emailAddress = emailAddressService.create(emailAddress);
+        } else {
+            emailAddress = emailAddressService.save(emailAddress);
+        }
+
+        return emailAddress;
     }
 
     @Override

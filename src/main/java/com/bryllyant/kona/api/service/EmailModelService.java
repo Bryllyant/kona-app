@@ -1,26 +1,13 @@
 package com.bryllyant.kona.api.service;
 
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignChannelModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignGroupModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignModel;
 import com.bryllyant.kona.api.model.message.EmailAddressModel;
+import com.bryllyant.kona.api.model.message.EmailCampaignModel;
 import com.bryllyant.kona.api.model.message.EmailContentModel;
-import com.bryllyant.kona.api.model.message.EmailGroupModel;
 import com.bryllyant.kona.api.model.message.EmailModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignChannelModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignGroupModel;
-import com.bryllyant.kona.api.model.marketing.campaign.CampaignModel;
-import com.bryllyant.kona.api.model.message.EmailAddressModel;
-import com.bryllyant.kona.api.model.message.EmailContentModel;
-import com.bryllyant.kona.api.model.message.EmailGroupModel;
-import com.bryllyant.kona.api.model.message.EmailModel;
-import com.bryllyant.kona.app.entity.Campaign;
-import com.bryllyant.kona.app.entity.CampaignChannel;
-import com.bryllyant.kona.app.entity.CampaignGroup;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailAddress;
+import com.bryllyant.kona.app.entity.EmailCampaign;
 import com.bryllyant.kona.app.entity.EmailContent;
-import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,22 +22,13 @@ public class EmailModelService extends BaseEntityModelService<EmailModel,Email> 
     private EmailService entityService;
 
     @Autowired
-    private CampaignModelService campaignModelService;
-
-    @Autowired
-    private CampaignChannelModelService campaignChannelModelService;
-
-    @Autowired
-    private CampaignGroupModelService campaignGroupModelService;
-
-    @Autowired
-    private EmailGroupModelService emailGroupModelService;
-
-    @Autowired
     private EmailAddressModelService emailAddressModelService;
 
     @Autowired
     private EmailContentModelService emailContentModelService;
+
+    @Autowired
+    private EmailCampaignModelService emailCampaignModelService;
 
 
     protected EmailService getEntityService() {
@@ -59,24 +37,9 @@ public class EmailModelService extends BaseEntityModelService<EmailModel,Email> 
 
 
     protected void setForeignModelProperties(EmailModel model, Email entity) {
-        if (entity.getCampaignId() != null) {
-            Campaign campaign = campaignModelService.getCampaign(entity.getCampaignId());
-            model.setCampaign(CampaignModel.from(campaign));
-        }
-
-        if (entity.getCampaignGroupId() != null) {
-            CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(entity.getCampaignGroupId());
-            model.setCampaignGroup(CampaignGroupModel.from(campaignGroup));
-        }
-
-        if (entity.getCampaignChannelId() != null) {
-            CampaignChannel channel = campaignChannelModelService.getCampaignChannel(entity.getCampaignChannelId());
-            model.setCampaignChannel(CampaignChannelModel.from(channel));
-        }
-
-        if (entity.getEmailGroupId() != null) {
-            EmailGroup group = emailGroupModelService.getEntity(entity.getEmailGroupId());
-            model.setEmailGroup(EmailGroupModel.from(group));
+        if (entity.getEmailCampaignId() != null) {
+            EmailCampaign emailCampaign = emailCampaignModelService.getEntity(entity.getEmailCampaignId());
+            model.setEmailCampaign(EmailCampaignModel.from(emailCampaign));
         }
 
         if (entity.getEmailAddressId() != null) {
@@ -93,25 +56,11 @@ public class EmailModelService extends BaseEntityModelService<EmailModel,Email> 
     protected void setEntityProperty(String key, EmailModel model, Email entity) {
         switch (key) {
 
-            case "campaign":
-                Campaign campaign = campaignModelService.getCampaign(model.getCampaign());
-                entity.setCampaignId(campaign == null ? null : campaign.getId());
+            case "emailCampaign":
+                EmailCampaign emailCampaign = emailCampaignModelService.getEntity(model.getEmailCampaign());
+                entity.setEmailCampaignId(emailCampaign == null ? null : emailCampaign.getId());
                 break;
 
-            case "campaignGroup":
-                CampaignGroup campaignGroup = campaignGroupModelService.getCampaignGroup(model.getCampaignGroup());
-                entity.setCampaignGroupId(campaignGroup == null ? null : campaignGroup.getId());
-                break;
-
-            case "campaignChannel":
-                CampaignChannel campaignChannel = campaignChannelModelService.getCampaignChannel(model.getCampaignChannel());
-                entity.setCampaignChannelId(campaignChannel == null ? null : campaignChannel.getId());
-                break;
-
-            case "emailGroup":
-                EmailGroup emailGroup = emailGroupModelService.getEntity(model.getEmailGroup());
-                entity.setEmailGroupId(emailGroup == null ? null : emailGroup.getId());
-                break;
 
             case "emailAddress":
                 EmailAddress emailAddress = emailAddressModelService.getEntity(model.getEmailAddress());

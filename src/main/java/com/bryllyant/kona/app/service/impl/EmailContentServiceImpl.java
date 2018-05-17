@@ -7,6 +7,7 @@ import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.service.EmailAttachmentService;
 import com.bryllyant.kona.app.service.EmailContentService;
 import com.bryllyant.kona.data.service.KAbstractService;
+import com.bryllyant.kona.util.KInflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,23 @@ public class EmailContentServiceImpl
         if (content.getUid() == null) {
             content.setUid(uuid());
         }
+
+        content.setSlug(KInflector.getInstance().slug(content.getName()));
     }
 
 
     @Override
-    public EmailContent create(Long ownerId, String html, String text, List<File> attachments) throws IOException {
+    public EmailContent create(Long ownerId, String name, String html, String text, List<File> attachments) throws IOException {
         EmailContent content = new EmailContent();
+
+        if (name == null) {
+            content.setUid(uuid());
+            content.setName(content.getUid());
+        }
+
+        if (ownerId.equals(1L)) {
+            content.setSystem(true);
+        }
 
         content.setOwnerId(ownerId);
         content.setHtml(html);

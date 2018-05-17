@@ -13,6 +13,7 @@ import com.bryllyant.kona.app.service.EmailGroupAddressService;
 import com.bryllyant.kona.app.service.EmailGroupService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.data.service.KAbstractService;
+import com.bryllyant.kona.data.service.KServiceException;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KInflector;
@@ -115,7 +116,7 @@ public class EmailAddressServiceImpl
                 sources = new ArrayList<>();
             }
 
-            sources = util.snakeCaseKeys(sources);
+            sources = util.camelCaseKeys(sources);
 
             result = Optional.of(sources);
 
@@ -156,7 +157,93 @@ public class EmailAddressServiceImpl
         return list;
     }
 
+    @Override
+    public EmailAddress create(EmailAddress address) {
+        if (address.getEmail() == null) {
+            throw new KServiceException("Invalid address: email not set.");
+        }
 
+        EmailAddress current = fetchByEmail(address.getEmail());
+
+        if (current != null) {
+            // already have a record for this email.  merge any non-null fields as we assume this an update
+            if (address.getFirstName() != null) {
+                current.setFirstName(address.getFirstName());
+            }
+
+            if (address.getLastName() != null) {
+                current.setLastName(address.getLastName());
+            }
+
+            if (address.getAdvertiserId() != null) {
+                current.setAdvertiserId(address.getAdvertiserId());
+            }
+
+            if (address.getBirthDate() != null) {
+                current.setBirthDate(address.getBirthDate());
+            }
+
+            if (address.getCity() != null) {
+                current.setCity(address.getCity());
+            }
+
+            if (address.getState() != null) {
+                current.setState(address.getState());
+            }
+
+            if (address.getCountry() != null) {
+                current.setCountry(address.getCountry());
+            }
+
+            if (address.getStreet1() != null) {
+                current.setStreet1(address.getStreet1());
+            }
+
+            if (address.getStreet2() != null) {
+                current.setStreet2(address.getStreet2());
+            }
+
+            if (address.getPostalCode() != null) {
+                current.setPostalCode(address.getPostalCode());
+            }
+
+            if (address.getCompany() != null) {
+                current.setCompany(address.getCompany());
+            }
+
+            if (address.getExtra() != null) {
+                current.setExtra(address.getExtra());
+            }
+
+            if (address.getGender() != null) {
+                current.setGender(address.getGender());
+            }
+
+            if (address.getMobileNumber() != null) {
+                current.setMobileNumber(address.getMobileNumber());
+            }
+
+            if (address.getPlatform() != null) {
+                current.setPlatform(address.getPlatform());
+            }
+
+            if (address.getSource() != null) {
+                current.setSource(address.getSource());
+            }
+
+            if (address.getTitle() != null) {
+                current.setTitle(address.getTitle());
+            }
+
+            if (address.getUserId() != null) {
+                current.setUserId(address.getUserId());
+            }
+
+            return save(current);
+        }
+
+        return save(address);
+    }
 
     @Override
     public void scrub(String source, Long startId, Long endId, Date startDate, Date endDate, boolean tryConnectMX) {
@@ -197,8 +284,36 @@ public class EmailAddressServiceImpl
 
     @Override
     public boolean scrub(EmailAddress address, boolean force, boolean tryConnectMX) {
+        logger.debug("[scrub]: force: {}  tryConnectMX: {}", force, tryConnectMX);
+
         if (address.isScrubbed() && !force) {
+            logger.debug("[scrub] force is false: returning isValid() for address: " + address);
             return isValid(address, false);
+        }
+
+        // do basic cleanup
+        String value = address.getEmail();
+
+        address.setEmail(value.toLowerCase());
+
+        value = address.getFirstName();
+
+        if (value != null) {
+            value = scrubTitles(value);
+            String[] parts = value.split("\\s+");
+            value = parts[0].trim();
+            value = KInflector.getInstance().capitalize(value);
+            address.setFirstName(value);
+        }
+
+        value = address.getLastName();
+
+        if (value != null) {
+            value = scrubTitles(value);
+            String[] parts = value.split("\\s+");
+            value = parts[parts.length - 1].trim();
+            value = KInflector.getInstance().capitalize(value);
+            address.setLastName(value);
         }
 
         MailboxValidator validator = new MailboxValidator("validator@gmail.com");
@@ -266,8 +381,10 @@ public class EmailAddressServiceImpl
 
     @Override
     public boolean isValid(EmailAddress address, boolean forceScrub) {
+        logger.debug("[isValid] address: {}  forceScrub: {}", address, forceScrub);
+
         if (!address.isScrubbed() || forceScrub) {
-            boolean valid = scrub(address, false, false);
+            boolean valid = scrub(address, forceScrub, false);
             if (!valid) return false;
         }
 
@@ -292,16 +409,17 @@ public class EmailAddressServiceImpl
         // TODO Auto-generated method stub
         KInflector inflector = KInflector.getInstance();
 
-        @SuppressWarnings("resource")
         CSVReader reader = new CSVReader(new FileReader(csvFile));
+
         List<String[]> records = reader.readAll();
 
         int startIndex = 0;
+
         if (skipFirstRecord) {
             startIndex = 1;
         }
 
-        List<String[]> errors = new ArrayList<String[]>();
+        List<String[]> errors = new ArrayList<>();
 
         //for (String[] record : records) {
         for (int i = startIndex; i < records.size() - 1; i++) {

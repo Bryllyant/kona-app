@@ -9,16 +9,18 @@ import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.EmailGroupAddress;
 import com.bryllyant.kona.app.entity.EmailGroupExample;
 import com.bryllyant.kona.app.service.EmailAddressService;
+import com.bryllyant.kona.app.service.EmailException;
 import com.bryllyant.kona.app.service.EmailGroupAddressService;
 import com.bryllyant.kona.app.service.EmailGroupService;
-import com.bryllyant.kona.data.service.KAbstractService;
-import com.bryllyant.kona.app.service.EmailException;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.util.KInflector;
+import com.bryllyant.kona.util.KJsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -70,20 +72,13 @@ public class EmailGroupServiceImpl
 
 
     @Override
-    public List<EmailGroupAddress> fetchGroupAddressList(String slug) {
-        EmailGroup group = fetchBySlug(slug);
+    public List<EmailGroupAddress> fetchGroupAddressList(EmailGroup group) {
         return emailGroupAddressService.fetchByGroupId(group.getId());
     }
 
 
-    @Override
-    public EmailGroupAddress addGroupAddress(String slug, String email, boolean forceScrub) {
-        EmailGroup group = fetchBySlug(slug);
-        return addGroupAddress(group.getId(), email, forceScrub);
-    }
-
-
-    private EmailGroupAddress addGroupAddress(Long groupId, String email, boolean forceScrub) {
+    @Override @Transactional
+    public EmailGroupAddress addGroupAddress(EmailGroup group, String email, boolean forceScrub) {
         EmailAddress address = emailAddressService.fetchByEmail(email);
 
         if (address == null) {
@@ -94,35 +89,33 @@ public class EmailGroupServiceImpl
             address = emailAddressService.add(address);
         }
 
+        return addGroupAddress(group, address, forceScrub);
+    }
+
+    @Override @Transactional
+    public EmailGroupAddress addGroupAddress(EmailGroup group, EmailAddress address, boolean forceScrub) {
         if (!emailAddressService.isValid(address, forceScrub)) {
-            throw new EmailException("Invalid email address: " + email);
+            throw new EmailException("Invalid email address: " + address);
         }
 
         EmailGroupAddress ga = new EmailGroupAddress();
         ga.setAddressId(address.getId());
-        ga.setGroupId(groupId);
-        ga.setCreatedDate(new Date());
+        ga.setGroupId(group.getId());
+
         return emailGroupAddressService.add(ga);
     }
 
-
-
-    @Override
-    public EmailGroupAddress removeGroupAddress(String slug, String email) {
-        EmailAddress address = emailAddressService.fetchByEmail(email);
-        EmailGroup group = fetchBySlug(slug);
+    @Override @Transactional
+    public EmailGroupAddress removeGroupAddress(EmailGroup group, EmailAddress address) {
         EmailGroupAddress ga = emailGroupAddressService.fetchByGroupIdAndAddressId(group.getId(), address.getId());
         emailGroupAddressService.remove(ga);
         return ga;
     }
 
-
-
-    @Override
-    public void addGroupAddressList(String slug, List<EmailAddress> emailAddressList, boolean forceScrub) {
-        EmailGroup group = fetchBySlug(slug);
-
+    @Override @Transactional
+    public void addGroupAddressList(EmailGroup group, List<EmailAddress> emailAddressList, boolean forceScrub) {
         Date now = new Date();
+
         for (EmailAddress address : emailAddressList) {
             boolean valid = emailAddressService.isValid(address, forceScrub);
 
@@ -136,23 +129,22 @@ public class EmailGroupServiceImpl
         }
     }
 
-
-    @Override
+    @Override @Transactional
     public EmailGroup create(String groupName, List<String> emailList, boolean forceScrub) {
         EmailGroup group = create(groupName);
 
         for (String email : emailList) {
             try {
-                addGroupAddress(group.getId(), email, forceScrub);
+                addGroupAddress(group, email, forceScrub);
             } catch (EmailException e) {
-                logger.warn("Cound not add email [{}] to group [{}]", email, groupName);
+                logger.warn("Could not add email [{}] to group [{}]", email, groupName);
             }
         }
 
         return group;
     }
 
-    @Override
+    @Override @Transactional
     public EmailGroup create(String groupName) {
         EmailGroup group = new EmailGroup();
         group.setName(groupName);
@@ -162,26 +154,35 @@ public class EmailGroupServiceImpl
     }
 
 
-
     /**
      * @param groupName        Name of the group
      * @param maxCount         Max number of addresses in the group
      * @param sourceList       (optional) list of sources from which to pull email addresses
      * @param excludeGroupList (optional) don't include emails contained in the listed groups
      */
-    @Override
+    @Override @Transactional
     public EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList, boolean forceScrub) {
+        logger.debug("[create]\ngroupName: {}\nmaxCount: {}\nsourceList: {}\nexcludeGroupList: {}\nforceScrub: {}",
+                groupName,
+                maxCount,
+                KJsonUtil.toJson(sourceList),
+                KJsonUtil.toJson(excludeGroupList),
+                forceScrub
+        );
+
         EmailGroup group = create(groupName);
 
         if (maxCount != null) {
+            new Thread(() -> {
 
-            List<EmailAddress> emailAddressList = emailAddressService.fetchRandom(maxCount, sourceList, excludeGroupList);
+                List<EmailAddress> emailAddressList = emailAddressService.fetchRandom(maxCount, sourceList, excludeGroupList);
 
-            if (emailAddressList.size() == 0) {
-                logger.warn("EmailAddress fetchRandom yielded no results");
-            }
+                if (emailAddressList.size() == 0) {
+                    logger.warn("EmailAddress fetchRandom yielded no results");
+                }
 
-            addGroupAddressList(groupName, emailAddressList, forceScrub);
+                addGroupAddressList(group, emailAddressList, forceScrub);
+            }).start();
         }
 
         return group;

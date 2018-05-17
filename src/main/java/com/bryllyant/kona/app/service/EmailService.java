@@ -4,6 +4,7 @@
 package com.bryllyant.kona.app.service;
 
 import com.bryllyant.kona.app.entity.Email;
+import com.bryllyant.kona.app.entity.EmailCampaign;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailEvent;
 import com.bryllyant.kona.app.entity.File;
@@ -91,8 +92,7 @@ public interface EmailService extends KService, KEntityService<Email> {
 
 
     void deliver(
-            Long campaignChannelId,
-            Long emailGroupId,
+            EmailCampaign emailCampaign,
             String fromAddress,
             String replyTo,
             String subject,
@@ -106,9 +106,8 @@ public interface EmailService extends KService, KEntityService<Email> {
 
 
     void deliver(
-            Long campaignChannelId,
-            Long emailGroupId,
-            String from,
+            EmailCampaign emailCampaign,
+            String fromAddress,
             String replyTo,
             String subject,
             EmailContent content,
@@ -151,27 +150,13 @@ public interface EmailService extends KService, KEntityService<Email> {
 
     Email fetchBySesId(String sesId);
 
-    Email fetchByCampaignChannelIdAndToId(Long campaignChannelId, Long emailAddressId);
+    Email fetchByEmailCampaignIdAndToId(Long emailCampaignId, Long emailAddressId);
 
-    List<Email> fetchByEmailGroupId(Long emailGroupId);
-
-    List<Email> fetchByEmailGroupSlug(String groupSlug);
-
-    List<Email> fetchByCampaignId(Long campaignId);
-
-    List<Email> fetchByCampaignGroupId(Long campaignGroupId);
-
-    List<Email> fetchByCampaignChannelId(Long campaignChannelId);
+    List<Email> fetchByEmailCampaignId(Long emailCampaignId);
 
     EmailStats calcStats(List<Email> emailList);
 
-    EmailStats calcStatsByGroupSlug(String groupSlug);
-
-    EmailStats calcStatsByCampaignId(Long campaignId);
-
-    EmailStats calcStatsByCampaignGroupId(Long campaignGroupId);
-
-    EmailStats calcStatsByCampaignChannelId(Long campaignChannelId);
+    EmailStats calcStatsByEmailCampaignId(Long emailCampaignId);
 
     EmailEvent addEvent(EmailEvent event);
 	

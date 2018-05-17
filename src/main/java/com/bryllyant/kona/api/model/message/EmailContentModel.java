@@ -14,6 +14,11 @@ public class EmailContentModel extends KJsonModel implements KEntityModel {
 
     private String uid;
     private UserModel owner;
+    private EmailTemplateModel template;
+    private String name;
+    private String slug;
+    private String description;
+    private Boolean system;
     private String html;
     private String text;
     private Date createdDate;
@@ -24,6 +29,8 @@ public class EmailContentModel extends KJsonModel implements KEntityModel {
     public static EmailContentModel from(EmailContent content) {
         EmailContentModel model = new EmailContentModel();
         model.setUid(content.getUid());
+        model.setName(content.getName());
+        model.setSlug(content.getSlug());
         return model;
     }
 
@@ -49,6 +56,46 @@ public class EmailContentModel extends KJsonModel implements KEntityModel {
 
     public void setOwner(UserModel owner) {
         this.set("owner", owner);
+    }
+
+    public EmailTemplateModel getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(EmailTemplateModel template) {
+        this.set("template", template);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.set("name", name);
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.set("slug", slug);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.set("description", description);
+    }
+
+    public Boolean getSystem() {
+        return system;
+    }
+
+    public void setSystem(Boolean system) {
+        this.set("system", system);
     }
 
     public String getHtml() {

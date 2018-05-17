@@ -2,9 +2,11 @@ package com.bryllyant.kona.api.service;
 
 import com.bryllyant.kona.api.model.media.FileModel;
 import com.bryllyant.kona.api.model.message.EmailContentModel;
+import com.bryllyant.kona.api.model.message.EmailTemplateModel;
 import com.bryllyant.kona.api.model.user.UserModel;
 import com.bryllyant.kona.app.entity.EmailAttachment;
 import com.bryllyant.kona.app.entity.EmailContent;
+import com.bryllyant.kona.app.entity.EmailTemplate;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.EmailAttachmentService;
@@ -35,6 +37,9 @@ public class EmailContentModelService extends BaseEntityModelService<EmailConten
     private UserModelService userModelService;
 
     @Autowired
+    private EmailTemplateModelService emailTemplateModelService;
+
+    @Autowired
     private FileModelService fileModelService;
 
     protected EmailContentService getEntityService() {
@@ -46,6 +51,11 @@ public class EmailContentModelService extends BaseEntityModelService<EmailConten
         if (entity.getOwnerId() != null) {
             User owner = userModelService.getUser(entity.getOwnerId());
             model.setOwner(UserModel.from(owner));
+        }
+
+        if (entity.getTemplateId() != null) {
+            EmailTemplate template = emailTemplateModelService.getEntity(entity.getTemplateId());
+            model.setTemplate(EmailTemplateModel.from(template));
         }
 
         List<EmailAttachment> attachmentList = emailAttachmentService.fetchByContentId(entity.getId());
@@ -69,6 +79,11 @@ public class EmailContentModelService extends BaseEntityModelService<EmailConten
             case "owner":
                 User owner = userModelService.getUser(model.getOwner());
                 entity.setOwnerId(owner == null ? null : owner.getId());
+                break;
+
+            case "template":
+                EmailTemplate template = emailTemplateModelService.getEntity(model.getTemplate());
+                entity.setTemplateId(template == null ? null : template.getId());
                 break;
         }
 
