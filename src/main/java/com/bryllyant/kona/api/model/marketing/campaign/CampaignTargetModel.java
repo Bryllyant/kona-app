@@ -21,8 +21,12 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
     private LandingPageModel landingPage;
 
     private String url;
+    private String websiteUrl;
+    private String appStoreUrl;
+    private String googlePlayUrl;
 
     private String analyticsTrackingId;
+    private String appStoreProviderId;
     private String conversionPixel;
     private Integer conversionCount;
     private Boolean enabled;
@@ -30,7 +34,6 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
     private Date endDate;
     private Date createdDate;
     private Date updatedDate;
-
 
 
     public static CampaignTargetModel from(CampaignTarget target) {
@@ -120,6 +123,29 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
         this.set("url", url);
     }
 
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.set("websiteUrl", websiteUrl);
+    }
+
+    public String getAppStoreUrl() {
+        return appStoreUrl;
+    }
+
+    public void setAppStoreUrl(String appStoreUrl) {
+        this.set("appStoreUrl", appStoreUrl);
+    }
+
+    public String getGooglePlayUrl() {
+        return googlePlayUrl;
+    }
+
+    public void setGooglePlayUrl(String googlePlayUrl) {
+        this.set("googlePlayUrl", googlePlayUrl);
+    }
 
     public String getAnalyticsTrackingId() {
         return analyticsTrackingId;
@@ -127,6 +153,14 @@ public class CampaignTargetModel extends KJsonModel implements KEntityModel {
 
     public void setAnalyticsTrackingId(String analyticsTrackingId) {
         this.set("analyticsTrackingId", analyticsTrackingId);
+    }
+
+    public String getAppStoreProviderId() {
+        return appStoreProviderId;
+    }
+
+    public void setAppStoreProviderId(String appStoreProviderId) {
+        this.set("appStoreProviderId", appStoreProviderId);
     }
 
     public String getConversionPixel() {

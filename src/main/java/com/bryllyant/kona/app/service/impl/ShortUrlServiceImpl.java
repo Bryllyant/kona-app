@@ -30,12 +30,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +167,7 @@ public class ShortUrlServiceImpl
                 null,
                 false,
                 true,
+                false,
                 null
         );
     }
@@ -189,6 +193,7 @@ public class ShortUrlServiceImpl
                 null,
                 false,
                 false,
+                false,
                 null
         );
     }
@@ -209,9 +214,48 @@ public class ShortUrlServiceImpl
             String description,
             boolean singleMapped,
             boolean channelRedirect,
+            boolean queryParamsEnabled,
             Date expirationDate
     ) {
+        ShortUrl shortUrl = create(
+            userId,
+            campaignId,
+            groupId,
+            channelId,
+            targetId,
+            replyId,
+            replyMessageId,
+            scriptId,
+            longUrl,
+            vanityDomain,
+            description,
+            singleMapped,
+            channelRedirect,
+            queryParamsEnabled,
+            expirationDate
+        );
 
+        return shortUrl.getShortUrl();
+    }
+
+    @Override
+    public ShortUrl create(
+            Long userId,
+            Long campaignId,
+            Long groupId,
+            Long channelId,
+            Long targetId,
+            Long replyId,
+            Long replyMessageId,
+            Long scriptId,
+            String longUrl,
+            String vanityDomain,
+            String description,
+            boolean singleMapped,
+            boolean channelRedirect,
+            boolean queryParamsEnabled,
+            Date expirationDate
+    ){
         if (vanityDomain == null) {
             vanityDomain = getDefaultVanityDomain();
         }
@@ -282,12 +326,13 @@ public class ShortUrlServiceImpl
             shortUrl.setEnabled(true);
             shortUrl.setSingleMapped(singleMapped);
             shortUrl.setChannelRedirect(channelRedirect);
+            shortUrl.setQueryParamsEnabled(queryParamsEnabled);
             shortUrl.setExpirationDate(expirationDate);
 
             shortUrl = add(shortUrl);
         }
 
-        return shortUrl.getShortUrl();
+        return shortUrl;
     }
 
 
@@ -422,6 +467,8 @@ public class ShortUrlServiceImpl
 
     @Override
     public String explode(HttpServletRequest req, ShortUrl shortUrl) {
+        String longUrl = null;
+
         if (shortUrl == null) {
             logger.info("ShortUrl is null");
             return null;
@@ -434,21 +481,109 @@ public class ShortUrlServiceImpl
 
         Long now = new Date().getTime();
 
+        // FIXME: return a 404 response?
         if (shortUrl.getExpirationDate() != null && shortUrl.getExpirationDate().getTime() <= now) {
             logger.info("ShortUrl has expired: " + shortUrl);
         }
 
         if (shortUrl.isChannelRedirect()) {
-            return getChannelRedirectUrl(req, shortUrl);
+            longUrl = getChannelRedirectUrl(req, shortUrl);
+        } else if (shortUrl.getScriptId() != null) {
+            longUrl = evalScript(req, shortUrl);
+        } else {
+            longUrl = shortUrl.getLongUrl();
         }
 
-        if (shortUrl.getScriptId() != null) {
-            return evalScript(req, shortUrl);
+        // see if there are params that need to be passed on to the long url
+
+        logger.debug("explode: pre-query-param longUrl: " + longUrl);
+
+        logger.debug("explode: isQueryParamsEnabled: " + shortUrl.isQueryParamsEnabled());
+
+        if (shortUrl.isQueryParamsEnabled()) {
+            Map<String,String[]> map = req.getParameterMap();
+
+            logger.debug("explode: req.parameterMap: " + KJsonUtil.toJson(map));
+
+            URI uri = URI.create(longUrl);
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUri(uri);
+
+            for (String key : map.keySet()) {
+                String[] values = map.get(key);
+
+                if (values != null) {
+                    for (String value : values) {
+                        logger.debug("explode: key: {}   value: {}", key, value);
+
+                        if (value != null) {
+                            builder = builder.queryParam(key, encode(value));
+                        }
+                    }
+                }
+            }
+
+
+            longUrl = builder.build().toUriString();
+
+            logger.debug("explode: post-query-param longUrl: " + longUrl);
         }
 
-        return shortUrl.getLongUrl();
+        return longUrl;
     }
 
+    @Override
+    public String createAppStoreShortUrl(String appStoreUrl, String googlePlayUrl, String defaultUrl) {
+
+        String _script = "if (req != null) {"
+            + "\n   ua = req.getHeader('User-Agent');"
+            + "\n   if (ua.contains('iPhone') || ua.contains('iPod') || ua.contains('iPad')) {"
+            + "\n       return '" + appStoreUrl + "';"
+            + "\n   } else if (ua.contains('Android')) {"
+            + "\n       return '" + googlePlayUrl + "';"
+		    + "\n   }"
+            + "\n}"
+            + "\nreturn '" + defaultUrl + "'";
+
+
+        Script script = scriptService.create(
+                "app-store-url-" + uuid(),
+                _script,
+                Script.Language.GROOVY,
+                Script.ReturnType.STRING
+        );
+
+        return shorten(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                script.getId(),
+                null,
+                null,
+                null,
+                false,
+                false,
+                true,
+                null
+        );
+    }
+
+    private String encode(String term) {
+        if (term == null) {
+            return null;
+        }
+
+        try {
+            return URLEncoder.encode(term, "UTF-8");
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new KServiceException(t.getMessage(), t);
+        }
+    }
 
     protected String evalScript(HttpServletRequest req, ShortUrl shortUrl) {
         Script script = scriptService.fetchById(shortUrl.getScriptId());
@@ -461,6 +596,7 @@ public class ShortUrlServiceImpl
         try {
             Bindings bindings = new SimpleBindings();
             bindings.put("req", req);
+            bindings.put("shortUrl", shortUrl);
             String value = (String) scriptService.eval(script, bindings);
             return value;
         } catch (Throwable t) {

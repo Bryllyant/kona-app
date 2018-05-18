@@ -265,6 +265,8 @@
             <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.BaseCampaignChannel.Type" />
             <columnOverride column="target_strategy" javaType="com.bryllyant.kona.app.entity.BaseCampaignChannel.TargetStrategy" />
             <columnOverride column="reply_strategy" javaType="com.bryllyant.kona.app.entity.BaseCampaignChannel.ReplyStrategy" />
+            <columnOverride column="adwords_keywords" javaType="java.util.List"
+                            typeHandler="com.bryllyant.kona.data.mybatis.KStringListHandler" />
         </table>
 
         <table schema="kona"
@@ -315,7 +317,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.app.entity.BaseCampaignTarget"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;CampaignTarget,CampaignTargetExample&gt;" />
-            <property name="fullTextColumns" value="uid,type,name,slug,url,analytics_tracking_id"/>
+            <property name="fullTextColumns" value="uid,type,name,slug,url,website_url,app_store_url,google_play_url,analytics_tracking_id,app_store_provider_id"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="type" javaType="com.bryllyant.kona.app.entity.BaseCampaignTarget.Type" />
@@ -1154,6 +1156,7 @@
             <columnOverride column="enabled" javaType="boolean" />
             <columnOverride column="single_mapped" javaType="boolean" />
             <columnOverride column="channel_redirect" javaType="boolean" />
+            <columnOverride column="query_params_enabled" javaType="boolean" />
         </table>
 
         <table schema="kona"

@@ -13,11 +13,13 @@ import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.CampaignGroupService;
 import com.bryllyant.kona.app.service.CampaignService;
 import com.bryllyant.kona.app.service.CampaignTargetService;
+import com.bryllyant.kona.app.service.ShortUrlService;
 import com.bryllyant.kona.config.KConfig;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.data.service.KServiceException;
 import com.bryllyant.kona.util.KInflector;
+import com.bryllyant.kona.util.KStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,9 @@ public class CampaignTargetServiceImpl
 
     @Autowired
     private CampaignGroupService campaignGroupService;
+
+    @Autowired
+    private ShortUrlService shortUrlService;
 
 
     protected String getLandingPageBaseUrl() {
@@ -172,13 +177,10 @@ public class CampaignTargetServiceImpl
 
             targetUrl += uid + "/";
 
-            target.setUrl(targetUrl);
+            target.setWebsiteUrl(targetUrl);
         }
 
-        if (target.getUrl() != null) {
-            String url = getDecoratedUrl(channel, target.getType(), target.getUrl());
-            target.setUrl(url);
-        }
+        target.setUrl(getDecoratedUrl(channel, target));
 
         return add(target);
     }
@@ -206,16 +208,23 @@ public class CampaignTargetServiceImpl
 
     protected String getDecoratedUrl(
             CampaignChannel channel,
-            CampaignTarget.Type type,
-            String url
+            CampaignTarget target
     ) {
 
-        if (url == null) {
-            throw new KServiceException("CampaignTarget: create: url must be set");
+        CampaignTarget.Type type = target.getType();
+
+        String url = null;
+
+        if (type == CampaignTarget.Type.WEBSITE  || type == CampaignTarget.Type.LANDING_PAGE) {
+            url = target.getWebsiteUrl();
         }
 
-        if (!(type == CampaignTarget.Type.WEBSITE  || type == CampaignTarget.Type.APP_STORE)) {
-            throw new KServiceException("CampaignTarget: create: invalid campaign type: " + type);
+        if (type == CampaignTarget.Type.APP_STORE) {
+            url = shortUrlService.createAppStoreShortUrl(target.getAppStoreUrl(), target.getGooglePlayUrl(), target.getAppStoreUrl());
+        }
+
+        if (url == null) {
+            return null;
         }
 
         Campaign campaign = campaignService.fetchById(channel.getCampaignId());
@@ -271,45 +280,60 @@ public class CampaignTargetServiceImpl
                 break;
         }
 
-
-        String term = null;
-
-        try {
-            term = URLEncoder.encode(channel.getAdwordsKeywords(), "UTF-8");
-        } catch (Throwable t) {
-            logger.error(t.getMessage(), t);
-        }
-
-
         // add utm_ fields to url
         URI uri = URI.create(url);
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromUri(uri);
 
         String source = group.getSlug() + "/" + channel.getType().name();
 
         builder = builder
-                .queryParam("utm_campaign", campaign.getSlug())
-                .queryParam("utm_source", source)
-                .queryParam("utm_medium", medium)
-                .queryParam("utm_content", channel.getSlug());
+                .queryParam("utm_campaign", encode(campaign.getSlug()))
+                .queryParam("utm_source", encode(source))
+                .queryParam("utm_medium", encode(medium))
+                .queryParam("utm_content", encode(channel.getSlug()));
 
 
-        if (term != null) {
-            builder = builder.queryParam("utm_term", term);
+        if (channel.getAdwordsKeywords() != null) {
+            String keywords = KStringUtil.join(channel.getAdwordsKeywords(), ",");
+            builder = builder.queryParam("utm_term", encode(keywords));
+        }
+
+
+        if (type == CampaignTarget.Type.APP_STORE && url.toLowerCase().startsWith("https://itunes.apple.com")) {
+            if (target.getAppStoreProviderId() != null) {
+                String campaignToken = campaign + "/" + medium + "/" + source + "/" + channel.getSlug();
+
+                builder = builder.queryParam("pt", encode(target.getAppStoreProviderId()));
+                builder = builder.queryParam("ct", encode(campaignToken));
+            }
         }
 
 
         url = builder.build().toUriString();
-
-
 
         // for apple app store we need to add other specific params
         // https://stackoverflow.com/questions/43114257/how-to-track-utm-tags-in-app-store-urls?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
         // https://blog.attributionapp.com/lets-solve-ios-attribution-methods
 
 
+        // generate app store campaign links:
+        // https://analytics.itunes.apple.com/#/campaigngenerator?app=1059538166
 
 
         return url;
+    }
+
+    private String encode(String term) {
+        if (term == null) {
+            return null;
+        }
+
+        try {
+            return URLEncoder.encode(term, "UTF-8");
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new KServiceException(t.getMessage(), t);
+        }
     }
 }

@@ -21,4 +21,6 @@ public interface ScriptService extends KService, KEntityService<Script> {
     Object eval(Script script, Bindings binding) throws ScriptException;
 
     Object eval(Script script, Map<String,Object> binding) throws ScriptException;
+
+    Script create(String name, String body, Script.Language language, Script.ReturnType returnType);
 }

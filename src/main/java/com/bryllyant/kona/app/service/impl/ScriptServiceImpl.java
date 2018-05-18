@@ -10,6 +10,7 @@ import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.data.service.KServiceException;
 import com.bryllyant.kona.app.service.ScriptService;
 import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
+import com.bryllyant.kona.util.KInflector;
 import com.bryllyant.kona.util.KJsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,12 @@ public class ScriptServiceImpl
         if (script.getUid() == null) {
             script.setUid(uuid());
         }
+
+        if (script.getName() == null) {
+            script.setName(script.getUid());
+        }
+
+        script.setSlug(KInflector.getInstance().slug(script.getName()));
     }
 
     @Override
@@ -122,6 +129,19 @@ public class ScriptServiceImpl
         ScriptEngine engine = getScriptEngine(script.getLanguage());
         CompiledScript compiledScript = ((Compilable) engine).compile(script.getBody());
         return compiledScript.eval(bindings);
+    }
+
+    @Override
+    public Script create(String name, String body, Script.Language language, Script.ReturnType returnType) {
+        Script script = new Script();
+
+        script.setName(name);
+        script.setBody(body);
+        script.setReturnType(returnType);
+        script.setLanguage(language);
+        script.setEnabled(true);
+
+        return save(script);
     }
 
 }

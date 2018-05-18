@@ -43,11 +43,31 @@ public interface ShortUrlService extends KService, KEntityService<ShortUrl> {
             String description,
             boolean singleMapped,
             boolean channelRedirect,
+            boolean queryParamsEnabled,
+            Date expirationDate
+    );
+
+    ShortUrl create(
+            Long userId,
+            Long campaignId,
+            Long groupId,
+            Long channelId,
+            Long targetId,
+            Long replyId,
+            Long replyMessageId,
+            Long scriptId,
+            String longUrl,
+            String vanityDomain,
+            String description,
+            boolean singleMapped,
+            boolean channelRedirect,
+            boolean queryParamsEnabled,
             Date expirationDate
     );
 
     String explode(HttpServletRequest req, String url);
 
     String explode(HttpServletRequest req, ShortUrl shortUrl);
-	
+
+    String createAppStoreShortUrl(String appStoreUrl, String googlePlayUrl, String defaultUrl);
 }

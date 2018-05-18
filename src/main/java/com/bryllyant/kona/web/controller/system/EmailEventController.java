@@ -7,9 +7,12 @@ import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailAddress;
 import com.bryllyant.kona.app.entity.EmailEvent;
+import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.EmailAddressService;
+import com.bryllyant.kona.app.service.EmailCampaignService;
 import com.bryllyant.kona.app.service.EmailService;
 import com.bryllyant.kona.app.service.SystemService;
+import com.bryllyant.kona.app.service.UserService;
 import com.bryllyant.kona.http.KServletUtil;
 import com.bryllyant.kona.templates.KTemplateException;
 import org.slf4j.Logger;
@@ -38,8 +41,6 @@ import java.util.Date;
 public class EmailEventController extends BaseController {
     private static Logger logger = LoggerFactory.getLogger(EmailEventController.class);
 
-
-
     @Autowired
     private Environment env;
 
@@ -47,13 +48,18 @@ public class EmailEventController extends BaseController {
     private EmailService emailService; 
 
     @Autowired
-    private EmailAddressService emailAddressService; 
+    private EmailAddressService emailAddressService;
+
+    @Autowired
+    private EmailCampaignService emailCampaignService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private SystemService system; 
 
 
-    
     private void error(Throwable t) {
         system.alert("EmailEventController: Error", t);
         logger.error(t.getMessage(), t);
@@ -61,7 +67,6 @@ public class EmailEventController extends BaseController {
     }
     
 
-	
     @RequestMapping(value="/open/{messageId}", method=RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void open(HttpServletRequest req,
@@ -174,14 +179,27 @@ public class EmailEventController extends BaseController {
     
     private EmailEvent createEvent(HttpServletRequest req, String uid, EmailEvent.Type type) {
         Date now = new Date();
+
         Email email = emailService.fetchByUid(uid);
+
         if (email == null) {
         	logger.error("Invalid email uid: " + uid);
             return null;
         }
-        
+
+        Long userId = null;
+
+        User user = userService.fetchByEmail(email.getToAddress());
+
+        if (user != null) {
+            userId = user.getId();
+        }
+
+
         EmailEvent event = new EmailEvent();
         event.setEmailId(email.getId());
+        event.setUserId(userId);
+        event.setEmailCampaignId(email.getEmailCampaignId());
         event.setType(type);
         event.setHostname(KServletUtil.getClientHostname(req));
         event.setUserAgent(KServletUtil.getClientUserAgent(req));
@@ -199,10 +217,25 @@ public class EmailEventController extends BaseController {
         	emailService.update(email);
 
             address = getEmailAddress(email);
-            if (address != null && !address.isConfirmed()) {
-                address.setConfirmed(true);
-                emailAddressService.update(address);
+
+            boolean updateAddress = false;
+
+            if (address != null) {
+                if (!address.isConfirmed()) {
+                    address.setConfirmed(true);
+                    updateAddress = true;
+                }
+
+                if (address.getUserId() == null && userId != null) {
+                    address.setUserId(userId);
+                    updateAddress = true;
+                }
+
+                if (updateAddress) {
+                    emailAddressService.update(address);
+                }
             }
+
             break;
 
         case PRINTED:
@@ -249,11 +282,13 @@ public class EmailEventController extends BaseController {
     
     private EmailAddress getEmailAddress(Email email) {
         EmailAddress address = null;
+
         if (email.getEmailAddressId() != null) {
             address = emailAddressService.fetchById(email.getEmailAddressId());
         } else if (email.getToAddress() != null) {
             address = emailAddressService.fetchByEmail(email.getToAddress());
         }
+
         return address;
     }
 }

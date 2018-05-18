@@ -5,6 +5,7 @@ import com.bryllyant.kona.data.model.KEntityModel;
 import com.bryllyant.kona.data.model.KJsonModel;
 
 import java.util.Date;
+import java.util.List;
 
 public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private static final long serialVersionUID = 1L;
@@ -18,7 +19,7 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
     private CampaignChannel.ReplyStrategy replyStrategy;
     private String name;
     private String slug;
-    private String adwordsKeywords;
+    private List<String> adwordsKeywords;
     private String smsNumber;
     private String smsKeyword;
     private String shortUrl;
@@ -118,11 +119,11 @@ public class CampaignChannelModel extends KJsonModel implements KEntityModel {
         this.set("slug", slug);
     }
 
-    public String getAdwordsKeywords() {
+    public List<String> getAdwordsKeywords() {
         return adwordsKeywords;
     }
 
-    public void setAdwordsKeywords(String adwordsKeywords) {
+    public void setAdwordsKeywords(List<String> adwordsKeywords) {
         this.set("adwordsKeywords", adwordsKeywords);
     }
 
