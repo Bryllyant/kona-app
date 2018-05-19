@@ -22,7 +22,6 @@ import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailEvent;
 import com.bryllyant.kona.app.entity.EmailExample;
 import com.bryllyant.kona.app.entity.EmailGroupAddress;
-import com.bryllyant.kona.app.entity.EmailTemplate;
 import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.model.EmailFooter;
@@ -1094,25 +1093,27 @@ public class EmailServiceImpl
             return null;
         }
 
-        if (content.getTemplateId() == null) {
-            return content.getHtml();
-        }
+        return content.getHtml();
 
-        EmailTemplate template = emailTemplateService.fetchById(content.getTemplateId());
-
-        String result = "";
-
-        if (template.getHtmlHeader() != null) {
-            result += template.getHtmlHeader();
-        }
-
-        result += content.getHtml();
-
-        if (template.getHtmlFooter() != null) {
-            result += template.getHtmlFooter();
-        }
-
-        return result;
+//        if (content.getTemplateId() == null) {
+//            return content.getHtml();
+//        }
+//
+//        EmailTemplate template = emailTemplateService.fetchById(content.getTemplateId());
+//
+//        String result = "";
+//
+//        if (template.getHtmlHeader() != null) {
+//            result += template.getHtmlHeader();
+//        }
+//
+//        result += content.getHtml();
+//
+//        if (template.getHtmlFooter() != null) {
+//            result += template.getHtmlFooter();
+//        }
+//
+//        return result;
     }
 
     protected String getTextContent(EmailContent content) {
@@ -1120,25 +1121,27 @@ public class EmailServiceImpl
             return null;
         }
 
-        if (content.getTemplateId() == null) {
-            return content.getText();
-        }
+        return content.getText();
 
-        EmailTemplate template = emailTemplateService.fetchById(content.getTemplateId());
-
-        String result = "";
-
-        if (template.getTextHeader() != null) {
-            result += template.getTextHeader();
-        }
-
-        result += content.getText();
-
-        if (template.getTextFooter() != null) {
-            result += template.getTextFooter();
-        }
-
-        return result;
+//        if (content.getTemplateId() == null) {
+//            return content.getText();
+//        }
+//
+//        EmailTemplate template = emailTemplateService.fetchById(content.getTemplateId());
+//
+//        String result = "";
+//
+//        if (template.getTextHeader() != null) {
+//            result += template.getTextHeader();
+//        }
+//
+//        result += content.getText();
+//
+//        if (template.getTextFooter() != null) {
+//            result += template.getTextFooter();
+//        }
+//
+//        return result;
     }
 
 
@@ -1189,6 +1192,7 @@ public class EmailServiceImpl
         Element body = doc.body();
 
         Elements elements = body.select("a");
+
         for (Element e : elements) {
             String targetUrl = e.attr("href");
 
@@ -1212,16 +1216,16 @@ public class EmailServiceImpl
             if (element != null) {
                 element.append(generateEmailFooter(footer, html));
             }
-
-            element = new Element(Tag.valueOf("img"), "");
-            element.attr("src", openUrl);
-            body.appendChild(element);
         }
 
+        Element element = new Element(Tag.valueOf("img"), "");
+        element.attr("src", openUrl);
+        body.appendChild(element);
 
         content = doc.html();
 
         logger.debug("processed email html:\n" + content);
+
         return content;
     }
 

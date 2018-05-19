@@ -300,9 +300,16 @@ public class CampaignTargetServiceImpl
         }
 
 
-        if (type == CampaignTarget.Type.APP_STORE && url.toLowerCase().startsWith("https://itunes.apple.com")) {
+        // for apple app store we need to add other specific params
+        // https://stackoverflow.com/questions/43114257/how-to-track-utm-tags-in-app-store-urls?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+        // https://blog.attributionapp.com/lets-solve-ios-attribution-methods
+
+
+        // generate app store campaign links:
+        // https://analytics.itunes.apple.com/#/campaigngenerator?app=1059538166
+        if (type == CampaignTarget.Type.APP_STORE && target.getAppStoreUrl() != null) {
             if (target.getAppStoreProviderId() != null) {
-                String campaignToken = campaign + "/" + medium + "/" + source + "/" + channel.getSlug();
+                String campaignToken = campaign.getSlug() + "/" + source + "/" + channel.getSlug() + "/" + medium;
 
                 builder = builder.queryParam("pt", encode(target.getAppStoreProviderId()));
                 builder = builder.queryParam("ct", encode(campaignToken));
@@ -311,15 +318,6 @@ public class CampaignTargetServiceImpl
 
 
         url = builder.build().toUriString();
-
-        // for apple app store we need to add other specific params
-        // https://stackoverflow.com/questions/43114257/how-to-track-utm-tags-in-app-store-urls?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-        // https://blog.attributionapp.com/lets-solve-ios-attribution-methods
-
-
-        // generate app store campaign links:
-        // https://analytics.itunes.apple.com/#/campaigngenerator?app=1059538166
-
 
         return url;
     }
