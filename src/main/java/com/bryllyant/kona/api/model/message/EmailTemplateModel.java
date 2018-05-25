@@ -15,10 +15,8 @@ public class EmailTemplateModel extends KJsonModel implements KEntityModel {
     private String name;
     private String slug;
     private String description;
-    private String textHeader;
-    private String textFooter;
-    private String htmlHeader;
-    private String htmlFooter;
+    private String textTemplate;
+    private String htmlTemplate;
     private Date createdDate;
     private Date updatedDate;
 
@@ -79,36 +77,20 @@ public class EmailTemplateModel extends KJsonModel implements KEntityModel {
         this.set("description", description);
     }
 
-    public String getTextHeader() {
-        return textHeader;
+    public String getTextTemplate() {
+        return textTemplate;
     }
 
-    public void setTextHeader(String textHeader) {
-        this.set("textHeader", textHeader);
+    public void setTextTemplate(String textTemplate) {
+        this.set("textTemplate", textTemplate);
     }
 
-    public String getTextFooter() {
-        return textFooter;
+    public String getHtmlTemplate() {
+        return htmlTemplate;
     }
 
-    public void setTextFooter(String textFooter) {
-        this.set("textFooter", textFooter);
-    }
-
-    public String getHtmlHeader() {
-        return htmlHeader;
-    }
-
-    public void setHtmlHeader(String htmlHeader) {
-        this.set("htmlHeader", htmlHeader);
-    }
-
-    public String getHtmlFooter() {
-        return htmlFooter;
-    }
-
-    public void setHtmlFooter(String htmlFooter) {
-        this.set("htmlFooter", htmlFooter);
+    public void setHtmlTemplate(String htmlTemplate) {
+        this.set("htmlTemplate", htmlTemplate);
     }
 
     public Date getCreatedDate() {

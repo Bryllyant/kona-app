@@ -167,7 +167,7 @@ public class ShortUrlServiceImpl
                 null,
                 false,
                 true,
-                false,
+                true,
                 null
         );
     }
@@ -467,7 +467,7 @@ public class ShortUrlServiceImpl
 
     @Override
     public String explode(HttpServletRequest req, ShortUrl shortUrl) {
-        String longUrl = null;
+        String longUrl;
 
         if (shortUrl == null) {
             logger.info("ShortUrl is null");
@@ -484,6 +484,7 @@ public class ShortUrlServiceImpl
         // FIXME: return a 404 response?
         if (shortUrl.getExpirationDate() != null && shortUrl.getExpirationDate().getTime() <= now) {
             logger.info("ShortUrl has expired: " + shortUrl);
+            return null;
         }
 
         if (shortUrl.isChannelRedirect()) {
@@ -510,16 +511,50 @@ public class ShortUrlServiceImpl
             UriComponentsBuilder builder = UriComponentsBuilder.fromUri(uri);
 
             for (String key : map.keySet()) {
+
                 String[] values = map.get(key);
+
 
                 if (values != null) {
                     for (String value : values) {
                         logger.debug("explode: key: {}   value: {}", key, value);
 
                         if (value != null) {
-                            builder = builder.queryParam(key, encode(value));
+
+                            // since fragments won't be passed to the shortUrl they must be sent as a special query param
+                            // e.g. https://short.url/01234?_f=hello -> https://long.url/abc/def#hello
+                            // the last fragment "wins"
+                            if (key.equals("_f")) {
+                                builder = builder.fragment(encode(value));
+                            } else {
+                                builder = builder.queryParam(key, encode(value));
+                            }
                         }
                     }
+                }
+            }
+
+            URI requestUri = URI.create(req.getRequestURL().toString());
+
+            String requestPath = requestUri.getPath();
+
+            if (requestPath != null) {
+                logger.debug("explode: request requestPath: " + requestPath);
+
+                Integer index = requestPath.indexOf(shortUrl.getPath()) + shortUrl.getPath().length();
+
+                requestPath = requestPath.substring(index);
+
+                logger.debug("explode: request requestPath 2: " + requestPath);
+
+                if (requestPath.length() > 0 && requestPath.startsWith("/")) {
+                    requestPath = requestPath.substring(1);
+                }
+
+                logger.debug("explode: request requestPath 3: " + requestPath);
+
+                if (requestPath.length() > 0) {
+                    builder = builder.path(requestPath);
                 }
             }
 

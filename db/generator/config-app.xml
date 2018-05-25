@@ -452,7 +452,7 @@
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.bryllyant.kona.data.entity.KBaseEntity"/>
             <property name="rootInterface" value="com.bryllyant.kona.data.dao.KMyBatisMapper&lt;EmailTemplate,EmailTemplateExample&gt;" />
-            <property name="fullTextColumns" value="uid,name,slug,description,text_header,text_footer,html_header,html_footer"/>
+            <property name="fullTextColumns" value="uid,name,slug,description,text_template,html_template"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
 

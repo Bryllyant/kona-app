@@ -35,25 +35,35 @@ public class RedirectController extends BaseController {
     private ShortUrlService shortUrlService; 
 
     @Autowired
-    private RedirectService redirectService; 
+    private RedirectService redirectService;
+
+    @RequestMapping(value="/{shortUrlPath}/{extraPath:.*}", method=RequestMethod.GET)
+    public void redirectWithExtraPath(HttpServletRequest req, HttpServletResponse resp,
+                         @PathVariable final String shortUrlPath,
+                         @PathVariable final String extraPath) throws IOException {
+        try {
+            logger.debug("SystemController:redirect called for: " + shortUrlPath);
+            doRedirect(req, resp, shortUrlPath, extraPath);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found: " + shortUrlPath);
+        }
+    }
 
 
 	@RequestMapping(value="/{shortUrlPath}", method=RequestMethod.GET)
 	public void redirect(HttpServletRequest req, HttpServletResponse resp,
 			@PathVariable final String shortUrlPath) throws IOException {
-        try {
-            logger.debug("SystemController:redirect called for: " + shortUrlPath);
-        	doRedirect(req, resp, shortUrlPath);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found: " + shortUrlPath);
-        }
+        redirectWithExtraPath(req, resp, shortUrlPath, null);
 	}
 	
 
     
-	private void doRedirect(HttpServletRequest req, HttpServletResponse resp,
-			String path) throws IOException {
+	private void doRedirect(
+	        HttpServletRequest req,
+            HttpServletResponse resp,
+			String path,
+            String extraPath) throws IOException {
         Date now = new Date();
 
         String redirectUrl = null;
