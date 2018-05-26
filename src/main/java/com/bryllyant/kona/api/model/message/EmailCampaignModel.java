@@ -28,6 +28,17 @@ public class EmailCampaignModel extends KJsonModel implements KEntityModel {
     private String fromAddress;
     private String replyTo;
     private String subject;
+
+    private String copyrightHolder;
+    private String permissionReminder;
+    private String companyName;
+    private String street1;
+    private String street2;
+    private String city;
+    private String state;
+    private String postalCode;
+    private String country;
+
     private Double failedCount;
     private Double failedRate;
     private Double deliveredCount;
@@ -183,6 +194,78 @@ public class EmailCampaignModel extends KJsonModel implements KEntityModel {
 
     public void setSubject(String subject) {
         this.set("subject", subject);
+    }
+
+    public String getCopyrightHolder() {
+        return copyrightHolder;
+    }
+
+    public void setCopyrightHolder(String copyrightHolder) {
+        this.set("copyrightHolder", copyrightHolder);
+    }
+
+    public String getPermissionReminder() {
+        return permissionReminder;
+    }
+
+    public void setPermissionReminder(String permissionReminder) {
+        this.set("permissionReminder", permissionReminder);
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.set("companyName", companyName);
+    }
+
+    public String getStreet1() {
+        return street1;
+    }
+
+    public void setStreet1(String street1) {
+        this.set("street1", street1);
+    }
+
+    public String getStreet2() {
+        return street2;
+    }
+
+    public void setStreet2(String street2) {
+        this.set("street2", street2);
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.set("city", city);
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.set("state", state);
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.set("postalCode", postalCode);
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.set("country", country);
     }
 
     public Double getFailedCount() {

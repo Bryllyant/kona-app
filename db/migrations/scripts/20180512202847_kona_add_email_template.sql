@@ -51,10 +51,10 @@ alter table kona__email_content add template_id bigint(20) unsigned DEFAULT NULL
 alter table kona__email_content add name varchar(255) NOT NULL after template_id;
 alter table kona__email_content add slug varchar(255) NOT NULL after name;
 alter table kona__email_content add description varchar(4000) DEFAULT NULL after slug;
-alter table kona__email_content add system tinyint(1) unsigned NOT NULL DEFAULT '0' after description;
+alter table kona__email_content add `system` tinyint(1) unsigned NOT NULL DEFAULT '0' after description;
 
 update kona__email_content
-set name=uid, slug=uid, system=1
+set name=uid, slug=uid, `system`=1
 where length(name) = 0 or name=uid;
 
 alter table kona__email_content add UNIQUE `ux_kona__email_content_slug` (`slug`);
@@ -76,7 +76,7 @@ alter table kona__email_content drop foreign key fk_kona__email_content_template
 alter table kona__email_content drop key ux_kona__email_content_slug;
 alter table kona__email_content drop key ix_kona__email_content_template;
 
-alter table kona__email_content drop system;
+alter table kona__email_content drop `system`;
 alter table kona__email_content drop description;
 alter table kona__email_content drop slug;
 alter table kona__email_content drop name;
