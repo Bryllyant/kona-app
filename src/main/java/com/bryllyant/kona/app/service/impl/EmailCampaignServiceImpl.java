@@ -18,6 +18,7 @@ import com.bryllyant.kona.data.mybatis.KMyBatisUtil;
 import com.bryllyant.kona.data.service.KAbstractService;
 import com.bryllyant.kona.data.service.KServiceException;
 import com.bryllyant.kona.util.AppUtil;
+import com.bryllyant.kona.util.KDateUtil;
 import com.bryllyant.kona.util.KInflector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,6 +151,18 @@ public class EmailCampaignServiceImpl
         EmailContent content = emailContentService.fetchById(emailCampaign.getEmailContentId());
 
         EmailFooter footer = new EmailFooter();
+        footer.setType(EmailFooter.Type.PROMOTIONAL);
+        footer.setCopyrightYear(KDateUtil.getYear(new Date()));
+
+        footer.setCopyrightHolder(emailCampaign.getCopyrightHolder());
+        footer.setPermissionReminder(emailCampaign.getPermissionReminder());
+        footer.setCompanyName(emailCampaign.getCompanyName());
+        footer.setStreet1(emailCampaign.getStreet1());
+        footer.setStreet2(emailCampaign.getStreet2());
+        footer.setCity(emailCampaign.getCity());
+        footer.setState(emailCampaign.getState());
+        footer.setPostalCode(emailCampaign.getPostalCode());
+        footer.setCountry(emailCampaign.getCountry());
 
         new Thread(() -> {
 
