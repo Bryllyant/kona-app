@@ -183,8 +183,12 @@ public class EmailEventController extends BaseController {
         Email email = emailService.fetchByUid(uid);
 
         if (email == null) {
-        	logger.error("Invalid email uid: " + uid);
+            logger.error("Invalid email uid: " + uid);
             return null;
+        }
+
+        if (!email.isDelivered()) {
+            email.setDelivered(true);
         }
 
         Long userId = null;
