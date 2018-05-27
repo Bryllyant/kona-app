@@ -235,11 +235,7 @@ public class EmailCampaignServiceImpl
     }
 
     @Override
-    public EmailCampaign updateStats(final EmailCampaign campaign, boolean processNotifications) {
-        if (processNotifications) {
-            emailService.processSESNotifications();
-        }
-
+    public EmailCampaign updateStats(EmailCampaign campaign, boolean processNotifications) {
         EmailStats stats = emailService.calcStatsByEmailCampaignId(campaign.getId());
 
         campaign.setEmailCount(stats.getEmailCount());
@@ -290,7 +286,15 @@ public class EmailCampaignServiceImpl
             campaign.setStatus(EmailCampaign.Status.COMPLETED);
         }
 
-        return save(campaign);
+        campaign = save(campaign);
+
+        if (processNotifications) {
+            new Thread(() -> {
+                emailService.processSESNotifications();
+            }).start();
+        }
+
+        return campaign;
     }
 
     private EmailFooter getEmailFooter(EmailCampaign emailCampaign) {
