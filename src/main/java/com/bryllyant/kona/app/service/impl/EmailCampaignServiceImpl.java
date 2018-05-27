@@ -98,7 +98,17 @@ public class EmailCampaignServiceImpl
             EmailContent content,
             String fromAddress,
             String replyTo,
-            String subject
+            String subject,
+            String permissionReminder,
+            Boolean permissionReminderEnabled,
+            String copyrighHolder,
+            String companyName,
+            String street1,
+            String street2,
+            String city,
+            String state,
+            String postalCode,
+            String country
     ) {
 
         if (fromAddress == null) {
@@ -107,6 +117,10 @@ public class EmailCampaignServiceImpl
 
         if (replyTo == null) {
             replyTo = fromAddress;
+        }
+
+        if (permissionReminderEnabled == null) {
+            permissionReminderEnabled = false;
         }
 
         EmailCampaign emailCampaign = new EmailCampaign();
@@ -123,6 +137,18 @@ public class EmailCampaignServiceImpl
         emailCampaign.setFromAddress(fromAddress);
         emailCampaign.setReplyTo(replyTo);
         emailCampaign.setSubject(subject);
+
+        emailCampaign.setPermissionReminder(permissionReminder);
+        emailCampaign.setPermissionReminderEnabled(permissionReminderEnabled);
+
+        emailCampaign.setCopyrightHolder(copyrighHolder);
+        emailCampaign.setCompanyName(companyName);
+        emailCampaign.setStreet1(street1);
+        emailCampaign.setStreet2(street2);
+        emailCampaign.setCity(city);
+        emailCampaign.setState(state);
+        emailCampaign.setPostalCode(postalCode);
+        emailCampaign.setCountry(country);
 
         emailCampaign.setStatus(EmailCampaign.Status.CREATED);
 

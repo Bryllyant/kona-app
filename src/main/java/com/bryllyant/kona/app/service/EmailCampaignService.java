@@ -28,7 +28,17 @@ public interface EmailCampaignService extends KService, KEntityService<EmailCamp
             EmailContent content,
             String fromAddress,
             String replyTo,
-            String subject
+            String subject,
+            String permissionReminder,
+            Boolean permissionReminderEnabled,
+            String copyrighHolder,
+            String companyName,
+            String street1,
+            String street2,
+            String city,
+            String state,
+            String postalCode,
+            String country
     );
 
     EmailCampaign start(EmailCampaign emailCampaign, Long throttleTime, boolean force);

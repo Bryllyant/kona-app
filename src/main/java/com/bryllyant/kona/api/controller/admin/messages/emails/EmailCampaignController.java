@@ -301,7 +301,17 @@ public class EmailCampaignController extends BaseController {
                     content,
                     emailCampaign.getFromAddress(),
                     emailCampaign.getReplyTo(),
-                    emailCampaign.getSubject()
+                    emailCampaign.getSubject(),
+                    emailCampaign.getPermissionReminder(),
+                    emailCampaign.isPermissionReminderEnabled(),
+                    emailCampaign.getCopyrightHolder(),
+                    emailCampaign.getCompanyName(),
+                    emailCampaign.getStreet1(),
+                    emailCampaign.getStreet2(),
+                    emailCampaign.getCity(),
+                    emailCampaign.getState(),
+                    emailCampaign.getPostalCode(),
+                    emailCampaign.getCountry()
             );
         } else {
             emailCampaign = emailCampaignService.save(emailCampaign);
