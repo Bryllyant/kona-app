@@ -14,6 +14,7 @@ import com.amazonaws.services.simpleemail.model.SendRawEmailResult;
 import com.amazonaws.services.sqs.model.Message;
 import com.bryllyant.kona.app.dao.EmailEventMapper;
 import com.bryllyant.kona.app.dao.EmailMapper;
+import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailAddress;
 import com.bryllyant.kona.app.entity.EmailAttachment;
@@ -26,6 +27,7 @@ import com.bryllyant.kona.app.entity.File;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.model.EmailFooter;
 import com.bryllyant.kona.app.model.EmailStats;
+import com.bryllyant.kona.app.service.CampaignChannelService;
 import com.bryllyant.kona.app.service.EmailAddressService;
 import com.bryllyant.kona.app.service.EmailAttachmentService;
 import com.bryllyant.kona.app.service.EmailCampaignService;
@@ -102,6 +104,9 @@ public class EmailServiceImpl
 
     @Autowired
     private KConfig config;
+
+    @Autowired
+    CampaignChannelService campaignChannelService;
 
     @Autowired
     private EmailAddressService emailAddressService;
@@ -969,9 +974,9 @@ public class EmailServiceImpl
 
         String uid = uuid();
 
-        String text1 = processContent(getTextContent(content), uid, address, footer, false);
+        String text1 = processContent(emailCampaign, getTextContent(content), uid, address, footer, false);
 
-        String html1 = processContent(getHtmlContent(content), uid, address, footer, true);
+        String html1 = processContent(emailCampaign, getHtmlContent(content), uid, address, footer, true);
 
 
         Date now = new Date();
@@ -1150,7 +1155,14 @@ public class EmailServiceImpl
     }
 
 
-    private String processContent(String content, String messageId, EmailAddress address, EmailFooter footer, boolean html) {
+    private String processContent(
+            EmailCampaign emailCampaign,
+            String content,
+            String messageId,
+            EmailAddress address,
+            EmailFooter footer,
+            boolean html
+    ) {
         if (content == null) return null;
 
         String systemBaseUrl = getSystemBaseUrl();
@@ -1158,9 +1170,15 @@ public class EmailServiceImpl
         String clickUrl = emailEventUrl +"click/" + messageId + "?u=";
         String openUrl = emailEventUrl +"open/" + messageId;
         String unsubscribeUrl = emailEventUrl +"unsubscribe/" + messageId;
+        String baseTargetUrl = null;
 
         if (footer != null) {
             footer.setUnsubscribeUrl(unsubscribeUrl);
+        }
+
+        if (emailCampaign != null) {
+            CampaignChannel channel = campaignChannelService.fetchById(emailCampaign.getCampaignChannelId());
+            baseTargetUrl = channel.getShortUrl();
         }
 
 
@@ -1173,6 +1191,7 @@ public class EmailServiceImpl
             Map<String,Object> map = new HashMap<>();
             map.put("emailAddress", address);
             map.put("systemBaseUrl", systemBaseUrl);
+            map.put("baseTargetUrl", baseTargetUrl);
             map.put("unsubscribeUrl", unsubscribeUrl);
             map.put("Util", KUtil.getInstance());
 
