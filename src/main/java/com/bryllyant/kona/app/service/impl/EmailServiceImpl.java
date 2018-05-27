@@ -823,7 +823,7 @@ public class EmailServiceImpl
                 continue;
             }
 
-            deliver(emailCampaign, address, fromAddress, replyTo, subject, content, attachments, footer);
+            deliver(emailCampaign, address, fromAddress, replyTo, subject, content, attachments, footer, false);
 
             throttle(throttleTime);
         }
@@ -910,7 +910,7 @@ public class EmailServiceImpl
 
         //logger.debug("deliver: address: " + KJsonUtil.toJson(address));
 
-        return deliver(emailCampaign, address, from, replyTo, subject, content, attachments, footer);
+        return deliver(emailCampaign, address, from, replyTo, subject, content, attachments, footer, true);
     }
 
 
@@ -938,7 +938,8 @@ public class EmailServiceImpl
             String subject,
             EmailContent content,
             List<File> attachments,
-            EmailFooter footer
+            EmailFooter footer,
+            boolean forceSend
     ) throws EmailException {
 
         String toAddress = formatAddress(address);
@@ -951,7 +952,7 @@ public class EmailServiceImpl
         if (emailCampaign != null) {
             email = fetchByEmailCampaignIdAndToId(emailCampaign.getId(), address.getId());
 
-            if (email != null) {
+            if (email != null && !forceSend) {
                 logger.warn("EmailService.deliver: Skipping:  Email already delivered to {} for emailCampaign:{}",
                         address,
                         emailCampaign

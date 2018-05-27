@@ -22,7 +22,9 @@ import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.EmailCampaignService;
+import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.rest.exception.BadRequestException;
+import com.bryllyant.kona.rest.exception.SystemException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -190,7 +192,15 @@ public class EmailCampaignController extends BaseController {
             throw new BadRequestException("toAddress must be specified");
         }
 
+        if (!KValidator.isEmail(model.getToAddress())) {
+            throw new ValidationException("Invalid email address: " + model.getToAddress());
+        }
+
         Email email = emailCampaignService.sendTestEmail(emailCampaign, model.getToAddress());
+
+        if (email == null) {
+            throw new SystemException("Error sending email to: " + model.getToAddress());
+        }
 
         return ok(emailModelService.toModel(email));
     }
