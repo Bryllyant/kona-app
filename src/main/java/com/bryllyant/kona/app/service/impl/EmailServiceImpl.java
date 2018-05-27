@@ -642,6 +642,13 @@ public class EmailServiceImpl
     }
 
     @Override
+    public List<Email> fetchByEmailCampaignIdAndAddressId(Long emailCampaignId, Long emailAddressId) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("emailCampaignId", emailCampaignId);
+        filter.put("emailAddressId", emailAddressId);
+        return fetchByCriteria(0, 9999999, null, filter, false);
+    }
+
+    @Override
     public List<Email> fetchByEmailCampaignId(Long emailCampaignId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("emailCampaignId", emailCampaignId);
         return fetchByCriteria(0, 9999999, null, filter, false);
@@ -649,10 +656,9 @@ public class EmailServiceImpl
 
 
     @Override
-    public Email fetchByEmailCampaignIdAndToId(Long emailCampaignId, Long emailAddressId) {
-        Map<String,Object> filter = KMyBatisUtil.createFilter("emailCampaignId", emailCampaignId);
-        filter.put("emailAddressId", emailAddressId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+    public List<Email> fetchByEmailAddressId(Long emailAddressId) {
+        Map<String,Object> filter = KMyBatisUtil.createFilter("emailAddressId", emailAddressId);
+        return fetchByCriteria(0, 99999, null, filter, false);
     }
 
 
@@ -944,15 +950,12 @@ public class EmailServiceImpl
 
         String toAddress = formatAddress(address);
 
-        // make sure we haven't already sent an email to this user
-        Email email = null;
-
         Long emailCampaignId = null;
 
         if (emailCampaign != null) {
-            email = fetchByEmailCampaignIdAndToId(emailCampaign.getId(), address.getId());
+            List<Email> result = fetchByEmailCampaignIdAndAddressId(emailCampaign.getId(), address.getId());
 
-            if (email != null && !forceSend) {
+            if (result != null && result.size() > 0 && !forceSend) {
                 logger.warn("EmailService.deliver: Skipping:  Email already delivered to {} for emailCampaign:{}",
                         address,
                         emailCampaign
@@ -971,10 +974,9 @@ public class EmailServiceImpl
         String html1 = processContent(getHtmlContent(content), uid, address, footer, true);
 
 
-
         Date now = new Date();
 
-        email = new Email();
+        Email email = new Email();
         email.setUid(uid);
         email.setEmailCampaignId(emailCampaignId);
         email.setFromAddress(fromAddress);

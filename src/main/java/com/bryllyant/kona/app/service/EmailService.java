@@ -152,9 +152,11 @@ public interface EmailService extends KService, KEntityService<Email> {
 
     Email fetchBySesId(String sesId);
 
-    Email fetchByEmailCampaignIdAndToId(Long emailCampaignId, Long emailAddressId);
+    List<Email> fetchByEmailCampaignIdAndAddressId(Long emailCampaignId, Long emailAddressId);
 
     List<Email> fetchByEmailCampaignId(Long emailCampaignId);
+
+    List<Email> fetchByEmailAddressId(Long emailAddressId);
 
     EmailStats calcStats(List<Email> emailList);
 
