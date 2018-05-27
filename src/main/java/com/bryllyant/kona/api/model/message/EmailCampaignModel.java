@@ -31,6 +31,7 @@ public class EmailCampaignModel extends KJsonModel implements KEntityModel {
 
     private String copyrightHolder;
     private String permissionReminder;
+    private Boolean permissionReminderEnabled;
     private String companyName;
     private String street1;
     private String street2;
@@ -210,6 +211,14 @@ public class EmailCampaignModel extends KJsonModel implements KEntityModel {
 
     public void setPermissionReminder(String permissionReminder) {
         this.set("permissionReminder", permissionReminder);
+    }
+
+    public Boolean getPermissionReminderEnabled() {
+        return permissionReminderEnabled;
+    }
+
+    public void setPermissionReminderEnabled(Boolean permissionReminderEnabled) {
+        this.set("permissionReminderEnabled", permissionReminderEnabled);
     }
 
     public String getCompanyName() {

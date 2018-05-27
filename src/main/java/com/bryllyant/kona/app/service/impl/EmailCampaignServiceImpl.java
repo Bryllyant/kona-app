@@ -2,6 +2,7 @@ package com.bryllyant.kona.app.service.impl;
 
 import com.bryllyant.kona.app.dao.EmailCampaignMapper;
 import com.bryllyant.kona.app.entity.CampaignChannel;
+import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailCampaign;
 import com.bryllyant.kona.app.entity.EmailCampaignExample;
 import com.bryllyant.kona.app.entity.EmailContent;
@@ -150,19 +151,7 @@ public class EmailCampaignServiceImpl
 
         EmailContent content = emailContentService.fetchById(emailCampaign.getEmailContentId());
 
-        EmailFooter footer = new EmailFooter();
-        footer.setType(EmailFooter.Type.PROMOTIONAL);
-        footer.setCopyrightYear(KDateUtil.getYear(new Date()));
-
-        footer.setCopyrightHolder(emailCampaign.getCopyrightHolder());
-        footer.setPermissionReminder(emailCampaign.getPermissionReminder());
-        footer.setCompanyName(emailCampaign.getCompanyName());
-        footer.setStreet1(emailCampaign.getStreet1());
-        footer.setStreet2(emailCampaign.getStreet2());
-        footer.setCity(emailCampaign.getCity());
-        footer.setState(emailCampaign.getState());
-        footer.setPostalCode(emailCampaign.getPostalCode());
-        footer.setCountry(emailCampaign.getCountry());
+        EmailFooter footer = getEmailFooter(emailCampaign);
 
         new Thread(() -> {
 
@@ -270,5 +259,63 @@ public class EmailCampaignServiceImpl
         }
 
         return save(campaign);
+    }
+
+    private EmailFooter getEmailFooter(EmailCampaign emailCampaign) {
+        EmailFooter footer = new EmailFooter();
+        footer.setType(EmailFooter.Type.PROMOTIONAL);
+        footer.setCopyrightYear(KDateUtil.getYear(new Date()));
+
+        footer.setCopyrightHolder(emailCampaign.getCopyrightHolder());
+        footer.setPermissionReminder(emailCampaign.getPermissionReminder());
+        footer.setPermissionReminderEnabled(emailCampaign.isPermissionReminderEnabled());
+        footer.setCompanyName(emailCampaign.getCompanyName());
+        footer.setStreet1(emailCampaign.getStreet1());
+        footer.setStreet2(emailCampaign.getStreet2());
+        footer.setCity(emailCampaign.getCity());
+        footer.setState(emailCampaign.getState());
+        footer.setPostalCode(emailCampaign.getPostalCode());
+        footer.setCountry(emailCampaign.getCountry());
+
+        return footer;
+    }
+
+
+    @Override
+    public Email sendTestEmail(EmailCampaign emailCampaign, String toAddress) {
+
+        EmailContent content = emailContentService.fetchById(emailCampaign.getEmailContentId());
+
+        EmailFooter footer = getEmailFooter(emailCampaign);
+
+        Email email = null;
+
+        try {
+            email = emailService.deliver(
+                    emailCampaign,
+                    emailCampaign.getFromAddress(),
+                    emailCampaign.getReplyTo(),
+                    toAddress,
+                    emailCampaign.getSubject(),
+                    content,
+                    footer);
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            systemService.alert("[EmailCampaign.sendTestEmail] Error sending email", t);
+        }
+
+
+        new Thread(() -> {
+            try {
+                util.sleep(5000L);
+                emailService.processSESNotifications();
+
+            } catch (Throwable t) {
+                logger.error(t.getMessage(), t);
+                systemService.alert("[EmailCampaign.sendTestEmail] Error processing notifications", t);
+            }
+        }).start();
+
+        return email;
     }
 }

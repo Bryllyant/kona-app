@@ -321,6 +321,7 @@ public class EmailServiceImpl
         }
 
         Email email = deliver(
+                null,
                 from,
                 replyTo,
                 to,
@@ -830,6 +831,7 @@ public class EmailServiceImpl
 
     @Override
     public Email deliver(
+            EmailCampaign emailCampaign,
             String from,
             String replyTo,
             String to,
@@ -841,18 +843,18 @@ public class EmailServiceImpl
 
         try {
             User systemUser = userService.getSystemUser();
+
             EmailContent content = emailContentService.create(systemUser.getId(), null, html, text, attachmentList);
 
-            return deliver(from, replyTo, to, subject, content, footer);
+            return deliver(emailCampaign, from, replyTo, to, subject, content, footer);
         } catch (Exception e) {
             throw new EmailException(e);
         }
     }
 
-
-
     @Override
     public Email deliver(
+            EmailCampaign emailCampaign,
             String from,
             String replyTo,
             String to,
@@ -908,7 +910,7 @@ public class EmailServiceImpl
 
         //logger.debug("deliver: address: " + KJsonUtil.toJson(address));
 
-        return deliver(null, address, from, replyTo, subject, content, attachments, footer);
+        return deliver(emailCampaign, address, from, replyTo, subject, content, attachments, footer);
     }
 
 

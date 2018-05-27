@@ -4,6 +4,7 @@
 package com.bryllyant.kona.app.service;
 
 import com.bryllyant.kona.app.entity.CampaignChannel;
+import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailCampaign;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailGroup;
@@ -33,4 +34,6 @@ public interface EmailCampaignService extends KService, KEntityService<EmailCamp
     EmailCampaign start(EmailCampaign emailCampaign, Long throttleTime, boolean force);
 
     EmailCampaign updateStats(EmailCampaign campaign, boolean processNotifications);
+
+    Email sendTestEmail(EmailCampaign emailCampaign, String toAddress);
 }

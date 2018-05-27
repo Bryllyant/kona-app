@@ -118,6 +118,7 @@ public interface EmailService extends KService, KEntityService<Email> {
 
 
     Email deliver(
+            EmailCampaign emailCampaign,
             String from,
             String replyTo,
             String to,
@@ -132,6 +133,7 @@ public interface EmailService extends KService, KEntityService<Email> {
 
 
     Email deliver(
+            EmailCampaign emailCampaign,
             String from,
             String replyTo,
             String to,

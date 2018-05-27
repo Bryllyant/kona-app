@@ -21,6 +21,7 @@ public class EmailFooter extends KBaseModel {
     private String postalCode;
     private String country;
     private String permissionReminder;
+    private boolean permissionReminderEnabled;
     private String unsubscribeUrl;
 
     public EmailFooter() {
@@ -36,7 +37,9 @@ public class EmailFooter extends KBaseModel {
             String city, 
             String state, 
             String postalCode, 
-            String country
+            String country,
+            String permissionReminder,
+            boolean permissionReminderEnabled
             ) {
         this.copyrightHolder = copyrightHolder;
         this.copyrightYear = copyrightYear;
@@ -47,6 +50,8 @@ public class EmailFooter extends KBaseModel {
         this.state = state;
         this.postalCode = postalCode;
         this.country = country;
+        this.permissionReminder = permissionReminder;
+        this.permissionReminderEnabled = permissionReminderEnabled;
     }
 
     public Type getType() {
@@ -135,6 +140,14 @@ public class EmailFooter extends KBaseModel {
 
     public void setPermissionReminder(String permissionReminder) {
         this.permissionReminder = permissionReminder;
+    }
+
+    public boolean isPermissionReminderEnabled() {
+        return permissionReminderEnabled;
+    }
+
+    public void setPermissionReminderEnabled(boolean permissionReminderEnabled) {
+        this.permissionReminderEnabled = permissionReminderEnabled;
     }
 
     public String getUnsubscribeUrl() {

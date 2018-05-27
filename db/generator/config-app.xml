@@ -467,6 +467,7 @@
             <property name="fullTextColumns" value="uid,name,slug,description,from_address,subject,copyright_holder,permission_reminder,company_name"/>
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
             <columnOverride column="status" javaType="com.bryllyant.kona.app.entity.BaseEmailCampaign.Status" />
+            <columnOverride column="permission_reminder_enabled" javaType="boolean" />
         </table>
 
         <table schema="kona"

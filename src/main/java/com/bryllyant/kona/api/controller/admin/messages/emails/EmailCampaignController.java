@@ -3,22 +3,26 @@ package com.bryllyant.kona.api.controller.admin.messages.emails;
 import com.bryllyant.kona.api.controller.BaseController;
 import com.bryllyant.kona.api.model.ModelResultSet;
 import com.bryllyant.kona.api.model.message.EmailCampaignModel;
+import com.bryllyant.kona.api.model.message.EmailModel;
 import com.bryllyant.kona.api.service.CampaignChannelModelService;
 import com.bryllyant.kona.api.service.CampaignGroupModelService;
 import com.bryllyant.kona.api.service.CampaignModelService;
 import com.bryllyant.kona.api.service.EmailCampaignModelService;
 import com.bryllyant.kona.api.service.EmailContentModelService;
 import com.bryllyant.kona.api.service.EmailGroupModelService;
+import com.bryllyant.kona.api.service.EmailModelService;
 import com.bryllyant.kona.api.service.EmailTemplateModelService;
 import com.bryllyant.kona.api.service.UserModelService;
 import com.bryllyant.kona.app.entity.Campaign;
 import com.bryllyant.kona.app.entity.CampaignChannel;
 import com.bryllyant.kona.app.entity.CampaignGroup;
+import com.bryllyant.kona.app.entity.Email;
 import com.bryllyant.kona.app.entity.EmailCampaign;
 import com.bryllyant.kona.app.entity.EmailContent;
 import com.bryllyant.kona.app.entity.EmailGroup;
 import com.bryllyant.kona.app.entity.User;
 import com.bryllyant.kona.app.service.EmailCampaignService;
+import com.bryllyant.kona.rest.exception.BadRequestException;
 import com.bryllyant.kona.rest.exception.ValidationException;
 import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KJsonUtil;
@@ -46,6 +50,9 @@ public class EmailCampaignController extends BaseController {
 
     @Autowired
     private EmailCampaignService emailCampaignService;
+
+    @Autowired
+    private EmailModelService emailModelService;
 
     @Autowired
     private EmailCampaignModelService emailCampaignModelService;
@@ -163,6 +170,29 @@ public class EmailCampaignController extends BaseController {
         emailCampaign = saveObject(req, emailCampaign, model);
 
         return ok(emailCampaignModelService.toModel(emailCampaign));
+    }
+
+    @RequestMapping(value = "/{uid}/test", method=RequestMethod.POST)
+    public ResponseEntity<EmailModel> sendTestEmail(
+            HttpServletRequest req,
+            @PathVariable String uid,
+            @RequestBody EmailModel model
+    ) {
+        logApiRequest(req, "POST /admin/messages/emails/campaigns/" + uid + "/test");
+
+        EmailCampaign emailCampaign = emailCampaignModelService.getEntity(uid);
+
+        if (model.getUid() != null && !model.getUid().equals(uid)) {
+            throw new ValidationException("Object UID does not match requested UID");
+        }
+
+        if (model.getToAddress() == null) {
+            throw new BadRequestException("toAddress must be specified");
+        }
+
+        Email email = emailCampaignService.sendTestEmail(emailCampaign, model.getToAddress());
+
+        return ok(emailModelService.toModel(email));
     }
 
     @RequestMapping(value = "/{uid}/start", method=RequestMethod.PUT)
