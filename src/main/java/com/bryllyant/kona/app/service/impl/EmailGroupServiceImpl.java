@@ -55,6 +55,8 @@ public class EmailGroupServiceImpl
             emailGroup.setCreatedDate(new Date());
         }
 
+        emailGroup.setUpdatedDate(new Date());
+
         if (emailGroup.getUid() == null) {
             emailGroup.setUid(uuid());
         }
