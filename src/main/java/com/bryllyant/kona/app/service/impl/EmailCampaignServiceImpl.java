@@ -90,6 +90,12 @@ public class EmailCampaignServiceImpl
     }
 
     @Override
+    public List<EmailCampaign> fetchByCampaignChannelId(Long campaignChannelId) {
+        Map<String, Object> filter = KMyBatisUtil.createFilter("campaignChannelId", campaignChannelId);
+        return (fetchByCriteria(filter));
+    }
+
+    @Override
     public EmailCampaign create(
             User owner,
             String name,

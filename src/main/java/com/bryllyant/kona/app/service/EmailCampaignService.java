@@ -20,6 +20,8 @@ public interface EmailCampaignService extends KService, KEntityService<EmailCamp
 
     List<EmailCampaign> fetchByEmailGroupId(Long emailGroupId);
 
+    List<EmailCampaign> fetchByCampaignChannelId(Long campaignChannelId);
+
     EmailCampaign create(
             User owner,
             String name,
