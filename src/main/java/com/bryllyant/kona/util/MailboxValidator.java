@@ -264,10 +264,13 @@ public class MailboxValidator {
 			skt.close();
 
 			if (getResponseCode(response) == 550) {
+			    String resp = response.trim().toLowerCase();
 
-			    if (response.toLowerCase().contains("address rejected")) {
-                    logger.info("[connectMX] SMTP 550:  Address reject: email: " + address);
-                } else if (response.toLowerCase().contains("access denied")) {
+			    if (resp.contains("address rejected")
+                        || resp.contains("user unknown")
+                        || resp.contains("email account that you tried to reach does not exist")) {
+                    logger.info("[connectMX] SMTP 550:  Invalid email address: " + address);
+                } else if (resp.contains("access denied")) {
                     // 550 - spam filter blocked email?
                     logger.info("[connectMX] SMTP 550: Access Denied: email: " + address + "\n" + response);
                 } else {

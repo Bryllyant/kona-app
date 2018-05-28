@@ -7,7 +7,6 @@ import com.bryllyant.kona.app.dao.EmailAddressMapper;
 import com.bryllyant.kona.app.entity.EmailAddress;
 import com.bryllyant.kona.app.entity.EmailAddressExample;
 import com.bryllyant.kona.app.entity.EmailGroup;
-import com.bryllyant.kona.app.entity.EmailGroupAddress;
 import com.bryllyant.kona.app.service.EmailAddressService;
 import com.bryllyant.kona.app.service.EmailGroupAddressService;
 import com.bryllyant.kona.app.service.EmailGroupService;
@@ -368,12 +367,7 @@ public class EmailAddressServiceImpl
             s += "valid";
             logger.debug(s);
             return true;
-        }
-
-        // address is not valid. if it's referenced, disable it
-        List<EmailGroupAddress> groups = emailGroupAddressService.fetchByAddressId(address.getId());
-
-        if (groups.size() > 0) {
+        } else {
             address.setScrubbedDate(new Date());
             address.setEnabled(false);
             update(address);
@@ -383,14 +377,27 @@ public class EmailAddressServiceImpl
             return false;
         }
 
-        // not referenced, so delete it
-        remove(address);
 
-        s += "invalid. Removed";
+//        // address is not valid. if it's referenced, disable it
+//        List<EmailGroupAddress> groups = emailGroupAddressService.fetchByAddressId(address.getId());
+//
+//        if (groups.size() > 0) {
+//            address.setScrubbedDate(new Date());
+//            address.setEnabled(false);
+//            update(address);
+//
+//            s += "invalid. Disabled";
+//            logger.debug(s);
+//            return false;
+//        }
+//
+//        // not referenced, so delete it
+//        remove(address);
+//        s += "invalid. Removed";
 
-        logger.debug(s);
-
-        return false;
+//        logger.debug(s);
+//
+//        return false;
     }
 
 
