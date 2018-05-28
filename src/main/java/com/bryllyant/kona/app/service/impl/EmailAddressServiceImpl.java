@@ -16,6 +16,7 @@ import com.bryllyant.kona.data.service.KServiceException;
 import com.bryllyant.kona.locale.KValidator;
 import com.bryllyant.kona.util.AppUtil;
 import com.bryllyant.kona.util.KInflector;
+import com.bryllyant.kona.util.KResultList;
 import com.bryllyant.kona.util.MailboxValidator;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -298,17 +299,41 @@ public class EmailAddressServiceImpl
 
         new Thread(() -> {
 
-            List<EmailAddress> list = fetchByCriteria((Map)null);
+            Integer offset = 0;
+            Integer limit = 1000;
+            String[] sortOrder = {
+                    "id"
+            };
 
-            if (list == null || list.size() == 0) return;
+            while (true) {
+                KResultList<EmailAddress> result = fetchByCriteria(
+                    offset,
+                    limit,
+                    sortOrder,
+                    null,
+                    false
+                );
 
-            for (EmailAddress address : list) {
-                scrub(address, force, tryConnectMX);
-                util.sleep(throttleTime);
-
-                if (stopScrubThread) {
+                if (result == null || result.size() == 0) {
                     return;
                 }
+
+                for (EmailAddress address : result) {
+
+                    scrub(address, force, tryConnectMX);
+
+                    if (stopScrubThread) {
+                        return;
+                    }
+
+                    util.sleep(throttleTime);
+                }
+
+                if (result.getCurrentPage() >= result.getTotalPages()) {
+                    return;
+                }
+
+                offset += limit;
             }
         }).start();
     }
