@@ -156,18 +156,29 @@ public class EmailGroupServiceImpl
     }
 
 
-    /**
-     * @param groupName        Name of the group
-     * @param maxCount         Max number of addresses in the group
-     * @param sourceList       (optional) list of sources from which to pull email addresses
-     * @param excludeGroupList (optional) don't include emails contained in the listed groups
-     */
     @Override @Transactional
-    public EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList, boolean forceScrub) {
-        logger.debug("[create]\ngroupName: {}\nmaxCount: {}\nsourceList: {}\nexcludeGroupList: {}\nforceScrub: {}",
+    public EmailGroup create(
+            String groupName,
+            Long maxCount,
+            List<String> includeSourceList,
+            List<String> excludeSourceList,
+            List<String> includeGroupList,
+            List<String> excludeGroupList,
+            boolean forceScrub
+    ) {
+
+        logger.debug("[create]\ngroupName: {}"
+                + "\nmaxCount: {}"
+                + "\nincludeSourceList: {}"
+                + "\nexcludeSourceList: {}"
+                + "\nincludeGroupList: {}"
+                + "\nexcludeGroupList: {}"
+                + "\nforceScrub: {}",
                 groupName,
                 maxCount,
-                KJsonUtil.toJson(sourceList),
+                KJsonUtil.toJson(includeSourceList),
+                KJsonUtil.toJson(excludeSourceList),
+                KJsonUtil.toJson(includeGroupList),
                 KJsonUtil.toJson(excludeGroupList),
                 forceScrub
         );
@@ -177,7 +188,13 @@ public class EmailGroupServiceImpl
         if (maxCount != null) {
             new Thread(() -> {
 
-                List<EmailAddress> emailAddressList = emailAddressService.fetchRandom(maxCount, sourceList, excludeGroupList);
+                List<EmailAddress> emailAddressList = emailAddressService.fetchRandom(
+                        maxCount,
+                        includeSourceList,
+                        excludeSourceList,
+                        includeGroupList,
+                        excludeGroupList
+                );
 
                 if (emailAddressList.size() == 0) {
                     logger.warn("EmailAddress fetchRandom yielded no results");

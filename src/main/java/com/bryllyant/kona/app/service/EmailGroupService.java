@@ -20,7 +20,15 @@ public interface EmailGroupService extends KService, KEntityService<EmailGroup> 
 
     EmailGroup create(String groupName, List<String> emailList, boolean forceScrub);
 
-    EmailGroup create(String groupName, Long maxCount, List<String> sourceList, List<String> excludeGroupList, boolean forceScrub);
+    EmailGroup create(
+            String groupName,
+            Long maxCount,
+            List<String> includeSourceList,
+            List<String> excludeSourceList,
+            List<String> includeGroupList,
+            List<String> excludeGroupList,
+            boolean forceScrub
+    );
 
     EmailGroup fetchBySlug(String slug);
 

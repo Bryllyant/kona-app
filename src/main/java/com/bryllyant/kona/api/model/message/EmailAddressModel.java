@@ -31,9 +31,10 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
     private String country;
     private String source;
 
-    private Boolean scrubbed;
     private Boolean enabled;
-    private Boolean confirmed;
+
+    private Date scrubbedDate;
+    private Date confirmedDate;
     private Date optedInDate;
     private Date optedOutDate;
     private Date bouncedDate;
@@ -219,14 +220,6 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
         this.set("source", source);
     }
 
-    public Boolean getScrubbed() {
-        return scrubbed;
-    }
-
-    public void setScrubbed(Boolean scrubbed) {
-        this.set("scrubbed", scrubbed);
-    }
-
     public Boolean getEnabled() {
         return enabled;
     }
@@ -235,12 +228,20 @@ public class EmailAddressModel extends KJsonModel implements KEntityModel {
         this.set("enabled", enabled);
     }
 
-    public Boolean getConfirmed() {
-        return confirmed;
+    public Date getScrubbedDate() {
+        return scrubbedDate;
     }
 
-    public void setConfirmed(Boolean confirmed) {
-        this.set("confirmed", confirmed);
+    public void setScrubbedDate(Date scrubbedDate) {
+        this.set("scrubbedDate", scrubbedDate);
+    }
+
+    public Date getConfirmedDate() {
+        return confirmedDate;
+    }
+
+    public void setConfirmedDate(Date confirmedDate) {
+        this.set("confirmedDate", confirmedDate);
     }
 
     public Date getOptedInDate() {

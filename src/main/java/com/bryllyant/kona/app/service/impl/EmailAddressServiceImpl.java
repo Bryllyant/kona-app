@@ -65,14 +65,27 @@ public class EmailAddressServiceImpl
             .maximumSize(10_000)
             .build();
 
+    private boolean stopScrubThread = false;
 
     @Override
     protected EmailAddressMapper getMapper() {
         return emailAddressMapper;
     }
 
-    protected List<EmailAddress> daoFetchRandom(Long count, List<String> sourceList, List<Long> excludeGroupIds) {
-        return emailAddressMapper.fetchRandom(count, sourceList, excludeGroupIds);
+    protected List<EmailAddress> daoFetchRandom(
+            Long count,
+            List<String> includeSourceList,
+            List<String> excludeSourceList,
+            List<Long> includeGroupIdList,
+            List<Long> excludeGroupIdList
+    ) {
+        return emailAddressMapper.fetchRandom(
+                count,
+                includeSourceList,
+                excludeSourceList,
+                includeGroupIdList,
+                excludeGroupIdList
+        );
     }
 
 
@@ -280,13 +293,40 @@ public class EmailAddressServiceImpl
         }
     }
 
+    @Override
+    public void scrubAll(boolean force, boolean tryConnectMX, long throttleTime) {
+        stopScrubThread = false;
 
+        new Thread(() -> {
+
+            List<EmailAddress> list = fetchByCriteria((Map)null);
+
+            if (list == null || list.size() == 0) return;
+
+            for (EmailAddress address : list) {
+                scrub(address, force, tryConnectMX);
+                util.sleep(throttleTime);
+
+                if (stopScrubThread) {
+                    return;
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public boolean scrub(String email, boolean force, boolean tryConnectMX) {
+        EmailAddress address = new EmailAddress();
+        address.setEmail(email);
+        address = create(address);
+        return scrub(address, force, tryConnectMX);
+    }
 
     @Override
     public boolean scrub(EmailAddress address, boolean force, boolean tryConnectMX) {
         logger.debug("[scrub]: force: {}  tryConnectMX: {}", force, tryConnectMX);
 
-        if (address.isScrubbed() && !force) {
+        if (address.getScrubbedDate() != null && !force) {
             logger.debug("[scrub] force is false: returning isValid() for address: " + address);
             return isValid(address, false);
         }
@@ -316,12 +356,12 @@ public class EmailAddressServiceImpl
             address.setLastName(value);
         }
 
-        MailboxValidator validator = new MailboxValidator("validator@gmail.com");
+        // MailboxValidator validator = new MailboxValidator("validator@gmail.com");
 
         String s = "[scrub] Processing id: " + address.getId() + "  email: " + address.getEmail() + " ... ";
 
-        if (validator.mayMailboxExist(address.getEmail(), tryConnectMX)) {
-            address.setScrubbed(true);
+        if (MailboxValidator.mailboxExists(address.getEmail(), tryConnectMX)) {
+            address.setScrubbedDate(new Date());
             address.setEnabled(true);
             update(address);
 
@@ -334,7 +374,7 @@ public class EmailAddressServiceImpl
         List<EmailGroupAddress> groups = emailGroupAddressService.fetchByAddressId(address.getId());
 
         if (groups.size() > 0) {
-            address.setScrubbed(true);
+            address.setScrubbedDate(new Date());
             address.setEnabled(false);
             update(address);
 
@@ -356,11 +396,34 @@ public class EmailAddressServiceImpl
 
 
     @Override
-    public List<EmailAddress> fetchRandom(Long count, List<String> sourceList, List<String> excludeGroupSlugList) {
-        List<Long> excludeGroupIds = null;
+    public List<EmailAddress> fetchRandom(
+            Long count,
+            List<String> includeSourceList,
+            List<String> excludeSourceList,
+            List<String> includeGroupSlugList,
+            List<String> excludeGroupSlugList
+    ) {
+        List<Long> includeGroupIdList = null;
 
-        if (excludeGroupSlugList != null) {
-            excludeGroupIds = new ArrayList<>();
+        if (includeGroupSlugList != null && includeGroupSlugList.size() > 0) {
+            includeGroupIdList = new ArrayList<>();
+
+            for (String slug : includeGroupSlugList) {
+                EmailGroup group = emailGroupService.fetchBySlug(slug);
+
+                if (group == null) {
+                    logger.warn("Invalid group slug: " + slug);
+                    continue;
+                }
+
+                includeGroupIdList.add(group.getId());
+            }
+        }
+
+        List<Long> excludeGroupIdList = null;
+
+        if (excludeGroupSlugList != null && excludeGroupSlugList.size() > 0) {
+            excludeGroupIdList = new ArrayList<>();
 
             for (String slug : excludeGroupSlugList) {
                 EmailGroup group = emailGroupService.fetchBySlug(slug);
@@ -370,20 +433,19 @@ public class EmailAddressServiceImpl
                     continue;
                 }
 
-                excludeGroupIds.add(group.getId());
+                excludeGroupIdList.add(group.getId());
             }
         }
 
-        return daoFetchRandom(count, sourceList, excludeGroupIds);
+        return daoFetchRandom(count, includeSourceList, excludeSourceList, includeGroupIdList, excludeGroupIdList);
     }
-
 
 
     @Override
     public boolean isValid(EmailAddress address, boolean forceScrub) {
         logger.debug("[isValid] address: {}  forceScrub: {}", address, forceScrub);
 
-        if (!address.isScrubbed() || forceScrub) {
+        if (address.getScrubbedDate() != null || forceScrub) {
             boolean valid = scrub(address, forceScrub, false);
             if (!valid) return false;
         }
@@ -427,10 +489,13 @@ public class EmailAddressServiceImpl
 
             EmailAddress email = new EmailAddress();
             email.setSource(source);
-            email.setScrubbed(scrubbed);
             email.setEnabled(true);
-            email.setConfirmed(false);
+            email.setConfirmedDate(null);
             email.setCreatedDate(new Date());
+
+            if (scrubbed) {
+                email.setScrubbedDate(new Date());
+            }
 
             for (String key : recordMap.keySet()) {
 

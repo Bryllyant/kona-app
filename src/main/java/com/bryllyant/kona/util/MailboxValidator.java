@@ -34,43 +34,44 @@ import java.util.concurrent.TimeUnit;
 // See: http://www.rgagnon.com/javadetails/java-0452.html
 // License: 
 //    http://www.rgagnon.com/varia/faq-e.html#license
-//    There is no restriction to use individual How-To in a development (compiled/source) but a mention is appreciated. 
+//    There is no restriction to use individual How-To in a development (compiled/source) but a mention is appreciated.
+
 public class MailboxValidator {
 	private static Logger logger = LoggerFactory.getLogger(MailboxValidator.class);
 
-	private String fromDomain;
-	private String fromEmail;
+	//private String fromDomain;
+	//private String fromEmail;
 
-    private Cache<String, Optional<List<String>>> mxCache = Caffeine.newBuilder()
+    private static Cache<String, Optional<List<String>>> mxCache = Caffeine.newBuilder()
             .expireAfterWrite(6, TimeUnit.HOURS)
             .maximumSize(100_000)
             .build();
 
-	public MailboxValidator(String fromEmail) {
-		this.fromEmail = fromEmail;
-		this.fromDomain = fromEmail.substring(fromEmail.indexOf("@")+1);
-	}
+//	public MailboxValidator(String fromEmail) {
+//		this.fromEmail = fromEmail;
+//		this.fromDomain = fromEmail.substring(fromEmail.indexOf("@")+1);
+//	}
+//
+//	public static void main(String args[]) {
+//		String testData[] = {
+//				"blisdcasdcasdc@googlemail.com",
+//				"info@bilderbuch-stoff.de",
+//				"xxx@bilderbuch-stoff.de", // invalid
+//				"s.muncke@tarent.de", //invalid
+//				"fail.me@nowhere.spam" // Invalid domain name
+//		};
+//
+//		MailboxValidator validator = new MailboxValidator(args[0]);
+//
+//		for (int ctr = 0; ctr < testData.length; ctr++) {
+//			System.out.println(testData[ctr] + " is valid? "
+//					+ validator.mayMailboxExist(testData[ctr], false));
+//		}
+//
+//		return;
+//	}
 
-	public static void main(String args[]) {
-		String testData[] = {
-				"blisdcasdcasdc@googlemail.com",                
-				"info@bilderbuch-stoff.de",
-				"xxx@bilderbuch-stoff.de", // invalid
-				"s.muncke@tarent.de", //invalid
-				"fail.me@nowhere.spam" // Invalid domain name
-		};
-
-		MailboxValidator validator = new MailboxValidator(args[0]);
-
-		for (int ctr = 0; ctr < testData.length; ctr++) {
-			System.out.println(testData[ctr] + " is valid? "
-					+ validator.mayMailboxExist(testData[ctr], false));
-		}
-
-		return;
-	}
-
-	public boolean isEmailSyntaxValid(String email) {
+	public static boolean isEmailSyntaxValid(String email) {
 		return email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$");
 	}
 
@@ -85,7 +86,7 @@ public class MailboxValidator {
 		return result;
 	}
 
-	public boolean doesHostExist(String email) {
+	public static boolean doesHostExist(String email) {
 		String host = email.substring(email.indexOf("@")+1);
 
 		try {
@@ -98,7 +99,7 @@ public class MailboxValidator {
 		return true;
 	}   
 
-	private List<String> getMX(String hostName) throws NamingException {
+	private static List<String> getMX(String hostName) throws NamingException {
 	    Optional<List<String>> result = mxCache.getIfPresent(hostName);
 
 	    // we don't have a value yet for this key
@@ -159,7 +160,7 @@ public class MailboxValidator {
 		return result.get();
 	}
 
-	public boolean mayMailboxExist(String address, boolean tryConnectMX) {
+	public static boolean mailboxExists(String address, boolean tryConnectMX) {
 		if (!KValidator.isEmail(address) || !isValidEmailAddress(address)) {
 			return false;
 		}
@@ -179,10 +180,10 @@ public class MailboxValidator {
 			mxList = getMX(domain);
 		}
 		catch (CommunicationException ce) {
-			logger.info("[mail validation] got dns problems email=" + address, ce);
-			return true;
+			logger.info("[mail validation] DNS Exception.  Rejecting email: " + address, ce);
+			return false;
 		} catch (NamingException ex) {
-			logger.info("[mail validation] got host naming exception for email=" + address +" - "+ ex);
+			logger.info("[mail validation] Host Naming Exception. Rejecting email: " + address, ex);
 			return false;
 		}
 
@@ -194,22 +195,23 @@ public class MailboxValidator {
         }
 
         if (tryConnectMX) {
-		    return connectMX(address, mxList);
+		    boolean connected = connectMX(address, mxList);
+		    logger.debug("Connection to address [" + address + "]: " + (connected ? "OK" : "ERROR"));
+		    return connected;
         }
 
         return true;
 	}
     
-	public boolean connectMX(String address, List<String> mxList) {
-		// modification, SMa: mx only use the first mx
-		int mx = 0;
-
+	public static boolean connectMX(String address, List<String> mxList) {
 		try {
-			int res;
+            // modification, SMa: mx only use the first mx
+            int mx = 0;
+			String response;
 			//
 			String mxHost = mxList.get(mx);
 
-			logger.debug("Connecting to " + mxHost + " ...");
+			logger.debug("[connectMX] Connecting to " + mxHost + " ...");
 
 			Socket skt = new Socket(mxHost, 25);
 
@@ -219,35 +221,39 @@ public class MailboxValidator {
 			BufferedWriter wtr = new BufferedWriter
 					( new OutputStreamWriter( skt.getOutputStream() ) );
 
-			res = hear( rdr );
+			response = hear(rdr);
 
-			if ( res != 220 ) {
+			if (getResponseCode(response) != 220) {
 				skt.close();
 				throw new Exception( "Invalid header" );
 			}
 
-			say( wtr, "EHLO "+ this.fromDomain );
+			// say(wtr, "EHLO "+ this.fromDomain);
 
-			res = hear( rdr );
+            String fromDomain = address.substring(address.indexOf("@")+1);
+            say(wtr, "EHLO "+ fromDomain);
 
-			if ( res != 250 ) {
+			response = hear(rdr);
+
+			if (getResponseCode(response) != 250) {
 				skt.close();
 				throw new Exception( "Not ESMTP" );
 			}
 
 			// validate the sender address              
-			say( wtr, "MAIL FROM: <"+this.fromEmail+">" );
+			// say( wtr, "MAIL FROM: <"+this.fromEmail+">" );
+            say( wtr, "MAIL FROM: <"+ address +">" );
 
-			res = hear( rdr );
+			response = hear(rdr);
 
-			if ( res != 250 ) {
+			if (getResponseCode(response) != 250) {
 				skt.close();
-				throw new Exception( "Sender rejected" );
+				throw new Exception("Sender rejected");
 			}
 
-			say( wtr, "RCPT TO: <" + address + ">" );
+			say(wtr, "RCPT TO: <" + address + ">");
 
-			res = hear( rdr );
+			response = hear(rdr);
 
 			// be polite
 			say( wtr, "RSET" ); hear( rdr );
@@ -257,41 +263,68 @@ public class MailboxValidator {
 			wtr.close();
 			skt.close();
 
-			if ( res == 550 ) {
-				logger.info("[mail validation] got response SMTP 550 for email=" + address);
+			if (getResponseCode(response) == 550) {
+
+			    if (response.toLowerCase().contains("address rejected")) {
+                    logger.info("[connectMX] SMTP 550:  Address reject: email: " + address);
+                } else if (response.toLowerCase().contains("access denied")) {
+                    // 550 - spam filter blocked email?
+                    logger.info("[connectMX] SMTP 550: Access Denied: email: " + address + "\n" + response);
+                } else {
+                    logger.info("[connectMX] SMTP 550: email: " + address + "\n" + response);
+                }
+
 				return false;
 			}
 
+            return true;
 		} catch (Exception e) {
-			logger.info("[mail validation] remote mail validation error. Accepting email anyway: email=" + address + " - " + e.getMessage());
+			logger.info("[connectMX] Remote mail validation error.  Rejecting email: " + address + " - " + e.getMessage());
+			return false;
 		}
 
-		return true;
 	}
 
-	private int hear(BufferedReader in) throws IOException {
+	private static int getResponseCode(String response) {
+        String prefix = response.substring(0, 3);
+
+        int code = 0;
+
+        try {
+            code = Integer.parseInt(prefix);
+        } catch (Exception ex) {
+            code = -1;
+        }
+
+        return code;
+    }
+
+	private static String hear(BufferedReader in) throws IOException {
 		String line = null;
 		int res = 0;
 
 		while ((line = in.readLine()) != null) {
+		    logger.debug("[hear] " + line);
+
 			String pfx = line.substring(0, 3);
+
 			try {
 				res = Integer.parseInt(pfx);
 			} catch (Exception ex) {
 				res = -1;
 			}
+
 			if (line.charAt(3) != '-')
 				break;
 		}
 
-		return res;
+		return line;
 	}
 
-	private void say(BufferedWriter wr, String text) throws IOException {
+	private static void say(BufferedWriter wr, String text) throws IOException {
+        logger.debug("[say] " + text);
 		wr.write(text + "\r\n");
 		wr.flush();
-
-		return;
 	}
 
 }

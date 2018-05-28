@@ -225,8 +225,8 @@ public class EmailEventController extends BaseController {
             boolean updateAddress = false;
 
             if (address != null) {
-                if (!address.isConfirmed()) {
-                    address.setConfirmed(true);
+                if (address.getConfirmedDate() == null) {
+                    address.setConfirmedDate(new Date());
                     updateAddress = true;
                 }
 

@@ -116,16 +116,28 @@ public class EmailGroupController extends BaseController {
         logger.debug("create called: options: " + KJsonUtil.toJson(options));
 
         Long maxCount = util.getLongValue(options.get("maxCount"));
-        List<String> sourceList = (List<String>)(options.get("sources"));
+        List<String> includeSourceList = (List<String>)(options.get("includeSources"));
+        List<String> excludeSourceList = (List<String>)(options.get("excludeSources"));
+        List<String> includeGroupList = (List<String>)(options.get("includeGroups"));
         List<String> excludeGroupList = (List<String>)(options.get("excludeGroups"));
         Boolean forceScrub = util.getBooleanValue(options.get("forceScrub"), true);
 
         logger.debug("create called: maxCount: {}", maxCount);
-        logger.debug("create called: sourceList: {}", KJsonUtil.toJson(sourceList));
+        logger.debug("create called: includeSourceList: {}", KJsonUtil.toJson(includeSourceList));
+        logger.debug("create called: excludeSourceList: {}", KJsonUtil.toJson(excludeSourceList));
+        logger.debug("create called: includeGroupList: {}", KJsonUtil.toJson(includeGroupList));
         logger.debug("create called: excludeGroupList: {}", KJsonUtil.toJson(excludeGroupList));
         logger.debug("create called: forceScrub: {}", forceScrub);
 
-        EmailGroup emailGroup = emailGroupService.create(model.getName(), maxCount, sourceList, excludeGroupList, forceScrub);
+        EmailGroup emailGroup = emailGroupService.create(
+                model.getName(),
+                maxCount,
+                includeSourceList,
+                excludeSourceList,
+                includeGroupList,
+                excludeGroupList,
+                forceScrub
+        );
 
         return created(emailGroupModelService.toModel(emailGroup));
     }

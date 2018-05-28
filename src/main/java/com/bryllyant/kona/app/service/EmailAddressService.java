@@ -26,9 +26,19 @@ public interface EmailAddressService extends KService, KEntityService<EmailAddre
 
     List<Long> fetchAllIds(Boolean scrubbed, Boolean enabled);
 
-    List<EmailAddress> fetchRandom(Long count, List<String> sourceList, List<String> excludeGroupSlugList);
+    List<EmailAddress> fetchRandom(
+            Long count,
+            List<String> includeSourceList,
+            List<String> excludeSourceList,
+            List<String> includeGroupSlugList,
+            List<String> excludeGroupSlugList
+    );
 
     void scrub(String source, Long startId, Long endId, Date startDate, Date endDate, boolean tryConnectMX);
+
+    void scrubAll(boolean force, boolean tryConnectMX, long throttleTime);
+
+    boolean scrub(String email, boolean force, boolean tryConnectMX);
 
     boolean scrub(EmailAddress address, boolean force, boolean tryConnectMX);
 
