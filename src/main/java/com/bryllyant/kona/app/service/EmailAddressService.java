@@ -8,7 +8,6 @@ import com.bryllyant.kona.data.service.KEntityService;
 import com.bryllyant.kona.remote.service.KService;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +33,11 @@ public interface EmailAddressService extends KService, KEntityService<EmailAddre
             List<String> excludeGroupSlugList
     );
 
-    void scrub(String source, Long startId, Long endId, Date startDate, Date endDate, boolean tryConnectMX);
+    //void scrub(String source, Long startId, Long endId, Date startDate, Date endDate, boolean force, boolean tryConnectMX);
 
     void scrubAll(boolean force, boolean tryConnectMX, long throttleTime);
+
+    void scrub(String source, boolean force, boolean tryConnectMX, long throttleTime);
 
     boolean scrub(String email, boolean force, boolean tryConnectMX);
 

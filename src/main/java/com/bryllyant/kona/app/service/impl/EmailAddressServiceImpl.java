@@ -149,7 +149,11 @@ public class EmailAddressServiceImpl
         }
 
         if (scrubbed != null) {
-            filter.put("scrubbed", scrubbed);
+            if (scrubbed) {
+                filter.put("!scrubbedDate", null);
+            } else {
+                filter.put("scrubbedDate", null);
+            }
         }
 
         return fetchByCriteria(filter);
@@ -258,43 +262,59 @@ public class EmailAddressServiceImpl
         return save(address);
     }
 
+//    @Override
+//    public void scrub(String source, Long startId, Long endId, Date startDate, Date endDate, boolean force, boolean tryConnectMX) {
+//        Map<String, Object> filter = KMyBatisUtil.createFilter("scrubbedDate", null);
+//
+//        if (source != null) {
+//            filter.put("source", source);
+//        }
+//
+//        if (startId != null) {
+//            filter.put(">=id", startId);
+//        }
+//
+//        if (endId != null) {
+//            filter.put("<id", endId);
+//        }
+//
+//        if (startDate != null) {
+//            filter.put(">=createdDate", startDate);
+//        }
+//
+//        if (endDate != null) {
+//            filter.put("<createdDate", endDate);
+//        }
+//
+//        List<EmailAddress> list = fetchByCriteria(filter);
+//        if (list == null || list.size() == 0) return;
+//
+//
+//        logger.debug("[scrub] Processing emails: " + list.size());
+//
+//        for (EmailAddress address : list) {
+//            scrub(address, false, tryConnectMX);
+//        }
+//    }
+
     @Override
-    public void scrub(String source, Long startId, Long endId, Date startDate, Date endDate, boolean tryConnectMX) {
-        Map<String, Object> filter = KMyBatisUtil.createFilter("scrubbed", false);
+    public void scrubAll(boolean force, boolean tryConnectMX, long throttleTime) {
+        scrub(null, force, true, throttleTime);
+    }
+
+    @Override
+    public void scrub(String source, boolean force, boolean tryConnectMX, long throttleTime) {
+
+        Map<String, Object> filter = KMyBatisUtil.createFilter();
+
+        if (!force) {
+            filter.put("scrubbedDate", null);
+        }
 
         if (source != null) {
             filter.put("source", source);
         }
 
-        if (startId != null) {
-            filter.put(">=id", startId);
-        }
-
-        if (endId != null) {
-            filter.put("<id", endId);
-        }
-
-        if (startDate != null) {
-            filter.put(">=createdDate", startDate);
-        }
-
-        if (endDate != null) {
-            filter.put("<createdDate", endDate);
-        }
-
-        List<EmailAddress> list = fetchByCriteria(filter);
-        if (list == null || list.size() == 0) return;
-
-
-        logger.debug("[scrub] Processing emails: " + list.size());
-
-        for (EmailAddress address : list) {
-            scrub(address, false, tryConnectMX);
-        }
-    }
-
-    @Override
-    public void scrubAll(boolean force, boolean tryConnectMX, long throttleTime) {
         stopScrubThread = false;
 
         new Thread(() -> {
@@ -310,7 +330,7 @@ public class EmailAddressServiceImpl
                     offset,
                     limit,
                     sortOrder,
-                    null,
+                    filter,
                     false
                 );
 
@@ -326,7 +346,9 @@ public class EmailAddressServiceImpl
                         return;
                     }
 
-                    util.sleep(throttleTime);
+                    if (throttleTime > 0) {
+                        util.sleep(throttleTime);
+                    }
                 }
 
                 if (result.getCurrentPage() >= result.getTotalPages()) {
