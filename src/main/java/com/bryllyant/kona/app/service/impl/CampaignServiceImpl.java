@@ -68,13 +68,13 @@ public class CampaignServiceImpl
     @Override
     public Campaign fetchBySlug(String slug) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public List<Campaign> fetchByOwnerId(Long ownerId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("ownerId", ownerId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

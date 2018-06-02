@@ -164,7 +164,7 @@ public class PurchaseServiceImpl
             filter.put("autoRenew", autoRenew);
         }
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -178,7 +178,7 @@ public class PurchaseServiceImpl
         // .andExpirationDateLessThanOrEqualTo(now);
         filter.put("<=expirationDate", now);
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override

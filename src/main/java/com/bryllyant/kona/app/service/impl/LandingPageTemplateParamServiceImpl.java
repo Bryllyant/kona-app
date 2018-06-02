@@ -87,14 +87,14 @@ public class LandingPageTemplateParamServiceImpl
                 .and("slug", slug)
                 .build();
 
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public LandingPageTemplateParam fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -102,6 +102,6 @@ public class LandingPageTemplateParamServiceImpl
     @Override
     public List<LandingPageTemplateParam> fetchByTemplateId(Long templateId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("templateId", templateId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 }

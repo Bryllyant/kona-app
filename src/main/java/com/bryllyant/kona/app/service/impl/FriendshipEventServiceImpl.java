@@ -47,6 +47,6 @@ public class FriendshipEventServiceImpl
     @Override
     public List<FriendshipEvent> fetchByFriendshipId(Long friendshipId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("friendshipId", friendshipId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 }

@@ -62,14 +62,14 @@ public class EmailGroupAddressServiceImpl
     public EmailGroupAddress fetchByGroupIdAndAddressId(Long groupId, Long addressId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("groupId", groupId);
         filter.put("addressId", addressId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public List<EmailGroupAddress> fetchByGroupId(Long groupId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("groupId", groupId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
@@ -117,6 +117,6 @@ public class EmailGroupAddressServiceImpl
     @Override
     public List<EmailGroupAddress> fetchByAddressId(Long addressId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("addressId", addressId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 }

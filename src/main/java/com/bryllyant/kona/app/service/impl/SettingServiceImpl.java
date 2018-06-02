@@ -57,7 +57,7 @@ public class SettingServiceImpl
     public Setting fetchByUserIdAndName(Long userId, String name) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("name", name);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -65,7 +65,7 @@ public class SettingServiceImpl
     public Setting fetchByAccountIdAndName(Long accountId, String name) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
         filter.put("name", name);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -165,14 +165,14 @@ public class SettingServiceImpl
     @Override
     public List<Setting> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public List<Setting> fetchByAccountId(Long accountId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

@@ -122,20 +122,20 @@ public class ShortUrlServiceImpl
     @Override
     public ShortUrl fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public ShortUrl fetchByShortUrl(String shortUrl) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("shortUrl", shortUrl);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public ShortUrl fetchByPath(String path) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("path", path);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override

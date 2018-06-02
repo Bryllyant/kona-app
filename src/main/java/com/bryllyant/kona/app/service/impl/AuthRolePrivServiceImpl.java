@@ -60,13 +60,13 @@ public class AuthRolePrivServiceImpl
     @Override
     public List<AuthRolePriv> fetchByRoleId(Long roleId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("roleId", roleId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<AuthRolePriv> fetchByPrivId(Long privId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("privId", privId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     public AuthRolePriv fetchByRoleIdAndPrivId(Long roleId, Long privId) {
@@ -75,7 +75,7 @@ public class AuthRolePrivServiceImpl
                 .and("privId", privId)
                 .build();
 
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     public List<AuthPriv> fetchPrivsByRole(AuthRole role) {

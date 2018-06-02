@@ -74,7 +74,7 @@ public class PromoServiceImpl extends KAbstractService<Promo,PromoExample,PromoM
     @Override
     public Promo fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override

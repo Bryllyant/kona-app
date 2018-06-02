@@ -194,7 +194,7 @@ public class LandingPageParamServiceImpl
     @Override
     public LandingPageParam fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
@@ -204,20 +204,20 @@ public class LandingPageParamServiceImpl
                 .and("templateParamId", templateParamId)
                 .build();
 
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public KResultList<LandingPageParam> fetchByLandingPageId(Long landingPageId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("landingPageId", landingPageId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public KResultList<LandingPageParam> fetchByTemplateParamId(Long templateParamId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("templateParamId", templateParamId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 }

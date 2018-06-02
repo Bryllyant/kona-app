@@ -81,27 +81,27 @@ public class PushServiceImpl extends KAbstractService<Push, PushExample, PushMap
     @Override
     public Push fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public List<Push> fetchByCampaignId(Long campaignId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("campaignId", campaignId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<Push> fetchByChannelId(Long channelId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("channelId", channelId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public Push fetchByProviderMessageId(String providerMessageId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("providerMessageId", providerMessageId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -109,7 +109,7 @@ public class PushServiceImpl extends KAbstractService<Push, PushExample, PushMap
     @Override
     public List<Push> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

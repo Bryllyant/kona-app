@@ -107,6 +107,6 @@ public class RegistrationServiceImpl
     @Override
     public Registration fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 }

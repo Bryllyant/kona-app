@@ -300,7 +300,7 @@ public class AuthCodeServiceImpl
     @Override
     public AuthCode fetchByCode(String code) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("code", code);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -309,7 +309,7 @@ public class AuthCodeServiceImpl
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("confirmedDate", null);
 
-        List<AuthCode> result = fetchByCriteria(0, 99999, null, filter, false);
+        List<AuthCode> result = fetchByCriteria(filter);
 
         List<AuthCode> expiredList = new ArrayList<>();
 
@@ -334,7 +334,7 @@ public class AuthCodeServiceImpl
             filter.put("type", type);
         }
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

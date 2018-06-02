@@ -137,19 +137,19 @@ public class SupportMessageServiceImpl
     @Override
     public List<SupportMessage> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<SupportMessage> fetchByEmail(String email) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("email", email);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<SupportMessage> fetchByMobileNumber(String mobileNumber) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("mobileNumber", mobileNumber);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override

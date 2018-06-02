@@ -109,7 +109,7 @@ public class PreOrderServiceImpl
     @Override
     public List<PreOrder> fetchByAppId(Long appId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("appId", appId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

@@ -348,7 +348,7 @@ public class FileServiceImpl
 
 		Map<String,Object> filter = KMyBatisUtil.createFilter("urlPath", publicPath);
 
-		File file = KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+		File file = KMyBatisUtil.fetchOne(fetchByCriteria(filter));
 
 		if (file == null) {
 			throw new KServiceException("File not found for path: " + publicPath);

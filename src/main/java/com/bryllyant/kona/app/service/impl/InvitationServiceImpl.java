@@ -198,7 +198,7 @@ public class InvitationServiceImpl
     @Override
     public Invitation fetchByInvitationCode(String invitationCode) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("invitationCode", invitationCode);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -220,7 +220,7 @@ public class InvitationServiceImpl
             filter.put("channel", channel);
         }
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -242,7 +242,7 @@ public class InvitationServiceImpl
             filter.put("channel", channel);
         }
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

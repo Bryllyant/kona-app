@@ -153,7 +153,7 @@ public class TokenServiceImpl
     public Token fetchByAccessToken(String accessToken, boolean checkValid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("accessToken", accessToken);
 
-        Token token = KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        Token token = KMyBatisUtil.fetchOne(fetchByCriteria(filter));
 
         if (token != null && checkValid) {
             // NOTE: boolean argument must be FALSE
@@ -170,7 +170,7 @@ public class TokenServiceImpl
     @Override
     public Token fetchByRefreshToken(String refreshToken) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("refreshToken", refreshToken);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -185,7 +185,7 @@ public class TokenServiceImpl
         // Also not needed since fetchOne will fail if multiple tokens are retrieved
         //String[] sortOrder = { "core__token.last_updated DESC" };
 
-        Token token = KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        Token token = KMyBatisUtil.fetchOne(fetchByCriteria(filter));
 
         // for testing, set isTokenValid(token, false)
         // for production always set isTokenValid(token, true)
@@ -202,20 +202,20 @@ public class TokenServiceImpl
     public List<Token> fetchActiveByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("active", true);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public List<Token> fetchByFilter(Map<String, Object> filter) {
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public List<Token> fetchByClientId(String clientId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("clientId", clientId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

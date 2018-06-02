@@ -46,14 +46,14 @@ public class AppCredsServiceImpl
     @Override
     public List<AppCreds> fetchByAppId(Long appId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("appId", appId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public AppCreds fetchByClientId(String clientId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("clientId", clientId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

@@ -56,33 +56,33 @@ public class UserDeviceServiceImpl
     @Override
     public List<UserDevice> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<UserDevice> fetchByDeviceId(Long deviceId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("deviceId", deviceId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public UserDevice fetchByUserIdAndDeviceId(Long userId, Long deviceId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("deviceId", deviceId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public UserDevice fetchByUserIdAndSlug(Long userId, String slug) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public UserDevice fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

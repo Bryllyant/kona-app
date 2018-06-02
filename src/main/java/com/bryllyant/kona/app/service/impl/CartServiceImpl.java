@@ -103,7 +103,7 @@ public class CartServiceImpl
                 .and("invoicedDate", null)
                 .build();
 
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override

@@ -107,7 +107,7 @@ public class PushDeviceServiceImpl
                 .and("sandbox", sandbox)
                 .build();
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -115,13 +115,13 @@ public class PushDeviceServiceImpl
     @Override
     public List<PushDevice> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<PushDevice> fetchByDeviceId(Long deviceId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("deviceId", deviceId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -130,7 +130,7 @@ public class PushDeviceServiceImpl
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("deviceId", deviceId);
         filter.put("sandbox", sandbox);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -140,14 +140,14 @@ public class PushDeviceServiceImpl
         // without this check, it would look for push_device where push_token is null
         if (token == null) return null;
         Map<String,Object> filter = KMyBatisUtil.createFilter("token", token);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public PushDevice fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

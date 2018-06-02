@@ -62,13 +62,13 @@ public class UserRoleServiceImpl
     @Override
     public List<UserRole> fetchByRoleId(Long roleId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("roleId", roleId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<UserRole> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     public UserRole fetchByUserIdAndRoleId(Long userId, Long roleId) {
@@ -77,7 +77,7 @@ public class UserRoleServiceImpl
                 .and("roleId", roleId)
                 .build();
 
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     public List<AuthRole> fetchRolesByUser(User user) {

@@ -515,7 +515,7 @@ public class UserServiceImpl
     public User fetchByUsername(String username) {
         logger.debug("UserServiceImpl: fetchByUsername: username: {}", username);
         Map<String, Object> filter = KMyBatisUtil.createFilter("username", username);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -523,7 +523,7 @@ public class UserServiceImpl
     @Transactional(readOnly = true)
     public User fetchByUid(String uid) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -531,7 +531,7 @@ public class UserServiceImpl
     @Transactional(readOnly = true)
     public User fetchByEmail(String email) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("email", email);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -539,7 +539,7 @@ public class UserServiceImpl
     @Transactional(readOnly = true)
     public User fetchByMobileNumber(String mobileNumber) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("mobileNumber", mobileNumber);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -547,7 +547,7 @@ public class UserServiceImpl
     @Transactional(readOnly = true)
     public List<User> fetchByAccountId(Long accountId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -729,7 +729,7 @@ public class UserServiceImpl
         //FIXME: fetch users containing specified roles
         //filter.put("roles", UserRole.User.getId());
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

@@ -78,33 +78,33 @@ public class AppUserServiceImpl
 
     public AppUser fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public AppUser fetchByAppIdAndUserId(Long appId, Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("appId", appId);
         filter.put("userId", userId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public AppUser fetchByAppIdAndRefUserId(Long appId, String refUserId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("appId", appId);
         filter.put("refUserId", refUserId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public KResultList<AppUser> fetchByAppId(Long appId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("appId", appId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public KResultList<AppUser> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override

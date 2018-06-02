@@ -153,7 +153,7 @@ public class PushProviderServiceImpl
     public PushProvider fetchByPlatformAndSandbox(Platform platform, boolean sandbox) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("platform", platform);
         filter.put("sandbox", sandbox);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override @Transactional

@@ -75,7 +75,7 @@ public class ScriptServiceImpl
     @Override
     public Script fetchBySlug(String slug) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

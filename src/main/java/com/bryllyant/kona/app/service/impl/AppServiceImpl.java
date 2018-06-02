@@ -140,13 +140,13 @@ public class AppServiceImpl
     @Override
     public App fetchBySlug(String slug) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public List<App> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override  @Transactional

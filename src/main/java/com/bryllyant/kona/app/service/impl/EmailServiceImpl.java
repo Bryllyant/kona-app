@@ -635,7 +635,7 @@ public class EmailServiceImpl
     @Override
     public Email fetchBySesId(String sesId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("sesId", sesId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -643,7 +643,7 @@ public class EmailServiceImpl
     @Override
     public Email fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
@@ -663,7 +663,7 @@ public class EmailServiceImpl
     @Override
     public List<Email> fetchByEmailAddressId(Long emailAddressId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("emailAddressId", emailAddressId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

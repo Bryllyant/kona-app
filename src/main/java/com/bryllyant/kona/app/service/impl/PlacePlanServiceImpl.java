@@ -60,13 +60,13 @@ public class PlacePlanServiceImpl
     public PlacePlan fetchByPlaceIdAndSlug(Long placeId, String slug) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("slug", slug);
         filter.put("placeId", placeId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public List<PlacePlan> fetchByPlaceId(Long placeId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("placeId", placeId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 }

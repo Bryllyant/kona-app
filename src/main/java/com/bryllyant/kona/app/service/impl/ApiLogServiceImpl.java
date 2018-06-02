@@ -74,7 +74,7 @@ public class ApiLogServiceImpl
     @Override
     public List<ApiLog> fetchByOwnerId(Long ownerId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("ownerId", ownerId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -82,7 +82,7 @@ public class ApiLogServiceImpl
     @Override
     public List<ApiLog> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -90,7 +90,7 @@ public class ApiLogServiceImpl
     @Override
     public List<ApiLog> fetchByAppId(Long appId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("appId", appId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -98,7 +98,7 @@ public class ApiLogServiceImpl
     @Override
     public List<ApiLog> fetchByClientId(String clientId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("clientId", clientId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

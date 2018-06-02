@@ -83,7 +83,7 @@ public class PaymentAccountServiceImpl
         Map<String, Object> filter = KMyBatisUtil.createFilter();
         filter.put("accountId", accountId);
         filter.put("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -92,14 +92,14 @@ public class PaymentAccountServiceImpl
         Map<String, Object> filter = KMyBatisUtil.createFilter();
         filter.put("accountId", accountId);
         filter.put("defaultAccount", true);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public List<PaymentAccount> fetchByAccountId(Long accountId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -107,14 +107,14 @@ public class PaymentAccountServiceImpl
     public PaymentAccount fetchByProviderCustomerId(String providerName, String providerCustomerId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("providerCustomerId", providerCustomerId);
         filter.put("providerName", providerName);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public PaymentAccount fetchByProviderAccountNumber(String providerName, String accountNumber) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("accountNumber", accountNumber);
         filter.put("providerName", providerName);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

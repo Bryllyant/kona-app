@@ -54,13 +54,13 @@ public class DeviceServiceImpl
     @Override
     public Device fetchByAdvertiserId(String advertiserId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("advertiserId", advertiserId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public Device fetchByDeviceUuid(String deviceUuid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("deviceUuid", deviceUuid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 }

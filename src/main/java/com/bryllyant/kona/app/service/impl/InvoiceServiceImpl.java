@@ -86,7 +86,7 @@ public class InvoiceServiceImpl
     @Override
     public List<Invoice> fetchByUserId(Long userId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
@@ -102,14 +102,14 @@ public class InvoiceServiceImpl
             filter.put("accountId", accountId);
         }
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public Invoice fetchByInvoiceNo(String invoiceNo) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("invoiceNo", invoiceNo);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

@@ -159,7 +159,7 @@ public class SmsServiceImpl extends KAbstractService<Sms,SmsExample,SmsMapper>
     @Override
     public Sms fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -167,19 +167,19 @@ public class SmsServiceImpl extends KAbstractService<Sms,SmsExample,SmsMapper>
     @Override
     public Sms fetchByMessageSid(String messageSid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("messageSid", messageSid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override
     public List<Sms> fetchByCampaignId(Long campaignId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("campaignId", campaignId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public List<Sms> fetchByChannelId(Long channelId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("channelId", channelId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -187,7 +187,7 @@ public class SmsServiceImpl extends KAbstractService<Sms,SmsExample,SmsMapper>
     public Sms fetchByChannelIdAndToNumber(Long channelId, String toNumber) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("channelId", channelId);
         filter.put("toNumber", toNumber);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

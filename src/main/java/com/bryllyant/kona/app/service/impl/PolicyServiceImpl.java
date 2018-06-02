@@ -63,7 +63,7 @@ public class PolicyServiceImpl
     @Override
     public Policy fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -71,14 +71,14 @@ public class PolicyServiceImpl
     public Policy fetchByTypeAndVersion(Policy.Type type, Integer version) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("type", type);
         filter.put("version", version);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     @Override
     public List<Policy> fetchByType(Policy.Type type) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("type", type);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override

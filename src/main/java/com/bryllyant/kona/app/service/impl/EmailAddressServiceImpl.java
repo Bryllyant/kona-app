@@ -107,7 +107,7 @@ public class EmailAddressServiceImpl
     @Override
     public EmailAddress fetchByEmail(String email) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("email", email);
-        List<EmailAddress> result = fetchByCriteria(0, 99999, null, filter, false);
+        List<EmailAddress> result = fetchByCriteria(filter);
         return KMyBatisUtil.fetchOne(result);
     }
 
@@ -152,7 +152,7 @@ public class EmailAddressServiceImpl
             filter.put("scrubbed", scrubbed);
         }
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -282,7 +282,7 @@ public class EmailAddressServiceImpl
             filter.put("<createdDate", endDate);
         }
 
-        List<EmailAddress> list = fetchByCriteria(0, 99999, null, filter, false);
+        List<EmailAddress> list = fetchByCriteria(filter);
         if (list == null || list.size() == 0) return;
 
 

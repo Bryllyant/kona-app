@@ -109,7 +109,7 @@ public class PaymentServiceImpl
     @Override
     public List<Payment> fetchByInvoiceId(Long invoiceId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("invoiceId", invoiceId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -117,7 +117,7 @@ public class PaymentServiceImpl
     @Override
     public Payment fetchByProcessRef(String processorRef) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("processorRef", processorRef);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

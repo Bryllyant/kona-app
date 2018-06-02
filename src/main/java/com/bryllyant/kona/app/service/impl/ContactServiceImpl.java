@@ -108,7 +108,7 @@ public class ContactServiceImpl
             filter.put("lastName", contact.getLastName());
             filter.put("placeId", contact.getPlaceId());
 
-            abList = fetchByCriteria(0, 99999, null, filter, false);
+            abList = fetchByCriteria(filter);
 
             if (abList != null && abList.size() > 0) {
                 ab = abList.get(0);
@@ -278,7 +278,7 @@ public class ContactServiceImpl
     public List<Contact> fetchByEmail(Long ownerId, String email) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("ownerId", ownerId);
         filter.put("email", email);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -286,14 +286,14 @@ public class ContactServiceImpl
     public List<Contact> fetchByMobileNumber(Long ownerId, String mobileNumber) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("ownerId", ownerId);
         filter.put("mobileNumber", mobileNumber);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
     @Override
     public List<Contact> fetchByExample(Contact example) {
         Map<String,Object> filter = KClassUtil.toMap(example);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -301,7 +301,7 @@ public class ContactServiceImpl
     public List<Contact> fetchByOwnerId(Long ownerId, boolean uninvitedOnly) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("ownerId", ownerId);
 
-        List<Contact> list = fetchByCriteria(0, 99999, null, filter, false);
+        List<Contact> list = fetchByCriteria(filter);
 
         if (!uninvitedOnly) return list;
 
@@ -360,7 +360,7 @@ public class ContactServiceImpl
             filter = KMyBatisUtil.createFilter("|id", objectIdList);
         }
 
-        List<Contact> all = fetchByCriteria(0, 99999, null, filter, false);
+        List<Contact> all = fetchByCriteria(filter);
 
         Map<Long, List<Contact>> placeMap = new HashMap<>();
 

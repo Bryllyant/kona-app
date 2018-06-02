@@ -273,7 +273,7 @@ public class MediaServiceImpl
     @Override @Transactional(readOnly=true)
     public Media fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -281,7 +281,7 @@ public class MediaServiceImpl
     @Override @Transactional(readOnly=true)
     public Media fetchByFileId(Long fileId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("fileId", fileId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -311,7 +311,7 @@ public class MediaServiceImpl
     @Override @Transactional(readOnly=true)
     public List<Media> fetchByUserId(Long userId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -319,7 +319,7 @@ public class MediaServiceImpl
     @Override @Transactional(readOnly=true)
     public List<Media> fetchByAccountId(Long accountId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -329,7 +329,7 @@ public class MediaServiceImpl
     public List<Media> fetchByFolderPath(Long accountId, String folderPath) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
         filter.put("folderPath", folderPath);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -339,7 +339,7 @@ public class MediaServiceImpl
         Map<String,Object> filter = KMyBatisUtil.createFilter("accountId", accountId);
         filter.put("folderPath", folderPath);
         filter.put("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

@@ -113,7 +113,7 @@ public class CampaignAnalyticsServiceImpl
 
         Map<String,Object> filter = criteria.build();
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class CampaignAnalyticsServiceImpl
 
         Map<String,Object> filter = criteria.build();
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class CampaignAnalyticsServiceImpl
 
         Map<String,Object> filter = criteria.build();
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class CampaignAnalyticsServiceImpl
 
         Map<String,Object> filter = criteria.build();
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
@@ -189,13 +189,13 @@ public class CampaignAnalyticsServiceImpl
 
         Map<String,Object> filter = criteria.build();
 
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
     @Override
     public CampaignAnalytics fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
     @Override @Transactional

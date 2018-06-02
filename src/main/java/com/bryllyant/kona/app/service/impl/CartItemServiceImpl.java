@@ -85,7 +85,7 @@ public class CartItemServiceImpl
     @Override
     public List<CartItem> fetchByCartId(Long cartId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("cartId", cartId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 

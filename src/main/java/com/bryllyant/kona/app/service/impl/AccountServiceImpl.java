@@ -142,7 +142,7 @@ public class AccountServiceImpl
     @Override
     public Account fetchBySlug(String slug) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -150,7 +150,7 @@ public class AccountServiceImpl
     @Override
     public Account fetchByUid(String uid) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -158,7 +158,7 @@ public class AccountServiceImpl
     @Override
     public Account fetchByOwnerId(Long ownerId) {
         Map<String,Object> filter = KMyBatisUtil.createFilter("ownerId", ownerId);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 

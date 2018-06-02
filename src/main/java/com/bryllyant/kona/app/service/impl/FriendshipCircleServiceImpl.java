@@ -53,7 +53,7 @@ public class FriendshipCircleServiceImpl
     @Override
     public List<FriendshipCircle> fetchByUserId(Long userId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("userId", userId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
@@ -61,7 +61,7 @@ public class FriendshipCircleServiceImpl
     public FriendshipCircle fetchDefaultByUserId(Long userId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("defaultCircle", true);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -69,7 +69,7 @@ public class FriendshipCircleServiceImpl
     public FriendshipCircle fetchByUserIdAndSlug(Long userId, String slug) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("userId", userId);
         filter.put("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 }

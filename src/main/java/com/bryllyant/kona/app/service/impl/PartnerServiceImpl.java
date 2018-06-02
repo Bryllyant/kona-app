@@ -91,7 +91,7 @@ public class PartnerServiceImpl
     @Override
     public Partner fetchBySlug(String slug) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("slug", slug);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
@@ -99,13 +99,13 @@ public class PartnerServiceImpl
     @Override
     public Partner fetchByUid(String uid) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("uid", uid);
-        return KMyBatisUtil.fetchOne(fetchByCriteria(0, 99999, null, filter, false));
+        return KMyBatisUtil.fetchOne(fetchByCriteria(filter));
     }
 
 
     public List<Partner> fetchByParentId(Long parentId) {
         Map<String, Object> filter = KMyBatisUtil.createFilter("parentId", parentId);
-        return fetchByCriteria(0, 99999, null, filter, false);
+        return fetchByCriteria(filter);
     }
 
 
