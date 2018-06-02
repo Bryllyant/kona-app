@@ -151,7 +151,7 @@ public class MailboxValidator {
                     records.add(mailhost);
                 }
 
-                logger.debug("MX hosts:\n" + KStringUtil.join(records, "\n"));
+                logger.debug("[mail validation] MX records for host: [" + hostName + "]:\n" + KStringUtil.join(records, "\n"));
 
                 // cannot set null value using Optional.of().  user Optional.ofNullable() if the value can be null.
                 result = Optional.of(records);
