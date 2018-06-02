@@ -157,7 +157,11 @@ public class MailboxValidator {
             mxCache.put(hostName, result);
         }
 
-		return result.get();
+        if (result.isPresent()) {
+            return result.get();
+        }
+
+        throw new NamingException("No match for name '" + hostName + "'");
 	}
 
 	public static boolean mailboxExists(String address, boolean tryConnectMX) {

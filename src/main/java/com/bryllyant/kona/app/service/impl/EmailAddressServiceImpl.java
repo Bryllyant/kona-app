@@ -133,7 +133,7 @@ public class EmailAddressServiceImpl
 
             result = Optional.of(sources);
 
-            cache.put("sources", Optional.ofNullable(sources));
+            cache.put("sources", result);
         }
 
         return result.get();
