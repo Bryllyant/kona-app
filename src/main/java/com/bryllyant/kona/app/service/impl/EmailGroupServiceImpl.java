@@ -127,6 +127,8 @@ public class EmailGroupServiceImpl
                 ga.setGroupId(group.getId());
                 ga.setCreatedDate(now);
                 emailGroupAddressService.add(ga);
+            } else {
+                logger.debug("[addGroupAddressList]  Email address is not valid:\n" + address);
             }
         }
     }

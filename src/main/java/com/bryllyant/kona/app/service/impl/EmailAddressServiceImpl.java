@@ -499,7 +499,7 @@ public class EmailAddressServiceImpl
     public boolean isValid(EmailAddress address, boolean forceScrub) {
         logger.debug("[isValid] address: {}  forceScrub: {}", address, forceScrub);
 
-        if (address.getScrubbedDate() != null || forceScrub) {
+        if (address.getScrubbedDate() == null || forceScrub) {
             boolean valid = scrub(address, forceScrub, false);
             if (!valid) return false;
         }
