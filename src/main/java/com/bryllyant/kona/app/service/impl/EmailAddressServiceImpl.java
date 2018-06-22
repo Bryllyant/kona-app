@@ -299,7 +299,7 @@ public class EmailAddressServiceImpl
 
     @Override
     public void scrubAll(boolean force, boolean tryConnectMX, long throttleTime) {
-        scrub(null, force, true, throttleTime);
+        scrub(null, force, tryConnectMX, throttleTime);
     }
 
     @Override
